@@ -47,6 +47,10 @@
 		343C0F3F16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */; };
 		343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */; };
 		343C0F4116D1CAAF0028A6FE /* WeeklyChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */; };
+		343C0F4416D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */; };
+		343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */; };
+		343C0F4916D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */; };
+		343C0F4A16D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +94,10 @@
 		343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeeklyAlbumChart.m; sourceTree = "<group>"; };
 		343C0F3816D1CAAF0028A6FE /* WeeklyChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeeklyChart.h; sourceTree = "<group>"; };
 		343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeeklyChart.m; sourceTree = "<group>"; };
+		343C0F4216D1CB350028A6FE /* TCSLastFMAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSLastFMAPIClient.h; sourceTree = "<group>"; };
+		343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSLastFMAPIClient.m; sourceTree = "<group>"; };
+		343C0F4716D1D0EA0028A6FE /* TCSLastFMIncrementalStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSLastFMIncrementalStore.h; sourceTree = "<group>"; };
+		343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSLastFMIncrementalStore.m; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -201,6 +209,18 @@
 			isa = PBXGroup;
 			children = (
 				343C0F0416D1C0270028A6FE /* vinylogue.xcdatamodeld */,
+				343C0F4216D1CB350028A6FE /* TCSLastFMAPIClient.h */,
+				343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */,
+				343C0F4716D1D0EA0028A6FE /* TCSLastFMIncrementalStore.h */,
+				343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */,
+				343C0F4616D1CB450028A6FE /* Objects */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		343C0F4616D1CB450028A6FE /* Objects */ = {
+			isa = PBXGroup;
+			children = (
 				343C0F3216D1CAAF0028A6FE /* _WeeklyAlbumChart.h */,
 				343C0F3316D1CAAF0028A6FE /* _WeeklyAlbumChart.m */,
 				343C0F3416D1CAAF0028A6FE /* _WeeklyChart.h */,
@@ -210,7 +230,7 @@
 				343C0F3816D1CAAF0028A6FE /* WeeklyChart.h */,
 				343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */,
 			);
-			name = Models;
+			name = Objects;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,6 +379,8 @@
 				343C0F3C16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */,
 				343C0F3E16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */,
 				343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
+				343C0F4416D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
+				343C0F4916D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +393,8 @@
 				343C0F3D16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */,
 				343C0F3F16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */,
 				343C0F4116D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
+				343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
+				343C0F4A16D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
