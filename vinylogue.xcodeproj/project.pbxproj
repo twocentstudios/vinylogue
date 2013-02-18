@@ -53,6 +53,8 @@
 		343C0F4A16D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */; };
 		343C0F4C16D1D5160028A6FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */; };
 		343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */; };
+		343C0F5116D1E1B20028A6FE /* TCSWeeklyChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5016D1E1B20028A6FE /* TCSWeeklyChartViewController.m */; };
+		343C0F5216D1E1B20028A6FE /* TCSWeeklyChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5016D1E1B20028A6FE /* TCSWeeklyChartViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +104,8 @@
 		343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSLastFMIncrementalStore.m; sourceTree = "<group>"; };
 		343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		343C0F4F16D1E1B20028A6FE /* TCSWeeklyChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSWeeklyChartViewController.h; sourceTree = "<group>"; };
+		343C0F5016D1E1B20028A6FE /* TCSWeeklyChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSWeeklyChartViewController.m; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -174,6 +178,7 @@
 			children = (
 				343C0EFB16D1C0270028A6FE /* TCSAppDelegate.h */,
 				343C0EFC16D1C0270028A6FE /* TCSAppDelegate.m */,
+				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
 				343C0EF316D1C0270028A6FE /* Supporting Files */,
 			);
@@ -239,6 +244,15 @@
 				343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */,
 			);
 			name = Objects;
+			sourceTree = "<group>";
+		};
+		343C0F5316D1E1B50028A6FE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				343C0F4F16D1E1B20028A6FE /* TCSWeeklyChartViewController.h */,
+				343C0F5016D1E1B20028A6FE /* TCSWeeklyChartViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -389,6 +403,7 @@
 				343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4416D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
 				343C0F4916D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */,
+				343C0F5116D1E1B20028A6FE /* TCSWeeklyChartViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,6 +418,7 @@
 				343C0F4116D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
 				343C0F4A16D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */,
+				343C0F5216D1E1B20028A6FE /* TCSWeeklyChartViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
