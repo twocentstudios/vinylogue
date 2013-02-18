@@ -51,6 +51,8 @@
 		343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */; };
 		343C0F4916D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */; };
 		343C0F4A16D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */; };
+		343C0F4C16D1D5160028A6FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */; };
+		343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,8 @@
 		343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSLastFMAPIClient.m; sourceTree = "<group>"; };
 		343C0F4716D1D0EA0028A6FE /* TCSLastFMIncrementalStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSLastFMIncrementalStore.h; sourceTree = "<group>"; };
 		343C0F4816D1D0EA0028A6FE /* TCSLastFMIncrementalStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSLastFMIncrementalStore.m; sourceTree = "<group>"; };
+		343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -106,6 +110,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */,
+				343C0F4C16D1D5160028A6FE /* SystemConfiguration.framework in Frameworks */,
 				343C0EEB16D1C0270028A6FE /* UIKit.framework in Frameworks */,
 				343C0EED16D1C0270028A6FE /* Foundation.framework in Frameworks */,
 				343C0EEF16D1C0270028A6FE /* CoreGraphics.framework in Frameworks */,
@@ -151,6 +157,8 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */,
+				343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */,
 				343C0EEA16D1C0270028A6FE /* UIKit.framework */,
 				343C0EEC16D1C0270028A6FE /* Foundation.framework */,
 				343C0EEE16D1C0270028A6FE /* CoreGraphics.framework */,
