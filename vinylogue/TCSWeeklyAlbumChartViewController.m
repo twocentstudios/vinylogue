@@ -201,6 +201,11 @@
   NSLog(@"%@", object);
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+  id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
+  return [TCSAlbumArtistPlayCountCell heightForObject:object atIndexPath:indexPath tableView:tableView];
+}
+
 #pragma mark - view getters
 
 - (TCSSlideSelectView *)slideSelectView{
