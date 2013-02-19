@@ -26,17 +26,19 @@
 @property (nonatomic) NSUInteger displayingYearsAgo;
 @property (nonatomic, retain) WeeklyChart *displayingWeeklyChart;
 
+@property (nonatomic) NSUInteger playCountFilter;
+
 @end
 
 @implementation TCSWeeklyAlbumChartViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
+- (id)initWithUserName:(NSString *)userName{
+  self = [super initWithStyle:UITableViewStylePlain];
+  if (self) {
+    self.userName = userName;
+    self.playCountFilter = 4;
+  }
+  return self;
 }
 
 - (void)viewDidLoad{
@@ -44,22 +46,53 @@
 
   self.title = NSLocalizedString(@"Weekly Chart List", nil);
   
-  self.lastFMClient = [TCSLastFMAPIClient clientForUserName:@"ybsc"];
+  // When the userName changes (or is loaded the first time) we need to basically reload everything. If there's no username set, we'll show an error
+  RACSignal *userNameSignal = RACAbleWithStart(self.userName);
   
   @weakify(self);
+  [[userNameSignal filter:^BOOL(id x) {
+    return (x != nil);
+  }] subscribeNext:^(NSString *userName) {
+    NSLog(@"Loading client for %@...", userName);
+    @strongify(self);
+    self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
+  }];
+  
+  [[userNameSignal filter:^BOOL(id x) {
+    return (x == nil);
+  }] subscribeNext:^(id x) {
+    NSLog(@"Please set a username!");
+  }];
+
 //  RAC(self.now) = [RACSignal interval:60 * 60]; // update every hour
 
+  // Update the date being displayed based on the current date/time and how many years ago we want to go back
   RAC(self.displayingDate) = [[RACSignal combineLatest:@[ RACAble(self.now), RACAble(self.displayingYearsAgo) ] reduce:^(NSDate *now, NSNumber *displayingYearsAgo){
+    NSLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
     // Naive way of getting 365 days worth of seconds ago
     return [now dateByAddingTimeInterval:-1*365*24*60*60*[displayingYearsAgo doubleValue]];
   }] filter:^BOOL(id x) {
     return (x != nil);
   }];
+    
+  // When the lastFMClient changes (probably because the username changed), look up the weekly chart list
+  [[RACAbleWithStart(self.lastFMClient) filter:^BOOL(id x) {
+    return (x != nil);
+  }] subscribeNext:^(id x) {
+    NSLog(@"Fetching date ranges for available charts...");
+    [[self.lastFMClient fetchWeeklyChartList] subscribeNext:^(NSArray *weeklyCharts) {
+      @strongify(self);
+      self.weeklyCharts = weeklyCharts;
+    } error:^(NSError *error) {
+      NSLog(@"There was an error fetching the weekly chart list!");
+    }];
+  }];
   
-  RAC(self.weeklyCharts) = [self.lastFMClient fetchWeeklyChartList];
+  // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
   RAC(self.displayingWeeklyChart) =
   [[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
    map:^id(RACTuple *t) {
+     NSLog(@"Calculating the date range for the weekly chart...");
      NSArray *weeklyCharts = t.first;
      NSDate *displayingDate = t.second;
      return [[weeklyCharts.rac_sequence
@@ -68,24 +101,32 @@
               }] head];
    }];
   
+  // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
   [[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
+    NSLog(@"Loading album charts for the selected week...");
     @strongify(self);
     [[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart] subscribeNext:^(NSArray *albumChartsForWeek) {
+      NSLog(@"Filtering charts by playcount...");
       @strongify(self);
-      self.albumChartsForWeek = albumChartsForWeek;
+      NSArray *filteredCharts = [[albumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
+        @strongify(self);
+        return (chart.playcountValue > self.playCountFilter);
+      }] array];
+      self.albumChartsForWeek = filteredCharts;
     }];
   }];
   
+  // When the album charts gets changed, reload the table
   [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(id x){
+     NSLog(@"Refreshing table...");
     [self.tableView reloadData];
   }];
   
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
-  
 }
 
 - (void)didReceiveMemoryWarning{
@@ -93,6 +134,7 @@
   // Dispose of any resources that can be recreated.
   
   self.displayingYearsAgo += 1;
+//  self.userName = @"ybsc";
 }
 
 #pragma mark - Table view data source
@@ -122,13 +164,9 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-      *detailViewController = [[ alloc] initWithNibName:@"" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+  [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
+  NSLog(@"%@", object);
 }
 
 @end

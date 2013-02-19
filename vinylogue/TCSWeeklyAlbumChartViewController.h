@@ -10,4 +10,8 @@
 
 @interface TCSWeeklyAlbumChartViewController : UITableViewController
 
+@property (nonatomic, copy) NSString *userName;
+
+- (id)initWithUserName:(NSString *)userName;
+
 @end
