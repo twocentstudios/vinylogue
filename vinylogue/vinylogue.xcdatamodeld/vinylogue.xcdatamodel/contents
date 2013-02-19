@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2057" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="WeeklyAlbumChart" representedClassName="WeeklyAlbumChart" syncable="YES">
-        <attribute name="albumMbid" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="albumName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="albumURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="artistMbid" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="artistName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="playcount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="rank" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="weeklyChart" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyChart" inverseName="weeklyAlbumChart" inverseEntity="WeeklyChart" syncable="YES"/>
+        <attribute name="albumMbid" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="albumName" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="albumURL" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="artistMbid" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="artistName" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
+        <attribute name="playcount" optional="YES" transient="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="rank" optional="YES" transient="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="weeklyChart" optional="YES" transient="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyChart" inverseName="weeklyAlbumChart" inverseEntity="WeeklyChart" syncable="YES"/>
     </entity>
     <entity name="WeeklyChart" representedClassName="WeeklyChart" syncable="YES">
-        <attribute name="from" attributeType="Date" syncable="YES"/>
-        <attribute name="to" attributeType="Date" syncable="YES"/>
-        <relationship name="weeklyAlbumChart" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyAlbumChart" inverseName="weeklyChart" inverseEntity="WeeklyAlbumChart" syncable="YES"/>
+        <attribute name="from" transient="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="to" transient="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="weeklyAlbumChart" optional="YES" transient="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WeeklyAlbumChart" inverseName="weeklyChart" inverseEntity="WeeklyAlbumChart" syncable="YES"/>
     </entity>
     <elements>
         <element name="WeeklyAlbumChart" positionX="160" positionY="192" width="128" height="163"/>
