@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TCSWeeklyAlbumChartViewController : UITableViewController
+@interface TCSWeeklyAlbumChartViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, copy) NSString *userName;
 

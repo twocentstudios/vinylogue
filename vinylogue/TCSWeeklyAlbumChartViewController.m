@@ -19,6 +19,8 @@
 
 @interface TCSWeeklyAlbumChartViewController ()
 
+@property (nonatomic, retain) UITableView *tableView;
+
 @property (nonatomic, retain) TCSLastFMAPIClient *lastFMClient;
 @property (nonatomic, retain) NSArray *weeklyCharts;
 @property (nonatomic, retain) NSArray *albumChartsForWeek;
@@ -35,12 +37,22 @@
 @implementation TCSWeeklyAlbumChartViewController
 
 - (id)initWithUserName:(NSString *)userName{
-  self = [super initWithStyle:UITableViewStylePlain];
+  self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.userName = userName;
     self.playCountFilter = 4;
   }
   return self;
+}
+
+- (void)loadView{
+  self.view = [[UIView alloc] init];
+  self.view.autoresizesSubviews = YES;
+  
+  self.tableView.delegate = self;
+  self.tableView.dataSource = self;
+  [self.view addSubview:self.tableView];
+  
 }
 
 - (void)viewDidLoad{
@@ -131,6 +143,16 @@
   self.displayingYearsAgo = 1;
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+  [super viewWillAppear:animated];
+  
+}
+
+- (void)viewWillLayoutSubviews{
+  CGRect r = self.view.bounds;
+  self.tableView.frame = r;
+}
+
 - (void)didReceiveMemoryWarning{
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
@@ -168,6 +190,15 @@
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
   id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
   NSLog(@"%@", object);
+}
+
+#pragma mark - view getters
+
+- (UITableView *)tableView{
+  if (!_tableView){
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+  }
+  return _tableView;
 }
 
 @end
