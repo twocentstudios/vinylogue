@@ -18,7 +18,6 @@
 + (TCSLastFMAPIClient *)clientForUserName:(NSString *)userName;
 
 - (RACSignal *)fetchWeeklyChartList;
-- (RACSignal *)fetchWeeklyAlbumChart;
 - (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart;
 
 
