@@ -7,12 +7,19 @@
 //
 
 #import "AFRESTClient.h"
-#import "AFIncrementalStore.h"
 
-@interface TCSLastFMAPIClient : AFRESTClient <AFIncrementalStoreHTTPClient>
+@class RACSignal;
+@class WeeklyChart;
 
-@property (copy) NSString *userName;
+@interface TCSLastFMAPIClient : AFHTTPClient
 
-+ (TCSLastFMAPIClient *)sharedClient;
+@property (nonatomic, readonly, copy) NSString *userName;
+
++ (TCSLastFMAPIClient *)clientForUserName:(NSString *)userName;
+
+- (RACSignal *)fetchWeeklyChartList;
+- (RACSignal *)fetchWeeklyAlbumChart;
+- (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart;
+
 
 @end

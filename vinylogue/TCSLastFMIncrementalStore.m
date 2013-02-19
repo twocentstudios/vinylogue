@@ -23,8 +23,8 @@
   return [[NSManagedObjectModel alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"vinylogue" withExtension:@"xcdatamodeld"]];
 }
 
-- (id<AFIncrementalStoreHTTPClient>)HTTPClient {
-  return [TCSLastFMAPIClient sharedClient];
-}
+//- (id<AFIncrementalStoreHTTPClient>)HTTPClient {
+//  return [TCSLastFMAPIClient sharedClient];
+//}
 
 @end
