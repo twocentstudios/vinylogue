@@ -14,4 +14,6 @@
   #import <CoreData/CoreData.h>
   #import <QuartzCore/QuartzCore.h>
   #import <CoreGraphics/CoreGraphics.h>
+  #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
+  #import <ViewUtils/ViewUtils.h>
 #endif

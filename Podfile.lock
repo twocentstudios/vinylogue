@@ -14,6 +14,8 @@ PODS:
   - libextobjc/EXTScope (~> 0.2.5)
 - ReactiveCocoa/RACExtensions (0.17.1):
   - ReactiveCocoa/Core
+- UIViewDrawRectBlock (0.0.1)
+- ViewUtils (1.1)
 - libextobjc/EXTConcreteProtocol (0.2.5)
 - libextobjc/EXTKeyPathCoding (0.2.5)
 - libextobjc/EXTScope (0.2.5)
@@ -21,6 +23,8 @@ PODS:
 DEPENDENCIES:
 - AFIncrementalStore (= 0.3.0)
 - ReactiveCocoa
+- UIViewDrawRectBlock
+- ViewUtils
 
 SPEC CHECKSUMS:
   AFIncrementalStore: 9b83c47c04418fe40a42b77be1d9446cc60681a4
@@ -29,6 +33,8 @@ SPEC CHECKSUMS:
   ReactiveCocoa: c4b15968904b2e3aa1fce4f1efc8f36df1b4073d
   ReactiveCocoa/Core: c4b15968904b2e3aa1fce4f1efc8f36df1b4073d
   ReactiveCocoa/RACExtensions: c4b15968904b2e3aa1fce4f1efc8f36df1b4073d
+  UIViewDrawRectBlock: 3619cdb75fb42f8767e21d9625f529a9a49ff2b5
+  ViewUtils: 577b16fc6b770dff79f544c5c542ad278dd688ea
   libextobjc/EXTConcreteProtocol: 4a286cdbe966b6685b20a0a1444188a104ed3f40
   libextobjc/EXTKeyPathCoding: 4a286cdbe966b6685b20a0a1444188a104ed3f40
   libextobjc/EXTScope: 4a286cdbe966b6685b20a0a1444188a104ed3f40

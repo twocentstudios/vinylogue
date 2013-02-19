@@ -15,20 +15,22 @@
 #import "WeeklyAlbumChart.h"
 #import "WeeklyChart.h"
 
+#import "TCSSlideSelectView.h"
 #import "TCSAlbumArtistPlayCountCell.h"
 
 @interface TCSWeeklyAlbumChartViewController ()
 
-@property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, strong) TCSSlideSelectView *slideSelectView;
+@property (nonatomic, strong) UITableView *tableView;
 
-@property (nonatomic, retain) TCSLastFMAPIClient *lastFMClient;
-@property (nonatomic, retain) NSArray *weeklyCharts;
-@property (nonatomic, retain) NSArray *albumChartsForWeek;
+@property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
+@property (nonatomic, strong) NSArray *weeklyCharts;
+@property (nonatomic, strong) NSArray *albumChartsForWeek;
 
-@property (nonatomic, retain) NSDate *now;
-@property (nonatomic, retain) NSDate *displayingDate;
+@property (nonatomic, strong) NSDate *now;
+@property (nonatomic, strong) NSDate *displayingDate;
 @property (nonatomic) NSUInteger displayingYearsAgo;
-@property (nonatomic, retain) WeeklyChart *displayingWeeklyChart;
+@property (nonatomic, strong) WeeklyChart *displayingWeeklyChart;
 
 @property (nonatomic) NSUInteger playCountFilter;
 
@@ -48,6 +50,8 @@
 - (void)loadView{
   self.view = [[UIView alloc] init];
   self.view.autoresizesSubviews = YES;
+  
+  [self.view addSubview:self.slideSelectView];
   
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
@@ -150,7 +154,12 @@
 
 - (void)viewWillLayoutSubviews{
   CGRect r = self.view.bounds;
-  self.tableView.frame = r;
+  CGFloat slideSelectHeight = 60.0f;
+  
+  [self.slideSelectView setTop:CGRectGetMinY(r) bottom:slideSelectHeight];
+  self.slideSelectView.width = CGRectGetWidth(r);
+  [self.tableView setTop:slideSelectHeight bottom:CGRectGetMaxY(r)];
+  self.tableView.width = CGRectGetWidth(r);
 }
 
 - (void)didReceiveMemoryWarning{
@@ -193,6 +202,17 @@
 }
 
 #pragma mark - view getters
+
+- (TCSSlideSelectView *)slideSelectView{
+  if (!_slideSelectView){
+    _slideSelectView = [[TCSSlideSelectView alloc] init];
+    _slideSelectView.backLeftLabel.text = @"2011";
+    _slideSelectView.backRightLabel.text = @"2013";
+    _slideSelectView.topLabel.text = @"ybsc's charts";
+    _slideSelectView.bottomLabel.text = @"week 2 of 2012";
+  }
+  return _slideSelectView;
+}
 
 - (UITableView *)tableView{
   if (!_tableView){
