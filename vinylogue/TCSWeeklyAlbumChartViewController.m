@@ -15,6 +15,8 @@
 #import "WeeklyAlbumChart.h"
 #import "WeeklyChart.h"
 
+#import "TCSAlbumArtistPlayCountCell.h"
+
 @interface TCSWeeklyAlbumChartViewController ()
 
 @property (nonatomic, retain) TCSLastFMAPIClient *lastFMClient;
@@ -148,15 +150,14 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-  static NSString *CellIdentifier = @"Cell";
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+  static NSString *CellIdentifier = @"TCSAlbumArtistPlayCountCell";
+  TCSAlbumArtistPlayCountCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (!cell) {
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell = [[TCSAlbumArtistPlayCountCell alloc] init];
   }
   
   WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
-  cell.textLabel.text = albumChart.artistName;
-  cell.detailTextLabel.text = albumChart.albumName;
+  [cell setObject:albumChart];
   
   return cell;
 }

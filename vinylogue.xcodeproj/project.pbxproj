@@ -53,6 +53,9 @@
 		343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */; };
 		343C0F5616D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */; };
 		343C0F5716D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */; };
+		343C0F5A16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */; };
+		343C0F5B16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */; };
+		343C0F5E16D325880028A6FE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0F5D16D325880028A6FE /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +105,9 @@
 		343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		343C0F5416D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSWeeklyAlbumChartViewController.h; sourceTree = "<group>"; };
 		343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSWeeklyAlbumChartViewController.m; sourceTree = "<group>"; };
+		343C0F5816D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumArtistPlayCountCell.h; sourceTree = "<group>"; };
+		343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumArtistPlayCountCell.m; sourceTree = "<group>"; };
+		343C0F5D16D325880028A6FE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -110,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				343C0F5E16D325880028A6FE /* QuartzCore.framework in Frameworks */,
 				343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */,
 				343C0F4C16D1D5160028A6FE /* SystemConfiguration.framework in Frameworks */,
 				343C0EEB16D1C0270028A6FE /* UIKit.framework in Frameworks */,
@@ -157,6 +164,7 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				343C0F5D16D325880028A6FE /* QuartzCore.framework */,
 				343C0F4D16D1D51C0028A6FE /* MobileCoreServices.framework */,
 				343C0F4B16D1D5160028A6FE /* SystemConfiguration.framework */,
 				343C0EEA16D1C0270028A6FE /* UIKit.framework */,
@@ -176,6 +184,7 @@
 				343C0EFC16D1C0270028A6FE /* TCSAppDelegate.m */,
 				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
+				343C0F5C16D31D460028A6FE /* Views */,
 				343C0EF316D1C0270028A6FE /* Supporting Files */,
 			);
 			path = vinylogue;
@@ -247,6 +256,15 @@
 				343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		343C0F5C16D31D460028A6FE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				343C0F5816D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.h */,
+				343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -397,6 +415,7 @@
 				343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4416D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
 				343C0F5616D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m in Sources */,
+				343C0F5A16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +430,7 @@
 				343C0F4116D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
 				343C0F5716D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m in Sources */,
+				343C0F5B16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,6 +631,7 @@
 				343C0F3016D1C94A0028A6FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
