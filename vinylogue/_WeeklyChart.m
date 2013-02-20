@@ -65,6 +65,15 @@ const struct WeeklyChartFetchedProperties WeeklyChartFetchedProperties = {
 @dynamic weeklyAlbumChart;
 
 	
+- (NSMutableSet*)weeklyAlbumChartSet {
+	[self willAccessValueForKey:@"weeklyAlbumChart"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"weeklyAlbumChart"];
+  
+	[self didAccessValueForKey:@"weeklyAlbumChart"];
+	return result;
+}
+	
 
 
 

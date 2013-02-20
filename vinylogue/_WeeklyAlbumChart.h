@@ -5,6 +5,7 @@
 
 
 extern const struct WeeklyAlbumChartAttributes {
+	__unsafe_unretained NSString *albumImageURL;
 	__unsafe_unretained NSString *albumMbid;
 	__unsafe_unretained NSString *albumName;
 	__unsafe_unretained NSString *albumURL;
@@ -31,6 +32,7 @@ extern const struct WeeklyAlbumChartFetchedProperties {
 
 
 
+
 @interface WeeklyAlbumChartID : NSManagedObjectID {}
 @end
 
@@ -39,6 +41,14 @@ extern const struct WeeklyAlbumChartFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (WeeklyAlbumChartID*)objectID;
+
+
+
+
+@property (nonatomic, strong) NSString* albumImageURL;
+
+
+//- (BOOL)validateAlbumImageURL:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -123,6 +133,12 @@ extern const struct WeeklyAlbumChartFetchedProperties {
 @end
 
 @interface _WeeklyAlbumChart (CoreDataGeneratedPrimitiveAccessors)
+
+
+- (NSString*)primitiveAlbumImageURL;
+- (void)setPrimitiveAlbumImageURL:(NSString*)value;
+
+
 
 
 - (NSString*)primitiveAlbumMbid;

@@ -293,6 +293,18 @@
   return [TCSAlbumArtistPlayCountCell heightForObject:object atIndexPath:indexPath tableView:tableView];
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+  // If the object doesn't have an album URL yet, request it from the server then set it
+  // (Kind of ugly, but RAC wasn't working inside the cell (managedobject?) for some reason
+  TCSAlbumArtistPlayCountCell *albumChartCell = (TCSAlbumArtistPlayCountCell *)cell;
+  WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
+  if (albumChart.albumImageURL == nil) {
+    [[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] subscribeNext:^(NSString *albumImageURL) {
+      [albumChartCell setImageURL:albumImageURL];
+    }];
+  }
+}
+
 #pragma mark - view getters
 
 - (TCSSlideSelectView *)slideSelectView{

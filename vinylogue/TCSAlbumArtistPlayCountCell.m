@@ -9,6 +9,9 @@
 #import "TCSAlbumArtistPlayCountCell.h"
 
 #import "WeeklyAlbumChart.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
+#import <EXTScope.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 static CGFloat marginHorzOut = 6.0f;
 static CGFloat marginHorzIn = 6.0f;
@@ -45,14 +48,14 @@ static CGFloat playsWidth = 40.0f;
 - (void)prepareForReuse {
   [super prepareForReuse];
   
-  self.playCountLabel.text = nil;
-  self.playCountTitleLabel.text = nil;
-  self.textLabel.text = nil;
-  self.detailTextLabel.text = nil;
-  self.rankLabel.text = nil;
+//  self.playCountLabel.text = nil;
+//  self.playCountTitleLabel.text = nil;
+//  self.textLabel.text = nil;
+//  self.detailTextLabel.text = nil;
+//  self.rankLabel.text = nil;
 //  self.imageView.image = nil;
-  
-  [self setNeedsLayout];
+//  
+//  [self setNeedsLayout];
 }
 
 - (void)setObject:(WeeklyAlbumChart *)object {
@@ -60,10 +63,25 @@ static CGFloat playsWidth = 40.0f;
   self.detailTextLabel.text = object.albumName;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
+
+  // Immediately set the placeholder image.
+  // If the object already knows its imageURL.
+  // If it's empty, the cell will wait for its controller to provide the URL
+  [self setImageURL:object.albumImageURL];
+  
   if (object.playcountValue == 1){
     self.playCountTitleLabel.text = NSLocalizedString(@"play", nil);
   }else{
     self.playCountTitleLabel.text = NSLocalizedString(@"plays", nil);
+  }
+}
+
+- (void)setImageURL:(NSString *)urlString{
+  UIImage *placeHolderImage = [UIImage imageNamed:@"Default"];
+  if (urlString){
+    [self.imageView setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:placeHolderImage];
+  }else{
+    self.imageView.image = placeHolderImage;
   }
 }
 

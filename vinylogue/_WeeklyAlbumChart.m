@@ -4,6 +4,7 @@
 #import "_WeeklyAlbumChart.h"
 
 const struct WeeklyAlbumChartAttributes WeeklyAlbumChartAttributes = {
+	.albumImageURL = @"albumImageURL",
 	.albumMbid = @"albumMbid",
 	.albumName = @"albumName",
 	.albumURL = @"albumURL",
@@ -57,6 +58,13 @@ const struct WeeklyAlbumChartFetchedProperties WeeklyAlbumChartFetchedProperties
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic albumImageURL;
+
+
 
 
 

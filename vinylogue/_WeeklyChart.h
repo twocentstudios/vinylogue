@@ -50,9 +50,9 @@ extern const struct WeeklyChartFetchedProperties {
 
 
 
-@property (nonatomic, strong) WeeklyAlbumChart* weeklyAlbumChart;
+@property (nonatomic, strong) NSSet* weeklyAlbumChart;
 
-//- (BOOL)validateWeeklyAlbumChart:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)weeklyAlbumChartSet;
 
 
 
@@ -61,6 +61,11 @@ extern const struct WeeklyChartFetchedProperties {
 @end
 
 @interface _WeeklyChart (CoreDataGeneratedAccessors)
+
+- (void)addWeeklyAlbumChart:(NSSet*)value_;
+- (void)removeWeeklyAlbumChart:(NSSet*)value_;
+- (void)addWeeklyAlbumChartObject:(WeeklyAlbumChart*)value_;
+- (void)removeWeeklyAlbumChartObject:(WeeklyAlbumChart*)value_;
 
 @end
 
@@ -80,8 +85,8 @@ extern const struct WeeklyChartFetchedProperties {
 
 
 
-- (WeeklyAlbumChart*)primitiveWeeklyAlbumChart;
-- (void)setPrimitiveWeeklyAlbumChart:(WeeklyAlbumChart*)value;
+- (NSMutableSet*)primitiveWeeklyAlbumChart;
+- (void)setPrimitiveWeeklyAlbumChart:(NSMutableSet*)value;
 
 
 @end

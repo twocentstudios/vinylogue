@@ -10,6 +10,7 @@
 
 @class RACSignal;
 @class WeeklyChart;
+@class WeeklyAlbumChart;
 
 @interface TCSLastFMAPIClient : AFHTTPClient
 
@@ -19,6 +20,7 @@
 
 - (RACSignal *)fetchWeeklyChartList;
 - (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart;
+- (RACSignal *)fetchImageURLForWeeklyAlbumChart:(WeeklyAlbumChart *)albumChart;
 
 
 @end
