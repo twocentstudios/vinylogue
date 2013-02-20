@@ -27,6 +27,7 @@
 #define BLUE_DARK RGBCOLOR(15, 24, 46)
 #define GREEN_TEAL RGBCOLOR(95, 211, 161)
 #define GREEN_DARK RGBCOLOR(0, 63, 25)
+#define GREEN_KELLY RGBCOLOR(0, 117, 61)
 
 // Application Fonts
 #define FONT_AVN_ULTRALIGHT(s) [UIFont fontWithName:@"AvenirNext-UltraLight" size:(s)]

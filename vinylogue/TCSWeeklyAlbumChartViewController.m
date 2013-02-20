@@ -47,7 +47,8 @@
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.title = NSLocalizedString(@"Vinylogue", nil);
-
+    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    
     self.userName = userName;
     self.playCountFilter = 4;
     self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -198,7 +199,7 @@
     if (displayingDate){
       // Set the displaying date
       NSDateComponents *components = [self.calendar components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:displayingDate];
-      self.slideSelectView.bottomLabel.text = [NSString stringWithFormat:@"Week %i of %i", components.weekOfYear, components.yearForWeekOfYear];
+      self.slideSelectView.bottomLabel.text = [NSString stringWithFormat:@"WEEK %i of %i", components.weekOfYear, components.yearForWeekOfYear];
       
       // Set up date calculation shenanigans
       NSDateComponents *pastComponents = [[NSDateComponents alloc] init];

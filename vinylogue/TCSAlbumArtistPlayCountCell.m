@@ -250,7 +250,7 @@ static CGFloat playsWidth = 50.0f;
     _backView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
       CGContextRef c = UIGraphicsGetCurrentContext();
       
-      CGRect r = [self bounds];
+      CGRect r = rect;
       
       CGContextSaveGState(c);
       {
