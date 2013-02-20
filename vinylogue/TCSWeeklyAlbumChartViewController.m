@@ -27,10 +27,15 @@
 @property (nonatomic, strong) NSArray *weeklyCharts;
 @property (nonatomic, strong) NSArray *albumChartsForWeek;
 
+@property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSDate *now;
 @property (nonatomic, strong) NSDate *displayingDate;
 @property (nonatomic) NSUInteger displayingYearsAgo;
 @property (nonatomic, strong) WeeklyChart *displayingWeeklyChart;
+@property (nonatomic, strong) NSDate *earliestScrobbleDate;
+@property (nonatomic, strong) NSDate *latestScrobbleDate;
+@property (nonatomic) BOOL canMoveForwardOneYear;
+@property (nonatomic) BOOL canMoveBackOneYear;
 
 @property (nonatomic) NSUInteger playCountFilter;
 
@@ -41,8 +46,11 @@
 - (id)initWithUserName:(NSString *)userName{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
+    self.title = NSLocalizedString(@"Vinylogue", nil);
+
     self.userName = userName;
     self.playCountFilter = 4;
+    self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
   }
   return self;
 }
@@ -61,9 +69,9 @@
 
 - (void)viewDidLoad{
   [super viewDidLoad];
-
-  self.title = NSLocalizedString(@"Weekly Chart List", nil);
   
+  [self setUpViewSignals];
+
   // When the userName changes (or is loaded the first time) we need to basically reload everything. If there's no username set, we'll show an error
   RACSignal *userNameSignal = RACAbleWithStart(self.userName);
   
@@ -87,8 +95,9 @@
   // Update the date being displayed based on the current date/time and how many years ago we want to go back
   RAC(self.displayingDate) = [[RACSignal combineLatest:@[ RACAble(self.now), RACAble(self.displayingYearsAgo) ] reduce:^(NSDate *now, NSNumber *displayingYearsAgo){
     NSLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
-    // Naive way of getting 365 days worth of seconds ago
-    return [now dateByAddingTimeInterval:-1*365*24*60*60*[displayingYearsAgo doubleValue]];
+    NSDateComponents *components = [[NSDateComponents alloc] init];
+    components.year = -1*[displayingYearsAgo integerValue];
+    return [self.calendar dateByAddingComponents:components toDate:now options:0];
   }] filter:^BOOL(id x) {
     return (x != nil);
   }];
@@ -101,6 +110,12 @@
     [[self.lastFMClient fetchWeeklyChartList] subscribeNext:^(NSArray *weeklyCharts) {
       @strongify(self);
       self.weeklyCharts = weeklyCharts;
+      if ([weeklyCharts count] > 0){
+        WeeklyChart *firstChart = self.weeklyCharts[0];
+        WeeklyChart *lastChart = [self.weeklyCharts lastObject];
+        self.earliestScrobbleDate = firstChart.from;
+        self.latestScrobbleDate = lastChart.to;
+      }
     } error:^(NSError *error) {
       NSLog(@"There was an error fetching the weekly chart list!");
     }];
@@ -143,8 +158,80 @@
     [self.tableView reloadData];
   }];
   
+  // Change displayed year by sliding the slideSelectView left or right
+  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear) block:^(id sender) {
+    self.displayingYearsAgo += 1;
+  }];
+  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear) block:^(id sender) {
+    self.displayingYearsAgo -= 1;
+  }];
+  
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
+}
+
+- (void)setUpViewSignals{
+  @weakify(self);
+  
+  // Top Label
+  [RACAbleWithStart(self.userName) subscribeNext:^(NSString *userName) {
+    @strongify(self);
+    if (userName){
+      self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@'s charts", userName];
+    }else{
+      self.slideSelectView.topLabel.text = @"No last.fm user selected!";
+    }
+    [self.slideSelectView setNeedsLayout];
+  }];
+  
+  // Bottom Label, Left Label, Right Label
+  [[RACSignal combineLatest:@[RACAbleWithStart(self.displayingDate), RACAbleWithStart(self.earliestScrobbleDate), RACAbleWithStart(self.latestScrobbleDate)] ]
+   subscribeNext:^(RACTuple *dates) {
+     NSDate *displayingDate = dates.first;
+     NSDate *earliestScrobbleDate = dates.second;
+     NSDate *latestScrobbleDate = dates.third;
+    @strongify(self);
+    if (displayingDate){
+      // Set the displaying date
+      NSDateComponents *components = [self.calendar components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:displayingDate];
+      self.slideSelectView.bottomLabel.text = [NSString stringWithFormat:@"Week %i of %i", components.weekOfYear, components.yearForWeekOfYear];
+      
+      // Set up date calculation shenanigans
+      NSDateComponents *pastComponents = [[NSDateComponents alloc] init];
+      pastComponents.year = -1;
+      NSDateComponents *futureComponents = [[NSDateComponents alloc] init];
+      futureComponents.year = 1;
+      NSDate *pastTargetDate = [self.calendar dateByAddingComponents:pastComponents toDate:displayingDate options:0];
+      NSDate *futureTargetDate = [self.calendar dateByAddingComponents:futureComponents toDate:displayingDate options:0];
+      
+      self.canMoveBackOneYear = ([pastTargetDate compare:earliestScrobbleDate] == NSOrderedDescending);
+      self.canMoveForwardOneYear = ([futureTargetDate compare:latestScrobbleDate] == NSOrderedAscending);
+      
+      // Only show the left and right labels/arrows if there's data there to jump to
+      if (self.canMoveBackOneYear){
+        self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear-1];
+        self.slideSelectView.backLeftImageView.hidden = NO;
+      }else{
+        self.slideSelectView.backLeftLabel.text = nil;
+        self.slideSelectView.backLeftImageView.hidden = YES;
+      }
+      if (self.canMoveForwardOneYear){
+        self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear+1];
+        self.slideSelectView.backRightImageView.hidden = NO;
+      }else{
+        self.slideSelectView.backRightLabel.text = nil;
+        self.slideSelectView.backRightImageView.hidden = YES;
+      }
+      
+    }else{
+      self.slideSelectView.bottomLabel.text = nil;
+      self.slideSelectView.backLeftLabel.text = nil;
+      self.slideSelectView.backRightLabel.text = nil;
+    }
+    
+    // Allow scrollview to begin animation before updating label sizes
+   [self.slideSelectView performSelector:@selector(setNeedsLayout) withObject:self.slideSelectView afterDelay:0];
+  }];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -166,7 +253,7 @@
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
   
-  self.displayingYearsAgo += 1;
+  
 //  self.userName = @"ybsc";
 }
 
@@ -211,10 +298,6 @@
 - (TCSSlideSelectView *)slideSelectView{
   if (!_slideSelectView){
     _slideSelectView = [[TCSSlideSelectView alloc] init];
-    _slideSelectView.backLeftLabel.text = @"2011";
-    _slideSelectView.backRightLabel.text = @"2013";
-    _slideSelectView.topLabel.text = @"ybsc's charts";
-    _slideSelectView.bottomLabel.text = @"week 2 of 2012";
   }
   return _slideSelectView;
 }

@@ -28,6 +28,12 @@
     [self addSubview:self.backView];
     [self addSubview:self.scrollView];
     [self.scrollView addSubview:self.frontView];
+    
+    // Set up commands
+    self.pullLeftOffset = 60;
+    self.pullRightOffset = 60;
+    self.pullLeftCommand = [RACCommand command];
+    self.pullRightCommand = [RACCommand command];
   }
   return self;
 }
@@ -79,6 +85,18 @@
   return [label.text sizeWithFont:label.font constrainedToSize:label.superview.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
 }
 
+# pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+  //  NSLog(@"ENDED DRAGGING at offset: %f", scrollView.contentOffset.x);
+  CGFloat offset = scrollView.contentOffset.x;
+  if (offset < -self.pullLeftOffset){
+    [self.pullLeftCommand execute:nil];
+  }else if(offset > self.pullRightOffset){
+    [self.pullRightCommand execute:nil];
+  }
+}
+
 # pragma mark - view getters
 
 - (UIView *)backView{
@@ -100,7 +118,7 @@
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.scrollsToTop = NO;
     _scrollView.backgroundColor = [UIColor clearColor];
-//    _scrollView.delegate = self;
+    _scrollView.delegate = self;
   }
   return _scrollView;
 }

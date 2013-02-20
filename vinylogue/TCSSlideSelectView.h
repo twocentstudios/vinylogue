@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TCSSlideSelectView : UIView
+#import <ReactiveCocoa/ReactiveCocoa.h>
+
+
+@interface TCSSlideSelectView : UIView <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIView *backView;
 @property (nonatomic, strong) UIImageView *backLeftImageView;
@@ -21,5 +24,13 @@
 @property (nonatomic, strong) UIView *frontView;
 @property (nonatomic, strong) UILabel *topLabel;
 @property (nonatomic, strong) UILabel *bottomLabel;
+
+// Signals will be fired when the scroll view is dragged past the offset
+
+@property (nonatomic) CGFloat pullLeftOffset;
+@property (nonatomic) CGFloat pullRightOffset;
+
+@property (nonatomic, strong) RACCommand *pullLeftCommand;
+@property (nonatomic, strong) RACCommand *pullRightCommand;
 
 @end
