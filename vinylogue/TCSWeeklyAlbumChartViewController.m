@@ -148,6 +148,10 @@
         return (chart.playcountValue > self.playCountFilter);
       }] array];
       self.albumChartsForWeek = filteredCharts;
+    } error:^(NSError *error) {
+      @strongify(self);
+      self.albumChartsForWeek = nil;
+      NSLog(@"There was an error fetching the weekly album charts!");
     }];
   }];
   
@@ -317,6 +321,7 @@
 - (UITableView *)tableView{
   if (!_tableView){
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   }
   return _tableView;
 }

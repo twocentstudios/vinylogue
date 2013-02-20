@@ -13,17 +13,19 @@
 #import <EXTScope.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
-static CGFloat marginHorzOut = 6.0f;
-static CGFloat marginHorzIn = 6.0f;
-static CGFloat marginVertIn = 2.0f;
+static CGFloat marginHorzOut = 12.0f;
+static CGFloat marginHorzIn = 9.0f;
+static CGFloat marginVertInAlbum = -2.0f;
+static CGFloat marginVertInPlays = -10.0f;
 static CGFloat imageViewSide = 80.0f;
-static CGFloat playsWidth = 40.0f;
+static CGFloat playsWidth = 50.0f;
 
 @interface TCSAlbumArtistPlayCountCell ()
 
 @property (nonatomic, strong) UILabel *playCountLabel;
 @property (nonatomic, strong) UILabel *playCountTitleLabel;
 @property (nonatomic, strong) UILabel *rankLabel;
+@property (nonatomic, strong) UIView *backView;
 
 @end
 
@@ -32,7 +34,7 @@ static CGFloat playsWidth = 40.0f;
 - (id)init{
   self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:NSStringFromClass([self class])];
   if (self) {
-    self.contentView.backgroundColor = [UIColor redColor];
+    self.backgroundView = self.backView;
         
     [self configureTextLabel];
     [self configureDetailTextLabel];
@@ -59,7 +61,7 @@ static CGFloat playsWidth = 40.0f;
 }
 
 - (void)setObject:(WeeklyAlbumChart *)object {
-  self.textLabel.text = object.artistName;
+  self.textLabel.text = [object.artistName uppercaseString];
   self.detailTextLabel.text = object.albumName;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
@@ -125,23 +127,23 @@ static CGFloat playsWidth = 40.0f;
   // Lay out vertically
   self.imageView.y = CGRectGetMidY(r);
   
-  CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertIn - self.textLabel.height - self.detailTextLabel.height)/2.0f;
+  CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertInAlbum - self.textLabel.height - self.detailTextLabel.height)/2.0f;
   CGFloat y = 0;
   y += albumArtistVertMargin;
   self.textLabel.top = y;
   y += self.textLabel.height;
-  y += marginVertIn;
+  y += marginVertInAlbum;
   self.detailTextLabel.top = y;
   y += self.detailTextLabel.height;
   y += albumArtistVertMargin;
   NSAssert(y == CGRectGetHeight(r), @"Vertical layout should traverse to the bounds of the contentView");
   
-  CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertIn - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
+  CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertInPlays - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
   y = 0;
   y += playCountVertMargin;
   self.playCountLabel.top = y;
   y += self.playCountLabel.height;
-  y += marginVertIn;
+  y += marginVertInPlays;
   self.playCountTitleLabel.top = y;
   y += self.playCountTitleLabel.height;
   y += playCountVertMargin;
@@ -162,7 +164,7 @@ static CGFloat playsWidth = 40.0f;
   CGSize artistSize = [chart.albumName sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
   CGSize albumSize = [chart.albumName sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
   
-  CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertIn + albumSize.height;
+  CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
   CGFloat imageHeight = marginVert*2 + imageViewSide;
   
   return MAX(artistAlbumHeight, imageHeight);
@@ -174,26 +176,37 @@ static CGFloat playsWidth = 40.0f;
 
 # pragma mark - view getters
 
-+ (UIFont *)textLabelFont{ return [UIFont systemFontOfSize:14]; }
-+ (UIFont *)detailTextLabelFont{ return [UIFont systemFontOfSize:17]; }
-+ (UIFont *)playCountLabelFont{ return [UIFont systemFontOfSize:14]; }
-+ (UIFont *)playCountTitleLabelFont{ return [UIFont systemFontOfSize:11]; }
++ (UIFont *)textLabelFont{ return FONT_AVN_ULTRALIGHT(12); }
++ (UIFont *)detailTextLabelFont{ return FONT_AVN_REGULAR(16); }
++ (UIFont *)playCountLabelFont{ return FONT_AVN_REGULAR(28); }
++ (UIFont *)playCountTitleLabelFont{ return FONT_AVN_ULTRALIGHT(15); }
 + (UIFont *)rankLabelFont{ return [UIFont systemFontOfSize:12]; }
 
 - (void)configureTextLabel{
+  self.textLabel.backgroundColor = CLEAR;
   self.textLabel.font = [[self class] textLabelFont];
   self.textLabel.numberOfLines = 0;
+  self.textLabel.textColor = GREEN_TEAL;
+  self.textLabel.shadowColor = WHITEA(0.8f);
+  self.textLabel.shadowOffset = SHADOW_TOP;
 }
 
 - (void)configureDetailTextLabel{
+  self.detailTextLabel.backgroundColor = CLEAR;
   self.detailTextLabel.font = [[self class] detailTextLabelFont];
   self.detailTextLabel.numberOfLines = 0;
+  self.detailTextLabel.textColor = WHITE_SUBTLE;
+  self.detailTextLabel.shadowColor = BLACKA(0.25f);
+  self.detailTextLabel.shadowOffset = SHADOW_BOTTOM;
 }
 
 - (void)configureImageView{
-  CALayer *layer = self.imageView.layer;
-  layer.cornerRadius = 4;
-  self.imageView.image = [UIImage imageNamed:@"Default"];
+  CALayer *layer = [self.imageView layer];
+  layer.masksToBounds = YES;
+  layer.cornerRadius = 2;
+  layer.borderWidth = 1;
+  layer.borderColor = [BLACKA(0.2f) CGColor];
+//  self.imageView.image = [UIImage imageNamed:@"Default"];
 }
 
 - (UILabel *)playCountLabel{
@@ -201,6 +214,12 @@ static CGFloat playsWidth = 40.0f;
     _playCountLabel = [[UILabel alloc] init];
     _playCountLabel.font = [[self class] playCountLabelFont];
     _playCountLabel.textAlignment = NSTextAlignmentCenter;
+    _playCountLabel.numberOfLines = 1;
+    _playCountLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _playCountLabel.backgroundColor = CLEAR;
+    _playCountLabel.textColor = GREEN_TEAL;
+    _playCountLabel.shadowColor = WHITEA(0.8f);
+    _playCountLabel.shadowOffset = SHADOW_TOP;
   }
   return _playCountLabel;
 }
@@ -210,6 +229,10 @@ static CGFloat playsWidth = 40.0f;
     _playCountTitleLabel = [[UILabel alloc] init];
     _playCountTitleLabel.font = [[self class] playCountTitleLabelFont];
     _playCountTitleLabel.textAlignment = NSTextAlignmentCenter;
+    _playCountTitleLabel.numberOfLines = 1;
+    _playCountTitleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _playCountTitleLabel.backgroundColor = CLEAR;
+    _playCountTitleLabel.textColor = GRAYCOLOR(126);
   }
   return _playCountTitleLabel;
 }
@@ -220,6 +243,37 @@ static CGFloat playsWidth = 40.0f;
     _rankLabel.font = [[self class] rankLabelFont];
   }
   return _rankLabel;
+}
+
+- (UIView *)backView{
+  if (!_backView){
+    _backView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
+      CGContextRef c = UIGraphicsGetCurrentContext();
+      
+      CGRect r = [self bounds];
+      
+      CGContextSaveGState(c);
+      {
+        // Fill background
+        [BLUE_DARK setFill];
+        CGContextFillRect(c, r);
+        
+        CGFloat borderHeight = 1.0f;
+        CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+        CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+        
+        // Fill top border
+        [WHITEA(0.25f) setFill];
+        CGContextFillRect(c, topBorder);
+        
+        // Fill bottom border
+        [BLACKA(0.8f) setFill];
+        CGContextFillRect(c, bottomBorder);
+      }
+      CGContextRestoreGState(c);
+    }];
+  }
+  return _backView;
 }
 
 @end

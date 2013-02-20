@@ -16,4 +16,5 @@
   #import <CoreGraphics/CoreGraphics.h>
   #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
   #import <ViewUtils/ViewUtils.h>
+  #import "TCSVinylogueDesign.h"
 #endif
