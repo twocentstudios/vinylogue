@@ -31,8 +31,8 @@
     [self.scrollView addSubview:self.frontView];
     
     // Set up commands
-    self.pullLeftOffset = 60;
-    self.pullRightOffset = 60;
+    self.pullLeftOffset = 50;
+    self.pullRightOffset = 50;
     self.pullLeftCommand = [RACCommand command];
     self.pullRightCommand = [RACCommand command];
   }
@@ -88,12 +88,21 @@
 
 # pragma mark - UIScrollViewDelegate
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+  CGFloat offset = scrollView.contentOffset.x;
+  if (offset < -self.pullLeftOffset){
+    [scrollView setContentOffset:CGPointMake(-self.pullLeftOffset, 0)];
+  }else if(offset > self.pullRightOffset){
+    [scrollView setContentOffset:CGPointMake(self.pullLeftOffset, 0)];
+  }
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
   //  NSLog(@"ENDED DRAGGING at offset: %f", scrollView.contentOffset.x);
   CGFloat offset = scrollView.contentOffset.x;
-  if (offset < -self.pullLeftOffset){
+  if (offset <= -self.pullLeftOffset){
     [self.pullLeftCommand execute:nil];
-  }else if(offset > self.pullRightOffset){
+  }else if(offset >= self.pullRightOffset){
     [self.pullRightCommand execute:nil];
   }
 }
@@ -119,6 +128,7 @@
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.scrollsToTop = NO;
     _scrollView.backgroundColor = [UIColor clearColor];
+    _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     _scrollView.delegate = self;
   }
   return _scrollView;
