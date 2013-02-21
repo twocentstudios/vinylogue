@@ -29,8 +29,7 @@
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) UIView *errorView;
 @property (nonatomic, strong) UIImageView *loadingImageView;
-@property (nonatomic, strong) UISwipeGestureRecognizer *twoFingerSwipeDownGesture;
-@property (nonatomic, strong) UISwipeGestureRecognizer *twoFingerSwipeUpGesture;
+@property (nonatomic, strong) UIBarButtonItem *settingsButton;
 
 // Datasources
 @property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
@@ -62,7 +61,7 @@
 - (id)initWithUserName:(NSString *)userName{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
-    self.title = NSLocalizedString(@"Vinylogue", nil);
+    self.title = NSLocalizedString(@"Charts", nil);
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     
     self.userName = userName;
@@ -86,6 +85,9 @@
   self.loadingImageView.hidden = YES;
   self.navigationItem.rightBarButtonItem = loadingItem;
   
+  self.settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(doSettings:)];
+  self.navigationItem.leftBarButtonItem = self.settingsButton;
+  
   UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
   doubleTap.numberOfTapsRequired = 2;
   [self.slideSelectView.frontView addGestureRecognizer:doubleTap];
@@ -106,6 +108,7 @@
   }] subscribeNext:^(NSString *userName) {
     NSLog(@"Loading client for %@...", userName);
     @strongify(self);
+    self.showingError = NO;
     self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
   }];
   
@@ -119,9 +122,8 @@
     TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
     [self presentViewController:userNameController animated:NO completion:NULL];
     [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-      @strongify(self)
+      @strongify(self);
       self.userName = userName;
-      self.showingError = NO;
     }];
   }];
 
@@ -379,6 +381,16 @@
       [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
   }
+}
+
+- (void)doSettings:(UIBarButtonItem *)button{
+  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
+  @weakify(self);
+  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
+    @strongify(self);
+    self.userName = userName;
+  }];
+  [self.navigationController pushViewController:userNameController animated:YES];
 }
 
 #pragma mark - Table view data source

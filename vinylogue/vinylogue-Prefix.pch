@@ -17,4 +17,5 @@
   #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
   #import <ViewUtils/ViewUtils.h>
   #import "TCSVinylogueDesign.h"
+  #import "TCSVinylogueGlobals.h"
 #endif

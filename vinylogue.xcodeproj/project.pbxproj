@@ -164,6 +164,7 @@
 		343C0FA116D695620028A6FE /* loading12@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "loading12@2x.png"; path = "Images/loading/loading12@2x.png"; sourceTree = SOURCE_ROOT; };
 		343C0FAE16D6ACB40028A6FE /* TCSUserNameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSUserNameViewController.h; sourceTree = "<group>"; };
 		343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSUserNameViewController.m; sourceTree = "<group>"; };
+		343C0FB216D6C3E40028A6FE /* TCSVinylogueGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSVinylogueGlobals.h; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -239,6 +240,7 @@
 				343C0EFB16D1C0270028A6FE /* TCSAppDelegate.h */,
 				343C0EFC16D1C0270028A6FE /* TCSAppDelegate.m */,
 				343C0F6316D554670028A6FE /* TCSVinylogueDesign.h */,
+				343C0FB216D6C3E40028A6FE /* TCSVinylogueGlobals.h */,
 				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
 				343C0F5C16D31D460028A6FE /* Views */,

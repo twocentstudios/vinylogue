@@ -34,6 +34,9 @@
     self.showHeader = showingHeader;
     self.userNameField.text = userName;
     self.userNameSignal = [RACSubject subject];
+    
+    // When navigation bar is present
+    self.title = @"username";
   }
   return self;
 }
@@ -46,7 +49,9 @@
   
   self.userNameField.delegate = self;
   
-  [self.view addSubview:self.logoImageView];
+  if (self.showHeader){
+    [self.view addSubview:self.logoImageView];
+  }
   [self.view addSubview:self.titleLabel];
   [self.view addSubview:self.userNameField];
 }
@@ -95,7 +100,19 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
   [self.userNameSignal sendNext:textField.text];
   [self.userNameSignal sendCompleted];
-  [self dismissViewControllerAnimated:YES completion:NULL];
+  
+  // Dismiss self
+  if (self.presentingViewController){
+    [self dismissViewControllerAnimated:YES completion:NULL];
+  }
+  if (self.navigationController){
+    [self.navigationController popViewControllerAnimated:YES];
+  }
+  
+  // Save to backing store
+  [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:kTCSUserDefaultsLastFMUserName];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
   return YES;
 }
 
@@ -134,6 +151,7 @@
     _userNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
     _userNameField.returnKeyType = UIReturnKeyDone;
     _userNameField.clearButtonMode = UITextFieldViewModeAlways;
+    _userNameField.enablesReturnKeyAutomatically = YES;
     
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:@"last.fm username" attributes:@{ NSFontAttributeName: FONT_AVN_ULTRALIGHT(30),
                                              NSForegroundColorAttributeName: WHITE, NSBackgroundColorAttributeName: CLEAR}];
