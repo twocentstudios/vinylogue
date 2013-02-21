@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) UIView *errorView;
+@property (nonatomic, strong) UIImageView *loadingImageView;
 
 @property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
 @property (nonatomic, strong) NSArray *weeklyCharts;
@@ -43,6 +44,7 @@
 
 @property (nonatomic) BOOL showingError;
 @property (nonatomic) BOOL showingEmpty;
+@property (nonatomic) BOOL showingLoading;
 
 @property (nonatomic) NSUInteger playCountFilter;
 
@@ -72,6 +74,10 @@
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
   [self.view addSubview:self.tableView];
+  
+  UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
+  self.loadingImageView.hidden = YES;
+  self.navigationItem.rightBarButtonItem = loadingItem;
   
 }
 
@@ -116,6 +122,8 @@
     return (x != nil);
   }] subscribeNext:^(id x) {
     NSLog(@"Fetching date ranges for available charts...");
+    @strongify(self);
+    self.showingLoading = YES;
     [[self.lastFMClient fetchWeeklyChartList] subscribeNext:^(NSArray *weeklyCharts) {
       @strongify(self);
       self.weeklyCharts = weeklyCharts;
@@ -124,12 +132,14 @@
         WeeklyChart *lastChart = [self.weeklyCharts lastObject];
         self.earliestScrobbleDate = firstChart.from;
         self.latestScrobbleDate = lastChart.to;
+        self.showingLoading = NO;
       }
     } error:^(NSError *error) {
       @strongify(self);
       NSLog(@"There was an error fetching the weekly chart list!");
       self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
       self.showingError = YES;
+      self.showingLoading = NO;
     }];
   }];
   
@@ -152,6 +162,7 @@
   }] subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
     NSLog(@"Loading album charts for the selected week...");
     @strongify(self);
+    self.showingLoading = YES;
     [[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart] subscribeNext:^(NSArray *albumChartsForWeek) {
       NSLog(@"Filtering charts by playcount...");
       @strongify(self);
@@ -160,12 +171,14 @@
         return (chart.playcountValue > self.playCountFilter);
       }] array];
       self.albumChartsForWeek = filteredCharts;
+      self.showingLoading = NO;
     } error:^(NSError *error) {
       @strongify(self);
       self.albumChartsForWeek = nil;
       NSLog(@"There was an error fetching the weekly album charts!");
       self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
       self.showingError = YES;
+      self.showingLoading = NO;
     }];
   }];
   
@@ -286,6 +299,18 @@
       self.errorView = nil;
     }
   }];
+  
+  [[RACAble(self.showingLoading) distinctUntilChanged] subscribeNext:^(NSNumber *showingLoading) {
+    @strongify(self);
+    BOOL isShowingLoading = [showingLoading boolValue];
+    if (isShowingLoading){
+      [self.loadingImageView startAnimating];
+      self.loadingImageView.hidden = NO;
+    }else{
+      [self.loadingImageView stopAnimating];
+      self.loadingImageView.hidden = YES;
+    }
+  }];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -378,6 +403,21 @@
     _tableView.backgroundView = [[TCSInnerShadowView alloc] initWithColor:WHITE_SUBTLE shadowColor:GRAYCOLOR(210) shadowRadius:3.0f];
   }
   return _tableView;
+}
+
+- (UIImageView *)loadingImageView{
+  if (!_loadingImageView){
+    _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    NSMutableArray *animationImages = [NSMutableArray arrayWithCapacity:12];
+    for (int i = 1; i < 13; i++){
+      [animationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading%02i", i]]];
+    }
+    [_loadingImageView setAnimationImages:animationImages];
+    _loadingImageView.animationDuration = 0.5f;
+    _loadingImageView.animationRepeatCount = 0;
+    [_loadingImageView startAnimating];
+  }
+  return _loadingImageView;
 }
 
 @end
