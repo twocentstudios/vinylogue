@@ -216,17 +216,17 @@
       // Only show the left and right labels/arrows if there's data there to jump to
       if (self.canMoveBackOneYear){
         self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear-1];
-        self.slideSelectView.backLeftImageView.hidden = NO;
+        self.slideSelectView.backLeftButton.hidden = NO;
       }else{
         self.slideSelectView.backLeftLabel.text = nil;
-        self.slideSelectView.backLeftImageView.hidden = YES;
+        self.slideSelectView.backLeftButton.hidden = YES;
       }
       if (self.canMoveForwardOneYear){
         self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear+1];
-        self.slideSelectView.backRightImageView.hidden = NO;
+        self.slideSelectView.backRightButton.hidden = NO;
       }else{
         self.slideSelectView.backRightLabel.text = nil;
-        self.slideSelectView.backRightImageView.hidden = YES;
+        self.slideSelectView.backRightButton.hidden = YES;
       }
       
     }else{

@@ -14,8 +14,8 @@
 @interface TCSSlideSelectView : UIView <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIView *backView;
-@property (nonatomic, strong) UIImageView *backLeftImageView;
-@property (nonatomic, strong) UIImageView *backRightImageView;
+@property (nonatomic, strong) UIButton *backLeftButton;
+@property (nonatomic, strong) UIButton *backRightButton;
 @property (nonatomic, strong) UILabel *backLeftLabel;
 @property (nonatomic, strong) UILabel *backRightLabel;
 

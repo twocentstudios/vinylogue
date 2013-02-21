@@ -9,6 +9,8 @@
 #import "TCSSlideSelectView.h"
 #import "TCSInnerShadowView.h"
 
+#import "ReactiveCocoa/UIControl+RACSignalSupport.h"
+
 @interface TCSSlideSelectView ()
 
 @end
@@ -18,17 +20,20 @@
 - (id)init{
   self = [super initWithFrame:CGRectZero];
   if (self) {
-    [self.backView addSubview:self.backLeftImageView];
-    [self.backView addSubview:self.backRightImageView];
+    [self addSubview:self.backView];
+    
     [self.backView addSubview:self.backLeftLabel];
     [self.backView addSubview:self.backRightLabel];
     
+    [self.backView addSubview:self.scrollView];
+    
+    // Buttons technically sit above the scrollview in order to intercept touches
+    [self.backView addSubview:self.backLeftButton];
+    [self.backView addSubview:self.backRightButton];
+    
+    [self.scrollView addSubview:self.frontView];
     [self.frontView addSubview:self.topLabel];
     [self.frontView addSubview:self.bottomLabel];
-    
-    [self addSubview:self.backView];
-    [self addSubview:self.scrollView];
-    [self.scrollView addSubview:self.frontView];
     
     // Set up commands
     self.pullLeftOffset = 50;
@@ -56,17 +61,17 @@
   
   // Size and position backView subviews
   CGFloat backImageInset = 14.0f; // distance from edge
-  self.backLeftImageView.left = CGRectGetMinX(r) + backImageInset;
-  self.backLeftImageView.y = CGRectGetMidY(r);
-  self.backRightImageView.right = CGRectGetMaxX(r) - backImageInset;
-  self.backRightImageView.y = CGRectGetMidY(r);
+  self.backLeftButton.left = CGRectGetMinX(r) + backImageInset;
+  self.backLeftButton.y = CGRectGetMidY(r);
+  self.backRightButton.right = CGRectGetMaxX(r) - backImageInset;
+  self.backRightButton.y = CGRectGetMidY(r);
   
   self.backLeftLabel.size = [self sizeForLabel:self.backLeftLabel];
   self.backRightLabel.size = [self sizeForLabel:self.backRightLabel];
-  CGFloat backLabelInset = 20.0f; // distance from backImage
-  self.backLeftLabel.left = self.backLeftImageView.right + backLabelInset;
+  CGFloat backLabelInset = 24.0f; // distance from backImage
+  self.backLeftLabel.left = self.backLeftButton.right + backLabelInset;
   self.backLeftLabel.y = CGRectGetMidY(r);
-  self.backRightLabel.right = self.backRightImageView.left - backLabelInset;
+  self.backRightLabel.right = self.backRightButton.left - backLabelInset;
   self.backRightLabel.y = CGRectGetMidY(r);
   
   // Size and position frontView subviews
@@ -107,6 +112,16 @@
   }
 }
 
+# pragma mark - private
+
+- (void)doLeftButton:(UIButton *)button{
+  [self.pullLeftCommand execute:nil];
+}
+
+- (void)doRightButton:(UIButton *)button{
+  [self.pullRightCommand execute:nil];
+}
+
 # pragma mark - view getters
 
 - (UIView *)backView{
@@ -142,23 +157,30 @@
       
       CGContextSaveGState(c);
       {
+        CGFloat cornerRadius = 14.0f;
+        UIBezierPath *roundedPath = [UIBezierPath bezierPathWithRoundedRect:r cornerRadius:cornerRadius];
+        CGContextAddPath(c, roundedPath.CGPath);
+        CGContextClip(c);
+        
         // Fill background
         [GREEN_KELLY setFill];
         CGContextFillRect(c, r);
         
-        CGFloat borderWidth = 1.0f;
-        CGRect leftBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
-        CGRect rightBorder = CGRectMake(CGRectGetMaxX(r)-borderWidth, CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
-        
-        // Fill left & right borders
-        [RGBCOLOR(0, 47, 18) setFill];
-        CGContextFillRect(c, leftBorder);
-        CGContextFillRect(c, rightBorder);
+//        CGFloat borderWidth = 1.0f;
+//        CGRect leftBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
+//        CGRect rightBorder = CGRectMake(CGRectGetMaxX(r)-borderWidth, CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
+//        
+//        // Fill left & right borders
+//        [RGBCOLOR(0, 47, 18) setFill];
+//        CGContextFillRect(c, leftBorder);
+//        CGContextFillRect(c, rightBorder);
         
       }
       CGContextRestoreGState(c);
     }];
     UIColor *shadowGreen = RGBCOLOR(0, 48, 19);
+    
+    _frontView.opaque = NO;
     
     _frontView.clipsToBounds = NO;
     _frontView.layer.masksToBounds = NO;
@@ -167,22 +189,29 @@
     layer.shadowOffset = CGSizeMake(0, 0);
     layer.shadowOpacity = 1.0f;
     layer.shadowRadius = 1.5;
+    layer.cornerRadius = 4.0f;
   }
   return _frontView;
 }
 
-- (UIImageView *)backLeftImageView{
-  if (!_backLeftImageView){
-    _backLeftImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"leftArrow"]];
+- (UIButton *)backLeftButton{
+  if (!_backLeftButton){
+    _backLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_backLeftButton setBackgroundImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
+    _backLeftButton.size = [_backLeftButton backgroundImageForState:UIControlStateNormal].size;
+    [_backLeftButton addTarget:self action:@selector(doLeftButton:) forControlEvents:UIControlEventTouchUpInside];
   }
-  return _backLeftImageView;
+  return _backLeftButton;
 }
 
-- (UIImageView *)backRightImageView{
-  if (!_backRightImageView){
-    _backRightImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
+- (UIButton *)backRightButton{
+  if (!_backRightButton){
+    _backRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_backRightButton setBackgroundImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
+    _backRightButton.size = [_backRightButton backgroundImageForState:UIControlStateNormal].size;
+    [_backRightButton addTarget:self action:@selector(doRightButton:) forControlEvents:UIControlEventTouchUpInside];
   }
-  return _backRightImageView;
+  return _backRightButton;
 }
 
 - (UILabel *)backLeftLabel{
