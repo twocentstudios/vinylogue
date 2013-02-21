@@ -7,6 +7,7 @@
 //
 
 #import "TCSWeeklyAlbumChartViewController.h"
+#import "TCSUserNameViewController.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "EXTScope.h"
@@ -112,7 +113,16 @@
     return (x == nil);
   }] subscribeNext:^(id x) {
     NSLog(@"Please set a username!");
+    @strongify(self);
     self.showingError = YES;
+    
+    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
+    [self presentViewController:userNameController animated:NO completion:NULL];
+    [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
+      @strongify(self)
+      self.userName = userName;
+      self.showingError = NO;
+    }];
   }];
 
 //  RAC(self.now) = [RACSignal interval:60 * 60]; // update every hour
