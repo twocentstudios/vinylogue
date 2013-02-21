@@ -17,12 +17,15 @@
 
 #import "TCSSlideSelectView.h"
 #import "TCSAlbumArtistPlayCountCell.h"
+#import "TCSEmptyErrorView.h"
 #import "TCSInnerShadowView.h"
 
 @interface TCSWeeklyAlbumChartViewController ()
 
 @property (nonatomic, strong) TCSSlideSelectView *slideSelectView;
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UIView *emptyView;
+@property (nonatomic, strong) UIView *errorView;
 
 @property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
 @property (nonatomic, strong) NSArray *weeklyCharts;
@@ -37,6 +40,9 @@
 @property (nonatomic, strong) NSDate *latestScrobbleDate;
 @property (nonatomic) BOOL canMoveForwardOneYear;
 @property (nonatomic) BOOL canMoveBackOneYear;
+
+@property (nonatomic) BOOL showingError;
+@property (nonatomic) BOOL showingEmpty;
 
 @property (nonatomic) NSUInteger playCountFilter;
 
@@ -90,6 +96,7 @@
     return (x == nil);
   }] subscribeNext:^(id x) {
     NSLog(@"Please set a username!");
+    self.showingError = YES;
   }];
 
 //  RAC(self.now) = [RACSignal interval:60 * 60]; // update every hour
@@ -119,7 +126,10 @@
         self.latestScrobbleDate = lastChart.to;
       }
     } error:^(NSError *error) {
+      @strongify(self);
       NSLog(@"There was an error fetching the weekly chart list!");
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
+      self.showingError = YES;
     }];
   }];
   
@@ -154,6 +164,8 @@
       @strongify(self);
       self.albumChartsForWeek = nil;
       NSLog(@"There was an error fetching the weekly album charts!");
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
+      self.showingError = YES;
     }];
   }];
   
@@ -172,6 +184,16 @@
     self.displayingYearsAgo -= 1;
   }];
   
+  // Monitor datasource array to determine error or empty view
+  [RACAble(self.albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
+    @strongify(self);
+    if ((albumCharts == nil) || ([albumCharts count] == 0)){
+      self.showingEmpty = YES;
+    }else{
+      self.showingEmpty = NO;
+    }
+  }];
+  
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
 }
@@ -185,7 +207,8 @@
     if (userName){
       self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@'s charts", userName];
     }else{
-      self.slideSelectView.topLabel.text = @"No last.fm user selected!";
+      self.slideSelectView.topLabel.text = @"No last.fm user";
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:@"No last.fm user!" actionTitle:@"SELECT USER" actionTarget:self actionSelector:@selector(noSelector:)];
     }
     [self.slideSelectView setNeedsLayout];
   }];
@@ -238,6 +261,31 @@
     // Allow scrollview to begin animation before updating label sizes
    [self.slideSelectView performSelector:@selector(setNeedsLayout) withObject:self.slideSelectView afterDelay:0];
   }];
+  
+  [[RACAble(self.showingEmpty) distinctUntilChanged] subscribeNext:^(NSNumber *showingEmpty) {
+    @strongify(self);
+    BOOL isShowingEmpty = [showingEmpty boolValue];
+    if (isShowingEmpty && !self.showingError){
+      self.emptyView = [TCSEmptyErrorView emptyViewWithTitle:@"No charts!" subtitle:@"Looks like you didn't listen to much music this week."];
+      [self.view addSubview:self.emptyView];
+    }else{
+      [self.emptyView removeFromSuperview];
+      self.emptyView = nil;
+    }
+  }];
+  
+  [[RACAble(self.showingError) distinctUntilChanged] subscribeNext:^(NSNumber *showingError) {
+    @strongify(self);
+    BOOL isShowingError = [showingError boolValue];
+    if (isShowingError){
+      self.showingEmpty = NO; // Don't show empty if there's an error
+      // Assume that the error setter created the errorview with the details
+      [self.view addSubview:self.errorView];
+    }else{
+      [self.errorView removeFromSuperview];
+      self.errorView = nil;
+    }
+  }];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -253,6 +301,9 @@
   self.slideSelectView.width = CGRectGetWidth(r);
   [self.tableView setTop:slideSelectHeight bottom:CGRectGetMaxY(r)];
   self.tableView.width = CGRectGetWidth(r);
+  
+  self.emptyView.frame = self.tableView.frame;
+  self.errorView.frame = self.tableView.frame;
 }
 
 - (void)didReceiveMemoryWarning{

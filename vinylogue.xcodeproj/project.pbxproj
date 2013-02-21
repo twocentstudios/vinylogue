@@ -64,6 +64,12 @@
 		343C0F6C16D571020028A6FE /* logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0F6B16D571020028A6FE /* logo@2x.png */; };
 		343C0F7016D597100028A6FE /* TCSInnerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F6F16D597100028A6FE /* TCSInnerShadowView.m */; };
 		343C0F7116D597100028A6FE /* TCSInnerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F6F16D597100028A6FE /* TCSInnerShadowView.m */; };
+		343C0F8C16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F8B16D5BED40028A6FE /* TCSStackedCenteredView.m */; };
+		343C0F8D16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F8B16D5BED40028A6FE /* TCSStackedCenteredView.m */; };
+		343C0F9016D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F8F16D5BF580028A6FE /* TCSEmptyErrorView.m */; };
+		343C0F9116D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F8F16D5BF580028A6FE /* TCSEmptyErrorView.m */; };
+		343C0F9316D5D4640028A6FE /* blueButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0F9216D5D4640028A6FE /* blueButton@2x.png */; };
+		343C0F9416D5D4640028A6FE /* blueButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0F9216D5D4640028A6FE /* blueButton@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +131,11 @@
 		343C0F6B16D571020028A6FE /* logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo@2x.png"; path = "Images/logo@2x.png"; sourceTree = SOURCE_ROOT; };
 		343C0F6E16D597100028A6FE /* TCSInnerShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSInnerShadowView.h; sourceTree = "<group>"; };
 		343C0F6F16D597100028A6FE /* TCSInnerShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSInnerShadowView.m; sourceTree = "<group>"; };
+		343C0F8A16D5BED40028A6FE /* TCSStackedCenteredView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSStackedCenteredView.h; sourceTree = "<group>"; };
+		343C0F8B16D5BED40028A6FE /* TCSStackedCenteredView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSStackedCenteredView.m; sourceTree = "<group>"; };
+		343C0F8E16D5BF580028A6FE /* TCSEmptyErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSEmptyErrorView.h; sourceTree = "<group>"; };
+		343C0F8F16D5BF580028A6FE /* TCSEmptyErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSEmptyErrorView.m; sourceTree = "<group>"; };
+		343C0F9216D5D4640028A6FE /* blueButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "blueButton@2x.png"; path = "Images/blueButton@2x.png"; sourceTree = SOURCE_ROOT; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -284,6 +295,8 @@
 				343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */,
 				343C0F5F16D329CD0028A6FE /* TCSSlideSelectView.h */,
 				343C0F6016D329CE0028A6FE /* TCSSlideSelectView.m */,
+				343C0F8E16D5BF580028A6FE /* TCSEmptyErrorView.h */,
+				343C0F8F16D5BF580028A6FE /* TCSEmptyErrorView.m */,
 				343C0F6D16D596E50028A6FE /* Generic */,
 			);
 			name = Views;
@@ -296,6 +309,7 @@
 				343C0F6516D567810028A6FE /* leftArrow@2x.png */,
 				343C0F6616D567810028A6FE /* rightArrow@2x.png */,
 				343C0F6916D5702C0028A6FE /* navBarPatch@2x.png */,
+				343C0F9216D5D4640028A6FE /* blueButton@2x.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -305,6 +319,8 @@
 			children = (
 				343C0F6E16D597100028A6FE /* TCSInnerShadowView.h */,
 				343C0F6F16D597100028A6FE /* TCSInnerShadowView.m */,
+				343C0F8A16D5BED40028A6FE /* TCSStackedCenteredView.h */,
+				343C0F8B16D5BED40028A6FE /* TCSStackedCenteredView.m */,
 			);
 			name = Generic;
 			sourceTree = "<group>";
@@ -391,6 +407,7 @@
 				343C0F6816D567810028A6FE /* rightArrow@2x.png in Resources */,
 				343C0F6A16D5702C0028A6FE /* navBarPatch@2x.png in Resources */,
 				343C0F6C16D571020028A6FE /* logo@2x.png in Resources */,
+				343C0F9316D5D4640028A6FE /* blueButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +416,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				343C0F1916D1C0270028A6FE /* InfoPlist.strings in Resources */,
+				343C0F9416D5D4640028A6FE /* blueButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +482,8 @@
 				343C0F5A16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */,
 				343C0F6116D329CE0028A6FE /* TCSSlideSelectView.m in Sources */,
 				343C0F7016D597100028A6FE /* TCSInnerShadowView.m in Sources */,
+				343C0F8C16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */,
+				343C0F9016D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +501,8 @@
 				343C0F5B16D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m in Sources */,
 				343C0F6216D329CE0028A6FE /* TCSSlideSelectView.m in Sources */,
 				343C0F7116D597100028A6FE /* TCSInnerShadowView.m in Sources */,
+				343C0F8D16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */,
+				343C0F9116D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
