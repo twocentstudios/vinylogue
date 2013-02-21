@@ -7,6 +7,7 @@
 //
 
 #import "TCSSlideSelectView.h"
+#import "TCSInnerShadowView.h"
 
 @interface TCSSlideSelectView ()
 
@@ -101,19 +102,8 @@
 
 - (UIView *)backView{
   if (!_backView){
-    _backView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
-      CGContextRef c = UIGraphicsGetCurrentContext();
-      CGRect r = rect;
-      
-      CGContextSaveGState(c);
-      {
-        // Fill background
-        [GREEN_DARK setFill];
-        CGContextFillRect(c, r);
-        
-      }
-      CGContextRestoreGState(c);
-    }];
+    UIColor *shadowGreen = RGBCOLOR(0, 55, 22);
+    _backView = (UIView *)[[TCSInnerShadowView alloc] initWithColor:GREEN_DARK shadowColor:shadowGreen shadowRadius:3];
   }
   return _backView;
 }
@@ -146,10 +136,27 @@
         [GREEN_KELLY setFill];
         CGContextFillRect(c, r);
         
+        CGFloat borderWidth = 1.0f;
+        CGRect leftBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
+        CGRect rightBorder = CGRectMake(CGRectGetMaxX(r)-borderWidth, CGRectGetMinY(r), borderWidth, CGRectGetHeight(r));
+        
+        // Fill left & right borders
+        [RGBCOLOR(0, 47, 18) setFill];
+        CGContextFillRect(c, leftBorder);
+        CGContextFillRect(c, rightBorder);
+        
       }
       CGContextRestoreGState(c);
     }];
-
+    UIColor *shadowGreen = RGBCOLOR(0, 48, 19);
+    
+    _frontView.clipsToBounds = NO;
+    _frontView.layer.masksToBounds = NO;
+    CALayer *layer = _frontView.layer;
+    layer.shadowColor = [shadowGreen CGColor];
+    layer.shadowOffset = CGSizeMake(0, 0);
+    layer.shadowOpacity = 1.0f;
+    layer.shadowRadius = 1.5;
   }
   return _frontView;
 }
