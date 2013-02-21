@@ -60,15 +60,15 @@
   self.frontView.center = self.contentCenter;
   
   // Size and position backView subviews
-  CGFloat backImageInset = 14.0f; // distance from edge
-  self.backLeftButton.left = CGRectGetMinX(r) + backImageInset;
+  CGFloat backButtonInset = 8.0f; // distance from edge
+  self.backLeftButton.left = CGRectGetMinX(r) + backButtonInset;
   self.backLeftButton.y = CGRectGetMidY(r);
-  self.backRightButton.right = CGRectGetMaxX(r) - backImageInset;
+  self.backRightButton.right = CGRectGetMaxX(r) - backButtonInset;
   self.backRightButton.y = CGRectGetMidY(r);
   
   self.backLeftLabel.size = [self sizeForLabel:self.backLeftLabel];
   self.backRightLabel.size = [self sizeForLabel:self.backRightLabel];
-  CGFloat backLabelInset = 24.0f; // distance from backImage
+  CGFloat backLabelInset = 16.0f; // distance from backButton
   self.backLeftLabel.left = self.backLeftButton.right + backLabelInset;
   self.backLeftLabel.y = CGRectGetMidY(r);
   self.backRightLabel.right = self.backRightButton.left - backLabelInset;
@@ -197,8 +197,8 @@
 - (UIButton *)backLeftButton{
   if (!_backLeftButton){
     _backLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_backLeftButton setBackgroundImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
-    _backLeftButton.size = [_backLeftButton backgroundImageForState:UIControlStateNormal].size;
+    [_backLeftButton setImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
+    _backLeftButton.size = CGSizeMake(30, 30);
     [_backLeftButton addTarget:self action:@selector(doLeftButton:) forControlEvents:UIControlEventTouchUpInside];
   }
   return _backLeftButton;
@@ -207,8 +207,8 @@
 - (UIButton *)backRightButton{
   if (!_backRightButton){
     _backRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_backRightButton setBackgroundImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
-    _backRightButton.size = [_backRightButton backgroundImageForState:UIControlStateNormal].size;
+    [_backRightButton setImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
+    _backRightButton.size = CGSizeMake(30, 30);
     [_backRightButton addTarget:self action:@selector(doRightButton:) forControlEvents:UIControlEventTouchUpInside];
   }
   return _backRightButton;

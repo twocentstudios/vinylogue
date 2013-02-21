@@ -34,6 +34,8 @@ static CGFloat playsWidth = 50.0f;
 - (id)init{
   self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:NSStringFromClass([self class])];
   if (self) {
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     self.backgroundView = self.backView;
         
     [self configureTextLabel];
