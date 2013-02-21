@@ -22,12 +22,16 @@
 
 @interface TCSWeeklyAlbumChartViewController ()
 
+// Views
 @property (nonatomic, strong) TCSSlideSelectView *slideSelectView;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) UIView *errorView;
 @property (nonatomic, strong) UIImageView *loadingImageView;
+@property (nonatomic, strong) UISwipeGestureRecognizer *twoFingerSwipeDownGesture;
+@property (nonatomic, strong) UISwipeGestureRecognizer *twoFingerSwipeUpGesture;
 
+// Datasources
 @property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
 @property (nonatomic, strong) NSArray *weeklyCharts;
 @property (nonatomic, strong) NSArray *albumChartsForWeek;
@@ -39,13 +43,15 @@
 @property (nonatomic, strong) WeeklyChart *displayingWeeklyChart;
 @property (nonatomic, strong) NSDate *earliestScrobbleDate;
 @property (nonatomic, strong) NSDate *latestScrobbleDate;
+
+// Controller state
 @property (nonatomic) BOOL canMoveForwardOneYear;
 @property (nonatomic) BOOL canMoveBackOneYear;
-
 @property (nonatomic) BOOL showingError;
 @property (nonatomic) BOOL showingEmpty;
 @property (nonatomic) BOOL showingLoading;
 
+// Preferences
 @property (nonatomic) NSUInteger playCountFilter;
 
 @end
@@ -78,6 +84,10 @@
   UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
   self.loadingImageView.hidden = YES;
   self.navigationItem.rightBarButtonItem = loadingItem;
+  
+  UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
+  doubleTap.numberOfTapsRequired = 2;
+  [self.slideSelectView.frontView addGestureRecognizer:doubleTap];
   
 }
 
@@ -311,6 +321,13 @@
       self.loadingImageView.hidden = YES;
     }
   }];
+
+  // Dim the tableview when the slide select view is sliding
+  [RACAble(self.slideSelectView.scrollView.contentOffset) subscribeNext:^(id offset) {
+    @strongify(self);
+    CGFloat x = [offset CGPointValue].x;
+    self.tableView.alpha = MAX(1 - (fabsf(x)/50.0f), 0.4f);
+  }];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -337,6 +354,21 @@
   
   
 //  self.userName = @"ybsc";
+}
+
+#pragma mark - Private
+
+// Hide nav bar and status bar on double tap
+- (void)doDoubleTap:(UITapGestureRecognizer *)tap{
+  if ([tap state] == UIGestureRecognizerStateEnded){
+    if ([[UIApplication sharedApplication] isStatusBarHidden] == NO){
+      [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+      [self.navigationController setNavigationBarHidden:YES animated:YES];
+    }else{
+      [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+      [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+  }
 }
 
 #pragma mark - Table view data source

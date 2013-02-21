@@ -240,6 +240,7 @@
     _topLabel.backgroundColor = CLEAR;
     _topLabel.font = FONT_AVN_ULTRALIGHT(18);
     _topLabel.textColor = BLACKA(0.5f);
+    _topLabel.userInteractionEnabled = YES;
   }
   return _topLabel;
 }
@@ -250,6 +251,7 @@
     _bottomLabel.backgroundColor = CLEAR;
     _bottomLabel.font = FONT_AVN_MEDIUM(19);
     _bottomLabel.textColor = WHITE_SUBTLE;
+    _bottomLabel.userInteractionEnabled = YES;
   }
   return _bottomLabel;
 }
