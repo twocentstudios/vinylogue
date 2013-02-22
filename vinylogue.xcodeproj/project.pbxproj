@@ -84,6 +84,12 @@
 		343C0FAD16D695620028A6FE /* loading12@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0FA116D695620028A6FE /* loading12@2x.png */; };
 		343C0FB016D6ACB40028A6FE /* TCSUserNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */; };
 		343C0FB116D6ACB40028A6FE /* TCSUserNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */; };
+		343C0FB516D6DF9F0028A6FE /* TCSSimpleTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FB416D6DF9E0028A6FE /* TCSSimpleTableDataSource.m */; };
+		343C0FB616D6DF9F0028A6FE /* TCSSimpleTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FB416D6DF9E0028A6FE /* TCSSimpleTableDataSource.m */; };
+		343C0FB916D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */; };
+		343C0FBA16D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */; };
+		343C0FBD16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */; };
+		343C0FBE16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +171,12 @@
 		343C0FAE16D6ACB40028A6FE /* TCSUserNameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSUserNameViewController.h; sourceTree = "<group>"; };
 		343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSUserNameViewController.m; sourceTree = "<group>"; };
 		343C0FB216D6C3E40028A6FE /* TCSVinylogueGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSVinylogueGlobals.h; sourceTree = "<group>"; };
+		343C0FB316D6DF9E0028A6FE /* TCSSimpleTableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSimpleTableDataSource.h; sourceTree = "<group>"; };
+		343C0FB416D6DF9E0028A6FE /* TCSSimpleTableDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSimpleTableDataSource.m; sourceTree = "<group>"; };
+		343C0FB716D6E01E0028A6FE /* TCSSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSettingsViewController.h; sourceTree = "<group>"; };
+		343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSettingsViewController.m; sourceTree = "<group>"; };
+		343C0FBB16D6E3CF0028A6FE /* TCSSettingsCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSettingsCells.h; sourceTree = "<group>"; };
+		343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSettingsCells.m; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -244,6 +256,7 @@
 				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
 				343C0F5C16D31D460028A6FE /* Views */,
+				343C0FBF16D6F0B70028A6FE /* Settings */,
 				343C0EF316D1C0270028A6FE /* Supporting Files */,
 			);
 			path = vinylogue;
@@ -314,8 +327,6 @@
 			children = (
 				343C0F5416D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.h */,
 				343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */,
-				343C0FAE16D6ACB40028A6FE /* TCSUserNameViewController.h */,
-				343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -375,6 +386,21 @@
 				343C0FA116D695620028A6FE /* loading12@2x.png */,
 			);
 			name = loadingAnimation;
+			sourceTree = "<group>";
+		};
+		343C0FBF16D6F0B70028A6FE /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				343C0FAE16D6ACB40028A6FE /* TCSUserNameViewController.h */,
+				343C0FAF16D6ACB40028A6FE /* TCSUserNameViewController.m */,
+				343C0FB716D6E01E0028A6FE /* TCSSettingsViewController.h */,
+				343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */,
+				343C0FB316D6DF9E0028A6FE /* TCSSimpleTableDataSource.h */,
+				343C0FB416D6DF9E0028A6FE /* TCSSimpleTableDataSource.m */,
+				343C0FBB16D6E3CF0028A6FE /* TCSSettingsCells.h */,
+				343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -549,6 +575,9 @@
 				343C0F8C16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */,
 				343C0F9016D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */,
 				343C0FB016D6ACB40028A6FE /* TCSUserNameViewController.m in Sources */,
+				343C0FB516D6DF9F0028A6FE /* TCSSimpleTableDataSource.m in Sources */,
+				343C0FB916D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */,
+				343C0FBD16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,6 +598,9 @@
 				343C0F8D16D5BED40028A6FE /* TCSStackedCenteredView.m in Sources */,
 				343C0F9116D5BF590028A6FE /* TCSEmptyErrorView.m in Sources */,
 				343C0FB116D6ACB40028A6FE /* TCSUserNameViewController.m in Sources */,
+				343C0FB616D6DF9F0028A6FE /* TCSSimpleTableDataSource.m in Sources */,
+				343C0FBA16D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */,
+				343C0FBE16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

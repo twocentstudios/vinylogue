@@ -8,6 +8,7 @@
 
 #import "TCSWeeklyAlbumChartViewController.h"
 #import "TCSUserNameViewController.h"
+#import "TCSSettingsViewController.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "EXTScope.h"
@@ -384,13 +385,15 @@
 }
 
 - (void)doSettings:(UIBarButtonItem *)button{
-  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
-  @weakify(self);
-  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-    @strongify(self);
-    self.userName = userName;
-  }];
-  [self.navigationController pushViewController:userNameController animated:YES];
+//  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
+//  @weakify(self);
+//  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
+//    @strongify(self);
+//    self.userName = userName;
+//  }];
+//  [self.navigationController pushViewController:userNameController animated:YES];
+  TCSSettingsViewController *settingsViewController = [[TCSSettingsViewController alloc] initWithUserName:self.userName playCountFilter:self.playCountFilter];
+  [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 #pragma mark - Table view data source
