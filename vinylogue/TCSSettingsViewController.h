@@ -12,9 +12,8 @@
 
 @interface TCSSettingsViewController : UIViewController
 
-@property (nonatomic, strong) RACSubject *userNameSignal;
 @property (nonatomic, strong) RACSubject *playCountFilterSignal;
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter;
+- (id)initWithPlayCountFilter:(NSUInteger)playCountFilter;
 
 @end

@@ -20,7 +20,6 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 
-@property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
 
 @property (nonatomic, strong) TCSSimpleTableDataSource *dataSource;
@@ -29,13 +28,11 @@
 
 @implementation TCSSettingsViewController
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter{
+- (id)initWithPlayCountFilter:(NSUInteger)playCountFilter{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
-    self.userName = userName;
     self.playCountFilter = playCountFilter;
     
-    self.userNameSignal = [RACSubject subject];
     self.playCountFilterSignal = [RACSubject subject];
         
     // When navigation bar is present
@@ -54,12 +51,6 @@
   
   @weakify(self);
   
-  // Relay userName changes back to subscribers
-  [[RACAble(self.userName) distinctUntilChanged] subscribeNext:^(NSString *userName) {
-    @strongify(self);
-    [self.userNameSignal sendNext:userName];
-  }];
-  
   [[RACAble(self.playCountFilter) distinctUntilChanged] subscribeNext:^(NSNumber *playCountFilter) {
     @strongify(self);
     [[NSUserDefaults standardUserDefaults] setObject:playCountFilter forKey:kTCSUserDefaultsPlayCountFilter];
@@ -76,11 +67,6 @@
   [super viewWillAppear:animated];
   
   NSArray *tableLayout = @[ @{ kTCSimpleTableTypeKey: kTCSimpleTableHeaderKey,
-                               kTCSimpleTableTitle: @"last.fm username" },
-                            @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
-                               kTCSimpleTableTitle: self.userName,
-                               kTCSimpleTableSelector: @"doSetUserName" },
-                            @{ kTCSimpleTableTypeKey: kTCSimpleTableHeaderKey,
                                kTCSimpleTableTitle: @"play count filter" },
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
                                kTCSimpleTableTitle: [self stringForPlays],
@@ -125,16 +111,6 @@
 }
 
 #pragma mark - actions
-
-- (void)doSetUserName{
-  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
-  @weakify(self);
-  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-    @strongify(self);
-    self.userName = userName;
-  }];
-  [self.navigationController pushViewController:userNameController animated:YES];
-}
 
 - (void)doSetFilter:(UITableViewCell *)cell{
   if (self.playCountFilter > 31){

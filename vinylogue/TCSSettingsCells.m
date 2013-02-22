@@ -74,6 +74,7 @@
     
     self.textLabel.font = [[self class] font];
     self.textLabel.textColor = BLUE_DARK;
+    self.textLabel.backgroundColor = CLEAR;
     self.indentationLevel = 1;
     
     
@@ -120,6 +121,7 @@
     
     self.textLabel.font = [[self class] font];
     self.textLabel.textColor = BLUE_DARK;
+    self.textLabel.backgroundColor = CLEAR;
     self.textLabel.textAlignment = NSTextAlignmentCenter;
     self.textLabel.numberOfLines = 0;
     

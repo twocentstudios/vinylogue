@@ -195,6 +195,7 @@
   if (!_backLeftButton){
     _backLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backLeftButton setImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
+    _backLeftButton.alpha = 0.3f;
     _backLeftButton.size = CGSizeMake(30, 30);
     [_backLeftButton addTarget:self action:@selector(doLeftButton:) forControlEvents:UIControlEventTouchUpInside];
   }
@@ -205,6 +206,7 @@
   if (!_backRightButton){
     _backRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backRightButton setImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
+    _backRightButton.alpha = 0.3f;
     _backRightButton.size = CGSizeMake(30, 30);
     [_backRightButton addTarget:self action:@selector(doRightButton:) forControlEvents:UIControlEventTouchUpInside];
   }

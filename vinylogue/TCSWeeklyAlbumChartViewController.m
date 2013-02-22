@@ -85,16 +85,7 @@
   
   UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
   self.loadingImageView.hidden = YES;
-  self.navigationItem.leftBarButtonItem = loadingItem;
-  
-  UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-  [button setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
-  [button addTarget:self action:@selector(doSettings:) forControlEvents:UIControlEventTouchUpInside];
-  button.adjustsImageWhenHighlighted = YES;
-  button.showsTouchWhenHighlighted = YES;
-  button.size = CGSizeMake(40, 40);
-  self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-  self.navigationItem.rightBarButtonItem = self.settingsButton;
+  self.navigationItem.rightBarButtonItem = loadingItem;
   
   UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
   doubleTap.numberOfTapsRequired = 2;
@@ -403,24 +394,6 @@
       [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
   }
-}
-
-- (void)doSettings:(UIBarButtonItem *)button{
-  @weakify(self);
-  TCSSettingsViewController *settingsViewController = [[TCSSettingsViewController alloc] initWithUserName:self.userName playCountFilter:self.playCountFilter];
-  
-  // Subscribe to the user name signal and set ours if it changes
-  [[settingsViewController userNameSignal] subscribeNext:^(NSString *userName){
-    @strongify(self);
-    self.userName = userName;
-  }];
-  
-  // Subscribe to the play count filter signal and set ours if it changes
-  [[settingsViewController playCountFilterSignal] subscribeNext:^(NSNumber *playCountFilter) {
-    @strongify(self);
-    self.playCountFilter = [playCountFilter unsignedIntegerValue];
-  }];
-  [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 #pragma mark - Table view data source

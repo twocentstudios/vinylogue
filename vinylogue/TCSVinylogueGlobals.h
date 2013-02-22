@@ -11,5 +11,6 @@
 
 #define kTCSUserDefaultsLastFMUserName @"lastFMUserName"
 #define kTCSUserDefaultsPlayCountFilter @"playCountFilter"
+#define kTCSUserDefaultsLastFMFriendsList @"lastFMFriendsList"
 
 #endif
