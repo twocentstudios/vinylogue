@@ -63,6 +63,20 @@
   }
 }
 
+- (void)moveFriendAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex{  
+  if (toIndex != fromIndex) {
+    NSMutableArray* list = self.friendsList;
+		id obj = [list objectAtIndex:fromIndex];
+    [list removeObjectAtIndex:fromIndex];
+    if (toIndex >= [self friendsCount]) {
+      [list addObject:obj];
+    } else {
+      [list insertObject:obj atIndex:toIndex];
+    }
+		[self save];
+  }
+}
+
 - (void)save{
   [[NSUserDefaults standardUserDefaults] setObject:self.friendsList forKey:kTCSUserDefaultsLastFMFriendsList];
   [[NSUserDefaults standardUserDefaults] synchronize];

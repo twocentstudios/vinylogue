@@ -23,6 +23,7 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIBarButtonItem *settingsButton;
+@property (nonatomic, strong) UIBarButtonItem *addButton;
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
@@ -57,8 +58,15 @@
   self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
   self.navigationItem.leftBarButtonItem = self.settingsButton;
   
-  UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(doAddFriend:)];
-  self.navigationItem.rightBarButtonItem = addButton;
+  self.addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(doAddFriend:)];
+  self.addButton.tintColor = BAR_BUTTON_TINT;
+  
+  self.editButtonItem.tintColor = BAR_BUTTON_TINT;
+  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  
+  UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+  backButton.tintColor = BAR_BUTTON_TINT;
+  self.navigationItem.backBarButtonItem = backButton;
 }
 
 - (void)viewDidLoad
@@ -87,6 +95,16 @@
 - (void)didReceiveMemoryWarning{
   [super didReceiveMemoryWarning];
 
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated{
+  [super setEditing:editing animated:animated];
+  [self.tableView setEditing:editing animated:animated];
+  if (editing){
+    self.navigationItem.leftBarButtonItem = self.addButton;
+  }else{
+    self.navigationItem.leftBarButtonItem = self.settingsButton;
+  }
 }
 
 #pragma mark - private
@@ -190,6 +208,25 @@
   return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
+  return (indexPath.section == 1);
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath{
+  return (indexPath.section == 1);
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath{
+  [self.userStore moveFriendAtIndex:fromIndexPath.row toIndex:toIndexPath.row];
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+  if (editingStyle == UITableViewCellEditingStyleDelete) {
+		[self.userStore removeFriendAtIndex:indexPath.row];
+    [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+  }
+}
+
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -255,6 +292,14 @@
     }
   }];
   [self.navigationController pushViewController:userNameController animated:YES];
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath{
+  // rows can't be moved to section 0
+  if (proposedDestinationIndexPath.section == 0){
+    return [NSIndexPath indexPathForRow:0 inSection:1];
+  }
+  return proposedDestinationIndexPath;
 }
 
 #pragma mark - view getters

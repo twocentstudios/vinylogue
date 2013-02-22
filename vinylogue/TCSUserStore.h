@@ -22,5 +22,6 @@
 - (void)addFriendWithUserName:(NSString *)userName;
 - (void)removeFriendAtIndex:(NSUInteger)index;
 - (void)replaceFriendAtIndex:(NSUInteger)index withUserName:(NSString *)userName;
+- (void)moveFriendAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
