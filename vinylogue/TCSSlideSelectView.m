@@ -126,8 +126,7 @@
 
 - (UIView *)backView{
   if (!_backView){
-    UIColor *shadowGreen = RGBCOLOR(0, 55, 22);
-    _backView = (UIView *)[[TCSInnerShadowView alloc] initWithColor:GREEN_DARK shadowColor:shadowGreen shadowRadius:3];
+    _backView = (UIView *)[[TCSInnerShadowView alloc] initWithColor:BLUE_PERI shadowColor:BLUE_PERI_SHADOW shadowRadius:3];
   }
   return _backView;
 }
@@ -163,7 +162,7 @@
         CGContextClip(c);
         
         // Fill background
-        [GREEN_KELLY setFill];
+        [BLUE_PERI setFill];
         CGContextFillRect(c, r);
         
 //        CGFloat borderWidth = 1.0f;
@@ -178,14 +177,12 @@
       }
       CGContextRestoreGState(c);
     }];
-    UIColor *shadowGreen = RGBCOLOR(0, 48, 19);
     
     _frontView.opaque = NO;
-    
     _frontView.clipsToBounds = NO;
     _frontView.layer.masksToBounds = NO;
     CALayer *layer = _frontView.layer;
-    layer.shadowColor = [shadowGreen CGColor];
+    layer.shadowColor = [BLUE_PERI_SHADOW CGColor];
     layer.shadowOffset = CGSizeMake(0, 0);
     layer.shadowOpacity = 1.0f;
     layer.shadowRadius = 1.5;

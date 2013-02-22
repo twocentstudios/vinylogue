@@ -29,6 +29,10 @@
 #define GREEN_DARK RGBCOLOR(0, 63, 25)
 #define GREEN_KELLY RGBCOLOR(0, 117, 61)
 
+#define BLUE_BOLD RGBCOLOR(67, 85, 129)
+#define BLUE_PERI RGBCOLOR(201, 206, 219)
+#define BLUE_PERI_SHADOW RGBCOLOR(173, 177, 188)
+
 // Application Fonts
 #define FONT_AVN_ULTRALIGHT(s) [UIFont fontWithName:@"AvenirNext-UltraLight" size:(s)]
 #define FONT_AVN_DEMIBOLD(s) [UIFont fontWithName:@"AvenirNext-DemiBold" size:(s)]

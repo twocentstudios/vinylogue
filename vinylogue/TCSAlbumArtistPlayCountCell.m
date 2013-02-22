@@ -188,7 +188,7 @@ static CGFloat playsWidth = 50.0f;
   self.textLabel.backgroundColor = CLEAR;
   self.textLabel.font = [[self class] textLabelFont];
   self.textLabel.numberOfLines = 0;
-  self.textLabel.textColor = GREEN_TEAL;
+  self.textLabel.textColor = BLUE_DARK;
   self.textLabel.shadowColor = WHITEA(0.8f);
   self.textLabel.shadowOffset = SHADOW_TOP;
 }
@@ -197,7 +197,7 @@ static CGFloat playsWidth = 50.0f;
   self.detailTextLabel.backgroundColor = CLEAR;
   self.detailTextLabel.font = [[self class] detailTextLabelFont];
   self.detailTextLabel.numberOfLines = 0;
-  self.detailTextLabel.textColor = WHITE_SUBTLE;
+  self.detailTextLabel.textColor = BLUE_DARK;
   self.detailTextLabel.shadowColor = BLACKA(0.25f);
   self.detailTextLabel.shadowOffset = SHADOW_BOTTOM;
 }
@@ -219,7 +219,7 @@ static CGFloat playsWidth = 50.0f;
     _playCountLabel.numberOfLines = 1;
     _playCountLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _playCountLabel.backgroundColor = CLEAR;
-    _playCountLabel.textColor = GREEN_TEAL;
+    _playCountLabel.textColor = BLUE_BOLD;
     _playCountLabel.shadowColor = WHITEA(0.8f);
     _playCountLabel.shadowOffset = SHADOW_TOP;
   }
@@ -257,7 +257,7 @@ static CGFloat playsWidth = 50.0f;
       CGContextSaveGState(c);
       {
         // Fill background
-        [BLUE_DARK setFill];
+        [WHITE_SUBTLE setFill];
         CGContextFillRect(c, r);
         
         CGFloat borderHeight = 1.0f;
@@ -265,11 +265,11 @@ static CGFloat playsWidth = 50.0f;
         CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
         
         // Fill top border
-        [WHITEA(0.25f) setFill];
+        [WHITEA(0.8f) setFill];
         CGContextFillRect(c, topBorder);
         
         // Fill bottom border
-        [BLACKA(0.8f) setFill];
+        [BLACKA(0.1f) setFill];
         CGContextFillRect(c, bottomBorder);
       }
       CGContextRestoreGState(c);
