@@ -113,7 +113,11 @@
   NSArray *allTableViewSubviews = [self.tableView subviews];
   for (UIView *view in allTableViewSubviews){
     if ([view isKindOfClass:[TCSSettingsHeaderCell class]]){
-      [[[view subviews] lastObject] removeFromSuperview];
+      for (UIView *subview in [view subviews]){
+        if (subview.height == 1){
+          [subview removeFromSuperview];
+        }
+      }
     }
   }
   [self.tableView setNeedsDisplay];
