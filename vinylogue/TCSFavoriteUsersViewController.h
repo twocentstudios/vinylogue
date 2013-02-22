@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class TCSUserStore;
+
 @interface TCSFavoriteUsersViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter friendsList:(NSArray *)friendsList;
+- (id)initWithUserStore:(TCSUserStore *)userStore playCountFilter:(NSUInteger)playCountFilter;
 
 @end

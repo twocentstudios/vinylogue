@@ -13,7 +13,7 @@
 #import "TCSWeeklyAlbumChartViewController.h"
 
 #import "TCSSimpleTableDataSource.h"
-#import "TCSFriendsListStore.h"
+#import "TCSUserStore.h"
 #import "TCSSettingsCells.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
@@ -26,18 +26,17 @@
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
-@property (nonatomic, strong) TCSFriendsListStore *friendsList; // array of strings
+@property (nonatomic, strong) TCSUserStore *userStore; // array of strings
 
 @end
 
 @implementation TCSFavoriteUsersViewController
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter friendsList:(TCSFriendsListStore *)friendsList{
+- (id)initWithUserStore:(TCSUserStore *)userStore playCountFilter:(NSUInteger)playCountFilter{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
-    self.userName = userName;
     self.playCountFilter = playCountFilter;
-    self.friendsList = friendsList;
+    self.userStore = userStore;
     
     // When navigation bar is present
     self.title = @"scrobblers";
@@ -105,9 +104,9 @@
 - (NSString *)userNameForIndexPath:(NSIndexPath *)indexPath{
   NSString *userName;
   if (indexPath.section == 0){
-    userName = self.userName;
+    userName = [self.userStore userName];
   }else if (indexPath.section == 1){
-    userName = [self.friendsList userAtIndex:indexPath.row];
+    userName = [self.userStore friendAtIndex:indexPath.row];
   }else{
     userName = @"";
     NSAssert(NO, @"Outside of section bounds");
@@ -147,7 +146,7 @@
     }]
    subscribeNext:^(NSString *userName) {
      @strongify(self);
-     [self.friendsList addUserName:userName];
+     [self.userStore addFriendWithUserName:userName];
    }];
   [self.navigationController pushViewController:userNameViewController animated:YES];
 
@@ -163,7 +162,7 @@
   if (section == 0){
     return 1;
   }else if (section == 1){
-    return [self.friendsList count];
+    return [self.userStore friendsCount];
   }else{
     return 0;
   }
@@ -250,11 +249,9 @@
   [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
     @strongify(self);
     if (indexPath.section == 0){
-      self.userName = userName;
-      [[NSUserDefaults standardUserDefaults] setObject:userName forKey:kTCSUserDefaultsLastFMUserName];
-      [[NSUserDefaults standardUserDefaults] synchronize];
+      [self.userStore setUserName:userName];
     }else{
-      [self.friendsList replaceUserAtIndex:indexPath.row withUserName:userName];
+      [self.userStore replaceFriendAtIndex:indexPath.row withUserName:userName];
     }
   }];
   [self.navigationController pushViewController:userNameController animated:YES];
