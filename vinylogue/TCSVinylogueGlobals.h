@@ -10,5 +10,6 @@
 #define vinylogue_TCSVinylogueGlobals_h
 
 #define kTCSUserDefaultsLastFMUserName @"lastFMUserName"
+#define kTCSUserDefaultsPlayCountFilter @"playCountFilter"
 
 #endif

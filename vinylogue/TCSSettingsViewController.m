@@ -8,8 +8,13 @@
 
 #import "TCSSettingsViewController.h"
 
+#import "TCSUserNameViewController.h"
+
 #import "TCSSimpleTableDataSource.h"
 #import "TCSSettingsCells.h"
+
+#import <ReactiveCocoa/ReactiveCocoa.h>
+#import <EXTScope.h>
 
 @interface TCSSettingsViewController ()
 
@@ -29,6 +34,9 @@
   if (self) {
     self.userName = userName;
     self.playCountFilter = playCountFilter;
+    
+    self.userNameSignal = [RACSubject subject];
+    self.playCountFilterSignal = [RACSubject subject];
         
     // When navigation bar is present
     self.title = @"settings";
@@ -41,10 +49,23 @@
   [self.view addSubview:self.tableView];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+- (void)viewDidLoad{
+  [super viewDidLoad];
+  
+  @weakify(self);
+  
+  // Relay userName changes back to subscribers
+  [[RACAble(self.userName) distinctUntilChanged] subscribeNext:^(NSString *userName) {
+    @strongify(self);
+    [self.userNameSignal sendNext:userName];
+  }];
+  
+  [[RACAble(self.playCountFilter) distinctUntilChanged] subscribeNext:^(NSNumber *playCountFilter) {
+    @strongify(self);
+    [[NSUserDefaults standardUserDefaults] setObject:playCountFilter forKey:kTCSUserDefaultsPlayCountFilter];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.playCountFilterSignal sendNext:playCountFilter];
+  }];
 }
 
 - (void)viewWillLayoutSubviews{
@@ -62,8 +83,8 @@
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableHeaderKey,
                                kTCSimpleTableTitle: @"play count filter" },
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
-                               kTCSimpleTableTitle: [NSString stringWithFormat:@"< %i plays", self.playCountFilter],
-                               kTCSimpleTableSelector: @"doSetFilter" },
+                               kTCSimpleTableTitle: [self stringForPlays],
+                               kTCSimpleTableSelector: @"doSetFilter:" },
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableHeaderKey,
                                kTCSimpleTableTitle: @"support" },
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
@@ -103,13 +124,63 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - actions
+
+- (void)doSetUserName{
+  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
+  @weakify(self);
+  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
+    @strongify(self);
+    self.userName = userName;
+  }];
+  [self.navigationController pushViewController:userNameController animated:YES];
+}
+
+- (void)doSetFilter:(UITableViewCell *)cell{
+  if (self.playCountFilter > 31){
+    self.playCountFilter = 0;
+  }else if(self.playCountFilter == 0){
+    self.playCountFilter = 1;
+  }else{
+    self.playCountFilter *= 2;
+  }
+  cell.textLabel.text = [self stringForPlays];
+}
+
+- (void)doReportIssue{
+  
+}
+
+- (void)doViewLicense{
+  
+}
+
+- (void)doDeveloperWebsite{
+  
+}
+
+- (void)doDeveloperTwitter{
+  
+}
+
+#pragma mark - private
+
+- (NSString *)stringForPlays{
+  if (self.playCountFilter == 0){
+    return @"off";
+  }else if (self.playCountFilter == 1){
+    return @"1 play";
+  }else{
+    return [NSString stringWithFormat:@"%i plays", self.playCountFilter];
+  }
+}
+
 #pragma mark - view getters
 
 - (UITableView *)tableView{
   if (!_tableView){
     _tableView = [[UITableView alloc] init];
-    _tableView.backgroundColor = CLEAR;
-    _tableView.backgroundView = nil;
+    _tableView.backgroundColor = WHITE_SUBTLE;
     _tableView.scrollsToTop = NO;
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   }

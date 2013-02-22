@@ -132,7 +132,7 @@
     _titleLabel.font = FONT_AVN_ULTRALIGHT(17);
     _titleLabel.textColor = GRAYCOLOR(70);
     _titleLabel.backgroundColor = CLEAR;
-    _titleLabel.text = @"(your's or a friend's)";
+    _titleLabel.text = @"(yours or a friend's)";
   }
   return _titleLabel;
 }

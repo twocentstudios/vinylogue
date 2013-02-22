@@ -122,10 +122,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   SEL selector = [self cellSelectorForRow:indexPath.row];
+  id cell = [tableView cellForRowAtIndexPath:indexPath];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
   if ([self.controller respondsToSelector:selector]){
-    [self.controller performSelector:selector];
+    [self.controller performSelector:selector withObject:cell];
   }
 #pragma clang diagnostic pop
   

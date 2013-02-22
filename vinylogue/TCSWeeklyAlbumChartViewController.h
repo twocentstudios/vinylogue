@@ -12,6 +12,6 @@
 
 @property (nonatomic, copy) NSString *userName;
 
-- (id)initWithUserName:(NSString *)userName;
+- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter;
 
 @end

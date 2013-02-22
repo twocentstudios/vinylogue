@@ -34,8 +34,9 @@
 
 // Datasources
 @property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
-@property (nonatomic, strong) NSArray *weeklyCharts;
-@property (nonatomic, strong) NSArray *albumChartsForWeek;
+@property (nonatomic, strong) NSArray *weeklyCharts; // list of to:from: dates we can request
+@property (nonatomic, strong) NSArray *rawAlbumChartsForWeek; // prefiltered charts
+@property (nonatomic, strong) NSArray *albumChartsForWeek; // filtered charts to display
 
 @property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSDate *now;
@@ -59,14 +60,14 @@
 
 @implementation TCSWeeklyAlbumChartViewController
 
-- (id)initWithUserName:(NSString *)userName{
+- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.title = NSLocalizedString(@"Charts", nil);
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     
     self.userName = userName;
-    self.playCountFilter = 4;
+    self.playCountFilter = playCountFilter;
     self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
   }
   return self;
@@ -187,13 +188,9 @@
     @strongify(self);
     self.showingLoading = YES;
     [[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart] subscribeNext:^(NSArray *albumChartsForWeek) {
-      NSLog(@"Filtering charts by playcount...");
+      NSLog(@"Copying raw weekly charts...");
       @strongify(self);
-      NSArray *filteredCharts = [[albumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
-        @strongify(self);
-        return (chart.playcountValue > self.playCountFilter);
-      }] array];
-      self.albumChartsForWeek = filteredCharts;
+      self.rawAlbumChartsForWeek = albumChartsForWeek;
       self.showingLoading = NO;
     } error:^(NSError *error) {
       @strongify(self);
@@ -203,6 +200,24 @@
       self.showingError = YES;
       self.showingLoading = NO;
     }];
+  }];
+  
+  // Filter the raw album charts returned by the server based on user's play count filter
+  // Run whenever the raw albums change or the play count filter changes (from settings screen)
+  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
+                      reduce:^(id first, id second){
+    return first; // we only care about the raw album charts value
+  }] filter:^BOOL(id x) {
+    return (x != nil);
+  }] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
+    NSLog(@"Filtering charts by playcount...");
+    @strongify(self);
+    NSArray *filteredCharts = [[rawAlbumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
+      @strongify(self);
+      return (chart.playcountValue > self.playCountFilter);
+    }] array];
+    self.albumChartsForWeek = filteredCharts;
+    self.showingLoading = NO;
   }];
   
   // When the album charts gets changed, reload the table
@@ -385,14 +400,20 @@
 }
 
 - (void)doSettings:(UIBarButtonItem *)button{
-//  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:self.userName headerShowing:NO];
-//  @weakify(self);
-//  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-//    @strongify(self);
-//    self.userName = userName;
-//  }];
-//  [self.navigationController pushViewController:userNameController animated:YES];
+  @weakify(self);
   TCSSettingsViewController *settingsViewController = [[TCSSettingsViewController alloc] initWithUserName:self.userName playCountFilter:self.playCountFilter];
+  
+  // Subscribe to the user name signal and set ours if it changes
+  [[settingsViewController userNameSignal] subscribeNext:^(NSString *userName){
+    @strongify(self);
+    self.userName = userName;
+  }];
+  
+  // Subscribe to the play count filter signal and set ours if it changes
+  [[settingsViewController playCountFilterSignal] subscribeNext:^(NSNumber *playCountFilter) {
+    @strongify(self);
+    self.playCountFilter = [playCountFilter unsignedIntegerValue];
+  }];
   [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
