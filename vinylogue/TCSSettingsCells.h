@@ -14,6 +14,10 @@
 
 @end
 
+@interface TCSBigSettingsCell : TCSSettingsCell
+
+@end
+
 @interface TCSSettingsHeaderCell : UITableViewCell <TCSSimpleCell>
 
 @end

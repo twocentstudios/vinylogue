@@ -13,6 +13,7 @@
 #import "TCSWeeklyAlbumChartViewController.h"
 
 #import "TCSSimpleTableDataSource.h"
+#import "TCSFriendsListStore.h"
 #import "TCSSettingsCells.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
@@ -25,20 +26,18 @@
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
-@property (nonatomic, strong) NSMutableArray *friendsList; // array of strings
-
-@property (nonatomic, strong) TCSSimpleTableDataSource *dataSource;
+@property (nonatomic, strong) TCSFriendsListStore *friendsList; // array of strings
 
 @end
 
 @implementation TCSFavoriteUsersViewController
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter friendsList:(NSArray *)friendsList{
+- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter friendsList:(TCSFriendsListStore *)friendsList{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.userName = userName;
     self.playCountFilter = playCountFilter;
-    self.friendsList = [NSMutableArray arrayWithArray:friendsList];
+    self.friendsList = friendsList;
     
     // When navigation bar is present
     self.title = @"scrobblers";
@@ -58,6 +57,9 @@
   button.size = CGSizeMake(40, 40);
   self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
   self.navigationItem.leftBarButtonItem = self.settingsButton;
+  
+  UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(doAddFriend:)];
+  self.navigationItem.rightBarButtonItem = addButton;
 }
 
 - (void)viewDidLoad
@@ -100,6 +102,27 @@
   [self.tableView setNeedsDisplay];
 }
 
+- (NSString *)userNameForIndexPath:(NSIndexPath *)indexPath{
+  NSString *userName;
+  if (indexPath.section == 0){
+    userName = self.userName;
+  }else if (indexPath.section == 1){
+    userName = [self.friendsList userAtIndex:indexPath.row];
+  }else{
+    userName = @"";
+    NSAssert(NO, @"Outside of section bounds");
+  }
+  return userName;
+}
+
+- (NSString *)titleForHeaderInSection:(NSInteger)section{
+  if (section == 0){
+    return @"me";
+  }else{
+    return @"friends";
+  }
+}
+
 #pragma mark - actions
 
 - (void)doSettings:(UIBarButtonItem *)button{
@@ -114,17 +137,20 @@
   [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
-- (NSString *)userNameForIndexPath:(NSIndexPath *)indexPath{
-  NSString *userName;
-  if (indexPath.section == 0){
-    userName = self.userName;
-  }else if (indexPath.section == 1){
-    userName = [self.friendsList objectAtIndex:indexPath.row];
-  }else{
-    userName = @"";
-    NSAssert(NO, @"Outside of section bounds");
-  }
-  return userName;
+- (void)doAddFriend:(UIBarButtonItem *)button{
+  @weakify(self);
+  TCSUserNameViewController *userNameViewController = [[TCSUserNameViewController alloc] initWithUserName:nil headerShowing:NO];
+  [[[[userNameViewController userNameSignal]
+     distinctUntilChanged]
+    filter:^BOOL(id x) {
+      return (x != nil);
+    }]
+   subscribeNext:^(NSString *userName) {
+     @strongify(self);
+     [self.friendsList addUserName:userName];
+   }];
+  [self.navigationController pushViewController:userNameViewController animated:YES];
+
 }
 
 #pragma mark - Table view data source
@@ -144,10 +170,18 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-  static NSString *CellIdentifier = @"TCSSettingsCell";
+  
+  Class cellClass;
+  if (indexPath.section == 0){
+    cellClass = [TCSBigSettingsCell class];
+  }else{
+    cellClass = [TCSSettingsCell class];
+  }
+  
+  NSString *CellIdentifier = NSStringFromClass(cellClass);
   TCSSettingsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (!cell) {
-    cell = [[TCSSettingsCell alloc] init];
+    cell = [[cellClass alloc] init];
   }
   
   NSString *userName = [self userNameForIndexPath:indexPath];
@@ -155,15 +189,6 @@
   cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
   
   return cell;
-}
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-- (NSString *)titleForHeaderInSection:(NSInteger)section{
-  if (section == 0){
-    return @"me";
-  }else{
-    return @"friends";
-  }
 }
 
 #pragma mark - Table view delegate
@@ -226,8 +251,10 @@
     @strongify(self);
     if (indexPath.section == 0){
       self.userName = userName;
+      [[NSUserDefaults standardUserDefaults] setObject:userName forKey:kTCSUserDefaultsLastFMUserName];
+      [[NSUserDefaults standardUserDefaults] synchronize];
     }else{
-      [self.friendsList replaceObjectAtIndex:indexPath.row withObject:userName];
+      [self.friendsList replaceUserAtIndex:indexPath.row withUserName:userName];
     }
   }];
   [self.navigationController pushViewController:userNameController animated:YES];

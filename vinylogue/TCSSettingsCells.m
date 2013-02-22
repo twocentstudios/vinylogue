@@ -47,6 +47,15 @@
 
 @end
 
+
+@implementation TCSBigSettingsCell
+
++ (UIFont *)font{
+  return FONT_AVN_REGULAR(34);
+}
+
+@end
+
 @implementation TCSSettingsHeaderCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{

@@ -94,6 +94,8 @@
 		343C0FC516D70BE80028A6FE /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0FC316D70BE40028A6FE /* settings@2x.png */; };
 		343C0FC816D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */; };
 		343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */; };
+		343C0FCC16D816840028A6FE /* TCSFriendsListStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSFriendsListStore.m */; };
+		343C0FCD16D816840028A6FE /* TCSFriendsListStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSFriendsListStore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +186,8 @@
 		343C0FC316D70BE40028A6FE /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settings@2x.png"; path = "Images/settings@2x.png"; sourceTree = SOURCE_ROOT; };
 		343C0FC616D7F8F10028A6FE /* TCSFavoriteUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSFavoriteUsersViewController.h; sourceTree = "<group>"; };
 		343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSFavoriteUsersViewController.m; sourceTree = "<group>"; };
+		343C0FCA16D816840028A6FE /* TCSFriendsListStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSFriendsListStore.h; sourceTree = "<group>"; };
+		343C0FCB16D816840028A6FE /* TCSFriendsListStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSFriendsListStore.m; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -309,6 +313,8 @@
 				343C0F0416D1C0270028A6FE /* vinylogue.xcdatamodeld */,
 				343C0F4216D1CB350028A6FE /* TCSLastFMAPIClient.h */,
 				343C0F4316D1CB350028A6FE /* TCSLastFMAPIClient.m */,
+				343C0FCA16D816840028A6FE /* TCSFriendsListStore.h */,
+				343C0FCB16D816840028A6FE /* TCSFriendsListStore.m */,
 				343C0F4616D1CB450028A6FE /* Objects */,
 			);
 			name = Models;
@@ -591,6 +597,7 @@
 				343C0FB916D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */,
 				343C0FBD16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */,
 				343C0FC816D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */,
+				343C0FCC16D816840028A6FE /* TCSFriendsListStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,6 +622,7 @@
 				343C0FBA16D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */,
 				343C0FBE16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */,
 				343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */,
+				343C0FCD16D816840028A6FE /* TCSFriendsListStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
