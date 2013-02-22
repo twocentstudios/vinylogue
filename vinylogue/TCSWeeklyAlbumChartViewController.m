@@ -63,8 +63,8 @@
 - (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
-    self.title = NSLocalizedString(@"Charts", nil);
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+    self.title = NSLocalizedString(@"charts", nil);
+//    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     
     self.userName = userName;
     self.playCountFilter = playCountFilter;
@@ -117,13 +117,6 @@
     NSLog(@"Please set a username!");
     @strongify(self);
     self.showingError = YES;
-    
-    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
-    [self presentViewController:userNameController animated:NO completion:NULL];
-    [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-      @strongify(self);
-      self.userName = userName;
-    }];
   }];
 
 //  RAC(self.now) = [RACSignal interval:60 * 60]; // update every hour
@@ -251,7 +244,7 @@
   [RACAbleWithStart(self.userName) subscribeNext:^(NSString *userName) {
     @strongify(self);
     if (userName){
-      self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@'s charts", userName];
+      self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", userName];
     }else{
       self.slideSelectView.topLabel.text = @"No last.fm user";
       self.errorView = [TCSEmptyErrorView errorViewWithTitle:@"No last.fm user!" actionTitle:@"SELECT USER" actionTarget:self actionSelector:@selector(noSelector:)];

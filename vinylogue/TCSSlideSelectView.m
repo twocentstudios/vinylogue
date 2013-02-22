@@ -249,7 +249,7 @@
     _bottomLabel = [[UILabel alloc] init];
     _bottomLabel.backgroundColor = CLEAR;
     _bottomLabel.font = FONT_AVN_MEDIUM(19);
-    _bottomLabel.textColor = WHITE_SUBTLE;
+    _bottomLabel.textColor = GRAYCOLOR(120);
     _bottomLabel.userInteractionEnabled = YES;
   }
   return _bottomLabel;
