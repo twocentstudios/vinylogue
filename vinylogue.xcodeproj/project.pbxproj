@@ -90,6 +90,8 @@
 		343C0FBA16D6E01E0028A6FE /* TCSSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */; };
 		343C0FBD16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */; };
 		343C0FBE16D6E3D00028A6FE /* TCSSettingsCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */; };
+		343C0FC416D70BE80028A6FE /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0FC316D70BE40028A6FE /* settings@2x.png */; };
+		343C0FC516D70BE80028A6FE /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 343C0FC316D70BE40028A6FE /* settings@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,6 +179,7 @@
 		343C0FB816D6E01E0028A6FE /* TCSSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSettingsViewController.m; sourceTree = "<group>"; };
 		343C0FBB16D6E3CF0028A6FE /* TCSSettingsCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSettingsCells.h; sourceTree = "<group>"; };
 		343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSettingsCells.m; sourceTree = "<group>"; };
+		343C0FC316D70BE40028A6FE /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "settings@2x.png"; path = "Images/settings@2x.png"; sourceTree = SOURCE_ROOT; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -353,6 +356,7 @@
 				343C0F6616D567810028A6FE /* rightArrow@2x.png */,
 				343C0F6916D5702C0028A6FE /* navBarPatch@2x.png */,
 				343C0F9216D5D4640028A6FE /* blueButton@2x.png */,
+				343C0FC316D70BE40028A6FE /* settings@2x.png */,
 				343C0F9516D695290028A6FE /* loadingAnimation */,
 			);
 			name = Images;
@@ -498,6 +502,7 @@
 				343C0FAB16D695620028A6FE /* loading10@2x.png in Resources */,
 				343C0FAC16D695620028A6FE /* loading11@2x.png in Resources */,
 				343C0FAD16D695620028A6FE /* loading12@2x.png in Resources */,
+				343C0FC416D70BE80028A6FE /* settings@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,6 +512,7 @@
 			files = (
 				343C0F1916D1C0270028A6FE /* InfoPlist.strings in Resources */,
 				343C0F9416D5D4640028A6FE /* blueButton@2x.png in Resources */,
+				343C0FC516D70BE80028A6FE /* settings@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

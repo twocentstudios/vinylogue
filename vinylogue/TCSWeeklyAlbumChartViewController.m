@@ -85,10 +85,16 @@
   
   UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
   self.loadingImageView.hidden = YES;
-  self.navigationItem.rightBarButtonItem = loadingItem;
+  self.navigationItem.leftBarButtonItem = loadingItem;
   
-  self.settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(doSettings:)];
-  self.navigationItem.leftBarButtonItem = self.settingsButton;
+  UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+  [button setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
+  [button addTarget:self action:@selector(doSettings:) forControlEvents:UIControlEventTouchUpInside];
+  button.adjustsImageWhenHighlighted = YES;
+  button.showsTouchWhenHighlighted = YES;
+  button.size = CGSizeMake(40, 40);
+  self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+  self.navigationItem.rightBarButtonItem = self.settingsButton;
   
   UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
   doubleTap.numberOfTapsRequired = 2;
