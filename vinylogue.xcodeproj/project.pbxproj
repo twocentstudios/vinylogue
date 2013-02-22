@@ -721,6 +721,22 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-framework",
+					CoreData,
+					"-framework",
+					Foundation,
+					"-framework",
+					MobileCoreServices,
+					"-framework",
+					QuartzCore,
+					"-framework",
+					SystemConfiguration,
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -733,6 +749,22 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-framework",
+					CoreData,
+					"-framework",
+					Foundation,
+					"-framework",
+					MobileCoreServices,
+					"-framework",
+					QuartzCore,
+					"-framework",
+					SystemConfiguration,
+					"-force_load",
+					"$(TARGET_BUILD_DIR)/libPods.a",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
