@@ -201,11 +201,9 @@
   
   // Filter the raw album charts returned by the server based on user's play count filter
   // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
+  [[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
                       reduce:^(id first, id second){
     return first; // we only care about the raw album charts value
-  }] filter:^BOOL(id x) {
-    return (x != nil);
   }] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
     NSLog(@"Filtering charts by playcount...");
     @strongify(self);
