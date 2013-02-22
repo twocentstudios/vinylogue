@@ -10,6 +10,7 @@
 #import "TCSInnerShadowView.h"
 
 #import "ReactiveCocoa/UIControl+RACSignalSupport.h"
+#import <EXTScope.h>
 
 @interface TCSSlideSelectView ()
 
@@ -93,6 +94,10 @@
 
 # pragma mark - UIScrollViewDelegate
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+  [self showBackButtons:NO];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
   CGFloat offset = scrollView.contentOffset.x;
   if (offset < -self.pullLeftOffset){
@@ -110,6 +115,7 @@
   }else if(offset >= self.pullRightOffset){
     [self.pullRightCommand execute:nil];
   }
+  [self showBackButtons:YES];
 }
 
 # pragma mark - private
@@ -120,6 +126,15 @@
 
 - (void)doRightButton:(UIButton *)button{
   [self.pullRightCommand execute:nil];
+}
+
+- (void)showBackButtons:(BOOL)showing{
+  @weakify(self)
+  [UIView animateWithDuration:0.25f animations:^{
+    @strongify(self);
+    self.backLeftButton.alpha = showing*0.3f;
+    self.backRightButton.alpha = showing*0.3f;
+  }];
 }
 
 # pragma mark - view getters
