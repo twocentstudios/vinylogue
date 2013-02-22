@@ -23,7 +23,7 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIBarButtonItem *settingsButton;
-@property (nonatomic, strong) UIBarButtonItem *addButton;
+@property (nonatomic, strong) UIButton *addFriendButton;
 
 @property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
@@ -49,6 +49,8 @@
   self.view = [[UIView alloc] init];
   [self.view addSubview:self.tableView];
   
+  [self.tableView setTableFooterView:self.addFriendButton];
+  
   UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
   [button setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
   [button addTarget:self action:@selector(doSettings:) forControlEvents:UIControlEventTouchUpInside];
@@ -58,9 +60,6 @@
   self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
   self.navigationItem.leftBarButtonItem = self.settingsButton;
   
-  self.addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(doAddFriend:)];
-  self.addButton.tintColor = BAR_BUTTON_TINT;
-  
   self.editButtonItem.tintColor = BAR_BUTTON_TINT;
   self.navigationItem.rightBarButtonItem = self.editButtonItem;
   
@@ -69,14 +68,29 @@
   self.navigationItem.backBarButtonItem = backButton;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+- (void)viewDidLoad{
+  [super viewDidLoad];
+  
+  @weakify(self);
+  
+  // Prompts for a user name if it's nil (Should only be needed for first run)
+  [[[RACAbleWithStart(self.userStore.userName) distinctUntilChanged] filter:^BOOL(id value) {
+    return (value == nil);
+  }] subscribeNext:^(id x) {
+    @strongify(self);
+    TCSUserNameViewController *userController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
+    [userController.userNameSignal subscribeNext:^(NSString *userName) {
+      @strongify(self);
+      [self.userStore setUserName:userName];
+    }];
+    [self presentViewController:userController animated:NO completion:NULL];
+  }];
 }
 
 - (void)viewWillLayoutSubviews{
-  self.tableView.frame = self.view.bounds;
+  CGRect r = self.view.bounds;
+  self.tableView.frame = r;
+  self.addFriendButton.width = CGRectGetWidth(r);
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -100,11 +114,6 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated{
   [super setEditing:editing animated:animated];
   [self.tableView setEditing:editing animated:animated];
-  if (editing){
-    self.navigationItem.leftBarButtonItem = self.addButton;
-  }else{
-    self.navigationItem.leftBarButtonItem = self.settingsButton;
-  }
 }
 
 #pragma mark - private
@@ -158,7 +167,7 @@
   [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
-- (void)doAddFriend:(UIBarButtonItem *)button{
+- (void)doAddFriend:(id)button{
   @weakify(self);
   TCSUserNameViewController *userNameViewController = [[TCSUserNameViewController alloc] initWithUserName:nil headerShowing:NO];
   [[[[userNameViewController userNameSignal]
@@ -318,6 +327,20 @@
     _tableView.delegate = self;
   }
   return _tableView;
+}
+
+- (UIButton *)addFriendButton{
+  if (!_addFriendButton){
+    _addFriendButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_addFriendButton addTarget:self action:@selector(doAddFriend:) forControlEvents:UIControlEventTouchUpInside];
+    [_addFriendButton setTitle:@"add a friend" forState:UIControlStateNormal];
+    [_addFriendButton setTitleColor:BLUE_DARK forState:UIControlStateNormal];
+    [_addFriendButton setShowsTouchWhenHighlighted:YES];
+    _addFriendButton.titleLabel.font = FONT_AVN_ULTRALIGHT(22);
+    _addFriendButton.backgroundColor = CLEAR;
+    _addFriendButton.height = 42;
+  }
+  return _addFriendButton;
 }
 
 @end
