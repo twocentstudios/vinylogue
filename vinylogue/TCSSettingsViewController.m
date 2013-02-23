@@ -9,6 +9,9 @@
 #import "TCSSettingsViewController.h"
 
 #import "TCSUserNameViewController.h"
+#import "TCSSinglePageWebViewController.h"
+#import <MessageUI/MessageUI.h>
+#import <StoreKit/StoreKit.h>
 
 #import "TCSSimpleTableDataSource.h"
 #import "TCSSettingsCells.h"
@@ -124,19 +127,74 @@
 }
 
 - (void)doReportIssue{
-  
+  if ([MFMailComposeViewController canSendMail]){
+    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
+    [mailVC setMailComposeDelegate:self];
+    [mailVC setToRecipients:@[@"support@twocentstudios.com"]];
+    [mailVC setSubject:@"vinylogue: Support Request"];
+    
+    NSString *messageBody =
+    [NSString stringWithFormat:@"\n\n\n\n-------------------\nDEBUG INFO:\nApp Version: %@\nApp Build: %@\nDevice: %@\nOS Version: %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)@"CFBundleShortVersionString"],
+     [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey],
+     [[UIDevice currentDevice] model],
+     [[UIDevice currentDevice] systemVersion]];
+    
+    [mailVC setMessageBody:messageBody isHTML:NO];
+    [self presentViewController:mailVC animated:YES completion:NULL];
+  }else{
+    NSLog(@"Mail unsupported");
+  }
 }
 
-- (void)doViewLicense{
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error{
+  if (result == MFMailComposeResultSent){
+    NSLog(@"Mail sent");
+  }else if(result == MFMailComposeResultSaved){
+    NSLog(@"Mail saved");
+  }else if(result == MFMailComposeResultFailed){
+    NSLog(@"Mail sending failed");
+  }
+  [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+#warning Set the correct app info here (including number)
+- (void)doRate{
+  NSString *urlString = @"http://appstore.com/vinylogue";
   
+  if (NSStringFromClass([SKStoreProductViewController class]) != nil) {
+    SKStoreProductViewController *storeVC = [[SKStoreProductViewController alloc] init];
+    NSNumber *appId = [NSNumber numberWithInteger:0];
+    [storeVC loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier:appId} completionBlock:nil];
+    [self presentViewController:storeVC animated:YES completion:NULL];
+    storeVC.delegate = self;
+  }else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  }else{
+    NSLog(@"Error opening url");
+  }
+}
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController{
+  [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (void)doViewLicenses{
+  TCSSinglePageWebViewController *webVC = [[TCSSinglePageWebViewController alloc] initWithLocalHTMLFileName:@"licenses"];
+  [self presentViewController:webVC animated:YES completion:NULL];
 }
 
 - (void)doDeveloperWebsite{
-  
+  NSString *urlString = @"http://twocentstudios.com";
+  if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  }
 }
 
 - (void)doDeveloperTwitter{
-  
+  NSString *urlString = @"http://twitter.com/twocentstudios";
+  if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  }
 }
 
 #pragma mark - private

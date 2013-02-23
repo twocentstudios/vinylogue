@@ -59,12 +59,10 @@
   button.size = CGSizeMake(40, 40);
   self.settingsButton = [[UIBarButtonItem alloc] initWithCustomView:button];
   self.navigationItem.leftBarButtonItem = self.settingsButton;
-  
-  self.editButtonItem.tintColor = BAR_BUTTON_TINT;
-  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+   self.navigationItem.rightBarButtonItem = self.editButtonItem;
   
   UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
-  backButton.tintColor = BAR_BUTTON_TINT;
   self.navigationItem.backBarButtonItem = backButton;
 }
 
@@ -338,7 +336,7 @@
     [_addFriendButton setShowsTouchWhenHighlighted:YES];
     _addFriendButton.titleLabel.font = FONT_AVN_ULTRALIGHT(22);
     _addFriendButton.backgroundColor = CLEAR;
-    _addFriendButton.height = 42;
+    _addFriendButton.height = 50;
   }
   return _addFriendButton;
 }

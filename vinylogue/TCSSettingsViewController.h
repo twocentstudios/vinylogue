@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import <StoreKit/StoreKit.h>
 
 @class RACSubject;
 
-@interface TCSSettingsViewController : UIViewController
+@interface TCSSettingsViewController : UIViewController <MFMailComposeViewControllerDelegate, SKStoreProductViewControllerDelegate>
 
 @property (nonatomic, strong) RACSubject *playCountFilterSignal;
 

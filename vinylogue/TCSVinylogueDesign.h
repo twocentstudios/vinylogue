@@ -29,7 +29,7 @@
 #define BLUE_PERI GRAYCOLOR(220)
 #define BLUE_PERI_SHADOW GRAYCOLOR(195)
 
-#define BAR_BUTTON_TINT GRAYCOLOR(220);
+#define BAR_BUTTON_TINT GRAYCOLOR(220)
 
 // Application Fonts
 #define FONT_AVN_ULTRALIGHT(s) [UIFont fontWithName:@"AvenirNext-UltraLight" size:(s)]
