@@ -47,6 +47,11 @@
 - (void)loadView{
   self.view = [[UIView alloc] init];
   [self.view addSubview:self.tableView];
+  
+  UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
+  logo.height = 70.0f;
+  logo.contentMode = UIViewContentModeCenter;
+  [self.tableView setTableHeaderView:logo];
 }
 
 - (void)viewDidLoad{

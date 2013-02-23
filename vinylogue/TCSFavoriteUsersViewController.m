@@ -25,7 +25,6 @@
 @property (nonatomic, strong) UIBarButtonItem *settingsButton;
 @property (nonatomic, strong) UIButton *addFriendButton;
 
-@property (nonatomic, strong) NSString *userName;
 @property (nonatomic) NSUInteger playCountFilter;
 @property (nonatomic, strong) TCSUserStore *userStore; // array of strings
 
