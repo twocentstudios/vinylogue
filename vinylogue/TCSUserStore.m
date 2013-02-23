@@ -79,6 +79,7 @@
 
 - (void)save{
   [[NSUserDefaults standardUserDefaults] setObject:self.friendsList forKey:kTCSUserDefaultsLastFMFriendsList];
+  [[NSUserDefaults standardUserDefaults] setObject:self.userName forKey:kTCSUserDefaultsLastFMUserName];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -94,6 +95,9 @@
   
   self.friendsList = [NSMutableArray arrayWithArray:storedFriendsList];
   self.userName = storedUserName;
+  
+  NSLog(@"loaded username: %@", self.userName);
+  NSLog(@"loaded friends: %@", self.friendsList);
 }
 
 @end
