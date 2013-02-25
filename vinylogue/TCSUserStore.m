@@ -84,8 +84,8 @@
 }
 
 - (void)load{
-  NSString *storedUserName = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMUserName];
-  NSArray *storedFriendsList = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMFriendsList];
+  NSString *storedUserName = [[NSUserDefaults standardUserDefaults] stringForKey:kTCSUserDefaultsLastFMUserName];
+  NSArray *storedFriendsList = [[NSUserDefaults standardUserDefaults] stringArrayForKey:kTCSUserDefaultsLastFMFriendsList];
   
   if (storedFriendsList == nil){
     storedFriendsList = [NSArray array];
@@ -93,8 +93,8 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
   }
   
-  self.friendsList = [NSMutableArray arrayWithArray:storedFriendsList];
-  self.userName = storedUserName;
+  _friendsList = [NSMutableArray arrayWithArray:storedFriendsList];
+  _userName = storedUserName;
   
   NSLog(@"loaded username: %@", self.userName);
   NSLog(@"loaded friends: %@", self.friendsList);

@@ -109,10 +109,6 @@
     [self.navigationController popViewControllerAnimated:YES];
   }
   
-  // Save to backing store
-  [[NSUserDefaults standardUserDefaults] setObject:textField.text forKey:kTCSUserDefaultsLastFMUserName];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
   return YES;
 }
 
