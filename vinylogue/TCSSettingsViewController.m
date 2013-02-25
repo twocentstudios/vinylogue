@@ -47,11 +47,6 @@
 - (void)loadView{
   self.view = [[UIView alloc] init];
   [self.view addSubview:self.tableView];
-  
-  UIImageView *logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
-  logo.height = 70.0f;
-  logo.contentMode = UIViewContentModeCenter;
-  [self.tableView setTableHeaderView:logo];
 }
 
 - (void)viewDidLoad{
@@ -97,7 +92,12 @@
                                kTCSimpleTableSelector: @"doDeveloperWebsite" },
                             @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
                                kTCSimpleTableTitle: @"@twocentstudios",
-                               kTCSimpleTableSelector: @"doDeveloperTwitter" }
+                               kTCSimpleTableSelector: @"doDeveloperTwitter" },
+                            @{ kTCSimpleTableTypeKey: kTCSimpleTableHeaderKey,
+                               kTCSimpleTableTitle: @"artist & album data" },
+                            @{ kTCSimpleTableTypeKey: kTCSimpleTableCellKey,
+                               kTCSimpleTableTitle: @"last.fm",
+                               kTCSimpleTableSelector: @"doLastFMWebsite" }
                             ];
   
   self.dataSource = [[TCSSimpleTableDataSource alloc] initWithTableLayout:tableLayout controller:self];
@@ -197,6 +197,13 @@
 
 - (void)doDeveloperTwitter{
   NSString *urlString = @"http://twitter.com/twocentstudios";
+  if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+  }
+}
+
+- (void)doLastFMWebsite{
+  NSString *urlString = @"http://last.fm";
   if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
   }
