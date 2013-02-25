@@ -37,8 +37,8 @@
     [self.frontView addSubview:self.bottomLabel];
     
     // Set up commands
-    self.pullLeftOffset = 50;
-    self.pullRightOffset = 50;
+    self.pullLeftOffset = 40;
+    self.pullRightOffset = 40;
     self.pullLeftCommand = [RACCommand command];
     self.pullRightCommand = [RACCommand command];
   }
@@ -99,12 +99,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-  CGFloat offset = scrollView.contentOffset.x;
-  if (offset < -self.pullLeftOffset){
-    [scrollView setContentOffset:CGPointMake(-self.pullLeftOffset, 0)];
-  }else if(offset > self.pullRightOffset){
-    [scrollView setContentOffset:CGPointMake(self.pullLeftOffset, 0)];
-  }
+
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
