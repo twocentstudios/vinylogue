@@ -19,6 +19,7 @@ static CGFloat marginVertInAlbum = -2.0f;
 static CGFloat marginVertInPlays = -10.0f;
 static CGFloat imageViewSide = 80.0f;
 static CGFloat playsWidth = 50.0f;
+static NSString *placeholderImage = @"placeholder";
 
 @interface TCSAlbumArtistPlayCountCell ()
 
@@ -52,13 +53,15 @@ static CGFloat playsWidth = 50.0f;
 - (void)prepareForReuse {
   [super prepareForReuse];
   
+  [self setImageURL:nil];
+  
 //  self.playCountLabel.text = nil;
 //  self.playCountTitleLabel.text = nil;
 //  self.textLabel.text = nil;
 //  self.detailTextLabel.text = nil;
 //  self.rankLabel.text = nil;
 //  self.imageView.image = nil;
-//  
+//
 //  [self setNeedsLayout];
 }
 
@@ -81,7 +84,7 @@ static CGFloat playsWidth = 50.0f;
 }
 
 - (void)setImageURL:(NSString *)urlString{
-  UIImage *placeHolderImage = [UIImage imageNamed:@"Default"];
+  UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
   if (urlString){
     [self.imageView setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:placeHolderImage];
   }else{

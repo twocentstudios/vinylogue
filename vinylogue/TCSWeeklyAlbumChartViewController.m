@@ -212,8 +212,9 @@
   [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(id x){
      NSLog(@"Refreshing table...");
-    [self.tableView reloadData];
-  }];
+     [self.tableView reloadData];
+     [self.tableView setContentOffset:CGPointZero animated:YES];
+   }];
   
   // Change displayed year by sliding the slideSelectView left or right
   self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear) block:^(id sender) {
