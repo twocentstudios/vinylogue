@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) WeeklyAlbumChart *object;
 
-- (void)setImageURL:(NSString *)urlString;
+- (void)refreshImage;
 
 + (CGFloat)heightForObject:(id)object atIndexPath:(NSIndexPath *)indexPath tableView:(UITableView *)tableView;
 

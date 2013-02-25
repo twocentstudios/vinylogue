@@ -53,7 +53,9 @@ static NSString *placeholderImage = @"placeholder";
 - (void)prepareForReuse {
   [super prepareForReuse];
   
-  [self setImageURL:nil];
+//  self.object = nil;
+  
+//  [self setImageURL:nil];
   
 //  self.playCountLabel.text = nil;
 //  self.playCountTitleLabel.text = nil;
@@ -66,15 +68,14 @@ static NSString *placeholderImage = @"placeholder";
 }
 
 - (void)setObject:(WeeklyAlbumChart *)object {
+  _object = object;
   self.textLabel.text = [object.artistName uppercaseString];
   self.detailTextLabel.text = object.albumName;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
+  
+  [self.imageView setImageWithURL:[NSURL URLWithString:object.albumImageURL] placeholderImage:[UIImage imageNamed:placeholderImage]];
 
-  // Immediately set the placeholder image.
-  // If the object already knows its imageURL.
-  // If it's empty, the cell will wait for its controller to provide the URL
-  [self setImageURL:object.albumImageURL];
   
   if (object.playcountValue == 1){
     self.playCountTitleLabel.text = NSLocalizedString(@"play", nil);
@@ -83,10 +84,11 @@ static NSString *placeholderImage = @"placeholder";
   }
 }
 
-- (void)setImageURL:(NSString *)urlString{
+
+- (void)refreshImage{
   UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
-  if (urlString){
-    [self.imageView setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:placeHolderImage];
+  if (self.object.albumImageURL){
+    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.albumImageURL] placeholderImage:placeHolderImage];
   }else{
     self.imageView.image = placeHolderImage;
   }

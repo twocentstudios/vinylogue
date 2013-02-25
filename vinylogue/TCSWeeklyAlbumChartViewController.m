@@ -236,6 +236,7 @@
   
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
+  
 }
 
 - (void)setUpViewSignals{
@@ -431,7 +432,10 @@
   WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
   if (albumChart.albumImageURL == nil) {
     [[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] subscribeNext:^(NSString *albumImageURL) {
-      [albumChartCell setImageURL:albumImageURL];
+      // This is terribly inefficient, but seems to be the best method for ensuring stability
+      for (TCSAlbumArtistPlayCountCell* albumCell in [tableView visibleCells]){
+        [albumCell refreshImage];
+      }
     }];
   }
 }
