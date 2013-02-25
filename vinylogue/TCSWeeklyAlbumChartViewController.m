@@ -132,7 +132,7 @@
   }];
     
   // When the lastFMClient changes (probably because the username changed), look up the weekly chart list
-  [[RACAbleWithStart(self.lastFMClient) filter:^BOOL(id x) {
+  [[[RACAbleWithStart(self.lastFMClient) deliverOn:[RACScheduler scheduler]] filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(id x) {
     NSLog(@"Fetching date ranges for available charts...");
@@ -151,7 +151,7 @@
     } error:^(NSError *error) {
       @strongify(self);
       NSLog(@"There was an error fetching the weekly chart list!");
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:nil actionTarget:nil actionSelector:nil];
       self.showingError = YES;
       self.showingLoading = NO;
     }];
@@ -162,6 +162,8 @@
   [[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
    map:^id(RACTuple *t) {
      NSLog(@"Calculating the date range for the weekly chart...");
+     @strongify(self);
+     self.showingError = NO;
      NSArray *weeklyCharts = t.first;
      NSDate *displayingDate = t.second;
      return [[weeklyCharts.rac_sequence
@@ -171,7 +173,7 @@
    }];
   
   // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
-  [[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
+  [[[RACAble(self.displayingWeeklyChart) deliverOn:[RACScheduler scheduler]] filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
     NSLog(@"Loading album charts for the selected week...");
@@ -236,7 +238,6 @@
   
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
-  
 }
 
 - (void)setUpViewSignals{
@@ -351,6 +352,10 @@
 - (void)viewWillAppear:(BOOL)animated{
   [super viewWillAppear:animated];
   
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+  [super viewDidAppear:animated];
 }
 
 - (void)viewWillLayoutSubviews{
