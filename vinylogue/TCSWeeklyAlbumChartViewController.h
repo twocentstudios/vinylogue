@@ -10,8 +10,6 @@
 
 @interface TCSWeeklyAlbumChartViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, copy) NSString *userName;
-
 - (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter;
 
 @end

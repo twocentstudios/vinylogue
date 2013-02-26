@@ -33,25 +33,27 @@
 @property (nonatomic, strong) UIBarButtonItem *settingsButton;
 
 // Datasources
-@property (nonatomic, strong) TCSLastFMAPIClient *lastFMClient;
-@property (nonatomic, strong) NSArray *weeklyCharts; // list of to:from: dates we can request
-@property (nonatomic, strong) NSArray *rawAlbumChartsForWeek; // prefiltered charts
-@property (nonatomic, strong) NSArray *albumChartsForWeek; // filtered charts to display
+@property (atomic, copy) NSString *userName;
+@property (atomic, strong) TCSLastFMAPIClient *lastFMClient;
+@property (atomic, strong) NSArray *weeklyCharts; // list of to:from: dates we can request
+@property (atomic, strong) NSArray *rawAlbumChartsForWeek; // prefiltered charts
+@property (atomic, strong) NSArray *albumChartsForWeek; // filtered charts to display
 
-@property (nonatomic, strong) NSCalendar *calendar;
-@property (nonatomic, strong) NSDate *now;
-@property (nonatomic, strong) NSDate *displayingDate;
-@property (nonatomic) NSUInteger displayingYearsAgo;
-@property (nonatomic, strong) WeeklyChart *displayingWeeklyChart;
-@property (nonatomic, strong) NSDate *earliestScrobbleDate;
-@property (nonatomic, strong) NSDate *latestScrobbleDate;
+@property (atomic, strong) NSCalendar *calendar;
+@property (atomic, strong) NSDate *now;
+@property (atomic, strong) NSDate *displayingDate;
+@property (atomic) NSUInteger displayingYearsAgo;
+@property (atomic, strong) WeeklyChart *displayingWeeklyChart;
+@property (atomic, strong) NSDate *earliestScrobbleDate;
+@property (atomic, strong) NSDate *latestScrobbleDate;
 
 // Controller state
-@property (nonatomic) BOOL canMoveForwardOneYear;
-@property (nonatomic) BOOL canMoveBackOneYear;
-@property (nonatomic) BOOL showingError;
-@property (nonatomic) BOOL showingEmpty;
-@property (nonatomic) BOOL showingLoading;
+@property (atomic) BOOL canMoveForwardOneYear;
+@property (atomic) BOOL canMoveBackOneYear;
+@property (atomic) BOOL showingError;
+@property (atomic) NSString *showingErrorMessage;
+@property (atomic) BOOL showingEmpty;
+@property (atomic) BOOL showingLoading;
 
 // Preferences
 @property (nonatomic) NSUInteger playCountFilter;
@@ -64,8 +66,8 @@
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.title = NSLocalizedString(@"charts", nil);
-//    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo"]];
     
+    // userName and playCountFilter are initialized on startup and cannot be changed in the controller's lifetime
     self.userName = userName;
     self.playCountFilter = playCountFilter;
     self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
@@ -77,194 +79,57 @@
   self.view = [[UIView alloc] init];
   self.view.autoresizesSubviews = YES;
   
+  // subview attributes are defined in view getters section
   [self.view addSubview:self.slideSelectView];
   
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
   [self.view addSubview:self.tableView];
   
+  // loading view is shown as bar button item
   UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
   self.loadingImageView.hidden = YES;
   self.navigationItem.rightBarButtonItem = loadingItem;
   
+  // double tap on the slide view to hide the nav bar and status bar
   UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
   doubleTap.numberOfTapsRequired = 2;
   [self.slideSelectView.frontView addGestureRecognizer:doubleTap];
-  
 }
 
 - (void)viewDidLoad{
   [super viewDidLoad];
   
+  // two helper methods to set up all the signals that define the controller's behavior
   [self setUpViewSignals];
-
-  // When the userName changes (or is loaded the first time) we need to basically reload everything. If there's no username set, we'll show an error
-  RACSignal *userNameSignal = RACAbleWithStart(self.userName);
+  [self setUpDataSignals];
   
-  @weakify(self);
-  [[userNameSignal filter:^BOOL(id x) {
-    return (x != nil);
-  }] subscribeNext:^(NSString *userName) {
-    NSLog(@"Loading client for %@...", userName);
-    @strongify(self);
-    self.showingError = NO;
-    self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
-  }];
-  
-  [[userNameSignal filter:^BOOL(id x) {
-    return (x == nil);
-  }] subscribeNext:^(id x) {
-    NSLog(@"Please set a username!");
-    @strongify(self);
-    self.showingError = YES;
-  }];
-
-//  RAC(self.now) = [RACSignal interval:60 * 60]; // update every hour
-
-  // Update the date being displayed based on the current date/time and how many years ago we want to go back
-  RAC(self.displayingDate) = [[RACSignal combineLatest:@[ RACAble(self.now), RACAble(self.displayingYearsAgo) ] reduce:^(NSDate *now, NSNumber *displayingYearsAgo){
-    NSLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    components.year = -1*[displayingYearsAgo integerValue];
-    return [self.calendar dateByAddingComponents:components toDate:now options:0];
-  }] filter:^BOOL(id x) {
-    return (x != nil);
-  }];
-    
-  // When the lastFMClient changes (probably because the username changed), look up the weekly chart list
-  [[[RACAbleWithStart(self.lastFMClient) deliverOn:[RACScheduler scheduler]] filter:^BOOL(id x) {
-    return (x != nil);
-  }] subscribeNext:^(id x) {
-    NSLog(@"Fetching date ranges for available charts...");
-    @strongify(self);
-    self.showingLoading = YES;
-    [[[self.lastFMClient fetchWeeklyChartList] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSArray *weeklyCharts) {
-      @strongify(self);
-      self.weeklyCharts = weeklyCharts;
-      if ([weeklyCharts count] > 0){
-        WeeklyChart *firstChart = self.weeklyCharts[0];
-        WeeklyChart *lastChart = [self.weeklyCharts lastObject];
-        self.earliestScrobbleDate = firstChart.from;
-        self.latestScrobbleDate = lastChart.to;
-        self.showingLoading = NO;
-      }
-    } error:^(NSError *error) {
-      @strongify(self);
-      NSLog(@"There was an error fetching the weekly chart list!");
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:nil actionTarget:nil actionSelector:nil];
-      self.showingError = YES;
-      self.showingLoading = NO;
-    }];
-  }];
-  
-  // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
-  RAC(self.displayingWeeklyChart) =
-  [[[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
-   deliverOn:[RACScheduler scheduler]]
-   map:^id(RACTuple *t) {
-     NSLog(@"Calculating the date range for the weekly chart...");
-     @strongify(self);
-     self.showingError = NO;
-     NSArray *weeklyCharts = t.first;
-     NSDate *displayingDate = t.second;
-     return [[weeklyCharts.rac_sequence
-              filter:^BOOL(WeeklyChart *weeklyChart) {
-                return (([weeklyChart.from compare:displayingDate] == NSOrderedAscending) && ([weeklyChart.to compare:displayingDate] == NSOrderedDescending));
-              }] head];
-   }];
-  
-  // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
-  [[[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
-    return (x != nil);
-  }] deliverOn:[RACScheduler scheduler]]
-   subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
-    NSLog(@"Loading album charts for the selected week...");
-    @strongify(self);
-    self.showingLoading = YES;
-    [[[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart]
-     deliverOn:[RACScheduler mainThreadScheduler]]
-   subscribeNext:^(NSArray *albumChartsForWeek) {
-      NSLog(@"Copying raw weekly charts...");
-      @strongify(self);
-      self.rawAlbumChartsForWeek = albumChartsForWeek;
-      self.showingLoading = NO;
-    } error:^(NSError *error) {
-      @strongify(self);
-      self.albumChartsForWeek = nil;
-      NSLog(@"There was an error fetching the weekly album charts!");
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:nil actionTarget:nil actionSelector:nil];
-      self.showingError = YES;
-      self.showingLoading = NO;
-    }];
-  }];
-  
-  // Filter the raw album charts returned by the server based on user's play count filter
-  // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
-                      reduce:^(id first, id second){
-    return first; // we only care about the raw album charts value
-  }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
-    NSLog(@"Filtering charts by playcount...");
-    @strongify(self);
-    NSArray *filteredCharts = [[rawAlbumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
-      @strongify(self);
-      return (chart.playcountValue > self.playCountFilter);
-    }] array];
-    self.albumChartsForWeek = filteredCharts;
-    self.showingLoading = NO;
-  }];
-  
-  // When the album charts gets changed, reload the table
-  [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
-   subscribeNext:^(id x){
-     @strongify(self);
-     NSLog(@"Refreshing table...");
-     [self.tableView reloadData];
-     [self.tableView setContentOffset:CGPointZero animated:YES];
-   }];
-  
-  // Change displayed year by sliding the slideSelectView left or right
-  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear)];
-  [self.slideSelectView.pullLeftCommand subscribeNext:^(id x) {
-    @strongify(self);
-    self.displayingYearsAgo += 1;
-  }];
-  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear)];
-  [self.slideSelectView.pullRightCommand subscribeNext:^(id x) {
-    @strongify(self);
-    self.displayingYearsAgo -= 1;
-  }];
-  
-  // Monitor datasource array to determine error or empty view
-  [RACAble(self.albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
-    @strongify(self);
-    if ((albumCharts == nil) || ([albumCharts count] == 0)){
-      self.showingEmpty = YES;
-    }else{
-      self.showingEmpty = NO;
-    }
-  }];
-  
+  // these assignments trigger the controller to begin its actions
   self.now = [NSDate date];
   self.displayingYearsAgo = 1;
 }
 
+// Subscribing to all the signals that deal with views and UI
 - (void)setUpViewSignals{
   @weakify(self);
   
-  // Top Label
+  // SlideSelectView: Top Label
+  // Depends on: userName
   [[RACAbleWithStart(self.userName) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSString *userName) {
     @strongify(self);
     if (userName){
       self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", userName];
+      self.showingError = NO;
     }else{
       self.slideSelectView.topLabel.text = @"No last.fm user";
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:@"No last.fm user!" actionTitle:nil actionTarget:nil actionSelector:nil];
+      self.showingErrorMessage = @"No last.fm user!";
+      self.showingError = YES;
     }
     [self.slideSelectView setNeedsLayout];
   }];
   
-  // Bottom Label, Left Label, Right Label
+  // SlideSelectView: Bottom Label, Left Label, Right Label
+  // Depend on: displayingDate, earliestScrobbleDate, latestScrobbleDate
   [[[RACSignal combineLatest:@[RACAbleWithStart(self.displayingDate), RACAbleWithStart(self.earliestScrobbleDate), RACAbleWithStart(self.latestScrobbleDate)] ] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(RACTuple *dates) {
      NSDate *displayingDate = dates.first;
@@ -313,6 +178,7 @@
    [self.slideSelectView performSelector:@selector(setNeedsLayout) withObject:self.slideSelectView afterDelay:0];
   }];
   
+  // Show or hide the empty view
   [[[RACAble(self.showingEmpty) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingEmpty) {
     @strongify(self);
@@ -327,21 +193,26 @@
     }
   }];
   
+  // Show or hide the error view
   [[[RACAble(self.showingError) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingError) {
     @strongify(self);
     BOOL isShowingError = [showingError boolValue];
     if (isShowingError){
-      self.showingEmpty = NO; // Don't show empty if there's an error
-      // Assume that the error setter created the errorview with the details
+      self.showingEmpty = NO; // Don't show empty or loading if there's an error
+      self.showingLoading = NO;
+      NSString *message = self.showingErrorMessage ? self.showingErrorMessage : @"Undefined error";
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:message actionTitle:nil actionTarget:nil actionSelector:nil];
       [self.view addSubview:self.errorView];
       [self.errorView setNeedsDisplay];
     }else{
       [self.errorView removeFromSuperview];
       self.errorView = nil;
+      self.showingErrorMessage = nil;
     }
   }];
   
+  // Show or hide the loading view
   [[[RACAble(self.showingLoading) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingLoading) {
     @strongify(self);
@@ -360,6 +231,147 @@
     @strongify(self);
     CGFloat x = [offset CGPointValue].x;
     self.tableView.alpha = MAX(1 - (fabsf(x)/50.0f), 0.4f);
+  }];
+}
+
+// All the signals that deal with acquiring and reacting to data changes
+- (void)setUpDataSignals{
+  
+  // Setting the username triggers loading of the lastFMClient
+  @weakify(self);
+  [[RACAbleWithStart(self.userName) filter:^BOOL(id x) {
+    return (x != nil);
+  }] subscribeNext:^(NSString *userName) {
+    NSLog(@"Loading client for %@...", userName);
+    @strongify(self);
+    self.showingError = NO;
+    self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
+  }];
+    
+  // Update the date being displayed based on the current date/time and how many years ago we want to go back
+  RAC(self.displayingDate) = [[[[RACSignal combineLatest:@[ RACAble(self.now), RACAble(self.displayingYearsAgo) ]]
+                                deliverOn:[RACScheduler scheduler]]
+                               map:^(RACTuple *t){
+                                 NSDate *now = [t first];
+                                 NSNumber *displayingYearsAgo = [t second];
+                                 NSLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
+                                 NSDateComponents *components = [[NSDateComponents alloc] init];
+                                 components.year = -1*[displayingYearsAgo integerValue];
+                                 return [self.calendar dateByAddingComponents:components toDate:now options:0];
+                               }] filter:^BOOL(id x) {
+                                 NSLog(@"Time range calculated");
+                                 return (x != nil);
+                               }];
+  
+  // When the lastFMClient changes (probably because the username changed), look up the weekly chart list
+  [[[RACAbleWithStart(self.lastFMClient) filter:^BOOL(id x) {
+    return (x != nil);
+  }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(id x) {
+    NSLog(@"Fetching date ranges for available charts...");
+    @strongify(self);
+    self.showingLoading = YES;
+    [[[self.lastFMClient fetchWeeklyChartList] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *weeklyCharts) {
+      @strongify(self);
+      self.weeklyCharts = weeklyCharts;
+      if ([weeklyCharts count] > 0){
+        WeeklyChart *firstChart = self.weeklyCharts[0];
+        WeeklyChart *lastChart = [self.weeklyCharts lastObject];
+        self.earliestScrobbleDate = firstChart.from;
+        self.latestScrobbleDate = lastChart.to;
+      }
+      self.showingLoading = NO;
+    } error:^(NSError *error) {
+      @strongify(self);
+      NSLog(@"There was an error fetching the weekly chart list!");
+      self.showingErrorMessage = error.localizedDescription;
+      self.showingError = YES;
+    }];
+  }];
+  
+  // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
+  RAC(self.displayingWeeklyChart) =
+  [[[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
+    deliverOn:[RACScheduler scheduler]]
+   map:^id(RACTuple *t) {
+     NSLog(@"Calculating the date range for the weekly chart...");
+     @strongify(self);
+     self.showingError = NO;
+     self.showingLoading = YES;
+     NSArray *weeklyCharts = t.first;
+     NSDate *displayingDate = t.second;
+     return [[weeklyCharts.rac_sequence
+              filter:^BOOL(WeeklyChart *weeklyChart) {
+                return (([weeklyChart.from compare:displayingDate] == NSOrderedAscending) && ([weeklyChart.to compare:displayingDate] == NSOrderedDescending));
+              }] head];
+   }];
+  
+  // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
+  [[[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
+    return (x != nil);
+  }] deliverOn:[RACScheduler scheduler]]
+   subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
+     NSLog(@"Loading album charts for the selected week...");
+     @strongify(self);
+     [[[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart]
+       deliverOn:[RACScheduler scheduler]]
+      subscribeNext:^(NSArray *albumChartsForWeek) {
+        NSLog(@"Copying raw weekly charts...");
+        @strongify(self);
+        self.rawAlbumChartsForWeek = albumChartsForWeek;
+      } error:^(NSError *error) {
+        @strongify(self);
+        self.albumChartsForWeek = nil;
+        NSLog(@"There was an error fetching the weekly album charts!");
+        self.showingErrorMessage = error.localizedDescription;
+        self.showingError = YES;
+      }];
+   }];
+  
+  // Filter the raw album charts returned by the server based on user's play count filter
+  // Run whenever the raw albums change or the play count filter changes (from settings screen)
+  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
+                      reduce:^(id first, id second){
+                        return first; // we only care about the raw album charts value
+                      }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
+                        NSLog(@"Filtering charts by playcount...");
+                        @strongify(self);
+                        NSArray *filteredCharts = [[rawAlbumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
+                          @strongify(self);
+                          return (chart.playcountValue > self.playCountFilter);
+                        }] array];
+                        self.albumChartsForWeek = filteredCharts;
+                      }];
+  
+  // When the album charts gets changed, reload the table
+  [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(id x){
+     @strongify(self);
+     NSLog(@"Refreshing table...");
+     [self.tableView reloadData];
+     [self.tableView setContentOffset:CGPointZero animated:YES];
+     self.showingLoading = NO;
+   }];
+  
+  // Change displayed year by sliding the slideSelectView left or right
+  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear)];
+  [self.slideSelectView.pullLeftCommand subscribeNext:^(id x) {
+    @strongify(self);
+    self.displayingYearsAgo += 1;
+  }];
+  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear)];
+  [self.slideSelectView.pullRightCommand subscribeNext:^(id x) {
+    @strongify(self);
+    self.displayingYearsAgo -= 1;
+  }];
+  
+  // Monitor datasource array to determine empty view
+  [RACAble(self.albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
+    @strongify(self);
+    if ((albumCharts == nil) || ([albumCharts count] == 0)){
+      self.showingEmpty = YES;
+    }else{
+      self.showingEmpty = NO;
+    }
   }];
 }
 
@@ -389,8 +401,6 @@
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
   
-  
-//  self.userName = @"ybsc";
 }
 
 #pragma mark - Private
@@ -419,6 +429,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+  // We're currently only using one type of cell
   static NSString *CellIdentifier = @"TCSAlbumArtistPlayCountCell";
   TCSAlbumArtistPlayCountCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (!cell) {
@@ -433,6 +444,7 @@
 
 #pragma mark - Table view delegate
 
+// Selecting a cell just prints out its data right now
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
   id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
@@ -440,6 +452,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+  // ask the cell for its height
   id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
   return [TCSAlbumArtistPlayCountCell heightForObject:object atIndexPath:indexPath tableView:tableView];
 }
@@ -474,6 +487,7 @@
   return _tableView;
 }
 
+// Spinning record animation
 - (UIImageView *)loadingImageView{
   if (!_loadingImageView){
     _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];

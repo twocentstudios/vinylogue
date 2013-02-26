@@ -10,7 +10,18 @@
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
-
+// This view has two layers. The back layer has two buttons
+// that can be tapped to move left or right, and also
+// shows a text field on each side configured to show
+// where you're going to.
+//
+// The top view sits above a scrollview and can be slid left
+// and right. By default, sliding the view right triggers a
+// logical "left" action.
+//
+// Actions are triggered on an RACCommand for each side.
+// These commands can be overridden by the slide view's super
+// and customized.
 @interface TCSSlideSelectView : UIView <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIView *backView;
@@ -26,7 +37,6 @@
 @property (nonatomic, strong) UILabel *bottomLabel;
 
 // Signals will be fired when the scroll view is dragged past the offset
-
 @property (nonatomic) CGFloat pullLeftOffset;
 @property (nonatomic) CGFloat pullRightOffset;
 
