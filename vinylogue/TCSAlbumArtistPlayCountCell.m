@@ -28,6 +28,8 @@ static NSString *placeholderImage = @"placeholder";
 @property (nonatomic, strong) UILabel *rankLabel;
 @property (nonatomic, strong) UIView *backView;
 
+@property (nonatomic, strong) NSString *imageURLCache;
+
 @end
 
 @implementation TCSAlbumArtistPlayCountCell
@@ -52,6 +54,8 @@ static NSString *placeholderImage = @"placeholder";
 
 - (void)prepareForReuse {
   [super prepareForReuse];
+  
+  self.imageURLCache = nil;
   
 //  self.object = nil;
   
@@ -86,9 +90,15 @@ static NSString *placeholderImage = @"placeholder";
 
 
 - (void)refreshImage{
+  // prevent setting imageView unnecessarily
+  if ([self.object.albumImageURL isEqualToString:self.imageURLCache]){
+    return;
+  }
+  
   UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
   if (self.object.albumImageURL){
     [self.imageView setImageWithURL:[NSURL URLWithString:self.object.albumImageURL] placeholderImage:placeHolderImage];
+    self.imageURLCache = self.object.albumImageURL;
   }else{
     self.imageView.image = placeHolderImage;
   }

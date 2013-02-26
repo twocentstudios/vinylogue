@@ -445,15 +445,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-  // If the object doesn't have an album URL yet, request it from the server then set it
+  // If the object doesn't have an album URL yet, request it from the server then refresh the cell
   // (Kind of ugly, but RAC wasn't working inside the cell (managedobject?) for some reason
+  TCSAlbumArtistPlayCountCell *albumCell = (TCSAlbumArtistPlayCountCell *)cell;
   WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
   if (albumChart.albumImageURL == nil) {
-    [[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] subscribeNext:^(NSString *albumImageURL) {
-      // This is terribly inefficient, but seems to be the best method for ensuring stability
-      for (TCSAlbumArtistPlayCountCell* albumCell in [tableView visibleCells]){
-        [albumCell refreshImage];
-      }
+    [[[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSString *albumImageURL) {
+      [albumCell refreshImage];
     }];
   }
 }
