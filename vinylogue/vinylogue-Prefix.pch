@@ -21,4 +21,5 @@
   #import <TestFlightSDK/TestFlight.h>
   #import "TCSVinylogueDesign.h"
   #import "TCSVinylogueGlobals.h"
+  #import "NSDictionary+TCSDictionarySafety.h"
 #endif

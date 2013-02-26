@@ -93,6 +93,8 @@
 		343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */; };
 		343C0FCC16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
 		343C0FCD16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
+		3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
+		3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
 		3479A4D316D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
 		3479A4D516D83FD20042B8AE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3479A4D416D83FD20042B8AE /* StoreKit.framework */; };
@@ -193,6 +195,8 @@
 		343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSFavoriteUsersViewController.m; sourceTree = "<group>"; };
 		343C0FCA16D816840028A6FE /* TCSUserStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSUserStore.h; sourceTree = "<group>"; };
 		343C0FCB16D816840028A6FE /* TCSUserStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSUserStore.m; sourceTree = "<group>"; };
+		3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TCSDictionarySafety.h"; sourceTree = "<group>"; };
+		3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TCSDictionarySafety.m"; sourceTree = "<group>"; };
 		3479A4D016D83E950042B8AE /* TCSSinglePageWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSinglePageWebViewController.h; sourceTree = "<group>"; };
 		3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSSinglePageWebViewController.m; sourceTree = "<group>"; };
 		3479A4D416D83FD20042B8AE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -283,6 +287,7 @@
 				343C0EFC16D1C0270028A6FE /* TCSAppDelegate.m */,
 				343C0F6316D554670028A6FE /* TCSVinylogueDesign.h */,
 				343C0FB216D6C3E40028A6FE /* TCSVinylogueGlobals.h */,
+				3464744216DC7538003E6350 /* Categories */,
 				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
 				343C0F5C16D31D460028A6FE /* Views */,
@@ -437,6 +442,15 @@
 				343C0FBC16D6E3D00028A6FE /* TCSSettingsCells.m */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		3464744216DC7538003E6350 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */,
+				3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		3479A4D816D84DBB0042B8AE /* application */ = {
@@ -635,6 +649,7 @@
 				343C0FC816D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */,
 				343C0FCC16D816840028A6FE /* TCSUserStore.m in Sources */,
 				3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */,
+				3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +676,7 @@
 				343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */,
 				343C0FCD16D816840028A6FE /* TCSUserStore.m in Sources */,
 				3479A4D316D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */,
+				3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
