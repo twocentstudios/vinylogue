@@ -192,7 +192,7 @@
       @strongify(self);
       self.albumChartsForWeek = nil;
       NSLog(@"There was an error fetching the weekly album charts!");
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:@"RETRY" actionTarget:self actionSelector:@selector(noSelector:)];
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:error.localizedDescription actionTitle:nil actionTarget:nil actionSelector:nil];
       self.showingError = YES;
       self.showingLoading = NO;
     }];
@@ -259,7 +259,7 @@
       self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", userName];
     }else{
       self.slideSelectView.topLabel.text = @"No last.fm user";
-      self.errorView = [TCSEmptyErrorView errorViewWithTitle:@"No last.fm user!" actionTitle:@"SELECT USER" actionTarget:self actionSelector:@selector(noSelector:)];
+      self.errorView = [TCSEmptyErrorView errorViewWithTitle:@"No last.fm user!" actionTitle:nil actionTarget:nil actionSelector:nil];
     }
     [self.slideSelectView setNeedsLayout];
   }];
