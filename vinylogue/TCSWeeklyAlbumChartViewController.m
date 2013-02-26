@@ -138,7 +138,7 @@
     NSLog(@"Fetching date ranges for available charts...");
     @strongify(self);
     self.showingLoading = YES;
-    [[self.lastFMClient fetchWeeklyChartList] subscribeNext:^(NSArray *weeklyCharts) {
+    [[[self.lastFMClient fetchWeeklyChartList] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSArray *weeklyCharts) {
       @strongify(self);
       self.weeklyCharts = weeklyCharts;
       if ([weeklyCharts count] > 0){
@@ -159,7 +159,8 @@
   
   // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
   RAC(self.displayingWeeklyChart) =
-  [[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
+  [[[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
+   deliverOn:[RACScheduler scheduler]]
    map:^id(RACTuple *t) {
      NSLog(@"Calculating the date range for the weekly chart...");
      @strongify(self);
@@ -173,13 +174,16 @@
    }];
   
   // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
-  [[[RACAble(self.displayingWeeklyChart) deliverOn:[RACScheduler scheduler]] filter:^BOOL(id x) {
+  [[[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
     return (x != nil);
-  }] subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
+  }] deliverOn:[RACScheduler scheduler]]
+   subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
     NSLog(@"Loading album charts for the selected week...");
     @strongify(self);
     self.showingLoading = YES;
-    [[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart] subscribeNext:^(NSArray *albumChartsForWeek) {
+    [[[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart]
+     deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSArray *albumChartsForWeek) {
       NSLog(@"Copying raw weekly charts...");
       @strongify(self);
       self.rawAlbumChartsForWeek = albumChartsForWeek;
@@ -196,10 +200,10 @@
   
   // Filter the raw album charts returned by the server based on user's play count filter
   // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
+  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
                       reduce:^(id first, id second){
     return first; // we only care about the raw album charts value
-  }] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
+  }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
     NSLog(@"Filtering charts by playcount...");
     @strongify(self);
     NSArray *filteredCharts = [[rawAlbumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
@@ -247,7 +251,7 @@
   @weakify(self);
   
   // Top Label
-  [RACAbleWithStart(self.userName) subscribeNext:^(NSString *userName) {
+  [[RACAbleWithStart(self.userName) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSString *userName) {
     @strongify(self);
     if (userName){
       self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", userName];
@@ -259,7 +263,7 @@
   }];
   
   // Bottom Label, Left Label, Right Label
-  [[RACSignal combineLatest:@[RACAbleWithStart(self.displayingDate), RACAbleWithStart(self.earliestScrobbleDate), RACAbleWithStart(self.latestScrobbleDate)] ]
+  [[[RACSignal combineLatest:@[RACAbleWithStart(self.displayingDate), RACAbleWithStart(self.earliestScrobbleDate), RACAbleWithStart(self.latestScrobbleDate)] ] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(RACTuple *dates) {
      NSDate *displayingDate = dates.first;
      NSDate *earliestScrobbleDate = dates.second;
@@ -307,11 +311,13 @@
    [self.slideSelectView performSelector:@selector(setNeedsLayout) withObject:self.slideSelectView afterDelay:0];
   }];
   
-  [[RACAble(self.showingEmpty) distinctUntilChanged] subscribeNext:^(NSNumber *showingEmpty) {
+  [[[RACAble(self.showingEmpty) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *showingEmpty) {
     @strongify(self);
     BOOL isShowingEmpty = [showingEmpty boolValue];
     if (isShowingEmpty && !self.showingError){
-      self.emptyView = [TCSEmptyErrorView emptyViewWithTitle:@"No charts!" subtitle:@"Looks like you didn't listen to much music this week."];
+      NSString *subtitle = [NSString stringWithFormat:@"Looks like %@ didn't listen to much music this week.", self.userName];
+      self.emptyView = [TCSEmptyErrorView emptyViewWithTitle:@"No charts!" subtitle:subtitle];
       [self.view addSubview:self.emptyView];
     }else{
       [self.emptyView removeFromSuperview];
@@ -319,20 +325,23 @@
     }
   }];
   
-  [[RACAble(self.showingError) distinctUntilChanged] subscribeNext:^(NSNumber *showingError) {
+  [[[RACAble(self.showingError) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *showingError) {
     @strongify(self);
     BOOL isShowingError = [showingError boolValue];
     if (isShowingError){
       self.showingEmpty = NO; // Don't show empty if there's an error
       // Assume that the error setter created the errorview with the details
       [self.view addSubview:self.errorView];
+      [self.errorView setNeedsDisplay];
     }else{
       [self.errorView removeFromSuperview];
       self.errorView = nil;
     }
   }];
   
-  [[RACAble(self.showingLoading) distinctUntilChanged] subscribeNext:^(NSNumber *showingLoading) {
+  [[[RACAble(self.showingLoading) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *showingLoading) {
     @strongify(self);
     BOOL isShowingLoading = [showingLoading boolValue];
     if (isShowingLoading){
@@ -436,7 +445,6 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
   // If the object doesn't have an album URL yet, request it from the server then set it
   // (Kind of ugly, but RAC wasn't working inside the cell (managedobject?) for some reason
-  TCSAlbumArtistPlayCountCell *albumChartCell = (TCSAlbumArtistPlayCountCell *)cell;
   WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
   if (albumChart.albumImageURL == nil) {
     [[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] subscribeNext:^(NSString *albumImageURL) {
