@@ -224,11 +224,13 @@
    }];
   
   // Change displayed year by sliding the slideSelectView left or right
-  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear) block:^(id sender) {
+  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear)];
+  [self.slideSelectView.pullLeftCommand subscribeNext:^(id x) {
     @strongify(self);
     self.displayingYearsAgo += 1;
   }];
-  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear) block:^(id sender) {
+  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear)];
+  [self.slideSelectView.pullRightCommand subscribeNext:^(id x) {
     @strongify(self);
     self.displayingYearsAgo -= 1;
   }];
