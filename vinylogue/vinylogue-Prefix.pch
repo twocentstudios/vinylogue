@@ -18,6 +18,7 @@
   #import <CoreGraphics/CoreGraphics.h>
   #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
   #import <ViewUtils/ViewUtils.h>
+  #import <TestFlightSDK/TestFlight.h>
   #import "TCSVinylogueDesign.h"
   #import "TCSVinylogueGlobals.h"
 #endif

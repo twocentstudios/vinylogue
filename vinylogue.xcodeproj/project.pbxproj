@@ -774,8 +774,10 @@
 					SystemConfiguration,
 					"-force_load",
 					"$(TARGET_BUILD_DIR)/libPods.a",
+					"$(inherited)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -784,6 +786,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Christopher Trott";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
@@ -802,8 +806,12 @@
 					SystemConfiguration,
 					"-force_load",
 					"$(TARGET_BUILD_DIR)/libPods.a",
+					"$(inherited)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
