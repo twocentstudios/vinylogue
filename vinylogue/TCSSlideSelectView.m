@@ -12,7 +12,21 @@
 #import "ReactiveCocoa/UIControl+RACSignalSupport.h"
 #import <EXTScope.h>
 
+static CGFloat buttonAlpha = 0.3f;
+
 @interface TCSSlideSelectView ()
+
+@property (nonatomic, strong) UIView *backView;
+@property (nonatomic, strong) UIButton *backLeftButton;
+@property (nonatomic, strong) UIButton *backRightButton;
+@property (nonatomic, strong) UILabel *backLeftLabel;
+@property (nonatomic, strong) UILabel *backRightLabel;
+
+@property (nonatomic, strong) UIScrollView *scrollView;
+
+@property (nonatomic, strong) UIView *frontView;
+@property (nonatomic, strong) UILabel *topLabel;
+@property (nonatomic, strong) UILabel *bottomLabel;
 
 @end
 
@@ -127,8 +141,8 @@
   @weakify(self)
   [UIView animateWithDuration:0.25f animations:^{
     @strongify(self);
-    self.backLeftButton.alpha = showing*0.3f;
-    self.backRightButton.alpha = showing*0.3f;
+    self.backLeftButton.alpha = showing*buttonAlpha;
+    self.backRightButton.alpha = showing*buttonAlpha;
   }];
 }
 
@@ -206,7 +220,7 @@
     _backLeftButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backLeftButton setImage:[UIImage imageNamed:@"leftArrow"] forState:UIControlStateNormal];
     _backLeftButton.showsTouchWhenHighlighted = YES;
-    _backLeftButton.alpha = 0.3f;
+    _backLeftButton.alpha = buttonAlpha;
     _backLeftButton.size = CGSizeMake(30, 30);
     [_backLeftButton addTarget:self action:@selector(doLeftButton:) forControlEvents:UIControlEventTouchUpInside];
   }
@@ -218,7 +232,7 @@
     _backRightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_backRightButton setImage:[UIImage imageNamed:@"rightArrow"] forState:UIControlStateNormal];
     _backRightButton.showsTouchWhenHighlighted = YES;
-    _backRightButton.alpha = 0.3f;
+    _backRightButton.alpha = buttonAlpha;
     _backRightButton.size = CGSizeMake(30, 30);
     [_backRightButton addTarget:self action:@selector(doRightButton:) forControlEvents:UIControlEventTouchUpInside];
   }

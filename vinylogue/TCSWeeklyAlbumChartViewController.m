@@ -30,7 +30,6 @@
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) UIView *errorView;
 @property (nonatomic, strong) UIImageView *loadingImageView;
-@property (nonatomic, strong) UIBarButtonItem *settingsButton;
 
 // Datasources
 @property (atomic, copy) NSString *userName;
@@ -236,15 +235,15 @@
 
 // All the signals that deal with acquiring and reacting to data changes
 - (void)setUpDataSignals{
-  
-  // Setting the username triggers loading of the lastFMClient
+
   @weakify(self);
+
+  // Setting the username triggers loading of the lastFMClient
   [[RACAbleWithStart(self.userName) filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(NSString *userName) {
     NSLog(@"Loading client for %@...", userName);
     @strongify(self);
-    self.showingError = NO;
     self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
   }];
     
@@ -498,7 +497,6 @@
     [_loadingImageView setAnimationImages:animationImages];
     _loadingImageView.animationDuration = 0.5f;
     _loadingImageView.animationRepeatCount = 0;
-    [_loadingImageView startAnimating];
   }
   return _loadingImageView;
 }

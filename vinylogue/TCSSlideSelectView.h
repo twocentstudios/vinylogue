@@ -24,17 +24,17 @@
 // and customized.
 @interface TCSSlideSelectView : UIView <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIView *backView;
-@property (nonatomic, strong) UIButton *backLeftButton;
-@property (nonatomic, strong) UIButton *backRightButton;
-@property (nonatomic, strong) UILabel *backLeftLabel;
-@property (nonatomic, strong) UILabel *backRightLabel;
+@property (nonatomic, readonly) UIView *backView;
+@property (nonatomic, readonly) UIButton *backLeftButton;
+@property (nonatomic, readonly) UIButton *backRightButton;
+@property (nonatomic, readonly) UILabel *backLeftLabel;
+@property (nonatomic, readonly) UILabel *backRightLabel;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, readonly) UIScrollView *scrollView;
 
-@property (nonatomic, strong) UIView *frontView;
-@property (nonatomic, strong) UILabel *topLabel;
-@property (nonatomic, strong) UILabel *bottomLabel;
+@property (nonatomic, readonly) UIView *frontView;
+@property (nonatomic, readonly) UILabel *topLabel;
+@property (nonatomic, readonly) UILabel *bottomLabel;
 
 // Signals will be fired when the scroll view is dragged past the offset
 @property (nonatomic) CGFloat pullLeftOffset;
