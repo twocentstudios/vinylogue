@@ -72,15 +72,17 @@ static NSString *placeholderImage = @"placeholder";
 }
 
 - (void)setObject:(WeeklyAlbumChart *)object {
+  if (_object == object)
+    return;
+  
   _object = object;
   self.textLabel.text = [object.artistName uppercaseString];
   self.detailTextLabel.text = object.albumName;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
   
-  [self.imageView setImageWithURL:[NSURL URLWithString:object.albumImageURL] placeholderImage:[UIImage imageNamed:placeholderImage]];
+  [self refreshImage];
 
-  
   if (object.playcountValue == 1){
     self.playCountTitleLabel.text = NSLocalizedString(@"play", nil);
   }else{
@@ -90,17 +92,13 @@ static NSString *placeholderImage = @"placeholder";
 
 
 - (void)refreshImage{
-  // prevent setting imageView unnecessarily
-  if ([self.object.albumImageURL isEqualToString:self.imageURLCache]){
-    return;
-  }
-  
   UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
-  if (self.object.albumImageURL){
+  if (self.imageView.image == nil){
+    self.imageView.image = placeHolderImage;
+  }else if(![self.object.albumImageURL isEqualToString:self.imageURLCache]){
+    // prevent setting imageView unnecessarily
     [self.imageView setImageWithURL:[NSURL URLWithString:self.object.albumImageURL] placeholderImage:placeHolderImage];
     self.imageURLCache = self.object.albumImageURL;
-  }else{
-    self.imageView.image = placeHolderImage;
   }
 }
 
