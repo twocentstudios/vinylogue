@@ -100,7 +100,7 @@
   [super viewDidAppear:animated];
   
   // Ugly hack to get rid of automatically added bottom borders
-  [self removeStupidTableHeaderBorders];
+//  [self removeStupidTableHeaderBorders];
 }
 
 - (void)didReceiveMemoryWarning{
