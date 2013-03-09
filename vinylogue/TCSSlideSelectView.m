@@ -117,7 +117,7 @@ static CGFloat buttonAlpha = 0.3f;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-  //  NSLog(@"ENDED DRAGGING at offset: %f", scrollView.contentOffset.x);
+  //  DLog(@"ENDED DRAGGING at offset: %f", scrollView.contentOffset.x);
   CGFloat offset = scrollView.contentOffset.x;
   if (offset <= -self.pullLeftOffset){
     [self.pullLeftCommand execute:nil];

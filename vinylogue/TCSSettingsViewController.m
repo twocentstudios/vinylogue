@@ -147,17 +147,17 @@
     [mailVC setMessageBody:messageBody isHTML:NO];
     [self presentViewController:mailVC animated:YES completion:NULL];
   }else{
-    NSLog(@"Mail unsupported");
+    DLog(@"Mail unsupported");
   }
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error{
   if (result == MFMailComposeResultSent){
-    NSLog(@"Mail sent");
+    DLog(@"Mail sent");
   }else if(result == MFMailComposeResultSaved){
-    NSLog(@"Mail saved");
+    DLog(@"Mail saved");
   }else if(result == MFMailComposeResultFailed){
-    NSLog(@"Mail sending failed");
+    DLog(@"Mail sending failed");
   }
   [self dismissViewControllerAnimated:YES completion:NULL];
 }
@@ -174,7 +174,7 @@
   }else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
   }else{
-    NSLog(@"Error opening url");
+    DLog(@"Error opening url");
   }
 }
 

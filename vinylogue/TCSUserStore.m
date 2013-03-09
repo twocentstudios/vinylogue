@@ -96,8 +96,8 @@
   _friendsList = [NSMutableArray arrayWithArray:storedFriendsList];
   _userName = storedUserName;
   
-  NSLog(@"loaded username: %@", self.userName);
-  NSLog(@"loaded friends: %@", self.friendsList);
+  DLog(@"loaded username: %@", self.userName);
+  DLog(@"loaded friends: %@", self.friendsList);
 }
 
 @end

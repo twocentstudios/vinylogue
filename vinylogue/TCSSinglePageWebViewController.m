@@ -72,7 +72,7 @@
     NSString *htmlFile = [[NSBundle mainBundle] pathForResource:self.localFileName ofType:@"html" inDirectory:nil];
     NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];
     if (!htmlFile || !htmlString){
-      NSLog(@"Error loading html file");
+      DLog(@"Error loading html file");
     }else{
       [self.webView loadHTMLString:htmlString baseURL:nil];
     }
@@ -104,7 +104,7 @@
 #pragma mark - UIWebViewDelegate
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
-  NSLog(@"Error loading webview page");
+  DLog(@"Error loading webview page");
 }
 
 @end

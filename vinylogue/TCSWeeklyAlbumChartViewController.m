@@ -242,7 +242,7 @@
   [[RACAbleWithStart(self.userName) filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(NSString *userName) {
-    NSLog(@"Loading client for %@...", userName);
+    DLog(@"Loading client for %@...", userName);
     @strongify(self);
     self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
   }];
@@ -253,12 +253,12 @@
                                map:^(RACTuple *t){
                                  NSDate *now = [t first];
                                  NSNumber *displayingYearsAgo = [t second];
-                                 NSLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
+                                 DLog(@"Calculating time range for %@ year(s) ago...", displayingYearsAgo);
                                  NSDateComponents *components = [[NSDateComponents alloc] init];
                                  components.year = -1*[displayingYearsAgo integerValue];
                                  return [self.calendar dateByAddingComponents:components toDate:now options:0];
                                }] filter:^BOOL(id x) {
-                                 NSLog(@"Time range calculated");
+                                 DLog(@"Time range calculated");
                                  return (x != nil);
                                }];
   
@@ -266,7 +266,7 @@
   [[[RACAbleWithStart(self.lastFMClient) filter:^BOOL(id x) {
     return (x != nil);
   }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(id x) {
-    NSLog(@"Fetching date ranges for available charts...");
+    DLog(@"Fetching date ranges for available charts...");
     @strongify(self);
     self.showingLoading = YES;
     [[[self.lastFMClient fetchWeeklyChartList] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *weeklyCharts) {
@@ -281,7 +281,7 @@
       self.showingLoading = NO;
     } error:^(NSError *error) {
       @strongify(self);
-      NSLog(@"There was an error fetching the weekly chart list!");
+      DLog(@"There was an error fetching the weekly chart list!");
       self.showingErrorMessage = error.localizedDescription;
       self.showingError = YES;
     }];
@@ -292,7 +292,7 @@
   [[[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
     deliverOn:[RACScheduler scheduler]]
    map:^id(RACTuple *t) {
-     NSLog(@"Calculating the date range for the weekly chart...");
+     DLog(@"Calculating the date range for the weekly chart...");
      @strongify(self);
      self.showingError = NO;
      self.showingLoading = YES;
@@ -309,18 +309,18 @@
     return (x != nil);
   }] deliverOn:[RACScheduler scheduler]]
    subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
-     NSLog(@"Loading album charts for the selected week...");
+     DLog(@"Loading album charts for the selected week...");
      @strongify(self);
      [[[self.lastFMClient fetchWeeklyAlbumChartForChart:displayingWeeklyChart]
        deliverOn:[RACScheduler scheduler]]
       subscribeNext:^(NSArray *albumChartsForWeek) {
-        NSLog(@"Copying raw weekly charts...");
+        DLog(@"Copying raw weekly charts...");
         @strongify(self);
         self.rawAlbumChartsForWeek = albumChartsForWeek;
       } error:^(NSError *error) {
         @strongify(self);
         self.albumChartsForWeek = nil;
-        NSLog(@"There was an error fetching the weekly album charts!");
+        DLog(@"There was an error fetching the weekly album charts!");
         self.showingErrorMessage = error.localizedDescription;
         self.showingError = YES;
       }];
@@ -332,7 +332,7 @@
                       reduce:^(id first, id second){
                         return first; // we only care about the raw album charts value
                       }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
-                        NSLog(@"Filtering charts by playcount...");
+                        DLog(@"Filtering charts by playcount...");
                         @strongify(self);
                         NSArray *filteredCharts = [[rawAlbumChartsForWeek.rac_sequence filter:^BOOL(WeeklyAlbumChart *chart) {
                           @strongify(self);
@@ -345,7 +345,7 @@
   [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(id x){
      @strongify(self);
-     NSLog(@"Refreshing table...");
+     DLog(@"Refreshing table...");
      [self.tableView reloadData];
      [self.tableView setContentOffset:CGPointZero animated:YES];
      self.showingLoading = NO;
@@ -447,7 +447,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
   id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
-  NSLog(@"%@", object);
+  DLog(@"%@", object);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
