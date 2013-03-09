@@ -12,12 +12,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-// Entire Core Data stack is vestigial. Intended to be used in the future, but for now everything is transient.
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
-- (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
 @end
