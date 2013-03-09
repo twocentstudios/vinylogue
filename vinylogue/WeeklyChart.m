@@ -2,6 +2,4 @@
 
 @implementation WeeklyChart
 
-// Custom logic goes here.
-
 @end

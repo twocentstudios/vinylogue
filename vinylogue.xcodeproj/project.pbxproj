@@ -36,10 +36,6 @@
 		343C0F1116D1C0270028A6FE /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0EF016D1C0270028A6FE /* CoreData.framework */; };
 		343C0F1916D1C0270028A6FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 343C0F1716D1C0270028A6FE /* InfoPlist.strings */; };
 		343C0F1C16D1C0270028A6FE /* vinylogueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F1B16D1C0270028A6FE /* vinylogueTests.m */; };
-		343C0F3A16D1CAAF0028A6FE /* _WeeklyAlbumChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3316D1CAAF0028A6FE /* _WeeklyAlbumChart.m */; };
-		343C0F3B16D1CAAF0028A6FE /* _WeeklyAlbumChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3316D1CAAF0028A6FE /* _WeeklyAlbumChart.m */; };
-		343C0F3C16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3516D1CAAF0028A6FE /* _WeeklyChart.m */; };
-		343C0F3D16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3516D1CAAF0028A6FE /* _WeeklyChart.m */; };
 		343C0F3E16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */; };
 		343C0F3F16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */; };
 		343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */; };
@@ -138,10 +134,6 @@
 		343C0F1816D1C0270028A6FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		343C0F1A16D1C0270028A6FE /* vinylogueTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vinylogueTests.h; sourceTree = "<group>"; };
 		343C0F1B16D1C0270028A6FE /* vinylogueTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = vinylogueTests.m; sourceTree = "<group>"; };
-		343C0F3216D1CAAF0028A6FE /* _WeeklyAlbumChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WeeklyAlbumChart.h; sourceTree = "<group>"; };
-		343C0F3316D1CAAF0028A6FE /* _WeeklyAlbumChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WeeklyAlbumChart.m; sourceTree = "<group>"; };
-		343C0F3416D1CAAF0028A6FE /* _WeeklyChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _WeeklyChart.h; sourceTree = "<group>"; };
-		343C0F3516D1CAAF0028A6FE /* _WeeklyChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _WeeklyChart.m; sourceTree = "<group>"; };
 		343C0F3616D1CAAF0028A6FE /* WeeklyAlbumChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeeklyAlbumChart.h; sourceTree = "<group>"; };
 		343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeeklyAlbumChart.m; sourceTree = "<group>"; };
 		343C0F3816D1CAAF0028A6FE /* WeeklyChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeeklyChart.h; sourceTree = "<group>"; };
@@ -344,10 +336,6 @@
 		343C0F4616D1CB450028A6FE /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				343C0F3216D1CAAF0028A6FE /* _WeeklyAlbumChart.h */,
-				343C0F3316D1CAAF0028A6FE /* _WeeklyAlbumChart.m */,
-				343C0F3416D1CAAF0028A6FE /* _WeeklyChart.h */,
-				343C0F3516D1CAAF0028A6FE /* _WeeklyChart.m */,
 				343C0F3616D1CAAF0028A6FE /* WeeklyAlbumChart.h */,
 				343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */,
 				343C0F3816D1CAAF0028A6FE /* WeeklyChart.h */,
@@ -631,8 +619,6 @@
 				343C0EF916D1C0270028A6FE /* main.m in Sources */,
 				343C0EFD16D1C0270028A6FE /* TCSAppDelegate.m in Sources */,
 				343C0F0616D1C0270028A6FE /* vinylogue.xcdatamodeld in Sources */,
-				343C0F3A16D1CAAF0028A6FE /* _WeeklyAlbumChart.m in Sources */,
-				343C0F3C16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */,
 				343C0F3E16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */,
 				343C0F4016D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4416D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,
@@ -658,8 +644,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				343C0F1C16D1C0270028A6FE /* vinylogueTests.m in Sources */,
-				343C0F3B16D1CAAF0028A6FE /* _WeeklyAlbumChart.m in Sources */,
-				343C0F3D16D1CAAF0028A6FE /* _WeeklyChart.m in Sources */,
 				343C0F3F16D1CAAF0028A6FE /* WeeklyAlbumChart.m in Sources */,
 				343C0F4116D1CAAF0028A6FE /* WeeklyChart.m in Sources */,
 				343C0F4516D1CB360028A6FE /* TCSLastFMAPIClient.m in Sources */,

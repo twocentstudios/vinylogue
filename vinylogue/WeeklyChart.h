@@ -1,5 +1,8 @@
-#import "_WeeklyChart.h"
 
-@interface WeeklyChart : _WeeklyChart {}
-// Custom logic goes here.
+
+@interface WeeklyChart : NSObject
+
+@property (nonatomic, strong) NSDate* from;
+@property (nonatomic, strong) NSDate* to;
+
 @end

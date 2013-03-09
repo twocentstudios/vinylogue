@@ -2,6 +2,8 @@
 
 @implementation WeeklyAlbumChart
 
-// Custom logic goes here.
+- (NSInteger)playcountValue{
+  return [self.playcount integerValue];
+}
 
 @end
