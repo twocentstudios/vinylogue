@@ -162,13 +162,12 @@
   [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#warning Set the correct app info here (including number)
 - (void)doRate{
-  NSString *urlString = @"http://appstore.com/vinylogue";
+  NSString *urlString = @"http://appstore.com/vinylogue-for-last.fm";
   
   if (NSStringFromClass([SKStoreProductViewController class]) != nil) {
     SKStoreProductViewController *storeVC = [[SKStoreProductViewController alloc] init];
-    NSNumber *appId = [NSNumber numberWithInteger:0];
+    NSNumber *appId = [NSNumber numberWithInteger:617471119];
     [storeVC loadProductWithParameters:@{SKStoreProductParameterITunesItemIdentifier:appId} completionBlock:nil];
     [self presentViewController:storeVC animated:YES completion:NULL];
     storeVC.delegate = self;
