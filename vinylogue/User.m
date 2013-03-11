@@ -24,35 +24,17 @@
   return self.userName;
 }
 
-# pragma mark - quick archival
+# pragma mark - NSCoding
 
-- (NSDictionary *)toDictionaryRepresentation{
-  return @{ kUserUserName: _userName };
-}
-
-+ (User *)fromDictionaryRepresentation:(NSDictionary *)dictionary{
-  if (!dictionary)
-    return nil;
-  
-  User *user = [[User alloc] init];
-  user.userName = [dictionary objectForKey:kUserUserName];
-  return user;
-}
-
-+ (NSArray *)dictionaryRepresenationOfArray:(NSArray *)userArray{
-  NSMutableArray *outArray = [NSMutableArray arrayWithCapacity:[userArray count]];
-  for (User *user in userArray){
-    [outArray addObject:[user toDictionaryRepresentation]];
+- (id)initWithCoder:(NSCoder *)decoder{
+  if (self = [super init]) {
+    self.userName = [decoder decodeObjectForKey:kUserUserName];
   }
-  return outArray;
+  return self;
 }
 
-+ (NSArray *)objectRepresenationFromArray:(NSArray *)dictionaryArray{
-  NSMutableArray *outArray = [NSMutableArray arrayWithCapacity:[dictionaryArray count]];
-  for (NSDictionary *user in dictionaryArray){
-    [outArray addObject:[User fromDictionaryRepresentation:user]];
-  }
-  return outArray;
+- (void)encodeWithCoder:(NSCoder *)encoder {
+  [encoder encodeObject:self.userName forKey:kUserUserName];
 }
 
 @end

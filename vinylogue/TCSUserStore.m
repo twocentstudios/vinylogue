@@ -80,23 +80,25 @@
 }
 
 - (void)save{
-  [[NSUserDefaults standardUserDefaults] setObject:[User dictionaryRepresenationOfArray:self.friendsList] forKey:kTCSUserDefaultsLastFMFriendsList];
-  [[NSUserDefaults standardUserDefaults] setObject:[self.user toDictionaryRepresentation] forKey:kTCSUserDefaultsLastFMUserName];
+  NSData *friendsData = [NSKeyedArchiver archivedDataWithRootObject:self.friendsList];
+  NSData *userData = [NSKeyedArchiver archivedDataWithRootObject:self.user];
+  [[NSUserDefaults standardUserDefaults] setObject:friendsData forKey:kTCSUserDefaultsLastFMFriendsList];
+  [[NSUserDefaults standardUserDefaults] setObject:userData forKey:kTCSUserDefaultsLastFMUserName];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)load{
-  NSDictionary *storedUser = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMUserName];
-  NSArray *storedFriendsList = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMFriendsList];
+  NSData *storedUserData = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMUserName];
+  NSData *storedFriendsListData = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMFriendsList];
+  User *storedUser = [NSKeyedUnarchiver unarchiveObjectWithData:storedUserData];
+  NSArray *storedFriendsList = [NSKeyedUnarchiver unarchiveObjectWithData:storedFriendsListData];
   
   if (storedFriendsList == nil){
     storedFriendsList = [NSArray array];
-    [[NSUserDefaults standardUserDefaults] setObject:storedFriendsList forKey:kTCSUserDefaultsLastFMFriendsList];
-    [[NSUserDefaults standardUserDefaults] synchronize];
   }
   
-  _user = [User fromDictionaryRepresentation:storedUser];
-  _friendsList = [NSMutableArray arrayWithArray:[User objectRepresenationFromArray:storedFriendsList]];
+  _user = storedUser;
+  _friendsList = [storedFriendsList mutableCopy];
   
   DLog(@"loaded username: %@", self.user.userName);
   DLog(@"loaded friends: %@", self.friendsList);

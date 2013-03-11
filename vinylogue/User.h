@@ -8,16 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface User : NSObject
+@interface User : NSObject <NSCoding>
 
 @property (nonatomic, copy) NSString *userName;
 
 - (id)initWithUserName:(NSString *)userName;
-
-// Quick archival
-- (NSDictionary *)toDictionaryRepresentation;
-+ (User *)fromDictionaryRepresentation:(NSDictionary *)dictionary;
-+ (NSArray *)dictionaryRepresenationOfArray:(NSArray *)userArray;
-+ (NSArray *)objectRepresenationFromArray:(NSArray *)dictionaryArray;
 
 @end
