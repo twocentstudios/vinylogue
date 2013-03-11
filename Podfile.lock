@@ -14,6 +14,7 @@ PODS:
   - libextobjc/EXTScope (~> 0.2.5)
 - ReactiveCocoa/RACExtensions (1.0.0):
   - ReactiveCocoa/Core
+- SDURLCache (1.2)
 - TestFlightSDK (1.2.3.beta1)
 - UIViewDrawRectBlock (0.0.1)
 - ViewUtils (1.1)
@@ -28,6 +29,7 @@ PODS:
 DEPENDENCIES:
 - AFIncrementalStore (= 0.3.0)
 - ReactiveCocoa
+- SDURLCache
 - TestFlightSDK
 - UIViewDrawRectBlock
 - ViewUtils
@@ -39,6 +41,7 @@ SPEC CHECKSUMS:
   ReactiveCocoa: bde72a9123e7bd565d06d677d8ad79b18971aec7
   ReactiveCocoa/Core: bde72a9123e7bd565d06d677d8ad79b18971aec7
   ReactiveCocoa/RACExtensions: bde72a9123e7bd565d06d677d8ad79b18971aec7
+  SDURLCache: 2208f93474756c694eed002fa7e3ab62ff3c6468
   TestFlightSDK: f638b08651a37af099e40c47241fc58fd3cb1a66
   UIViewDrawRectBlock: 3619cdb75fb42f8767e21d9625f529a9a49ff2b5
   ViewUtils: 577b16fc6b770dff79f544c5c542ad278dd688ea
