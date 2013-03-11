@@ -16,11 +16,15 @@
 
 @property (nonatomic, readonly, copy) NSString *userName;
 
+// Client for anonymous requests (not reliant on user specific data)
++ (TCSLastFMAPIClient *)client;
+
+// Client for user specific requests
 + (TCSLastFMAPIClient *)clientForUserName:(NSString *)userName;
 
 - (RACSignal *)fetchWeeklyChartList;
 - (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart;
 - (RACSignal *)fetchImageURLForWeeklyAlbumChart:(WeeklyAlbumChart *)albumChart;
-
+- (RACSignal *)fetchUserForUserName:(NSString *)userName;
 
 @end

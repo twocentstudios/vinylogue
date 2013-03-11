@@ -9,12 +9,21 @@
 #import "TCSUserNameViewController.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import "TCSLastFMAPIClient.h"
+#import "User.h"
 
 @interface TCSUserNameViewController ()
 
 @property (nonatomic, strong) UIImageView *logoImageView;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UITextField *userNameField;
+@property (nonatomic, strong) UILabel *notLoadingSymbolLabel;
+@property (nonatomic, strong) UIImageView *loadingImageView;
+@property (nonatomic, strong) UIBarButtonItem *doneBarButtonItem;
+
+@property (atomic, strong) TCSLastFMAPIClient *lastFMClient;
+
+@property (nonatomic) BOOL loading;
 
 @end
 
@@ -33,7 +42,8 @@
   if (self) {
     self.showHeader = showingHeader;
     self.userNameField.text = userName;
-    self.userNameSignal = [RACSubject subject];
+    self.userSignal = [RACSubject subject];
+    self.lastFMClient = [TCSLastFMAPIClient client];
     
     // When navigation bar is present
     self.title = @"username";
@@ -54,6 +64,9 @@
   }
   [self.view addSubview:self.titleLabel];
   [self.view addSubview:self.userNameField];
+  
+  self.doneBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doDone:)];
+  self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
 }
 
 - (void)viewWillLayoutSubviews{
@@ -88,6 +101,30 @@
 - (void)viewDidLoad{
   [super viewDidLoad];
 	
+  [[RACAbleWithStart(self.loading) distinctUntilChanged] subscribeNext:^(id x) {
+    BOOL loading = [x boolValue];
+    if (loading){
+      [self.loadingImageView startAnimating];
+      self.userNameField.leftView = self.loadingImageView;
+      self.doneBarButtonItem.enabled = NO;
+      self.userNameField.enabled = NO;
+      self.titleLabel.text = @"validating user name...";
+    }else{
+      [self.loadingImageView stopAnimating];
+      self.userNameField.leftView = self.notLoadingSymbolLabel;
+      self.userNameField.enabled = YES;
+      self.titleLabel.text = @"a last.fm username (ex. ybsc)";
+    }
+  }];
+  
+  [[RACAbleWithStart(self.editing) distinctUntilChanged] subscribeNext:^(id x) {
+    BOOL editing = [x boolValue];
+    if (editing){
+      self.doneBarButtonItem.enabled = YES;
+    }else{
+      self.doneBarButtonItem.enabled = NO;
+    }
+  }];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -95,19 +132,35 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private
+
+- (void)doDone:(id)sender{
+  self.loading = YES;
+  [[[self.lastFMClient fetchUserForUserName:self.userNameField.text]
+     deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(User *user) {
+    [self.userSignal sendNext:user];
+    [self.userSignal sendCompleted];
+  } error:^(NSError *error) {
+    [[[UIAlertView alloc] initWithTitle:@"Vinylogue" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    self.loading = NO;
+  } completed:^{
+    self.loading = NO;
+  }];
+}
+
 #pragma mark - UITextFieldDelegate
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+  self.editing = YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+  self.editing = NO;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
-  [self.userNameSignal sendNext:textField.text];
-  [self.userNameSignal sendCompleted];
-  
-  // Dismiss self
-  if (self.presentingViewController){
-    [self dismissViewControllerAnimated:YES completion:NULL];
-  }
-  if (self.navigationController){
-    [self.navigationController popViewControllerAnimated:YES];
-  }
+  [self doDone:textField];
   
   return YES;
 }
@@ -128,7 +181,6 @@
     _titleLabel.font = FONT_AVN_ULTRALIGHT(17);
     _titleLabel.textColor = GRAYCOLOR(70);
     _titleLabel.backgroundColor = CLEAR;
-    _titleLabel.text = @"a last.fm username (ex. ybsc)";
   }
   return _titleLabel;
 }
@@ -153,19 +205,42 @@
                                              NSForegroundColorAttributeName: WHITE, NSBackgroundColorAttributeName: CLEAR}];
     _userNameField.attributedPlaceholder = string;
     
-    UILabel *symbol = [[UILabel alloc] init];
-    symbol.text = @"♫";
-    symbol.font = FONT_AVN_DEMIBOLD(50);
-    symbol.textColor = GRAYCOLOR(160);
-    symbol.textAlignment = NSTextAlignmentCenter;
-    symbol.backgroundColor = CLEAR;
-    symbol.size = [symbol.text sizeWithFont:symbol.font];
-    symbol.width += 20;
-    _userNameField.leftView = symbol;
+
+    _userNameField.leftView = self.notLoadingSymbolLabel;
     _userNameField.leftViewMode = UITextFieldViewModeAlways;
     
   }
   return _userNameField;
+}
+
+- (UILabel *)notLoadingSymbolLabel{
+  if (!_notLoadingSymbolLabel){
+    _notLoadingSymbolLabel = [[UILabel alloc] init];
+    _notLoadingSymbolLabel.text = @"♫";
+    _notLoadingSymbolLabel.font = FONT_AVN_DEMIBOLD(50);
+    _notLoadingSymbolLabel.textColor = GRAYCOLOR(160);
+    _notLoadingSymbolLabel.textAlignment = NSTextAlignmentCenter;
+    _notLoadingSymbolLabel.backgroundColor = CLEAR;
+    _notLoadingSymbolLabel.size = [_notLoadingSymbolLabel.text sizeWithFont:_notLoadingSymbolLabel.font];
+    _notLoadingSymbolLabel.width += 20;
+  }
+  return _notLoadingSymbolLabel;
+}
+
+// Spinning record animation
+- (UIImageView *)loadingImageView{
+  if (!_loadingImageView){
+    _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+    _loadingImageView.contentMode = UIViewContentModeCenter;
+    NSMutableArray *animationImages = [NSMutableArray arrayWithCapacity:12];
+    for (int i = 1; i < 13; i++){
+      [animationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading%02i", i]]];
+    }
+    [_loadingImageView setAnimationImages:animationImages];
+    _loadingImageView.animationDuration = 0.5f;
+    _loadingImageView.animationRepeatCount = 0;
+  }
+  return _loadingImageView;
 }
 
 @end

@@ -11,7 +11,6 @@
 
 @interface TCSUserStore ()
 
-@property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSMutableArray *friendsList;
 
 @end
@@ -26,9 +25,9 @@
   return self;
 }
 
-- (void)setUserName:(NSString *)userName{
-  if (_user.userName != userName){
-    self.user = [[User alloc] initWithUserName:userName];
+- (void)setUser:(User *)user{
+  if (_user != user){
+    _user = user;
     [self save];
   }
 }
@@ -44,9 +43,9 @@
   return nil;
 }
 
-- (void)addFriendWithUserName:(NSString *)userName{
-  if (userName != nil) {
-    [self.friendsList addObject:[[User alloc] initWithUserName:userName]];
+- (void)addFriend:(User *)user{
+  if (user != nil) {
+    [self.friendsList addObject:user];
     [self save];
   }
 }
@@ -58,9 +57,9 @@
   }
 }
 
-- (void)replaceFriendAtIndex:(NSUInteger)index withUserName:(NSString *)userName{
+- (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user{
   if (index < [self friendsCount]){
-    [self.friendsList replaceObjectAtIndex:index withObject:[[User alloc] initWithUserName:userName]];
+    [self.friendsList replaceObjectAtIndex:index withObject:user];
     [self save];
   }
 }

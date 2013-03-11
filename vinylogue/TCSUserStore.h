@@ -12,7 +12,7 @@
 
 @interface TCSUserStore : NSObject
 
-@property (nonatomic, readonly) User *user;
+@property (nonatomic, strong) User *user;
 
 - (id)init;
 
@@ -21,10 +21,9 @@
 - (User *)friendAtIndex:(NSUInteger)index;
 
 // write
-- (void)setUserName:(NSString *)userName;
-- (void)addFriendWithUserName:(NSString *)userName;
+- (void)addFriend:(User *)user;
 - (void)removeFriendAtIndex:(NSUInteger)index;
-- (void)replaceFriendAtIndex:(NSUInteger)index withUserName:(NSString *)userName;
+- (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user;
 - (void)moveFriendAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end

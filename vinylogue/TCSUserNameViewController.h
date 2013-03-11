@@ -13,7 +13,7 @@
 @interface TCSUserNameViewController : UIViewController <UITextFieldDelegate>
 
 @property (nonatomic) BOOL showHeader;
-@property (nonatomic, strong) RACSubject *userNameSignal;
+@property (nonatomic, strong) RACSubject *userSignal;
 
 - (id)initWithHeaderShowing:(BOOL)showingHeader;
 - (id)initWithUserName:(NSString *)userName headerShowing:(BOOL)showingHeader;

@@ -76,12 +76,14 @@
     return (value == nil);
   }] subscribeNext:^(id x) {
     @strongify(self);
-    TCSUserNameViewController *userController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
-    [userController.userNameSignal subscribeNext:^(NSString *userName) {
+    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
+    [userNameController.userSignal subscribeNext:^(User *user) {
       @strongify(self);
-      [self.userStore setUserName:userName];
+      [self.userStore setUser:user];
+    }completed:^{
+      [userNameController dismissViewControllerAnimated:YES completion:NULL];
     }];
-    [self presentViewController:userController animated:NO completion:NULL];
+    [self presentViewController:userNameController animated:NO completion:NULL];
   }];
 }
 
@@ -167,17 +169,19 @@
 
 - (void)doAddFriend:(id)button{
   @weakify(self);
-  TCSUserNameViewController *userNameViewController = [[TCSUserNameViewController alloc] initWithUserName:nil headerShowing:NO];
-  [[[[userNameViewController userNameSignal]
+  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:nil headerShowing:NO];
+  [[[[userNameController userSignal]
      distinctUntilChanged]
     filter:^BOOL(id x) {
       return (x != nil);
     }]
-   subscribeNext:^(NSString *userName) {
+   subscribeNext:^(User *user) {
      @strongify(self);
-     [self.userStore addFriendWithUserName:userName];
+     [self.userStore addFriend:user];
+   }completed:^{
+     [self.navigationController popViewControllerAnimated:YES];
    }];
-  [self.navigationController pushViewController:userNameViewController animated:YES];
+  [self.navigationController pushViewController:userNameController animated:YES];
 
 }
 
@@ -214,7 +218,6 @@
   
   NSString *userName = [self userNameForIndexPath:indexPath];
   [cell setTitleText:userName];
-  cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
   
   return cell;
 }
@@ -264,11 +267,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
-  
+
   NSString *userName = [self userNameForIndexPath:indexPath];
-  
-  TCSWeeklyAlbumChartViewController *albumChartController = [[TCSWeeklyAlbumChartViewController alloc] initWithUserName:userName playCountFilter:self.playCountFilter];
-  [self.navigationController pushViewController:albumChartController animated:YES];
+
+  if (!self.editing){
+    TCSWeeklyAlbumChartViewController *albumChartController = [[TCSWeeklyAlbumChartViewController alloc] initWithUserName:userName playCountFilter:self.playCountFilter];
+    [self.navigationController pushViewController:albumChartController animated:YES];
+  }else{    
+    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:userName headerShowing:NO];
+    @weakify(self);
+    [[userNameController userSignal] subscribeNext:^(User *user){
+      @strongify(self);
+      if (indexPath.section == 0){
+        [self.userStore setUser:user];
+      }else{
+        [self.userStore replaceFriendAtIndex:indexPath.row withFriend:user];
+      }
+    }completed:^{
+      [self.navigationController popViewControllerAnimated:YES];
+    }];
+    [self.navigationController pushViewController:userNameController animated:YES];
+  }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -290,19 +309,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-  NSString *userName = [self userNameForIndexPath:indexPath];
-  
-  TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:userName headerShowing:NO];
-  @weakify(self);
-  [[userNameController userNameSignal] subscribeNext:^(NSString *userName){
-    @strongify(self);
-    if (indexPath.section == 0){
-      [self.userStore setUserName:userName];
-    }else{
-      [self.userStore replaceFriendAtIndex:indexPath.row withUserName:userName];
-    }
-  }];
-  [self.navigationController pushViewController:userNameController animated:YES];
+
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath{
@@ -323,6 +330,7 @@
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
+    _tableView.allowsSelectionDuringEditing = YES;
   }
   return _tableView;
 }
