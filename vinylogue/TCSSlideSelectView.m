@@ -28,6 +28,8 @@ static CGFloat buttonAlpha = 0.3f;
 @property (nonatomic, strong) UILabel *topLabel;
 @property (nonatomic, strong) UILabel *bottomLabel;
 
+@property (nonatomic, strong) UIView *disabledOverlayView;
+
 @end
 
 @implementation TCSSlideSelectView
@@ -50,6 +52,8 @@ static CGFloat buttonAlpha = 0.3f;
     [self.frontView addSubview:self.topLabel];
     [self.frontView addSubview:self.bottomLabel];
     
+    [self addSubview:self.disabledOverlayView];
+    
     // Set up commands
     self.pullLeftOffset = 40;
     self.pullRightOffset = 40;
@@ -65,6 +69,7 @@ static CGFloat buttonAlpha = 0.3f;
   CGRect r = self.bounds;
   
   // Size and position main subviews
+  self.disabledOverlayView.frame = r;
   self.backView.frame = r;
   self.scrollView.frame = r;
   self.scrollView.contentSize = r.size;
@@ -104,6 +109,20 @@ static CGFloat buttonAlpha = 0.3f;
 
 - (CGSize)sizeForLabel:(UILabel *)label{
   return [label.text sizeWithFont:label.font constrainedToSize:label.superview.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
+}
+
+- (void)setEnabled:(BOOL)enabled{
+  if (enabled){
+    self.disabledOverlayView.hidden = YES;
+    self.scrollView.scrollEnabled = YES;
+    self.backLeftButton.enabled = YES;
+    self.backRightButton.enabled = YES;
+  }else{
+    self.disabledOverlayView.hidden = NO;
+    self.scrollView.scrollEnabled = NO;
+    self.backLeftButton.enabled = NO;
+    self.backRightButton.enabled = NO;
+  }
 }
 
 # pragma mark - UIScrollViewDelegate
@@ -279,6 +298,15 @@ static CGFloat buttonAlpha = 0.3f;
     _bottomLabel.userInteractionEnabled = YES;
   }
   return _bottomLabel;
+}
+
+- (UIView *)disabledOverlayView{
+  if (!_disabledOverlayView){
+    _disabledOverlayView = [[UIView alloc] init];
+    _disabledOverlayView.backgroundColor = BLACKA(0.2f);
+    _disabledOverlayView.hidden = YES;
+  }
+  return _disabledOverlayView;
 }
 
 @end

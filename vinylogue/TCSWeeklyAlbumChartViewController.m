@@ -219,9 +219,11 @@
     if (isShowingLoading){
       [self.loadingImageView startAnimating];
       self.loadingImageView.hidden = NO;
+      self.slideSelectView.enabled = NO;
     }else{
       [self.loadingImageView stopAnimating];
       self.loadingImageView.hidden = YES;
+      self.slideSelectView.enabled = YES;
     }
   }];
 

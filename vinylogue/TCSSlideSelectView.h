@@ -36,11 +36,14 @@
 @property (nonatomic, readonly) UILabel *topLabel;
 @property (nonatomic, readonly) UILabel *bottomLabel;
 
+@property (nonatomic, getter = isEnabled) BOOL enabled;
+
 // Signals will be fired when the scroll view is dragged past the offset
 @property (nonatomic) CGFloat pullLeftOffset;
 @property (nonatomic) CGFloat pullRightOffset;
 
 @property (nonatomic, strong) RACCommand *pullLeftCommand;
 @property (nonatomic, strong) RACCommand *pullRightCommand;
+
 
 @end
