@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 TwoCentStudios. All rights reserved.
 //
 
-#import "AFRESTClient.h"
+#import <AFNetworking/AFNetworking.h>
 
 @class RACSignal;
 @class WeeklyChart;
