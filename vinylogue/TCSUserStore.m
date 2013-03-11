@@ -7,9 +7,11 @@
 //
 
 #import "TCSUserStore.h"
+#import "User.h"
 
 @interface TCSUserStore ()
 
+@property (nonatomic, strong) User *user;
 @property (nonatomic, strong) NSMutableArray *friendsList;
 
 @end
@@ -25,8 +27,8 @@
 }
 
 - (void)setUserName:(NSString *)userName{
-  if (_userName != userName){
-    _userName = userName;
+  if (_user.userName != userName){
+    self.user = [[User alloc] initWithUserName:userName];
     [self save];
   }
 }
@@ -35,7 +37,7 @@
   return [self.friendsList count];
 }
 
-- (NSString *)friendAtIndex:(NSUInteger)index{
+- (User *)friendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     return [self.friendsList objectAtIndex:index];
   }
@@ -44,7 +46,7 @@
 
 - (void)addFriendWithUserName:(NSString *)userName{
   if (userName != nil) {
-    [self.friendsList addObject:userName];
+    [self.friendsList addObject:[[User alloc] initWithUserName:userName]];
     [self save];
   }
 }
@@ -58,7 +60,7 @@
 
 - (void)replaceFriendAtIndex:(NSUInteger)index withUserName:(NSString *)userName{
   if (index < [self friendsCount]){
-    [self.friendsList replaceObjectAtIndex:index withObject:userName];
+    [self.friendsList replaceObjectAtIndex:index withObject:[[User alloc] initWithUserName:userName]];
     [self save];
   }
 }
@@ -78,14 +80,14 @@
 }
 
 - (void)save{
-  [[NSUserDefaults standardUserDefaults] setObject:self.friendsList forKey:kTCSUserDefaultsLastFMFriendsList];
-  [[NSUserDefaults standardUserDefaults] setObject:self.userName forKey:kTCSUserDefaultsLastFMUserName];
+  [[NSUserDefaults standardUserDefaults] setObject:[User dictionaryRepresenationOfArray:self.friendsList] forKey:kTCSUserDefaultsLastFMFriendsList];
+  [[NSUserDefaults standardUserDefaults] setObject:[self.user toDictionaryRepresentation] forKey:kTCSUserDefaultsLastFMUserName];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)load{
-  NSString *storedUserName = [[NSUserDefaults standardUserDefaults] stringForKey:kTCSUserDefaultsLastFMUserName];
-  NSArray *storedFriendsList = [[NSUserDefaults standardUserDefaults] stringArrayForKey:kTCSUserDefaultsLastFMFriendsList];
+  NSDictionary *storedUser = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMUserName];
+  NSArray *storedFriendsList = [[NSUserDefaults standardUserDefaults] objectForKey:kTCSUserDefaultsLastFMFriendsList];
   
   if (storedFriendsList == nil){
     storedFriendsList = [NSArray array];
@@ -93,10 +95,10 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
   }
   
-  _friendsList = [NSMutableArray arrayWithArray:storedFriendsList];
-  _userName = storedUserName;
+  _user = [User fromDictionaryRepresentation:storedUser];
+  _friendsList = [NSMutableArray arrayWithArray:[User objectRepresenationFromArray:storedFriendsList]];
   
-  DLog(@"loaded username: %@", self.userName);
+  DLog(@"loaded username: %@", self.user.userName);
   DLog(@"loaded friends: %@", self.friendsList);
 }
 

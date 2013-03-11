@@ -14,6 +14,7 @@
 
 #import "TCSSimpleTableDataSource.h"
 #import "TCSUserStore.h"
+#import "User.h"
 #import "TCSSettingsCells.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
@@ -71,7 +72,7 @@
   @weakify(self);
   
   // Prompts for a user name if it's nil (Should only be needed for first run)
-  [[[RACAbleWithStart(self.userStore.userName) distinctUntilChanged] filter:^BOOL(id value) {
+  [[[RACAbleWithStart(self.userStore.user) distinctUntilChanged] filter:^BOOL(id value) {
     return (value == nil);
   }] subscribeNext:^(id x) {
     @strongify(self);
@@ -132,9 +133,9 @@
 - (NSString *)userNameForIndexPath:(NSIndexPath *)indexPath{
   NSString *userName;
   if (indexPath.section == 0){
-    userName = [self.userStore userName];
+    userName = [self.userStore user].userName;
   }else if (indexPath.section == 1){
-    userName = [self.userStore friendAtIndex:indexPath.row];
+    userName = [self.userStore friendAtIndex:indexPath.row].userName;
   }else{
     userName = @"";
     NSAssert(NO, @"Outside of section bounds");

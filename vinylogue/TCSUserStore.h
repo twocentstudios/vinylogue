@@ -8,17 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+@class User;
+
 @interface TCSUserStore : NSObject
 
-@property (nonatomic, strong) NSString *userName;
+@property (nonatomic, readonly) User *user;
 
 - (id)init;
 
 // read
 - (NSInteger)friendsCount;
-- (NSString *)friendAtIndex:(NSUInteger)index;
+- (User *)friendAtIndex:(NSUInteger)index;
 
 // write
+- (void)setUserName:(NSString *)userName;
 - (void)addFriendWithUserName:(NSString *)userName;
 - (void)removeFriendAtIndex:(NSUInteger)index;
 - (void)replaceFriendAtIndex:(NSUInteger)index withUserName:(NSString *)userName;
