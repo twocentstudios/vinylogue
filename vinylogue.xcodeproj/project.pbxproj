@@ -101,6 +101,8 @@
 		3479A4E716DBCE4B0042B8AE /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3479A4E616DBCE4B0042B8AE /* placeholder@2x.png */; };
 		3479A4E816DBCE4B0042B8AE /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3479A4E616DBCE4B0042B8AE /* placeholder@2x.png */; };
 		3480C59816EE3D5A00443F08 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480C59716EE3D5A00443F08 /* User.m */; };
+		3480C5BA16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3480C5B916EFD3DE00443F08 /* Crashlytics.framework */; };
+		3480C5BB16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3480C5B916EFD3DE00443F08 /* Crashlytics.framework */; };
 		34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DA716EBBF6E0070AE95 /* licenses.html */; };
 		34A62DAE16EBC7100070AE95 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DAD16EBC7100070AE95 /* Icon.png */; };
 		34A62DB016EBC7200070AE95 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DAF16EBC7200070AE95 /* Icon@2x.png */; };
@@ -203,6 +205,8 @@
 		3479A4E616DBCE4B0042B8AE /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder@2x.png"; path = "Images/placeholder@2x.png"; sourceTree = SOURCE_ROOT; };
 		3480C59616EE3D5A00443F08 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		3480C59716EE3D5A00443F08 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		3480C5B716EF9E5E00443F08 /* TCSVinylogueSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSVinylogueSecret.h; sourceTree = "<group>"; };
+		3480C5B916EFD3DE00443F08 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics.framework; sourceTree = "<group>"; };
 		34A62DA716EBBF6E0070AE95 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = licenses.html; sourceTree = SOURCE_ROOT; };
 		34A62DAD16EBC7100070AE95 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
 		34A62DAF16EBC7200070AE95 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
@@ -226,6 +230,7 @@
 				343C0EED16D1C0270028A6FE /* Foundation.framework in Frameworks */,
 				343C0EEF16D1C0270028A6FE /* CoreGraphics.framework in Frameworks */,
 				343C0EF116D1C0270028A6FE /* CoreData.framework in Frameworks */,
+				3480C5BA16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +242,7 @@
 				343C0F0F16D1C0270028A6FE /* UIKit.framework in Frameworks */,
 				343C0F1016D1C0270028A6FE /* Foundation.framework in Frameworks */,
 				343C0F1116D1C0270028A6FE /* CoreData.framework in Frameworks */,
+				3480C5BB16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +272,7 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3480C5B916EFD3DE00443F08 /* Crashlytics.framework */,
 				3479A4D616D83FDF0042B8AE /* MessageUI.framework */,
 				3479A4D416D83FD20042B8AE /* StoreKit.framework */,
 				343C0F5D16D325880028A6FE /* QuartzCore.framework */,
@@ -288,6 +295,7 @@
 				343C0EFC16D1C0270028A6FE /* TCSAppDelegate.m */,
 				343C0F6316D554670028A6FE /* TCSVinylogueDesign.h */,
 				343C0FB216D6C3E40028A6FE /* TCSVinylogueGlobals.h */,
+				3480C5B716EF9E5E00443F08 /* TCSVinylogueSecret.h */,
 				3464744216DC7538003E6350 /* Categories */,
 				343C0F5316D1E1B50028A6FE /* Controllers */,
 				343C0F2516D1C5E70028A6FE /* Models */,
@@ -478,6 +486,7 @@
 				343C0EE416D1C0270028A6FE /* Frameworks */,
 				343C0EE516D1C0270028A6FE /* Resources */,
 				6BFBDD49407443D5AC745FB0 /* Copy Pods Resources */,
+				3480C5B816EFD39C00443F08 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -611,6 +620,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "PATH=${PATH}:/usr/local/bin\ncd ~/Dropbox/Code/vinylogue/vinylogue\nmogenerator -m vinylogue.xcdatamodeld/vinylogue.xcdatamodel --template-var arc=true";
+		};
+		3480C5B816EFD39C00443F08 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Pods/Crashlytics.framework/run 8c3a9a7e14696514a381dd10494e079c73147506";
 		};
 		6BFBDD49407443D5AC745FB0 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -777,6 +799,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(PODS_ROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -820,8 +847,14 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Christopher Trott";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(PODS_ROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "BETATESTING=1";
 				HEADER_SEARCH_PATHS = (
 					"${PODS_HEADERS_SEARCH_PATHS}",
 					"$(inherited)",
@@ -863,6 +896,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -880,6 +914,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -940,8 +975,14 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Christopher Trott";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(PODS_ROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "APPSTORE=1";
 				HEADER_SEARCH_PATHS = (
 					"${PODS_HEADERS_SEARCH_PATHS}",
 					"$(inherited)",
@@ -983,6 +1024,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";

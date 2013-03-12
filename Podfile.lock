@@ -1,6 +1,7 @@
 
 PODS:
 - AFNetworking (1.1.0)
+- FlurrySDK (4.1.0)
 - JRSwizzle (1.0)
 - ReactiveCocoa (1.0.0):
   - ReactiveCocoa/Core (= 1.0.0)
@@ -26,6 +27,7 @@ PODS:
 
 DEPENDENCIES:
 - AFNetworking
+- FlurrySDK
 - ReactiveCocoa
 - SDURLCache
 - TestFlightSDK
@@ -34,6 +36,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
+  FlurrySDK: 52245ae8c6fa31825dc74a6afb94b861da2435fa
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   ReactiveCocoa: bde72a9123e7bd565d06d677d8ad79b18971aec7
   ReactiveCocoa/Core: bde72a9123e7bd565d06d677d8ad79b18971aec7
