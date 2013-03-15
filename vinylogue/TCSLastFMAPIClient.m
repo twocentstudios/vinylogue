@@ -7,6 +7,7 @@
 //
 
 #import "TCSLastFMAPIClient.h"
+#import "TCSVinylogueSecret.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 
 #import "WeeklyChart.h"

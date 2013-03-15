@@ -9,6 +9,7 @@
 #import "TCSAppDelegate.h"
 
 #import <FlurrySDK/Flurry.h>
+#import <TestFlightSDK/TestFlight.h>
 #import <Crashlytics/Crashlytics.h>
 
 #import "TCSVinylogueSecret.h"
