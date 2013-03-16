@@ -1,0 +1,27 @@
+//
+//  Album.h
+//  vinylogue
+//
+//  Created by Christopher Trott on 3/15/13.
+//  Copyright (c) 2013 TwoCentStudios. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class Artist;
+
+@interface Album : NSObject
+
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *url;
+@property (nonatomic, strong) NSString *imageURL;
+@property (nonatomic, strong) NSString *mbid;
+@property (nonatomic, strong) NSString *lastFMid;
+@property (nonatomic, strong) NSDate *releaseDate;
+@property (nonatomic, strong) Artist *artist;
+@property (nonatomic, strong) NSNumber *totalPlayCount;
+
+// YES if album info was loaded from primary source (getAlbumInfo)
+@property (nonatomic) BOOL detailLoaded;
+
+@end

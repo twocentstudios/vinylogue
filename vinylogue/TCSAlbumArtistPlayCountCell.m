@@ -9,6 +9,9 @@
 #import "TCSAlbumArtistPlayCountCell.h"
 
 #import "WeeklyAlbumChart.h"
+#import "Album.h"
+#import "Artist.h"
+
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
@@ -76,8 +79,8 @@ static NSString *placeholderImage = @"placeholder";
     return;
   
   _object = object;
-  self.textLabel.text = [object.artistName uppercaseString];
-  self.detailTextLabel.text = object.albumName;
+  self.textLabel.text = [object.album.artist.name uppercaseString];
+  self.detailTextLabel.text = object.album.name;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
   
@@ -95,10 +98,10 @@ static NSString *placeholderImage = @"placeholder";
   UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
   if (self.imageView.image == nil){
     self.imageView.image = placeHolderImage;
-  }else if(![self.object.albumImageURL isEqualToString:self.imageURLCache]){
+  }else if(![self.object.album.imageURL isEqualToString:self.imageURLCache]){
     // prevent setting imageView unnecessarily
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.albumImageURL] placeholderImage:placeHolderImage];
-    self.imageURLCache = self.object.albumImageURL;
+    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.album.imageURL] placeholderImage:placeHolderImage];
+    self.imageURLCache = self.object.album.imageURL;
   }
 }
 
@@ -176,8 +179,8 @@ static NSString *placeholderImage = @"placeholder";
 //  static CGFloat minimumHeight = 70.0f;
   static CGFloat marginVert = 10.0f;
   
-  CGSize artistSize = [chart.albumName sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-  CGSize albumSize = [chart.albumName sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  CGSize artistSize = [chart.album.name sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  CGSize albumSize = [chart.album.name sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
   
   CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
   CGFloat imageHeight = marginVert*2 + imageViewSide;

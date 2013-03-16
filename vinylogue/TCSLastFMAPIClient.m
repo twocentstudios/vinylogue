@@ -13,26 +13,28 @@
 #import "WeeklyChart.h"
 #import "WeeklyAlbumChart.h"
 #import "User.h"
+#import "Album.h"
+#import "Artist.h"
 
 static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.com/2.0/";
 
 @interface TCSLastFMAPIClient ()
 
 @property (nonatomic, copy) NSString *userName;
+@property (nonatomic, strong) User *user;
 
 @end
 
 @implementation TCSLastFMAPIClient
 
-+ (TCSLastFMAPIClient *)client{
++ (TCSLastFMAPIClient *)clientForUser:(User *)user{
   TCSLastFMAPIClient *client = [[self alloc] initWithBaseURL:[NSURL URLWithString:kTCSLastFMAPIBaseURLString]];
+  client.user = user;
   return client;
 }
 
-+ (TCSLastFMAPIClient *)clientForUserName:(NSString *)userName{
-  TCSLastFMAPIClient *client = [[self alloc] initWithBaseURL:[NSURL URLWithString:kTCSLastFMAPIBaseURLString]];
-  client.userName = userName;
-  return client;
++ (TCSLastFMAPIClient *)client{
+  return [[self class] clientForUser:nil];
 }
 
 - (id)initWithBaseURL:(NSURL *)url {
@@ -71,10 +73,10 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
 
 // returns an Array of all WeeklyChart objects
 - (RACSignal *)fetchWeeklyChartList{
-  NSParameterAssert(self.userName);
+  NSParameterAssert(self.user.userName);
   
   NSDictionary *params = @{@"method": @"user.getweeklychartlist",
-                           @"user": self.userName,
+                           @"user": self.user.userName,
                            @"api_key": kTCSLastFMAPIKeyString,
                            @"format": @"json"};
   return [[[self enqueueRequestWithMethod:@"GET" path:@"" parameters:params]
@@ -92,14 +94,14 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
 }
 
 - (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart{
-  NSParameterAssert(self.userName);
+  NSParameterAssert(self.user.userName);
 
   if (chart == nil){
     return [RACSignal error:nil];
   }
   
   NSMutableDictionary *params = [ @{@"method": @"user.getweeklyalbumchart",
-                                 @"user": self.userName,
+                                 @"user": self.user.userName,
                                  @"api_key": kTCSLastFMAPIKeyString,
                                  @"format": @"json"} mutableCopy];
   
@@ -112,22 +114,26 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
            }] map:^id(NSArray *albumChartList) {
              RACSequence *list = [albumChartList.rac_sequence map:^id(NSDictionary *albumChartDictionary) {
                WeeklyAlbumChart *albumChart = [[WeeklyAlbumChart alloc] init];
-               albumChart.artistName = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"#text"];
-               albumChart.artistMbid = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"mbid"];
-               albumChart.albumName = [albumChartDictionary objectForKey:@"name"];
-               albumChart.albumMbid = [albumChartDictionary objectForKey:@"mbid"];
-               albumChart.albumURL = [albumChartDictionary objectForKey:@"url"];
+               albumChart.album = [[Album alloc] init];
+               albumChart.album.artist = [[Artist alloc] init];
+               albumChart.album.artist.name = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"#text"];
+               albumChart.album.artist.mbid = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"mbid"];
+               albumChart.album.name = [albumChartDictionary objectForKey:@"name"];
+               albumChart.album.mbid = [albumChartDictionary objectForKey:@"mbid"];
+               albumChart.album.url = [albumChartDictionary objectForKey:@"url"];
                albumChart.playcount = @([[albumChartDictionary objectForKey:@"playcount"] integerValue]);
                albumChart.rank = @([[[albumChartDictionary objectForKey:@"@attr"] objectForKey:@"rank"] integerValue]);
                albumChart.weeklyChart = chart;
+               albumChart.user = self.user;
+               
                return albumChart;
              }];
              return [list array];
            }];
 }
 
-- (RACSignal *)fetchImageURLForWeeklyAlbumChart:(WeeklyAlbumChart *)albumChart{
-  if (albumChart == nil){
+- (RACSignal *)fetchAlbumDetailsForAlbum:(Album *)album{
+  if (album == nil){
     return [RACSignal error:nil];
   }
   
@@ -135,38 +141,57 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
                                  @"api_key": kTCSLastFMAPIKeyString,
                                  @"format": @"json" } mutableCopy];
   
-  if ([albumChart.albumMbid length]){
-    [params setObject:albumChart.albumMbid forKey:@"mbid"];
-  }else if (albumChart.artistName && albumChart.albumName){
-    [params setObject:albumChart.artistName forKey:@"artist"];
-    [params setObject:albumChart.albumName forKey:@"album"];
+  if ([album.mbid length]){
+    [params setObject:album.mbid forKey:@"mbid"];
+  }else if (album.artist.name && album.name){
+    [params setObject:album.artist.name forKey:@"artist"];
+    [params setObject:album.name forKey:@"album"];
   }else{
-    return [RACSignal error:nil];
+    NSError *error = [NSError errorWithDomain:@"vinylogue" code:0 userInfo:@{ NSLocalizedDescriptionKey: @"Not enough info in supplied Album to look up details." }];
+    return [RACSignal error:error];
   }
   
   // userName is optional (returns additional user-specific album info)
   if (self.userName){
-    [params setObject:self.userName forKey:@"username"];
+    [params setObject:self.user.userName forKey:@"username"];
   }
   
-  return [[[[self enqueueRequestWithMethod:@"GET" path:@"" parameters:params]
+  return [[[self enqueueRequestWithMethod:@"GET" path:@"" parameters:params]
             map:^id(NSDictionary *responseObject) {
-              return [[responseObject objectForKey:@"album"] objectForKey:@"image"];
-            }] map:^id(NSArray *imageArray) {
-              NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithCapacity:[imageArray count]];
-              for (NSDictionary *imgDict in imageArray){
-                [newDict setObject:[imgDict objectForKey:@"#text"] forKey:[imgDict objectForKey:@"size"]];
+              return [responseObject objectForKey:@"album"];
+            }] map:^id(NSDictionary *albumDict) {
+              // Populate new data into the original album object
+              Album *detailAlbum = album;
+              
+              if (!detailAlbum.artist){
+                detailAlbum.artist = [[Artist alloc] init];
               }
-              return newDict;
-            }] map:^id(NSDictionary *imageSizeDict) {
+              detailAlbum.artist.name = [albumDict objectForKey:@"artist"];
+              detailAlbum.name = [albumDict objectForKey:@"name"];
+              detailAlbum.lastFMid = [albumDict objectForKey:@"id"];
+              detailAlbum.mbid = [albumDict objectForKey:@"mbid"];
+              detailAlbum.url = [albumDict objectForKey:@"url"];
+              detailAlbum.releaseDate = [NSDate date]; // TODO: parse the date
+              detailAlbum.totalPlayCount = @([[albumDict objectForKey:@"userplaycount"] integerValue]);
+              
+              // Process image array
+              NSArray *imageArray = [albumDict objectForKey:@"image"];
+              NSMutableDictionary *newAlbumDict = [NSMutableDictionary dictionaryWithCapacity:[imageArray count]];
+              for (NSDictionary *imgDict in imageArray){
+                [newAlbumDict setObject:[imgDict objectForKey:@"#text"] forKey:[imgDict objectForKey:@"size"]];
+              }
               NSString *largestImageURL = nil;
-              largestImageURL = [imageSizeDict objectForKey:@"small"];
-              largestImageURL = [imageSizeDict objectForKey:@"medium"];
-              largestImageURL = [imageSizeDict objectForKey:@"large"];
+              largestImageURL = [newAlbumDict objectForKey:@"small"];
+              largestImageURL = [newAlbumDict objectForKey:@"medium"];
+              largestImageURL = [newAlbumDict objectForKey:@"large"];
               //             largestImageURL = [imageSizeDict objectForKey:@"extralarge"];
               //             largestImageURL = [imageSizeDict objectForKey:@"mega"];
-              albumChart.albumImageURL = largestImageURL;
-              return largestImageURL;
+              detailAlbum.imageURL = largestImageURL;
+              
+              // Indicates Album object is complete
+              detailAlbum.detailLoaded = YES;
+              
+              return detailAlbum;
             }];
 }
 

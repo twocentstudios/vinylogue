@@ -22,6 +22,12 @@
 
 /* Begin PBXBuildFile section */
 		12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */; };
+		3423A44916F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
+		3423A44A16F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
+		3423A44D16F3D081009FB1F0 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44C16F3D081009FB1F0 /* Album.m */; };
+		3423A44E16F3D081009FB1F0 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44C16F3D081009FB1F0 /* Album.m */; };
+		3423A45116F3D448009FB1F0 /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A45016F3D448009FB1F0 /* Artist.m */; };
+		3423A45216F3D448009FB1F0 /* Artist.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A45016F3D448009FB1F0 /* Artist.m */; };
 		343C0EEB16D1C0270028A6FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0EEA16D1C0270028A6FE /* UIKit.framework */; };
 		343C0EED16D1C0270028A6FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0EEC16D1C0270028A6FE /* Foundation.framework */; };
 		343C0EEF16D1C0270028A6FE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343C0EEE16D1C0270028A6FE /* CoreGraphics.framework */; };
@@ -122,6 +128,12 @@
 
 /* Begin PBXFileReference section */
 		2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		3423A44716F3CF29009FB1F0 /* TCSAlbumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumDetailViewController.h; sourceTree = "<group>"; };
+		3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumDetailViewController.m; sourceTree = "<group>"; };
+		3423A44B16F3D081009FB1F0 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
+		3423A44C16F3D081009FB1F0 /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Album.m; sourceTree = "<group>"; };
+		3423A44F16F3D448009FB1F0 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
+		3423A45016F3D448009FB1F0 /* Artist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Artist.m; sourceTree = "<group>"; };
 		343C0EE716D1C0270028A6FE /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		343C0EEA16D1C0270028A6FE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		343C0EEC16D1C0270028A6FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -358,6 +370,10 @@
 				343C0F3716D1CAAF0028A6FE /* WeeklyAlbumChart.m */,
 				343C0F3816D1CAAF0028A6FE /* WeeklyChart.h */,
 				343C0F3916D1CAAF0028A6FE /* WeeklyChart.m */,
+				3423A44B16F3D081009FB1F0 /* Album.h */,
+				3423A44C16F3D081009FB1F0 /* Album.m */,
+				3423A44F16F3D448009FB1F0 /* Artist.h */,
+				3423A45016F3D448009FB1F0 /* Artist.m */,
 				3480C59616EE3D5A00443F08 /* User.h */,
 				3480C59716EE3D5A00443F08 /* User.m */,
 			);
@@ -371,6 +387,8 @@
 				343C0F5516D2A5B70028A6FE /* TCSWeeklyAlbumChartViewController.m */,
 				343C0FC616D7F8F10028A6FE /* TCSFavoriteUsersViewController.h */,
 				343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */,
+				3423A44716F3CF29009FB1F0 /* TCSAlbumDetailViewController.h */,
+				3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -676,6 +694,9 @@
 				3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */,
 				3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */,
 				3480C59816EE3D5A00443F08 /* User.m in Sources */,
+				3423A44916F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */,
+				3423A44D16F3D081009FB1F0 /* Album.m in Sources */,
+				3423A45116F3D448009FB1F0 /* Artist.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,6 +722,9 @@
 				343C0FCD16D816840028A6FE /* TCSUserStore.m in Sources */,
 				3479A4D316D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */,
 				3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */,
+				3423A44A16F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */,
+				3423A44E16F3D081009FB1F0 /* Album.m in Sources */,
+				3423A45216F3D448009FB1F0 /* Artist.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
