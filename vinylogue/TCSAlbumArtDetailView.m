@@ -35,6 +35,8 @@
 - (id)init{
   self = [super initWithFrame:CGRectZero];
   if (self) {
+    self.backgroundColor = BLACKA(0.05);
+    
     [self addSubview:self.albumImageBackgroundView];
     [self addSubview:self.albumImageView];
     [self addSubview:self.artistNameLabel];
@@ -167,6 +169,10 @@
 - (UIImageView *)albumImageView{
   if (!_albumImageView){
     _albumImageView = [[UIImageView alloc] init];
+    _albumImageView.layer.masksToBounds = YES;
+    _albumImageView.layer.cornerRadius = 4;
+    _albumImageView.layer.borderWidth = 1;
+    _albumImageView.layer.borderColor = [BLACKA(0.2f) CGColor];
   }
   return _albumImageView;
 }

@@ -95,12 +95,15 @@ static NSString *placeholderImage = @"placeholder";
 
 
 - (void)refreshImage{
-  UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
+  static UIImage *placeHolderImage = nil;
+  if (!placeHolderImage)
+    placeHolderImage = [UIImage imageNamed:placeholderImage];
+  
   if (self.imageView.image == nil){
     self.imageView.image = placeHolderImage;
-  }else if(![self.object.album.imageURL isEqualToString:self.imageURLCache]){
+  }else if(![self.object.album.imageThumbURL isEqualToString:self.imageURLCache]){
     // prevent setting imageView unnecessarily
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.album.imageURL] placeholderImage:placeHolderImage];
+    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.album.imageThumbURL] placeholderImage:placeHolderImage];
     self.imageURLCache = self.object.album.imageURL;
   }
 }

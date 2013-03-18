@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *imageURL;
+@property (nonatomic, strong) NSString *imageThumbURL;
 @property (nonatomic, strong) NSString *mbid;
 @property (nonatomic, strong) NSString *lastFMid;
 @property (nonatomic, strong) NSDate *releaseDate;

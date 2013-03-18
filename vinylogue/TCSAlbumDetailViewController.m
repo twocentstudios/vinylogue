@@ -100,9 +100,9 @@
     BOOL isLoading = [showingLoading boolValue];
     @strongify(self);
     if (isLoading){
-      self.title = @"Loading...";
+      self.title = @"loading...";
     }else{
-      self.title = @"Album";
+      self.title = @"album";
     }
   }];
   

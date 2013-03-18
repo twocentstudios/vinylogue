@@ -181,11 +181,21 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
                 [newAlbumDict setObject:[imgDict objectForKey:@"#text"] forKey:[imgDict objectForKey:@"size"]];
               }
               NSString *largestImageURL = nil;
+              NSString *currentImageURL = nil;
               largestImageURL = [newAlbumDict objectForKey:@"small"];
-              largestImageURL = [newAlbumDict objectForKey:@"medium"];
-              largestImageURL = [newAlbumDict objectForKey:@"large"];
-              //             largestImageURL = [imageSizeDict objectForKey:@"extralarge"];
-              //             largestImageURL = [imageSizeDict objectForKey:@"mega"];
+              currentImageURL = [newAlbumDict objectForKey:@"medium"];
+              if (currentImageURL != nil)
+                largestImageURL = currentImageURL;
+              currentImageURL = [newAlbumDict objectForKey:@"large"];
+              if (currentImageURL != nil)
+                largestImageURL = currentImageURL;
+              detailAlbum.imageThumbURL = largestImageURL;
+              currentImageURL = [newAlbumDict objectForKey:@"extralarge"];
+              if (currentImageURL != nil)
+                largestImageURL = currentImageURL;
+              currentImageURL = [newAlbumDict objectForKey:@"mega"];
+              if (currentImageURL != nil)
+                largestImageURL = currentImageURL;
               detailAlbum.imageURL = largestImageURL;
               
               // Indicates Album object is complete
