@@ -83,6 +83,18 @@
   RACBind(self.albumDetailView.albumName) = RACBind(self.album.name);
   RACBind(self.albumDetailView.albumReleaseDate) = RACBind(self.album.releaseDate);
   RACBind(self.albumDetailView.albumImageURL) = RACBind(self.album.imageURL);
+  [[[RACAbleWithStart(self.albumDetailView.primaryAlbumColor) map:^id(UIColor *color) {
+    if (color == nil){
+      return WHITE_SUBTLE;
+    }else{
+      return color;
+    }
+  }] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    @strongify(self);
+    [UIView animateWithDuration:1.1f animations:^{
+      self.scrollView.backgroundColor = color;
+    }];
+  }];
   
   [RACAbleWithStart(self.showingLoading) subscribeNext:^(NSNumber *showingLoading) {
     BOOL isLoading = [showingLoading boolValue];
@@ -160,7 +172,6 @@
 - (UIScrollView *)scrollView{
   if (!_scrollView){
     _scrollView = [[UIScrollView alloc] init];
-    _scrollView.backgroundColor = WHITE_SUBTLE;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator = YES;
     _scrollView.directionalLockEnabled = YES;

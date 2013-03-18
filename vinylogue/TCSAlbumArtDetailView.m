@@ -11,6 +11,7 @@
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
+#import "UIImage+TCSImageRepresentativeColors.h"
 
 @interface TCSAlbumArtDetailView ()
 
@@ -21,6 +22,11 @@
 @property (nonatomic, strong) UILabel *releaseDateLabel;
 
 @property (nonatomic, strong) NSString *albumReleaseDateString;
+
+@property (atomic, strong) UIColor *primaryAlbumColor;
+@property (atomic, strong) UIColor *secondaryAlbumColor;
+@property (atomic, strong) UIColor *textAlbumColor;
+@property (atomic, strong) UIColor *textShadowAlbumColor;
 
 @end
 
@@ -60,6 +66,33 @@
       self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
       self.albumImageBackgroundView.layer.shouldRasterize = YES;
     }];
+    
+    [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {
+      return (value != nil);
+    }] deliverOn:[RACScheduler scheduler]]
+     subscribeNext:^(UIImage *image) {
+       RACTuple *t = [image getRepresentativeColors];
+       self.primaryAlbumColor = t.first;
+       self.secondaryAlbumColor = t.second;
+       self.textAlbumColor = t.fourth;
+       self.textShadowAlbumColor = t.fifth;
+     }];
+    
+    [[RACAble(self.textAlbumColor)
+      deliverOn:[RACScheduler mainThreadScheduler]]
+     subscribeNext:^(UIColor *color) {
+      self.artistNameLabel.textColor = COLORA(color, 0.85);
+      self.albumNameLabel.textColor = color;
+      self.releaseDateLabel.textColor = COLORA(color, 0.7);
+    }];
+    
+    [[RACAble(self.textShadowAlbumColor)
+      deliverOn:[RACScheduler mainThreadScheduler]]
+     subscribeNext:^(UIColor *color) {
+      self.artistNameLabel.shadowColor = COLORA(color, 0.85);
+      self.albumNameLabel.shadowColor = color;
+      self.releaseDateLabel.shadowColor = COLORA(color, 0.7);
+    }];
   }
   return self;
 }
@@ -73,7 +106,7 @@
   CGFloat centerX = CGRectGetMidX(r);
   static CGFloat viewHMargin = 30.0f;
   static CGFloat imageAndLabelMargin = 14.0f;
-  static CGFloat interLabelMargin = -4.0f;
+  static CGFloat interLabelMargin = -1.0f;
   CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   // Calculate individual heights and widths
@@ -121,10 +154,9 @@
 - (UIImageView *)albumImageBackgroundView{
   if (!_albumImageBackgroundView){
     _albumImageBackgroundView = [[UIImageView alloc] init];
-//    _albumImageBackgroundView.contentMode = UIViewContentModeCenter;
-    _albumImageBackgroundView.layer.borderWidth = 4.0f;
-    _albumImageBackgroundView.layer.borderColor = [UIColor redColor].CGColor;
     _albumImageBackgroundView.layer.masksToBounds = YES;
+    _albumImageBackgroundView.clipsToBounds = YES;
+    _albumImageBackgroundView.hidden = YES; // TEMP;
 //    CIFilter* filter = [CIFilter filterWithName:@"gaussianBlur"];
 //    [filter setValue:[NSNumber numberWithFloat:5] forKey:@"inputRadius"];
 //    _albumImageBackgroundView.layer.filters = [NSArray arrayWithObject:filter];
@@ -180,6 +212,5 @@
   }
   return _releaseDateLabel;
 }
-
 
 @end

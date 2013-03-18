@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class RACTuple;
+
 @interface TCSAlbumArtDetailView : UIView
 
 @property (nonatomic, readonly) UIImageView *albumImageView;
@@ -21,5 +23,11 @@
 @property (nonatomic, strong) NSString *artistName;
 @property (nonatomic, strong) NSString *albumName;
 @property (nonatomic, strong) NSDate *albumReleaseDate;
+
+// Colors derived from album image
+@property (atomic, readonly) UIColor *primaryAlbumColor;
+@property (atomic, readonly) UIColor *secondaryAlbumColor;
+@property (atomic, readonly) UIColor *textAlbumColor;
+@property (atomic, readonly) UIColor *textShadowAlbumColor;
 
 @end

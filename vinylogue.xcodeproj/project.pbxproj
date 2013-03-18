@@ -98,6 +98,8 @@
 		3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
 		3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
 		3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3454CBBD16F7851E00B74623 /* CoreImage.framework */; };
+		3454CBC516F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */; };
+		3454CBC616F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */; };
 		3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
@@ -211,6 +213,8 @@
 		3454CBB916F776F900B74623 /* TCSAlbumArtDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumArtDetailView.h; sourceTree = "<group>"; };
 		3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumArtDetailView.m; sourceTree = "<group>"; };
 		3454CBBD16F7851E00B74623 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		3454CBC316F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TCSImageRepresentativeColors.h"; sourceTree = "<group>"; };
+		3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TCSImageRepresentativeColors.m"; sourceTree = "<group>"; };
 		3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TCSDictionarySafety.h"; sourceTree = "<group>"; };
 		3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TCSDictionarySafety.m"; sourceTree = "<group>"; };
 		3479A4D016D83E950042B8AE /* TCSSinglePageWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSinglePageWebViewController.h; sourceTree = "<group>"; };
@@ -485,6 +489,8 @@
 			children = (
 				3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */,
 				3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */,
+				3454CBC316F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.h */,
+				3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -708,6 +714,7 @@
 				3423A44D16F3D081009FB1F0 /* Album.m in Sources */,
 				3423A45116F3D448009FB1F0 /* Artist.m in Sources */,
 				3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
+				3454CBC516F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -737,6 +744,7 @@
 				3423A44E16F3D081009FB1F0 /* Album.m in Sources */,
 				3423A45216F3D448009FB1F0 /* Artist.m in Sources */,
 				3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
+				3454CBC616F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
