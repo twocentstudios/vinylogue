@@ -95,6 +95,9 @@
 		343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */; };
 		343C0FCC16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
 		343C0FCD16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
+		3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
+		3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
+		3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3454CBBD16F7851E00B74623 /* CoreImage.framework */; };
 		3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
@@ -205,6 +208,9 @@
 		343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSFavoriteUsersViewController.m; sourceTree = "<group>"; };
 		343C0FCA16D816840028A6FE /* TCSUserStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSUserStore.h; sourceTree = "<group>"; };
 		343C0FCB16D816840028A6FE /* TCSUserStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSUserStore.m; sourceTree = "<group>"; };
+		3454CBB916F776F900B74623 /* TCSAlbumArtDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumArtDetailView.h; sourceTree = "<group>"; };
+		3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumArtDetailView.m; sourceTree = "<group>"; };
+		3454CBBD16F7851E00B74623 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TCSDictionarySafety.h"; sourceTree = "<group>"; };
 		3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TCSDictionarySafety.m"; sourceTree = "<group>"; };
 		3479A4D016D83E950042B8AE /* TCSSinglePageWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSinglePageWebViewController.h; sourceTree = "<group>"; };
@@ -233,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */,
+				3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */,
 				3479A4D716D83FDF0042B8AE /* MessageUI.framework in Frameworks */,
 				3479A4D516D83FD20042B8AE /* StoreKit.framework in Frameworks */,
 				343C0F5E16D325880028A6FE /* QuartzCore.framework in Frameworks */,
@@ -284,6 +291,7 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3454CBBD16F7851E00B74623 /* CoreImage.framework */,
 				3480C5B916EFD3DE00443F08 /* Crashlytics.framework */,
 				3479A4D616D83FDF0042B8AE /* MessageUI.framework */,
 				3479A4D416D83FD20042B8AE /* StoreKit.framework */,
@@ -398,6 +406,8 @@
 			children = (
 				343C0F5816D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.h */,
 				343C0F5916D31D3E0028A6FE /* TCSAlbumArtistPlayCountCell.m */,
+				3454CBB916F776F900B74623 /* TCSAlbumArtDetailView.h */,
+				3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */,
 				343C0F5F16D329CD0028A6FE /* TCSSlideSelectView.h */,
 				343C0F6016D329CE0028A6FE /* TCSSlideSelectView.m */,
 				343C0F8E16D5BF580028A6FE /* TCSEmptyErrorView.h */,
@@ -697,6 +707,7 @@
 				3423A44916F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */,
 				3423A44D16F3D081009FB1F0 /* Album.m in Sources */,
 				3423A45116F3D448009FB1F0 /* Artist.m in Sources */,
+				3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +736,7 @@
 				3423A44A16F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */,
 				3423A44E16F3D081009FB1F0 /* Album.m in Sources */,
 				3423A45216F3D448009FB1F0 /* Artist.m in Sources */,
+				3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
