@@ -25,6 +25,7 @@
 @interface TCSAlbumDetailViewController ()
 
 // Views
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) TCSAlbumArtDetailView *albumDetailView;
 @property (nonatomic, strong) UIView *playCountView; //TCSPlayCountView
 @property (nonatomic, strong) UISegmentedControl *metaDataSegmentedView;
@@ -67,9 +68,10 @@
 - (void)loadView{
   self.view = [[UIView alloc] init];
   self.view.autoresizesSubviews = YES;
-  
-  [self.view addSubview:self.albumDetailView];
-  [self.view addSubview:self.playCountView];
+    
+  [self.view addSubview:self.scrollView];
+  [self.scrollView addSubview:self.albumDetailView];
+  [self.scrollView addSubview:self.playCountView];
 }
 
 - (void)viewDidLoad{
@@ -113,7 +115,8 @@
   CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
   static CGFloat viewHMargin = 10.0f;
-  
+  static CGFloat viewVMargin = 10.0f;
+
   ////////////////////////
   // Set width and heights
   self.albumDetailView.width = w;
@@ -138,7 +141,10 @@
   t += self.metaDataSegmentedView.height;
   self.bioLabel.top = t;
   t += self.bioLabel.height;
+  t += viewVMargin;
   
+  self.scrollView.frame = r;
+  [self.scrollView setContentSize:CGSizeMake(w, t)];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -149,6 +155,17 @@
 - (void)setLabelSizeForLabel:(UILabel *)label width:(CGFloat)width{
   label.width = width;
   label.height = 60.0f;
+}
+
+- (UIScrollView *)scrollView{
+  if (!_scrollView){
+    _scrollView = [[UIScrollView alloc] init];
+    _scrollView.backgroundColor = WHITE_SUBTLE;
+    _scrollView.showsHorizontalScrollIndicator = NO;
+    _scrollView.showsVerticalScrollIndicator = YES;
+    _scrollView.directionalLockEnabled = YES;
+  }
+  return _scrollView;
 }
 
 - (TCSAlbumArtDetailView *)albumDetailView{

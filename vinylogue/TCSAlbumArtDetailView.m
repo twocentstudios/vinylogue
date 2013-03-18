@@ -157,7 +157,7 @@
   if (!_albumNameLabel){
     _albumNameLabel = [[UILabel alloc] init];
     _albumNameLabel.numberOfLines = 0;
-    _albumNameLabel.font = FONT_AVN_REGULAR(30);
+    _albumNameLabel.font = FONT_AVN_DEMIBOLD(30);
     _albumNameLabel.backgroundColor = CLEAR;
     _albumNameLabel.textColor = WHITE;
     _albumNameLabel.shadowColor = BLACKA(0.9f);
