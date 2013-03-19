@@ -11,8 +11,11 @@
 
 #import "Artist.h"
 #import "Album.h"
+#import "WeeklyAlbumChart.h"
+#import "WeeklyChart.h"
 
 #import "TCSAlbumArtDetailView.h"
+#import "TCSAlbumPlayCountDetailView.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
@@ -27,7 +30,7 @@
 // Views
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) TCSAlbumArtDetailView *albumDetailView;
-@property (nonatomic, strong) UIView *playCountView; //TCSPlayCountView
+@property (nonatomic, strong) TCSAlbumPlayCountDetailView *playCountView;
 @property (nonatomic, strong) UISegmentedControl *metaDataSegmentedView;
 @property (nonatomic, strong) UILabel *bioLabel;
 
@@ -95,6 +98,32 @@
       self.scrollView.backgroundColor = color;
     }];
   }];
+  [[[RACAbleWithStart(self.albumDetailView.primaryAlbumColor) map:^id(UIColor *color) {
+    if (color == nil){
+      return WHITE_SUBTLE;
+    }else{
+      return color;
+    }
+  }] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    @strongify(self);
+    [UIView animateWithDuration:1.1f
+                          delay:0.0
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                       self.scrollView.backgroundColor = color;
+                     }
+                     completion:NULL];
+  }];
+  
+  RACBind(self.playCountView.labelTextColor) = RACBind(self.albumDetailView.textAlbumColor);
+  RACBind(self.playCountView.labelTextShadowColor) = RACBind(self.albumDetailView.textShadowAlbumColor);
+  
+  RACBind(self.playCountView.playCountWeek) = RACBind(self.album.weeklyAlbumChart.playcount);
+  RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.album.weeklyAlbumChart.weeklyChart.from) map:^id(NSDate *date) {
+    NSDateComponents *components = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:date];
+    return [NSString stringWithFormat:@"week %i %i", components.weekOfYear, components.yearForWeekOfYear];
+  }];
+  RACBind(self.playCountView.playCountAllTime) = RACBind(self.album.totalPlayCount);
   
   [RACAbleWithStart(self.showingLoading) subscribeNext:^(NSNumber *showingLoading) {
     BOOL isLoading = [showingLoading boolValue];
@@ -134,8 +163,9 @@
   self.albumDetailView.width = w;
   [self.albumDetailView layoutSubviews];
   
-  self.playCountView.width = w;
   // playCountView sets its own desired height
+  self.playCountView.width = w;
+  [self.playCountView layoutSubviews];
   
   self.metaDataSegmentedView.width = w;
   // metaDataSegmentedView sets its own desired height
@@ -184,6 +214,13 @@
     _albumDetailView = [[TCSAlbumArtDetailView alloc] init];
   }
   return _albumDetailView;
+}
+
+- (TCSAlbumPlayCountDetailView *)playCountView{
+  if (!_playCountView){
+    _playCountView = [[TCSAlbumPlayCountDetailView alloc] init];
+  }
+  return _playCountView;
 }
 
 @end

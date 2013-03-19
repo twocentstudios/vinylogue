@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class Artist;
+@class WeeklyAlbumChart;
 
 @interface Album : NSObject
 
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) NSString *lastFMid;
 @property (nonatomic, strong) NSDate *releaseDate;
 @property (nonatomic, strong) Artist *artist;
+@property (nonatomic, weak) WeeklyAlbumChart *weeklyAlbumChart;
 @property (nonatomic, strong) NSNumber *totalPlayCount;
 
 // YES if album info was loaded from primary source (getAlbumInfo)

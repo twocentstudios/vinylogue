@@ -115,6 +115,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
              RACSequence *list = [albumChartList.rac_sequence map:^id(NSDictionary *albumChartDictionary) {
                WeeklyAlbumChart *albumChart = [[WeeklyAlbumChart alloc] init];
                albumChart.album = [[Album alloc] init];
+               albumChart.album.weeklyAlbumChart = albumChart;
                albumChart.album.artist = [[Artist alloc] init];
                albumChart.album.artist.name = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"#text"];
                albumChart.album.artist.mbid = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"mbid"];
@@ -152,7 +153,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
   }
   
   // userName is optional (returns additional user-specific album info)
-  if (self.userName){
+  if (self.user.userName){
     [params setObject:self.user.userName forKey:@"username"];
   }
   

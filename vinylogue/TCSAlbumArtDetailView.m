@@ -153,15 +153,35 @@
   label.size = [label.text sizeWithFont:label.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
 }
 
+- (void)drawRect:(CGRect)rect{
+  CGContextRef c = UIGraphicsGetCurrentContext();
+  
+  CGRect r = rect;
+  
+  CGContextSaveGState(c);
+  {
+    // Fill background
+    [self.backgroundColor setFill];
+    CGContextFillRect(c, r);
+    
+    CGFloat borderHeight = 1.0f;
+    CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+    CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+    
+    // Fill top & bottom border (inset)
+    [BLACKA(0.1f) setFill];
+    CGContextFillRect(c, topBorder);
+    CGContextFillRect(c, bottomBorder);
+  }
+  CGContextRestoreGState(c);
+}
+
 - (UIImageView *)albumImageBackgroundView{
   if (!_albumImageBackgroundView){
     _albumImageBackgroundView = [[UIImageView alloc] init];
     _albumImageBackgroundView.layer.masksToBounds = YES;
     _albumImageBackgroundView.clipsToBounds = YES;
-    _albumImageBackgroundView.hidden = YES; // TEMP;
-//    CIFilter* filter = [CIFilter filterWithName:@"gaussianBlur"];
-//    [filter setValue:[NSNumber numberWithFloat:5] forKey:@"inputRadius"];
-//    _albumImageBackgroundView.layer.filters = [NSArray arrayWithObject:filter];
+    _albumImageBackgroundView.hidden = YES; // TEMP?;
   }
   return _albumImageBackgroundView;
 }
@@ -169,10 +189,13 @@
 - (UIImageView *)albumImageView{
   if (!_albumImageView){
     _albumImageView = [[UIImageView alloc] init];
-    _albumImageView.layer.masksToBounds = YES;
+//    _albumImageView.layer.masksToBounds = YES;
     _albumImageView.layer.cornerRadius = 4;
     _albumImageView.layer.borderWidth = 1;
-    _albumImageView.layer.borderColor = [BLACKA(0.2f) CGColor];
+    _albumImageView.layer.borderColor = BLACKA(0.2f).CGColor;
+    _albumImageView.layer.shadowColor = BLACK.CGColor;
+    _albumImageView.layer.shadowOffset = CGSizeMake(0, 1);
+    _albumImageView.layer.shadowOpacity = 0.6f;
   }
   return _albumImageView;
 }
