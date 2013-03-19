@@ -200,7 +200,8 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               detailAlbum.imageURL = largestImageURL;
               
               // Album about text
-              detailAlbum.about = [[[albumDict objectForKey:@"wiki"] objectForKey:@"content"] stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+              detailAlbum.about = [[albumDict objectForKey:@"wiki"] objectForKey:@"content"];
+              detailAlbum.about = [self stringByStrippingHTMLTagsFromString:detailAlbum.about];
               
               // Indicates Album object is complete
               detailAlbum.detailLoaded = YES;
@@ -227,6 +228,32 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               user.userName = [userDict objectForKey:@"name"];
               return user;
             }];
+}
+
+# pragma mark - utility
+
+// Strips HTML tags and converts &quot; to "
+// We should probably find a new home for this method eventually
+- (NSString *)stringByStrippingHTMLTagsFromString:(NSString *)htmlString{
+  if (htmlString == nil)
+    return nil;
+  
+  NSError *error = nil;
+  NSString *output = nil;
+  
+  NSRegularExpression *regexTagStart = [NSRegularExpression
+                                regularExpressionWithPattern:@"<\\s*\\w.*?>"
+                                options:0
+                                error:&error];
+  NSRegularExpression *regexTagEnd = [NSRegularExpression
+                                     regularExpressionWithPattern:@"<\\/.*?>"
+                                     options:0
+                                     error:&error];
+  output = [regexTagStart stringByReplacingMatchesInString:htmlString options:0 range:NSMakeRange(0, [htmlString length]) withTemplate:@""];
+  output = [regexTagEnd stringByReplacingMatchesInString:output options:0 range:NSMakeRange(0, [output length]) withTemplate:@""];
+  output = [output stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+  
+  return output;
 }
 
 @end
