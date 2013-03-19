@@ -169,7 +169,7 @@
     CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
     
     // Fill top & bottom border (inset)
-    [BLACKA(0.1f) setFill];
+    [BLACKA(0.25f) setFill];
     CGContextFillRect(c, topBorder);
     CGContextFillRect(c, bottomBorder);
   }

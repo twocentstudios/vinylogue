@@ -154,12 +154,12 @@
     CGRect rightCenterBorder = CGRectMake(CGRectGetMidX(r)+borderHeight/2.0f, CGRectGetMinY(r)+borderHeight, borderHeight, CGRectGetHeight(r)-borderHeight*2);
     
     // Fill top & left center border
-    [WHITEA(0.2f) setFill];
+    [WHITEA(0.35f) setFill];
     CGContextFillRect(c, topBorder);
     CGContextFillRect(c, leftCenterBorder);
     
     // Fill bottom & right center border
-    [BLACKA(0.1f) setFill];
+    [BLACKA(0.25f) setFill];
     CGContextFillRect(c, bottomBorder);
     CGContextFillRect(c, rightCenterBorder);
     
