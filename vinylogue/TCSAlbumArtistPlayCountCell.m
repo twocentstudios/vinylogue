@@ -30,6 +30,7 @@ static NSString *placeholderImage = @"placeholder";
 @property (nonatomic, strong) UILabel *playCountTitleLabel;
 @property (nonatomic, strong) UILabel *rankLabel;
 @property (nonatomic, strong) UIView *backView;
+@property (nonatomic, strong) UIView *backSelectedView;
 
 @property (nonatomic, strong) NSString *imageURLCache;
 
@@ -40,9 +41,10 @@ static NSString *placeholderImage = @"placeholder";
 - (id)init{
   self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:NSStringFromClass([self class])];
   if (self) {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.selectionStyle = UITableViewCellSelectionStyleGray;
     
     self.backgroundView = self.backView;
+    self.selectedBackgroundView = self.backSelectedView;
         
     [self configureTextLabel];
     [self configureDetailTextLabel];
@@ -296,5 +298,37 @@ static NSString *placeholderImage = @"placeholder";
   }
   return _backView;
 }
+
+- (UIView *)backSelectedView{
+  if (!_backSelectedView){
+    _backSelectedView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
+      CGContextRef c = UIGraphicsGetCurrentContext();
+      
+      CGRect r = rect;
+      
+      CGContextSaveGState(c);
+      {
+        // Fill background
+        [BLUE_DARK setFill];
+        CGContextFillRect(c, r);
+        
+        CGFloat borderHeight = 1.0f;
+        CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+        CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+        
+        // Fill top border
+        [WHITEA(0.8f) setFill];
+        CGContextFillRect(c, topBorder);
+        
+        // Fill bottom border
+        [BLACKA(0.1f) setFill];
+        CGContextFillRect(c, bottomBorder);
+      }
+      CGContextRestoreGState(c);
+    }];
+  }
+  return _backSelectedView;
+}
+
 
 @end
