@@ -62,7 +62,7 @@
       return [NSURL URLWithString:imageURLString];
     }] subscribeNext:^(NSURL *imageURL) {
       @strongify(self);
-      UIImage *placeholderImage = [UIImage imageNamed:@"placeholder"];
+      UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
       [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
       [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
       self.albumImageBackgroundView.layer.rasterizationScale = 0.03;

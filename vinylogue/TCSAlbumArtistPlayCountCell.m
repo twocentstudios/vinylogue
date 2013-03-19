@@ -22,7 +22,7 @@ static CGFloat marginVertInAlbum = -2.0f;
 static CGFloat marginVertInPlays = -10.0f;
 static CGFloat imageViewSide = 80.0f;
 static CGFloat playsWidth = 50.0f;
-static NSString *placeholderImage = @"placeholder";
+static NSString *placeholderImage = @"recordPlaceholderThumb";
 
 @interface TCSAlbumArtistPlayCountCell ()
 
