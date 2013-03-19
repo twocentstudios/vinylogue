@@ -199,6 +199,9 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
                 largestImageURL = currentImageURL;
               detailAlbum.imageURL = largestImageURL;
               
+              // Album about text
+              detailAlbum.about = [[[albumDict objectForKey:@"wiki"] objectForKey:@"content"] stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+              
               // Indicates Album object is complete
               detailAlbum.detailLoaded = YES;
               

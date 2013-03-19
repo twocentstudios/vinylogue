@@ -32,7 +32,8 @@
 @property (nonatomic, strong) TCSAlbumArtDetailView *albumDetailView;
 @property (nonatomic, strong) TCSAlbumPlayCountDetailView *playCountView;
 @property (nonatomic, strong) UISegmentedControl *metaDataSegmentedView;
-@property (nonatomic, strong) UILabel *bioLabel;
+@property (nonatomic, strong) UILabel *aboutHeaderLabel;
+@property (nonatomic, strong) UILabel *aboutLabel;
 
 // Vars
 @property (nonatomic, strong) TCSLastFMAPIClient *client;
@@ -75,6 +76,8 @@
   [self.view addSubview:self.scrollView];
   [self.scrollView addSubview:self.albumDetailView];
   [self.scrollView addSubview:self.playCountView];
+  [self.scrollView addSubview:self.aboutHeaderLabel];
+  [self.scrollView addSubview:self.aboutLabel];
 }
 
 - (void)viewDidLoad{
@@ -86,18 +89,17 @@
   RACBind(self.albumDetailView.albumName) = RACBind(self.album.name);
   RACBind(self.albumDetailView.albumReleaseDate) = RACBind(self.album.releaseDate);
   RACBind(self.albumDetailView.albumImageURL) = RACBind(self.album.imageURL);
-  [[[RACAbleWithStart(self.albumDetailView.primaryAlbumColor) map:^id(UIColor *color) {
-    if (color == nil){
-      return WHITE_SUBTLE;
-    }else{
-      return color;
-    }
-  }] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+  RACBind(self.aboutLabel.text) = RACBind(self.album.about);
+  
+  [RACAbleWithStart(self.album.about) subscribeNext:^(NSString *about) {
     @strongify(self);
-    [UIView animateWithDuration:1.1f animations:^{
-      self.scrollView.backgroundColor = color;
-    }];
+    if (!about || [about isEqualToString:@""]){
+      self.aboutHeaderLabel.text = @"";
+    }else{
+      self.aboutHeaderLabel.text = @"about this album";
+    }
   }];
+  
   [[[RACAbleWithStart(self.albumDetailView.primaryAlbumColor) map:^id(UIColor *color) {
     if (color == nil){
       return WHITE_SUBTLE;
@@ -117,6 +119,14 @@
   
   RACBind(self.playCountView.labelTextColor) = RACBind(self.albumDetailView.textAlbumColor);
   RACBind(self.playCountView.labelTextShadowColor) = RACBind(self.albumDetailView.textShadowAlbumColor);
+  
+  [[RACAble(self.albumDetailView.textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    self.aboutHeaderLabel.textColor = color;
+    self.aboutLabel.textColor = color;
+  }];
+  [[RACAble(self.albumDetailView.textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    self.aboutHeaderLabel.shadowColor = color;
+  }];
   
   RACBind(self.playCountView.playCountWeek) = RACBind(self.album.weeklyAlbumChart.playcount);
   RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.album.weeklyAlbumChart.weeklyChart.from) map:^id(NSDate *date) {
@@ -155,8 +165,9 @@
   CGRect r = self.view.bounds;
   CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
-  static CGFloat viewHMargin = 10.0f;
-  static CGFloat viewVMargin = 10.0f;
+  static CGFloat viewHMargin = 26.0f;
+  static CGFloat viewVMargin = 24.0f;
+  CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   ////////////////////////
   // Set width and heights
@@ -170,8 +181,10 @@
   self.metaDataSegmentedView.width = w;
   // metaDataSegmentedView sets its own desired height
   
-  // TODO: set this width
-  [self setLabelSizeForLabel:self.bioLabel width:w];
+  [self setLabelSizeForLabel:self.aboutHeaderLabel width:widthWithMargin];
+  [self setLabelSizeForLabel:self.aboutLabel width:widthWithMargin];
+  self.aboutHeaderLabel.left = viewHMargin;
+  self.aboutLabel.left = viewHMargin;
   
   ////////////////////////
   // Set top positions
@@ -181,8 +194,11 @@
   t += self.playCountView.height;
   self.metaDataSegmentedView.top = t;
   t += self.metaDataSegmentedView.height;
-  self.bioLabel.top = t;
-  t += self.bioLabel.height;
+  t += viewVMargin;
+  self.aboutHeaderLabel.top = t;
+  t += self.aboutHeaderLabel.height;
+  self.aboutLabel.top = t;
+  t += self.aboutLabel.height;
   t += viewVMargin;
   
   self.scrollView.frame = r;
@@ -195,9 +211,9 @@
 }
 
 - (void)setLabelSizeForLabel:(UILabel *)label width:(CGFloat)width{
-  label.width = width;
-  label.height = 60.0f;
+  label.size = [label.text sizeWithFont:label.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
 }
+
 
 - (UIScrollView *)scrollView{
   if (!_scrollView){
@@ -221,6 +237,30 @@
     _playCountView = [[TCSAlbumPlayCountDetailView alloc] init];
   }
   return _playCountView;
+}
+
+- (UILabel *)aboutHeaderLabel{
+  if (!_aboutHeaderLabel){
+    _aboutHeaderLabel = [[UILabel alloc] init];
+    _aboutHeaderLabel.numberOfLines = 0;
+    _aboutHeaderLabel.font = FONT_AVN_DEMIBOLD(24);
+    _aboutHeaderLabel.backgroundColor = CLEAR;
+    _aboutHeaderLabel.shadowOffset = SHADOW_BOTTOM;
+    _aboutHeaderLabel.textAlignment = NSTextAlignmentLeft;
+  }
+  return _aboutHeaderLabel;
+}
+
+- (UILabel *)aboutLabel{
+  if (!_aboutLabel){
+    _aboutLabel = [[UILabel alloc] init];
+    _aboutLabel.numberOfLines = 0;
+    _aboutLabel.font = FONT_AVN_REGULAR(16);
+    _aboutLabel.backgroundColor = CLEAR;
+    _aboutLabel.shadowOffset = SHADOW_BOTTOM;
+    _aboutLabel.textAlignment = NSTextAlignmentLeft;
+  }
+  return _aboutLabel;
 }
 
 @end

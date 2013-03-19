@@ -13,6 +13,15 @@
 @implementation UIImage (TCSImageRepresentativeColors)
 
 // Derived from http://www.markj.net/iphone-uiimage-pixel-color/
+
+/*
+ * Calculate the average color of all colors within the mid bounds of brightness
+ * Loop through colors again:
+ *  Average the colors that are within a certain bounds of the previous average and put that in one bin
+ *  Average the colors outside those bounds and put that in another bin
+ * Calculate the Y brightness of each color and also calculate a contrasting color to that.
+ */
+ 
 - (RACTuple *)getRepresentativeColors{
 	UIColor *primaryColor, *secondaryColor, *averageColor, *textColor, *textShadowColor;
 	CGImageRef inImage = self.CGImage;

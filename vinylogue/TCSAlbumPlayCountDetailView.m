@@ -177,7 +177,6 @@
     _playCountWeekLabel.backgroundColor = CLEAR;
     _playCountWeekLabel.shadowOffset = SHADOW_BOTTOM;
     _playCountWeekLabel.textAlignment = NSTextAlignmentCenter;
-    
   }
   return _playCountWeekLabel;
 }
