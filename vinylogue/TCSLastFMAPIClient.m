@@ -63,7 +63,20 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
       [subject sendCompleted];
     }
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		[subject sendError:error];
+    // Use a cached response if it exists (iOS6 bug)
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    if (cachedResponse != nil && [[cachedResponse data] length] > 0){
+      NSError *JSONError = nil;
+      id JSON = [NSJSONSerialization JSONObjectWithData:cachedResponse.data options:0 error:&JSONError];
+      if (!JSONError){
+        [subject sendNext:JSON];
+        [subject sendCompleted];
+      }else{
+        [subject sendError:error];
+      }
+    }else{
+      [subject sendError:error];
+    }
 	}];
   
 	[self enqueueHTTPRequestOperation:operation];
