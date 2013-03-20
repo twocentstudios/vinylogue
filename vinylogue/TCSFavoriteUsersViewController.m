@@ -22,6 +22,10 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 
+
+// TEMP
+#import "TCSLastFMAPIClient.h"
+
 @interface TCSFavoriteUsersViewController ()
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -108,6 +112,7 @@
   
   const CGFloat buttonWidth = w/2.0f;
   const CGFloat viewHMargin = 20.0f;
+  const CGFloat viewVMargin = 20.0f;
   const CGFloat labelWidth = w - (viewHMargin * 2);
   self.footerContainerView.width = w;
   self.addFriendButton.width = buttonWidth;
@@ -127,8 +132,12 @@
   t += self.addFriendButton.height;
   self.friendHintLabel.top = t;
   t += self.friendHintLabel.height;
+  t += viewVMargin;
   
   self.footerContainerView.height = t;
+  // set the table footer view after we've set the height
+  // so that the table can set its contentSize correctly
+  [self.tableView setTableFooterView:self.footerContainerView];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -249,7 +258,11 @@
 }
 
 - (void)doImportFriends:(id)button{
-  
+  TCSLastFMAPIClient *client = [TCSLastFMAPIClient clientForUser:self.userStore.user];
+  [[[client fetchFriends] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSArray *friends) {
+    [self.userStore addFriends:friends];
+    [self.tableView reloadData];
+  }];
 }
 
 #pragma mark - Table view data source

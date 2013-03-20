@@ -50,6 +50,13 @@
   }
 }
 
+- (void)addFriends:(NSArray *)friends{
+  if (friends != nil){
+    [self.friendsList addObjectsFromArray:friends];
+    [self save];
+  }
+}
+
 - (void)removeFriendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     [self.friendsList removeObjectAtIndex:index];

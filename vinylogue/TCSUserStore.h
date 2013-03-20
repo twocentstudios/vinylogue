@@ -22,6 +22,7 @@
 
 // write
 - (void)addFriend:(User *)user;
+- (void)addFriends:(NSArray *)friends;
 - (void)removeFriendAtIndex:(NSUInteger)index;
 - (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user;
 - (void)moveFriendAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;

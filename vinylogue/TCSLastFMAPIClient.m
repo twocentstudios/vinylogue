@@ -184,4 +184,32 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
             }];
 }
 
+- (RACSignal *)fetchFriends{
+  return [self fetchFriendsForUser:self.user];
+}
+
+- (RACSignal *)fetchFriendsForUser:(User *)user{
+  if (user == nil){
+    return [RACSignal error:nil];
+  }
+  
+  // Limit 0 returns all (I think)
+  NSMutableDictionary *params = [@{ @"method": @"user.getfriends",
+                                 @"user": user.userName,
+                                 @"limit": @"0",
+                                 @"api_key": kTCSLastFMAPIKeyString,
+                                 @"format": @"json" } mutableCopy];
+  
+  return [[[self enqueueRequestWithMethod:@"GET" path:@"" parameters:params]
+           map:^id(NSDictionary *responseObject) {
+             return [[responseObject objectForKey:@"friends"] arrayForKey:@"user"];
+           }] map:^id(NSArray *friendsArray) {
+             RACSequence *list = [friendsArray.rac_sequence map:^id(NSDictionary *friendDict) {
+               return [User objectFromExternalDictionary:friendDict];
+             }];
+             return [list array];
+           }];
+}
+
+
 @end
