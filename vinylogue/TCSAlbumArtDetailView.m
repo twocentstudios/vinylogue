@@ -69,12 +69,6 @@
       @strongify(self);
       UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
       [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
-//      NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:30];
-//      [self.albumImageView setImageWithURLRequest:request placeholderImage:placeholderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-//        DLog(@"%p", response);
-//      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-//        
-//      }];
 //      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
 //      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
 //      self.albumImageBackgroundView.layer.shouldRasterize = YES;
@@ -203,7 +197,7 @@
   if (!_albumImageView){
     _albumImageView = [[UIImageView alloc] init];
 //    _albumImageView.layer.masksToBounds = YES;
-    _albumImageView.layer.cornerRadius = 4;
+//    _albumImageView.layer.cornerRadius = 4; // Can't do this yet until we can mask it without removing the shadow
     _albumImageView.layer.borderWidth = 1;
     _albumImageView.layer.borderColor = BLACKA(0.2f).CGColor;
     _albumImageView.layer.shadowColor = BLACK.CGColor;

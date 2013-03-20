@@ -93,6 +93,7 @@
   RACBind(self.albumDetailView.albumName) = RACBind(self.album.name);
   RACBind(self.albumDetailView.albumReleaseDate) = RACBind(self.album.releaseDate);
   RACBind(self.albumDetailView.albumImageURL) = RACBind(self.album.imageURL);
+  
   RACBind(self.aboutView.content) = RACBind(self.album.about);
   self.pullLabel.text = @"← pull to go back";
   
@@ -181,7 +182,7 @@
   CGFloat t = CGRectGetMinY(r);
   static CGFloat viewHMargin = 26.0f;
 //  static CGFloat viewVMargin = 24.0f;
-  static CGFloat pullLabelMargin = 22.0f;
+  static CGFloat pullLabelMargin = 18.0f;
   CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   ////////////////////////

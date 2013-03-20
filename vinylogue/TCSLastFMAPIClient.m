@@ -185,7 +185,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               detailAlbum.lastFMid = [albumDict objectForKey:@"id"];
               detailAlbum.mbid = [albumDict objectForKey:@"mbid"];
               detailAlbum.url = [albumDict objectForKey:@"url"];
-              detailAlbum.releaseDate = [NSDate date]; // TODO: parse the date
+              detailAlbum.releaseDate = TCSDateByParsingLastFMAlbumReleaseDateString([albumDict objectForKey:@"releasedate"]);
               detailAlbum.totalPlayCount = @([[albumDict objectForKey:@"userplaycount"] integerValue]);
               
               // Process image array
@@ -214,7 +214,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               
               // Album about text
               detailAlbum.about = [[albumDict objectForKey:@"wiki"] objectForKey:@"content"];
-              detailAlbum.about = [TCSLastFMAPIClient stringByStrippingHTMLTagsFromString:detailAlbum.about];
+              detailAlbum.about = TCSStringByStrippingHTMLTagsFromString(detailAlbum.about);
               
               // Indicates Album object is complete
               detailAlbum.detailLoaded = YES;
@@ -243,11 +243,11 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
             }];
 }
 
+// We should probably find a new home for these functions eventually
 # pragma mark - utility
 
 // Strips HTML tags and converts &quot; to "
-// We should probably find a new home for this method eventually
-+ (NSString *)stringByStrippingHTMLTagsFromString:(NSString *)htmlString{
+NSString *TCSStringByStrippingHTMLTagsFromString(NSString *htmlString){
   if (htmlString == nil)
     return nil;
   
@@ -267,6 +267,37 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
   output = [output stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
   
   return output;
+}
+
+
+// Date is assumed to be in the format: "    20 Sep 2011, 00:00"
+NSDate *TCSDateByParsingLastFMAlbumReleaseDateString(NSString *dateString){
+  if (dateString == nil)
+    return nil;
+  
+  static NSDateFormatter *formatter = nil;
+  if (!formatter){
+    formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"dd MM yyyy"];
+  }
+  
+  // Strip leading whitespace
+  NSString *outputStr = [dateString copy];
+  outputStr = [outputStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+  if ([outputStr isEqualToString:@""])
+    return nil;
+  
+  // Strip everything past the comma
+  NSRange commaRange = [outputStr rangeOfString:@","];
+  if (commaRange.location == NSNotFound)
+    return nil;
+  
+  outputStr = [outputStr substringToIndex:commaRange.location];
+  
+  // Do the conversion
+  NSDate *outputDate = [formatter dateFromString:outputStr];
+  
+  return outputDate;
 }
 
 @end
