@@ -11,20 +11,23 @@
 @class RACSignal;
 @class WeeklyChart;
 @class WeeklyAlbumChart;
+@class Artist;
+@class Album;
+@class User;
 
 @interface TCSLastFMAPIClient : AFHTTPClient
 
-@property (nonatomic, readonly, copy) NSString *userName;
+@property (nonatomic, readonly) User *user;
 
 // Client for anonymous requests (not reliant on user specific data)
 + (TCSLastFMAPIClient *)client;
 
 // Client for user specific requests
-+ (TCSLastFMAPIClient *)clientForUserName:(NSString *)userName;
++ (TCSLastFMAPIClient *)clientForUser:(User *)user;
 
 - (RACSignal *)fetchWeeklyChartList;
 - (RACSignal *)fetchWeeklyAlbumChartForChart:(WeeklyChart *)chart;
-- (RACSignal *)fetchImageURLForWeeklyAlbumChart:(WeeklyAlbumChart *)albumChart;
+- (RACSignal *)fetchAlbumDetailsForAlbum:(Album *)album;
 - (RACSignal *)fetchUserForUserName:(NSString *)userName;
 
 @end

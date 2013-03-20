@@ -41,6 +41,7 @@
     
     // When navigation bar is present
     self.title = @"scrobblers";
+    
   }
   return self;
 }
@@ -133,16 +134,25 @@
 }
 
 - (NSString *)userNameForIndexPath:(NSIndexPath *)indexPath{
-  NSString *userName;
-  if (indexPath.section == 0){
-    userName = [self.userStore user].userName;
-  }else if (indexPath.section == 1){
-    userName = [self.userStore friendAtIndex:indexPath.row].userName;
+  User *user = [self userForIndexPath:indexPath];
+  if (user){
+    return user.userName;
   }else{
-    userName = @"";
+    return @"";
+  }
+}
+
+- (User *)userForIndexPath:(NSIndexPath *)indexPath{
+  User *user;
+  if (indexPath.section == 0){
+    user = [self.userStore user];
+  }else if (indexPath.section == 1){
+    user = [self.userStore friendAtIndex:indexPath.row];
+  }else{
+    user = nil;
     NSAssert(NO, @"Outside of section bounds");
   }
-  return userName;
+  return user;
 }
 
 - (NSString *)titleForHeaderInSection:(NSInteger)section{
@@ -268,13 +278,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
-  NSString *userName = [self userNameForIndexPath:indexPath];
+  User *user = [self userForIndexPath:indexPath];
 
   if (!self.editing){
-    TCSWeeklyAlbumChartViewController *albumChartController = [[TCSWeeklyAlbumChartViewController alloc] initWithUserName:userName playCountFilter:self.playCountFilter];
+    TCSWeeklyAlbumChartViewController *albumChartController = [[TCSWeeklyAlbumChartViewController alloc] initWithUser:user playCountFilter:self.playCountFilter];
     [self.navigationController pushViewController:albumChartController animated:YES];
   }else{    
-    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:userName headerShowing:NO];
+    TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithUserName:user.userName headerShowing:NO];
     @weakify(self);
     [[userNameController userSignal] subscribeNext:^(User *user){
       @strongify(self);
