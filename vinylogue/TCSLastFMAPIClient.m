@@ -275,11 +275,12 @@ NSDate *TCSDateByParsingLastFMAlbumReleaseDateString(NSString *dateString){
   if (dateString == nil)
     return nil;
   
+  static dispatch_once_t onceMark;
   static NSDateFormatter *formatter = nil;
-  if (!formatter){
+  dispatch_once(&onceMark, ^{
     formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"dd MM yyyy"];
-  }
+  });
   
   // Strip leading whitespace
   NSString *outputStr = [dateString copy];
