@@ -11,7 +11,7 @@
 @class Album;
 @class User;
 
-@interface TCSAlbumDetailViewController : UIViewController
+@interface TCSAlbumDetailViewController : UIViewController <UIScrollViewDelegate>
 
 - (id)initWithAlbum:(Album *)album;
 - (id)initWithAlbum:(Album *)album user:(User *)user;

@@ -16,6 +16,9 @@
 
 #import "TCSAlbumArtDetailView.h"
 #import "TCSAlbumPlayCountDetailView.h"
+#import "TCSAlbumAboutDetailView.h"
+
+#import "UILabel+TCSLabelSizeCalculations.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
@@ -29,11 +32,11 @@
 
 // Views
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UILabel *pullLabel;
 @property (nonatomic, strong) TCSAlbumArtDetailView *albumDetailView;
 @property (nonatomic, strong) TCSAlbumPlayCountDetailView *playCountView;
 @property (nonatomic, strong) UISegmentedControl *metaDataSegmentedView;
-@property (nonatomic, strong) UILabel *aboutHeaderLabel;
-@property (nonatomic, strong) UILabel *aboutLabel;
+@property (nonatomic, strong) TCSAlbumAboutDetailView *aboutView;
 
 // Vars
 @property (nonatomic, strong) TCSLastFMAPIClient *client;
@@ -55,6 +58,7 @@
 - (id)initWithAlbum:(Album *)album user:(User *)user{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
+    self.wantsFullScreenLayout = YES;
     self.album = album;
     self.user = user;
     self.client = [TCSLastFMAPIClient clientForUser:self.user];
@@ -74,10 +78,10 @@
   self.view.autoresizesSubviews = YES;
     
   [self.view addSubview:self.scrollView];
+  [self.scrollView addSubview:self.pullLabel];
   [self.scrollView addSubview:self.albumDetailView];
   [self.scrollView addSubview:self.playCountView];
-  [self.scrollView addSubview:self.aboutHeaderLabel];
-  [self.scrollView addSubview:self.aboutLabel];
+  [self.scrollView addSubview:self.aboutView];
 }
 
 - (void)viewDidLoad{
@@ -89,14 +93,15 @@
   RACBind(self.albumDetailView.albumName) = RACBind(self.album.name);
   RACBind(self.albumDetailView.albumReleaseDate) = RACBind(self.album.releaseDate);
   RACBind(self.albumDetailView.albumImageURL) = RACBind(self.album.imageURL);
-  RACBind(self.aboutLabel.text) = RACBind(self.album.about);
+  RACBind(self.aboutView.content) = RACBind(self.album.about);
+  self.pullLabel.text = @"← pull to go back";
   
   [RACAbleWithStart(self.album.about) subscribeNext:^(NSString *about) {
     @strongify(self);
     if (!about || [about isEqualToString:@""]){
-      self.aboutHeaderLabel.text = @"";
+      self.aboutView.header = @"";
     }else{
-      self.aboutHeaderLabel.text = @"about this album";
+      self.aboutView.header = @"about this album";
     }
   }];
   
@@ -113,6 +118,7 @@
                         options:UIViewAnimationOptionAllowUserInteraction
                      animations:^{
                        self.scrollView.backgroundColor = color;
+//                       self.view.backgroundColor = color;
                      }
                      completion:NULL];
   }];
@@ -121,19 +127,23 @@
   RACBind(self.playCountView.labelTextShadowColor) = RACBind(self.albumDetailView.textShadowAlbumColor);
   
   [[RACAble(self.albumDetailView.textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
-    self.aboutHeaderLabel.textColor = color;
-    self.aboutLabel.textColor = color;
+    self.aboutView.labelTextColor = color;
+    self.pullLabel.textColor = COLORA(color, 0.6);
   }];
   [[RACAble(self.albumDetailView.textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
-    self.aboutHeaderLabel.shadowColor = color;
+    self.aboutView.labelTextShadowColor = color;
   }];
   
   RACBind(self.playCountView.playCountWeek) = RACBind(self.album.weeklyAlbumChart.playcount);
   RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.album.weeklyAlbumChart.weeklyChart.from) map:^id(NSDate *date) {
-    NSDateComponents *components = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:date];
-    return [NSString stringWithFormat:@"week %i %i", components.weekOfYear, components.yearForWeekOfYear];
+    if (date != nil){
+      NSDateComponents *components = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:date];
+      return [NSString stringWithFormat:@"week %i %i", components.weekOfYear, components.yearForWeekOfYear];
+    }else{
+      return @"week";
+    }
   }];
-  RACBind(self.playCountView.playCountAllTime) = RACBind(self.album.totalPlayCount);
+  RAC(self.playCountView.playCountAllTime) = RACBind(self.album.totalPlayCount);
   
   [RACAbleWithStart(self.showingLoading) subscribeNext:^(NSNumber *showingLoading) {
     BOOL isLoading = [showingLoading boolValue];
@@ -147,15 +157,19 @@
   
   if (self.album.detailLoaded == NO){
     self.showingLoading = YES;
-    [[self.client fetchAlbumDetailsForAlbum:self.album]
+    [[[self.client fetchAlbumDetailsForAlbum:self.album]
+      deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(Album *album) {
-      
-    } error:^(NSError *error) {
-      NSLog(@"Error fetching album details: %@", error);
-      self.showingLoading = NO;
-    } completed:^{
-      self.showingLoading = NO;
-    }];
+       @strongify(self);
+       [self.view setNeedsLayout];
+     } error:^(NSError *error) {
+       NSLog(@"Error fetching album details: %@", error);
+       @strongify(self);
+       self.showingLoading = NO;
+     } completed:^{
+       @strongify(self);
+       self.showingLoading = NO;
+     }];
   }
 
 }
@@ -166,11 +180,15 @@
   CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
   static CGFloat viewHMargin = 26.0f;
-  static CGFloat viewVMargin = 24.0f;
+//  static CGFloat viewVMargin = 24.0f;
+  static CGFloat pullLabelMargin = 22.0f;
   CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   ////////////////////////
   // Set width and heights
+  [self.pullLabel setMultipleLineSizeForWidth:widthWithMargin];
+  self.pullLabel.x = CGRectGetMidX(r);
+  
   self.albumDetailView.width = w;
   [self.albumDetailView layoutSubviews];
   
@@ -181,28 +199,35 @@
   self.metaDataSegmentedView.width = w;
   // metaDataSegmentedView sets its own desired height
   
-  [self setLabelSizeForLabel:self.aboutHeaderLabel width:widthWithMargin];
-  [self setLabelSizeForLabel:self.aboutLabel width:widthWithMargin];
-  self.aboutHeaderLabel.left = viewHMargin;
-  self.aboutLabel.left = viewHMargin;
+  self.aboutView.width = w;
+  [self.aboutView layoutSubviews];
   
   ////////////////////////
   // Set top positions
+  self.pullLabel.bottom = t - pullLabelMargin;
   self.albumDetailView.top = t;
   t += self.albumDetailView.height;
   self.playCountView.top = t;
   t += self.playCountView.height;
   self.metaDataSegmentedView.top = t;
   t += self.metaDataSegmentedView.height;
-  t += viewVMargin;
-  self.aboutHeaderLabel.top = t;
-  t += self.aboutHeaderLabel.height;
-  self.aboutLabel.top = t;
-  t += self.aboutLabel.height;
-  t += viewVMargin;
+  self.aboutView.top = t;
+  t += self.aboutView.height;
   
   self.scrollView.frame = r;
   [self.scrollView setContentSize:CGSizeMake(w, t)];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+  [super viewWillAppear:animated];
+  [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:animated];
+  [self.navigationController setNavigationBarHidden:YES animated:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+  [super viewWillDisappear:animated];
+  [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:animated];
+  [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 - (void)didReceiveMemoryWarning{
@@ -210,17 +235,35 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setLabelSizeForLabel:(UILabel *)label width:(CGFloat)width{
-  label.size = [label.text sizeWithFont:label.font constrainedToSize:CGSizeMake(width, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+- (void)doSwipe:(id)sender{
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//  CGFloat contentOffset = scrollView.contentOffset.y;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+  CGFloat contentOffset = scrollView.contentOffset.y;
+  if (contentOffset < -50.0){
+    [self.navigationController popViewControllerAnimated:YES];
+  }
+}
+
+#pragma mark - view getters
 
 - (UIScrollView *)scrollView{
   if (!_scrollView){
     _scrollView = [[UIScrollView alloc] init];
+    _scrollView.backgroundColor = CLEAR;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator = YES;
     _scrollView.directionalLockEnabled = YES;
+//    _scrollView.alwaysBounceHorizontal = YES;
+    _scrollView.alwaysBounceVertical = YES;
+    _scrollView.delegate = self;
   }
   return _scrollView;
 }
@@ -239,28 +282,26 @@
   return _playCountView;
 }
 
-- (UILabel *)aboutHeaderLabel{
-  if (!_aboutHeaderLabel){
-    _aboutHeaderLabel = [[UILabel alloc] init];
-    _aboutHeaderLabel.numberOfLines = 0;
-    _aboutHeaderLabel.font = FONT_AVN_DEMIBOLD(24);
-    _aboutHeaderLabel.backgroundColor = CLEAR;
-    _aboutHeaderLabel.shadowOffset = SHADOW_BOTTOM;
-    _aboutHeaderLabel.textAlignment = NSTextAlignmentLeft;
+- (UILabel *)pullLabel{
+  if (!_pullLabel){
+    _pullLabel = [[UILabel alloc] init];
+    _pullLabel.numberOfLines = 0;
+    _pullLabel.font = FONT_AVN_REGULAR(16);
+    _pullLabel.backgroundColor = CLEAR;
+    _pullLabel.shadowOffset = SHADOW_BOTTOM;
+    _pullLabel.textAlignment = NSTextAlignmentCenter;
   }
-  return _aboutHeaderLabel;
+  return _pullLabel;
 }
 
-- (UILabel *)aboutLabel{
-  if (!_aboutLabel){
-    _aboutLabel = [[UILabel alloc] init];
-    _aboutLabel.numberOfLines = 0;
-    _aboutLabel.font = FONT_AVN_REGULAR(16);
-    _aboutLabel.backgroundColor = CLEAR;
-    _aboutLabel.shadowOffset = SHADOW_BOTTOM;
-    _aboutLabel.textAlignment = NSTextAlignmentLeft;
+- (TCSAlbumAboutDetailView *)aboutView{
+  if (!_aboutView){
+    _aboutView = [[TCSAlbumAboutDetailView alloc] init];
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doSwipe:)];
+    swipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [_aboutView addGestureRecognizer:swipe];
   }
-  return _aboutLabel;
+  return _aboutView;
 }
 
 @end

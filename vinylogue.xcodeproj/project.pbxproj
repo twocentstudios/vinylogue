@@ -106,6 +106,10 @@
 		3454CBEA16F81E3D00B74623 /* recordPlaceholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3454CBE716F81E3D00B74623 /* recordPlaceholder@2x.png */; };
 		3454CBEB16F81E3D00B74623 /* recordPlaceholderThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3454CBE816F81E3D00B74623 /* recordPlaceholderThumb@2x.png */; };
 		3454CBEC16F81E3D00B74623 /* recordPlaceholderThumb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3454CBE816F81E3D00B74623 /* recordPlaceholderThumb@2x.png */; };
+		3454CBF216F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */; };
+		3454CBF316F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */; };
+		3454CBFA16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */; };
+		3454CBFB16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */; };
 		3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
@@ -223,6 +227,10 @@
 		3454CBC816F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumPlayCountDetailView.m; sourceTree = "<group>"; };
 		3454CBE716F81E3D00B74623 /* recordPlaceholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "recordPlaceholder@2x.png"; path = "Images/recordPlaceholder@2x.png"; sourceTree = SOURCE_ROOT; };
 		3454CBE816F81E3D00B74623 /* recordPlaceholderThumb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "recordPlaceholderThumb@2x.png"; path = "Images/recordPlaceholderThumb@2x.png"; sourceTree = SOURCE_ROOT; };
+		3454CBF016F8CFB700B74623 /* TCSAlbumAboutDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumAboutDetailView.h; sourceTree = "<group>"; };
+		3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumAboutDetailView.m; sourceTree = "<group>"; };
+		3454CBF816F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+TCSLabelSizeCalculations.h"; sourceTree = "<group>"; };
+		3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+TCSLabelSizeCalculations.m"; sourceTree = "<group>"; };
 		3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TCSDictionarySafety.h"; sourceTree = "<group>"; };
 		3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TCSDictionarySafety.m"; sourceTree = "<group>"; };
 		3479A4D016D83E950042B8AE /* TCSSinglePageWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSinglePageWebViewController.h; sourceTree = "<group>"; };
@@ -421,6 +429,8 @@
 				3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */,
 				3454CBC716F7DA9300B74623 /* TCSAlbumPlayCountDetailView.h */,
 				3454CBC816F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m */,
+				3454CBF016F8CFB700B74623 /* TCSAlbumAboutDetailView.h */,
+				3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */,
 				343C0F5F16D329CD0028A6FE /* TCSSlideSelectView.h */,
 				343C0F6016D329CE0028A6FE /* TCSSlideSelectView.m */,
 				343C0F8E16D5BF580028A6FE /* TCSEmptyErrorView.h */,
@@ -501,6 +511,8 @@
 				3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */,
 				3454CBC316F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.h */,
 				3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */,
+				3454CBF816F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.h */,
+				3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -728,6 +740,8 @@
 				3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
 				3454CBC516F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */,
 				3454CBC916F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m in Sources */,
+				3454CBF216F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
+				3454CBFA16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,6 +773,8 @@
 				3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */,
 				3454CBC616F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m in Sources */,
 				3454CBCA16F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m in Sources */,
+				3454CBF316F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
+				3454CBFB16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

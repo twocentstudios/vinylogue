@@ -8,6 +8,7 @@
 
 #import "TCSAlbumPlayCountDetailView.h"
 
+#import "UILabel+TCSLabelSizeCalculations.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 
@@ -42,10 +43,18 @@
     @weakify(self);
     // Set label text
     RAC(self.playCountWeekLabel.text) = [RACAble(self.playCountWeek) map:^id(NSNumber *count) {
-      return [NSString stringWithFormat:@"%i", [count integerValue]];
+      if (count == nil){
+        return @"?";
+      }else{
+        return [NSString stringWithFormat:@"%i", [count integerValue]];
+      }
     }];
     RAC(self.playCountAllTimeLabel.text) = [RACAble(self.playCountAllTime) map:^id(NSNumber *count) {
-      return [NSString stringWithFormat:@"%i", [count integerValue]];
+      if (count == nil){
+        return @"?";
+      }else{
+        return [NSString stringWithFormat:@"%i", [count integerValue]];
+      }
     }];
     RACBind(self.durationWeekLabel.text) = RACBind(self.durationWeek);
     self.playWeekLabel.text = @"plays";

@@ -12,6 +12,7 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 #import "UIImage+TCSImageRepresentativeColors.h"
+#import "UILabel+TCSLabelSizeCalculations.h"
 
 @interface TCSAlbumArtDetailView ()
 
@@ -53,8 +54,12 @@
     }];
     RAC(self.albumNameLabel.text) = RACAble(self.albumName);
     RAC(self.releaseDateLabel.text) = [RACAble(self.albumReleaseDate) map:^id(NSDate *date) {
-      NSString *annotatedString = [NSString stringWithFormat:@"Released: %@", [formatter stringFromDate:date]];
-      return annotatedString;
+      if (date != nil){
+        NSString *annotatedString = [NSString stringWithFormat:@"Released: %@", [formatter stringFromDate:date]];
+        return annotatedString;
+      }else{
+        return @"";
+      }
     }];
     
     // Set album images
@@ -64,11 +69,18 @@
       @strongify(self);
       UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
       [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
-      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
-      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
-      self.albumImageBackgroundView.layer.shouldRasterize = YES;
+//      NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:30];
+//      [self.albumImageView setImageWithURLRequest:request placeholderImage:placeholderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+//        DLog(@"%p", response);
+//      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+//        
+//      }];
+//      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
+//      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
+//      self.albumImageBackgroundView.layer.shouldRasterize = YES;
     }];
     
+    // Calculate album image derived colors when the image changes
     [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {
       return (value != nil);
     }] deliverOn:[RACScheduler scheduler]]
@@ -80,6 +92,7 @@
        self.textShadowAlbumColor = t.fifth;
      }];
     
+    // Set label text colors when the album derived color changes
     [[RACAble(self.textAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(UIColor *color) {
@@ -169,7 +182,7 @@
     CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
     
     // Fill top & bottom border (inset)
-    [BLACKA(0.25f) setFill];
+    [BLACKA(0.1f) setFill];
     CGContextFillRect(c, topBorder);
     CGContextFillRect(c, bottomBorder);
   }
@@ -206,8 +219,6 @@
     _artistNameLabel.numberOfLines = 0;
     _artistNameLabel.font = FONT_AVN_REGULAR(15);
     _artistNameLabel.backgroundColor = CLEAR;
-    _artistNameLabel.textColor = WHITEA(0.85f);
-    _artistNameLabel.shadowColor = BLACKA(0.6f);
     _artistNameLabel.shadowOffset = SHADOW_BOTTOM;
     _artistNameLabel.textAlignment = NSTextAlignmentCenter;
   }
@@ -220,8 +231,6 @@
     _albumNameLabel.numberOfLines = 0;
     _albumNameLabel.font = FONT_AVN_DEMIBOLD(30);
     _albumNameLabel.backgroundColor = CLEAR;
-    _albumNameLabel.textColor = WHITE;
-    _albumNameLabel.shadowColor = BLACKA(0.9f);
     _albumNameLabel.shadowOffset = SHADOW_BOTTOM;
     _albumNameLabel.textAlignment = NSTextAlignmentCenter;
   }
@@ -234,8 +243,6 @@
     _releaseDateLabel.numberOfLines = 0;
     _releaseDateLabel.font = FONT_AVN_REGULAR(13);
     _releaseDateLabel.backgroundColor = CLEAR;
-    _releaseDateLabel.textColor = WHITEA(0.7f);
-    _releaseDateLabel.shadowColor = BLACKA(0.5f);
     _releaseDateLabel.shadowOffset = SHADOW_BOTTOM;
     _releaseDateLabel.textAlignment = NSTextAlignmentCenter;
   }
