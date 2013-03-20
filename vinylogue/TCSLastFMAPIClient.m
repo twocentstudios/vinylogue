@@ -214,7 +214,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               
               // Album about text
               detailAlbum.about = [[albumDict objectForKey:@"wiki"] objectForKey:@"content"];
-              detailAlbum.about = [self stringByStrippingHTMLTagsFromString:detailAlbum.about];
+              detailAlbum.about = [TCSLastFMAPIClient stringByStrippingHTMLTagsFromString:detailAlbum.about];
               
               // Indicates Album object is complete
               detailAlbum.detailLoaded = YES;
@@ -247,7 +247,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
 
 // Strips HTML tags and converts &quot; to "
 // We should probably find a new home for this method eventually
-- (NSString *)stringByStrippingHTMLTagsFromString:(NSString *)htmlString{
++ (NSString *)stringByStrippingHTMLTagsFromString:(NSString *)htmlString{
   if (htmlString == nil)
     return nil;
   
