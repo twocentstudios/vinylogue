@@ -63,16 +63,17 @@
     }];
     
     // Set album images
-    [[RACAble(self.albumImageURL) map:^id(NSString *imageURLString) {
+    [[[RACAble(self.albumImageURL) map:^id(NSString *imageURLString) {
       return [NSURL URLWithString:imageURLString];
-    }] subscribeNext:^(NSURL *imageURL) {
-      @strongify(self);
-      UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
-      [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
-//      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
-//      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
-//      self.albumImageBackgroundView.layer.shouldRasterize = YES;
-    }];
+    }] deliverOn:[RACScheduler mainThreadScheduler]]
+     subscribeNext:^(NSURL *imageURL) {
+       @strongify(self);
+       UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
+       [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
+       //      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
+       //      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
+       //      self.albumImageBackgroundView.layer.shouldRasterize = YES;
+     }];
     
     // Calculate album image derived colors when the image changes
     [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {

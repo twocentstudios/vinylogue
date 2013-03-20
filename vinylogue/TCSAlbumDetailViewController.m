@@ -40,8 +40,10 @@
 
 // Vars
 @property (nonatomic, strong) TCSLastFMAPIClient *client;
+@property (atomic, strong) WeeklyAlbumChart *weeklyAlbumChart;
+@property (atomic, strong) WeeklyChart *weeklyChart;
 @property (atomic, strong) Album *album;
-@property (nonatomic, strong) User *user;
+@property (atomic, strong) User *user;
 
 // State
 @property (atomic) BOOL showingLoading;
@@ -55,18 +57,27 @@
   NSLog(@"Debug");
 }
 
-- (id)initWithAlbum:(Album *)album user:(User *)user{
+- (id)initWithWeeklyAlbumChart:(WeeklyAlbumChart *)weeklyAlbumChart{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.wantsFullScreenLayout = YES;
-    self.album = album;
-    self.user = user;
+    self.weeklyAlbumChart = weeklyAlbumChart;
+    self.weeklyChart = weeklyAlbumChart.weeklyChart;
+    self.album = weeklyAlbumChart.album;
+    self.user = weeklyAlbumChart.user;
     self.client = [TCSLastFMAPIClient clientForUser:self.user];
     
     // TEMP
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(doDebug:)];
   }
   return self;
+}
+
+- (id)initWithAlbum:(Album *)album user:(User *)user{
+  WeeklyAlbumChart *weeklyAlbumChart = [[WeeklyAlbumChart alloc] init];
+  weeklyAlbumChart.album = album;
+  weeklyAlbumChart.user = user;
+  return [self initWithWeeklyAlbumChart:weeklyAlbumChart];
 }
 
 - (id)initWithAlbum:(Album *)album{
@@ -140,8 +151,8 @@
     self.aboutView.labelTextShadowColor = color;
   }];
   
-  RACBind(self.playCountView.playCountWeek) = RACBind(self.album.weeklyAlbumChart.playcount);
-  RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.album.weeklyAlbumChart.weeklyChart.from) map:^id(NSDate *date) {
+  RACBind(self.playCountView.playCountWeek) = RACBind(self.weeklyAlbumChart.playcount);
+  RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.weeklyChart.from) map:^id(NSDate *date) {
     if (date != nil){
       NSDateComponents *components = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:date];
       return [NSString stringWithFormat:@"week %i %i", components.weekOfYear, components.yearForWeekOfYear];

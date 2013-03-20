@@ -454,8 +454,7 @@
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
   
   WeeklyAlbumChart *weeklyAlbumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
-  Album *album = weeklyAlbumChart.album;
-  TCSAlbumDetailViewController *albumDetailController = [[TCSAlbumDetailViewController alloc] initWithAlbum:album user:self.user];
+  TCSAlbumDetailViewController *albumDetailController = [[TCSAlbumDetailViewController alloc] initWithWeeklyAlbumChart:weeklyAlbumChart];
   [self.navigationController pushViewController:albumDetailController animated:YES];
 }
 

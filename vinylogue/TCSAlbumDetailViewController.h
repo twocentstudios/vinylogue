@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+@class WeeklyAlbumChart;
 @class Album;
 @class User;
 
@@ -15,5 +16,6 @@
 
 - (id)initWithAlbum:(Album *)album;
 - (id)initWithAlbum:(Album *)album user:(User *)user;
+- (id)initWithWeeklyAlbumChart:(WeeklyAlbumChart *)weeklyAlbumChart;
 
 @end
