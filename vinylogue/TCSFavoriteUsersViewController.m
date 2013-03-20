@@ -448,7 +448,7 @@
     _friendHintLabel.font = FONT_AVN_REGULAR(12);
     _friendHintLabel.textColor = COLORA(BLUE_DARK, 0.4);
     _friendHintLabel.textAlignment = NSTextAlignmentCenter;
-    _friendHintLabel.text = @"the vinylogue friend list is kept separate from your last.fm friends list";
+    _friendHintLabel.text = @"your vinylogue friend list is kept separate from your last.fm friends list";
   }
   return _friendHintLabel;
 }
