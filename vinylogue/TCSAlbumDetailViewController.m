@@ -76,7 +76,12 @@
 - (void)loadView{
   self.view = [[UIView alloc] init];
   self.view.autoresizesSubviews = YES;
-    
+  
+  // Swiping left pops view controller
+  UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doSwipe:)];
+  swipe.direction = UISwipeGestureRecognizerDirectionRight;
+  [self.view addGestureRecognizer:swipe];
+  
   [self.view addSubview:self.scrollView];
   [self.scrollView addSubview:self.pullLabel];
   [self.scrollView addSubview:self.albumDetailView];
@@ -298,9 +303,9 @@
 - (TCSAlbumAboutDetailView *)aboutView{
   if (!_aboutView){
     _aboutView = [[TCSAlbumAboutDetailView alloc] init];
-    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doSwipe:)];
-    swipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [_aboutView addGestureRecognizer:swipe];
+//    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doSwipe:)];
+//    swipe.direction = UISwipeGestureRecognizerDirectionRight;
+//    [_aboutView addGestureRecognizer:swipe];
   }
   return _aboutView;
 }
