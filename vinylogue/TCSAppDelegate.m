@@ -60,7 +60,7 @@
   
 #ifdef BETATESTING
   [TestFlight takeOff:kTestFlightAPIKey];
-#elsif APPSTORE
+#elif APPSTORE
   [Flurry startSession:kFlurryAPIKey];
 #endif
 
