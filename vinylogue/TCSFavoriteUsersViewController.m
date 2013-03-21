@@ -39,7 +39,8 @@
 @property (nonatomic) NSUInteger playCountFilter;
 @property (nonatomic, strong) TCSUserStore *userStore; // array of strings
 
-@property (nonatomic) BOOL hidingFooterView;
+@property (atomic) BOOL importingFriends;
+@property (atomic) BOOL kvoEditing;
 
 @end
 
@@ -66,7 +67,6 @@
   [self.footerContainerView addSubview:self.importButton];
   [self.footerContainerView addSubview:self.friendHintLabel];
   [self.tableView setTableFooterView:self.footerContainerView];
-  [self showOrHideTableFooter:NO];
   
   UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
   [button setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
@@ -103,6 +103,45 @@
     [self presentViewController:userNameController animated:NO completion:NULL];
   }];
   
+  // Show the footer if in editing mode or have zero friends
+  [[[[RACSignal combineLatest:@[self.userStore.friendListCountSignal, RACAbleWithStart(self.kvoEditing)] reduce:^(NSNumber *countNumber, NSNumber *editingNumber){
+    NSInteger count = [countNumber integerValue];
+    BOOL editing = [editingNumber boolValue];
+    return @((count == 0) || (editing == YES));
+  }] distinctUntilChanged]
+    deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *showFooterNumber) {
+    BOOL showFooter = [showFooterNumber boolValue];
+    [UIView animateWithDuration:0.4 animations:^{
+      @strongify(self);
+      self.footerContainerView.hidden = NO;
+      self.footerContainerView.alpha = (float)showFooter;
+    }completion:^(BOOL finished) {
+      @strongify(self);
+      self.footerContainerView.hidden = !showFooter;
+    }];
+  }];
+  
+  // Disable UI when importing friends
+  [[[RACAbleWithStart(self.importingFriends)
+     distinctUntilChanged]
+    deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *importingNumber) {
+     @strongify(self);
+     BOOL importing = [importingNumber boolValue];
+     if (importing){
+       [self.importButton setTitle:@"importing..." forState:UIControlStateNormal];
+       self.tableView.alpha = 0.7f;
+     }else{
+       [self.importButton setTitle:@"import friends" forState:UIControlStateNormal];
+       self.tableView.alpha = 1.0f;
+     }
+     self.importButton.enabled = !importing;
+     self.addFriendButton.enabled = !importing;
+     self.editButtonItem.enabled = !importing;
+     [self.tableView setAllowsSelection:!importing];
+     [self.tableView setAllowsSelectionDuringEditing:!importing];
+   }];
 }
 
 - (void)viewWillLayoutSubviews{
@@ -135,10 +174,12 @@
   t += self.friendHintLabel.height;
   t += viewVMargin;
   
-  self.footerContainerView.height = t;
-  // set the table footer view after we've set the height
-  // so that the table can set its contentSize correctly
-  [self.tableView setTableFooterView:self.footerContainerView];
+  if (self.footerContainerView.height == 0){
+    self.footerContainerView.height = t;
+    // set the table footer view after we've set the height
+    // so that the table can set its contentSize correctly
+    [self.tableView setTableFooterView:self.footerContainerView];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -162,25 +203,10 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated{
   [super setEditing:editing animated:animated];
   [self.tableView setEditing:editing animated:animated];
-  [self showOrHideTableFooter:YES];
+  self.kvoEditing = editing;
 }
 
 #pragma mark - private
-
-- (void)showOrHideTableFooter:(BOOL)animated{
-  BOOL wasHidingFooterView = self.hidingFooterView;
-  self.hidingFooterView = !((self.editing == YES) || (self.userStore.friendsCount == 0));
-  if (wasHidingFooterView == self.hidingFooterView){
-    return;
-  }else{
-    @weakify(self);
-    [UIView animateWithDuration:(animated ? 0.4 : 0) animations:^{
-      @strongify(self);
-      self.footerContainerView.hidden = NO;
-      self.footerContainerView.alpha = (float)!self.hidingFooterView;
-    }];
-  }
-}
 
 - (void)removeStupidTableHeaderBorders{
   NSArray *allTableViewSubviews = [self.tableView subviews];
@@ -259,11 +285,21 @@
 }
 
 - (void)doImportFriends:(id)button{
+  self.importingFriends = YES;
   TCSLastFMAPIClient *client = [TCSLastFMAPIClient clientForUser:self.userStore.user];
-  [[[client fetchFriends] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSArray *friends) {
+  @weakify(self);
+  [[[[client fetchFriends] map:^id(NSArray *friends) {
+    @strongify(self);
     [self.userStore addFriends:friends];
-    [self.tableView reloadData];
-  }];
+    return friends;
+  }] deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSArray *friends) {
+     @strongify(self);
+     [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+   }completed:^{
+     @strongify(self);
+     self.importingFriends = NO;
+   }];
 }
 
 #pragma mark - Table view data source
@@ -276,7 +312,6 @@
   if (section == 0){
     return 1;
   }else if (section == 1){
-    [self showOrHideTableFooter:YES];
     return [self.userStore friendsCount];
   }else{
     return 0;
@@ -420,8 +455,6 @@
 - (UIView *)footerContainerView{
   if (!_footerContainerView){
     _footerContainerView = [[UIView alloc] init];
-    _footerContainerView.hidden = YES;
-    self.hidingFooterView = YES;
   }
   return _footerContainerView;
 }
@@ -444,7 +477,6 @@
   if (!_importButton){
     _importButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_importButton addTarget:self action:@selector(doImportFriends:) forControlEvents:UIControlEventTouchUpInside];
-    [_importButton setTitle:@"import friends" forState:UIControlStateNormal];
     [_importButton setTitleColor:BLUE_DARK forState:UIControlStateNormal];
     [_importButton setShowsTouchWhenHighlighted:YES];
     _importButton.titleLabel.font = FONT_AVN_ULTRALIGHT(18);

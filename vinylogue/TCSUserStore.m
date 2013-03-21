@@ -9,9 +9,12 @@
 #import "TCSUserStore.h"
 #import "User.h"
 
+#import <ReactiveCocoa/ReactiveCocoa.h>
+
 @interface TCSUserStore ()
 
 @property (nonatomic, strong) NSMutableArray *friendsList;
+@property (nonatomic, strong) RACReplaySubject *friendListCountSignal;
 
 @end
 
@@ -20,9 +23,14 @@
 - (id)init{
   self = [super init];
   if (self) {
+    self.friendListCountSignal = [RACReplaySubject subject];
     [self load];
   }
   return self;
+}
+
+- (void)dealloc{
+  [self.friendListCountSignal sendCompleted];
 }
 
 - (void)setUser:(User *)user{
@@ -36,6 +44,10 @@
   return [self.friendsList count];
 }
 
+- (void)friendCountChanged{
+  [self.friendListCountSignal sendNext:@([self friendsCount])];
+}
+
 - (User *)friendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     return [self.friendsList objectAtIndex:index];
@@ -46,6 +58,7 @@
 - (void)addFriend:(User *)user{
   if (user != nil) {
     [self.friendsList addObject:user];
+    [self friendCountChanged];
     [self save];
   }
 }
@@ -62,14 +75,19 @@
         }
       }
     }
-    [self.friendsList addObjectsFromArray:friendsToAdd];
-    [self save];
+    
+    if ([friendsToAdd count] > 0){
+      [self.friendsList addObjectsFromArray:friendsToAdd];
+      [self friendCountChanged];
+      [self save];
+    }
   }
 }
 
 - (void)removeFriendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     [self.friendsList removeObjectAtIndex:index];
+    [self friendCountChanged];
     [self save];
   }
 }
@@ -115,6 +133,8 @@
   
   _user = storedUser;
   _friendsList = [storedFriendsList mutableCopy];
+  
+  [self friendCountChanged];
   
   DLog(@"loaded username: %@", self.user.userName);
   DLog(@"loaded friends: %@", self.friendsList);

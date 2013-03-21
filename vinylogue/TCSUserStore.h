@@ -9,10 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @class User;
+@class RACReplaySubject;
 
 @interface TCSUserStore : NSObject
 
 @property (nonatomic, strong) User *user;
+@property (nonatomic, readonly) RACReplaySubject *friendListCountSignal;
 
 - (id)init;
 
