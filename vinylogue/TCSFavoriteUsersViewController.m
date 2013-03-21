@@ -121,11 +121,12 @@
   
   CGFloat l = CGRectGetMinX(self.footerContainerView.bounds);
   self.addFriendButton.left = l;
-  self.friendHintLabel.left = l + viewHMargin;
   l += self.addFriendButton.width;
   self.importButton.left = l;
   l += self.importButton.width;
   
+  self.friendHintLabel.x = CGRectGetMidX(r);
+
   CGFloat t = CGRectGetMinY(self.footerContainerView.bounds);
   self.addFriendButton.top = t;
   self.importButton.top = t;
@@ -461,7 +462,7 @@
     _friendHintLabel.font = FONT_AVN_REGULAR(12);
     _friendHintLabel.textColor = COLORA(BLUE_DARK, 0.4);
     _friendHintLabel.textAlignment = NSTextAlignmentCenter;
-    _friendHintLabel.text = @"your vinylogue friend list is kept separate from your last.fm friends list";
+    _friendHintLabel.text = @"your vinylogue friend list is kept separate\nfrom your last.fm friends list\n\n'import' will add only your last.fm friends\nnot already in this list";
   }
   return _friendHintLabel;
 }

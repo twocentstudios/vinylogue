@@ -52,7 +52,17 @@
 
 - (void)addFriends:(NSArray *)friends{
   if (friends != nil){
-    [self.friendsList addObjectsFromArray:friends];
+    // Start with all new friends and remove those that are already in
+    // the user's friend list
+    NSMutableArray *friendsToAdd = [friends mutableCopy];
+    for (User *newFriend in friends){
+      for (User *oldFriend in self.friendsList) {
+        if ([oldFriend.userName isEqualToString:newFriend.userName]){
+          [friendsToAdd removeObject:newFriend];
+        }
+      }
+    }
+    [self.friendsList addObjectsFromArray:friendsToAdd];
     [self save];
   }
 }
