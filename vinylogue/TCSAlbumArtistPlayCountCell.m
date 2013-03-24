@@ -22,7 +22,7 @@ static CGFloat marginVertInAlbum = -2.0f;
 static CGFloat marginVertInPlays = -10.0f;
 static CGFloat imageViewSide = 80.0f;
 static CGFloat playsWidth = 50.0f;
-static NSString *placeholderImage = @"recordPlaceholderThumb";
+static NSString *placeholderImageName = @"recordPlaceholderThumb";
 
 @interface TCSAlbumArtistPlayCountCell ()
 
@@ -99,14 +99,21 @@ static NSString *placeholderImage = @"recordPlaceholderThumb";
 - (void)refreshImage{
   static UIImage *placeHolderImage = nil;
   if (!placeHolderImage)
-    placeHolderImage = [UIImage imageNamed:placeholderImage];
+    placeHolderImage = [UIImage imageNamed:placeholderImageName];
   
+  @weakify(self);
   if (self.imageView.image == nil){
     self.imageView.image = placeHolderImage;
   }else if(![self.object.album.imageThumbURL isEqualToString:self.imageURLCache]){
     // prevent setting imageView unnecessarily
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.album.imageThumbURL] placeholderImage:placeHolderImage];
-    self.imageURLCache = self.object.album.imageURL;
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.object.album.imageThumbURL] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10];
+    [self.imageView setImageWithURLRequest:request placeholderImage:placeHolderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+      @strongify(self);
+      self.imageView.image = image;
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+
+    }];
+    self.imageURLCache = self.object.album.imageThumbURL;
   }
 }
 

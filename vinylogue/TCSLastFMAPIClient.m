@@ -97,10 +97,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
              return [[responseObject objectForKey:@"weeklychartlist"] arrayForKey:@"chart"];
            }] map:^id(NSArray *chartList) {
              return [[chartList.rac_sequence map:^id(NSDictionary *chartDictionary) {
-               WeeklyChart *chart = [[WeeklyChart alloc] init];
-               chart.from = [NSDate dateWithTimeIntervalSince1970:[[chartDictionary objectForKey:@"from"] doubleValue]];
-               chart.to = [NSDate dateWithTimeIntervalSince1970:[[chartDictionary objectForKey:@"to"] doubleValue]];
-               return chart;
+               return [WeeklyChart objectFromExternalDictionary:chartDictionary];
              }] array];
            }];
   
@@ -126,20 +123,9 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
              return [[responseObject objectForKey:@"weeklyalbumchart"] arrayForKey:@"album"];
            }] map:^id(NSArray *albumChartList) {
              RACSequence *list = [albumChartList.rac_sequence map:^id(NSDictionary *albumChartDictionary) {
-               WeeklyAlbumChart *albumChart = [[WeeklyAlbumChart alloc] init];
-               albumChart.album = [[Album alloc] init];
-               albumChart.album.weeklyAlbumChart = albumChart;
-               albumChart.album.artist = [[Artist alloc] init];
-               albumChart.album.artist.name = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"#text"];
-               albumChart.album.artist.mbid = [[albumChartDictionary objectForKey:@"artist"] objectForKey:@"mbid"];
-               albumChart.album.name = [albumChartDictionary objectForKey:@"name"];
-               albumChart.album.mbid = [albumChartDictionary objectForKey:@"mbid"];
-               albumChart.album.url = [albumChartDictionary objectForKey:@"url"];
-               albumChart.playcount = @([[albumChartDictionary objectForKey:@"playcount"] integerValue]);
-               albumChart.rank = @([[[albumChartDictionary objectForKey:@"@attr"] objectForKey:@"rank"] integerValue]);
+               WeeklyAlbumChart *albumChart = [WeeklyAlbumChart objectFromExternalDictionary:albumChartDictionary];
                albumChart.weeklyChart = chart;
                albumChart.user = self.user;
-               
                return albumChart;
              }];
              return [list array];
@@ -175,51 +161,8 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
               return [responseObject objectForKey:@"album"];
             }] map:^id(NSDictionary *albumDict) {
               // Populate new data into the original album object
-              Album *detailAlbum = album;
-              
-              if (!detailAlbum.artist){
-                detailAlbum.artist = [[Artist alloc] init];
-              }
-              detailAlbum.artist.name = [albumDict objectForKey:@"artist"];
-              detailAlbum.name = [albumDict objectForKey:@"name"];
-              detailAlbum.lastFMid = [albumDict objectForKey:@"id"];
-              detailAlbum.mbid = [albumDict objectForKey:@"mbid"];
-              detailAlbum.url = [albumDict objectForKey:@"url"];
-              detailAlbum.releaseDate = TCSDateByParsingLastFMAlbumReleaseDateString([albumDict objectForKey:@"releasedate"]);
-              detailAlbum.totalPlayCount = @([[albumDict objectForKey:@"userplaycount"] integerValue]);
-              
-              // Process image array
-              NSArray *imageArray = [albumDict objectForKey:@"image"];
-              NSMutableDictionary *newAlbumDict = [NSMutableDictionary dictionaryWithCapacity:[imageArray count]];
-              for (NSDictionary *imgDict in imageArray){
-                [newAlbumDict setObject:[imgDict objectForKey:@"#text"] forKey:[imgDict objectForKey:@"size"]];
-              }
-              NSString *largestImageURL = nil;
-              NSString *currentImageURL = nil;
-              largestImageURL = [newAlbumDict objectForKey:@"small"];
-              currentImageURL = [newAlbumDict objectForKey:@"medium"];
-              if (currentImageURL != nil)
-                largestImageURL = currentImageURL;
-              currentImageURL = [newAlbumDict objectForKey:@"large"];
-              if (currentImageURL != nil)
-                largestImageURL = currentImageURL;
-              detailAlbum.imageThumbURL = largestImageURL;
-              currentImageURL = [newAlbumDict objectForKey:@"extralarge"];
-              if (currentImageURL != nil)
-                largestImageURL = currentImageURL;
-              currentImageURL = [newAlbumDict objectForKey:@"mega"];
-              if (currentImageURL != nil)
-                largestImageURL = currentImageURL;
-              detailAlbum.imageURL = largestImageURL;
-              
-              // Album about text
-              detailAlbum.about = [[albumDict objectForKey:@"wiki"] objectForKey:@"content"];
-              detailAlbum.about = TCSStringByStrippingHTMLTagsFromString(detailAlbum.about);
-              
-              // Indicates Album object is complete
-              detailAlbum.detailLoaded = YES;
-              
-              return detailAlbum;
+              [album populateFromExternalDictionary:albumDict];
+              return album;
             }];
 }
 
@@ -237,68 +180,36 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
             map:^id(NSDictionary *responseObject) {
               return [responseObject objectForKey:@"user"];
             }] map:^id(NSDictionary *userDict) {
-              User *user = [[User alloc] init];
-              user.userName = [userDict objectForKey:@"name"];
-              return user;
+              return [User objectFromExternalDictionary:userDict];
             }];
 }
 
-// We should probably find a new home for these functions eventually
-# pragma mark - utility
-
-// Strips HTML tags and converts &quot; to "
-NSString *TCSStringByStrippingHTMLTagsFromString(NSString *htmlString){
-  if (htmlString == nil)
-    return nil;
-  
-  NSError *error = nil;
-  NSString *output = nil;
-  
-  NSRegularExpression *regexTagStart = [NSRegularExpression
-                                regularExpressionWithPattern:@"<\\s*\\w.*?>"
-                                options:0
-                                error:&error];
-  NSRegularExpression *regexTagEnd = [NSRegularExpression
-                                     regularExpressionWithPattern:@"<\\/.*?>"
-                                     options:0
-                                     error:&error];
-  output = [regexTagStart stringByReplacingMatchesInString:htmlString options:0 range:NSMakeRange(0, [htmlString length]) withTemplate:@""];
-  output = [regexTagEnd stringByReplacingMatchesInString:output options:0 range:NSMakeRange(0, [output length]) withTemplate:@""];
-  output = [output stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
-  
-  return output;
+- (RACSignal *)fetchFriends{
+  return [self fetchFriendsForUser:self.user];
 }
 
-
-// Date is assumed to be in the format: "    20 Sep 2011, 00:00"
-NSDate *TCSDateByParsingLastFMAlbumReleaseDateString(NSString *dateString){
-  if (dateString == nil)
-    return nil;
+- (RACSignal *)fetchFriendsForUser:(User *)user{
+  if (user == nil){
+    return [RACSignal error:nil];
+  }
   
-  static dispatch_once_t onceMark;
-  static NSDateFormatter *formatter = nil;
-  dispatch_once(&onceMark, ^{
-    formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"dd MM yyyy"];
-  });
+  // Limit 0 returns all (I think)
+  NSMutableDictionary *params = [@{ @"method": @"user.getfriends",
+                                 @"user": user.userName,
+                                 @"limit": @"0",
+                                 @"api_key": kTCSLastFMAPIKeyString,
+                                 @"format": @"json" } mutableCopy];
   
-  // Strip leading whitespace
-  NSString *outputStr = [dateString copy];
-  outputStr = [outputStr stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-  if ([outputStr isEqualToString:@""])
-    return nil;
-  
-  // Strip everything past the comma
-  NSRange commaRange = [outputStr rangeOfString:@","];
-  if (commaRange.location == NSNotFound)
-    return nil;
-  
-  outputStr = [outputStr substringToIndex:commaRange.location];
-  
-  // Do the conversion
-  NSDate *outputDate = [formatter dateFromString:outputStr];
-  
-  return outputDate;
+  return [[[self enqueueRequestWithMethod:@"GET" path:@"" parameters:params]
+           map:^id(NSDictionary *responseObject) {
+             return [[responseObject objectForKey:@"friends"] arrayForKey:@"user"];
+           }] map:^id(NSArray *friendsArray) {
+             RACSequence *list = [friendsArray.rac_sequence map:^id(NSDictionary *friendDict) {
+               return [User objectFromExternalDictionary:friendDict];
+             }];
+             return [list array];
+           }];
 }
+
 
 @end

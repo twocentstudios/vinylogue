@@ -127,6 +127,8 @@
 		34A62DB016EBC7200070AE95 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DAF16EBC7200070AE95 /* Icon@2x.png */; };
 		34A62DB316EBC73D0070AE95 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DB116EBC73D0070AE95 /* Icon-Small-50.png */; };
 		34A62DB416EBC73D0070AE95 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DB216EBC73D0070AE95 /* Icon-Small.png */; };
+		34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
+		34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,6 +251,8 @@
 		34A62DAF16EBC7200070AE95 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Images/application/Icon@2x.png"; sourceTree = "<group>"; };
 		34A62DB116EBC73D0070AE95 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Images/application/Icon-Small-50.png"; sourceTree = SOURCE_ROOT; };
 		34A62DB216EBC73D0070AE95 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Images/application/Icon-Small.png"; sourceTree = SOURCE_ROOT; };
+		34ABECCF16FA6E00007BF46A /* LastFMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMObject.h; sourceTree = "<group>"; };
+		34ABECD016FA6E01007BF46A /* LastFMObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMObject.m; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -403,6 +407,8 @@
 				3423A45016F3D448009FB1F0 /* Artist.m */,
 				3480C59616EE3D5A00443F08 /* User.h */,
 				3480C59716EE3D5A00443F08 /* User.m */,
+				34ABECCF16FA6E00007BF46A /* LastFMObject.h */,
+				34ABECD016FA6E01007BF46A /* LastFMObject.m */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
@@ -742,6 +748,7 @@
 				3454CBC916F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m in Sources */,
 				3454CBF216F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
 				3454CBFA16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
+				34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -775,6 +782,7 @@
 				3454CBCA16F7DA9300B74623 /* TCSAlbumPlayCountDetailView.m in Sources */,
 				3454CBF316F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
 				3454CBFB16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
+				34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

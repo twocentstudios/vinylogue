@@ -8,10 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+#import "LastFMObject.h"
+
 @class Artist;
 @class WeeklyAlbumChart;
 
-@interface Album : NSObject
+@interface Album : LastFMObject
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *url;
@@ -27,5 +29,7 @@
 
 // YES if album info was loaded from primary source (getAlbumInfo)
 @property (nonatomic) BOOL detailLoaded;
+
+- (void)populateFromExternalDictionary:(NSDictionary *)dict;
 
 @end

@@ -30,4 +30,7 @@
 - (RACSignal *)fetchAlbumDetailsForAlbum:(Album *)album;
 - (RACSignal *)fetchUserForUserName:(NSString *)userName;
 
+- (RACSignal *)fetchFriends; // convenience method for when client has user already attached
+- (RACSignal *)fetchFriendsForUser:(User *)user;
+
 @end

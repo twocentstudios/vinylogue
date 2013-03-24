@@ -144,10 +144,12 @@
   RACBind(self.playCountView.labelTextShadowColor) = RACBind(self.albumDetailView.textShadowAlbumColor);
   
   [[RACAble(self.albumDetailView.textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    @strongify(self);
     self.aboutView.labelTextColor = color;
     self.pullLabel.textColor = COLORA(color, 0.6);
   }];
   [[RACAble(self.albumDetailView.textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    @strongify(self);
     self.aboutView.labelTextShadowColor = color;
   }];
   

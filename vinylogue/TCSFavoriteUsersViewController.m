@@ -17,17 +17,30 @@
 #import "User.h"
 #import "TCSSettingsCells.h"
 
+#import "UILabel+TCSLabelSizeCalculations.h"
+
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
+
+
+// TEMP
+#import "TCSLastFMAPIClient.h"
 
 @interface TCSFavoriteUsersViewController ()
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIBarButtonItem *settingsButton;
+
+@property (nonatomic, strong) UIView *footerContainerView;
 @property (nonatomic, strong) UIButton *addFriendButton;
+@property (nonatomic, strong) UIButton *importButton;
+@property (nonatomic, strong) UILabel *friendHintLabel;
 
 @property (nonatomic) NSUInteger playCountFilter;
 @property (nonatomic, strong) TCSUserStore *userStore; // array of strings
+
+@property (atomic) BOOL importingFriends;
+@property (atomic) BOOL kvoEditing;
 
 @end
 
@@ -50,7 +63,10 @@
   self.view = [[UIView alloc] init];
   [self.view addSubview:self.tableView];
   
-  [self.tableView setTableFooterView:self.addFriendButton];
+  [self.footerContainerView addSubview:self.addFriendButton];
+  [self.footerContainerView addSubview:self.importButton];
+  [self.footerContainerView addSubview:self.friendHintLabel];
+  [self.tableView setTableFooterView:self.footerContainerView];
   
   UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
   [button setImage:[UIImage imageNamed:@"settings"] forState:UIControlStateNormal];
@@ -86,12 +102,84 @@
     }];
     [self presentViewController:userNameController animated:NO completion:NULL];
   }];
+  
+  // Show the footer if in editing mode or have zero friends
+  [[[[RACSignal combineLatest:@[self.userStore.friendListCountSignal, RACAbleWithStart(self.kvoEditing)] reduce:^(NSNumber *countNumber, NSNumber *editingNumber){
+    NSInteger count = [countNumber integerValue];
+    BOOL editing = [editingNumber boolValue];
+    return @((count == 0) || (editing == YES));
+  }] distinctUntilChanged]
+    deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *showFooterNumber) {
+    BOOL showFooter = [showFooterNumber boolValue];
+    [UIView animateWithDuration:0.4 animations:^{
+      @strongify(self);
+      self.footerContainerView.hidden = NO;
+      self.footerContainerView.alpha = (float)showFooter;
+    }completion:^(BOOL finished) {
+      @strongify(self);
+      self.footerContainerView.hidden = !showFooter;
+    }];
+  }];
+  
+  // Disable UI when importing friends
+  [[[RACAbleWithStart(self.importingFriends)
+     distinctUntilChanged]
+    deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSNumber *importingNumber) {
+     @strongify(self);
+     BOOL importing = [importingNumber boolValue];
+     if (importing){
+       [self.importButton setTitle:@"importing..." forState:UIControlStateNormal];
+       self.tableView.alpha = 0.7f;
+     }else{
+       [self.importButton setTitle:@"import friends" forState:UIControlStateNormal];
+       self.tableView.alpha = 1.0f;
+     }
+     self.importButton.enabled = !importing;
+     self.addFriendButton.enabled = !importing;
+     self.editButtonItem.enabled = !importing;
+     [self.tableView setAllowsSelection:!importing];
+     [self.tableView setAllowsSelectionDuringEditing:!importing];
+   }];
 }
 
 - (void)viewWillLayoutSubviews{
   CGRect r = self.view.bounds;
+  CGFloat w = CGRectGetWidth(r);
   self.tableView.frame = r;
-  self.addFriendButton.width = CGRectGetWidth(r);
+  
+  const CGFloat buttonWidth = w/2.0f;
+  const CGFloat viewHMargin = 20.0f;
+  const CGFloat viewVMargin = 20.0f;
+  const CGFloat labelWidth = w - (viewHMargin * 2);
+  self.footerContainerView.width = w;
+  self.addFriendButton.width = buttonWidth;
+  self.importButton.width = buttonWidth;
+  [self.friendHintLabel setMultipleLineSizeForWidth:labelWidth];
+  
+  CGFloat l = CGRectGetMinX(self.footerContainerView.bounds);
+  self.addFriendButton.left = l;
+  l += self.addFriendButton.width;
+  self.importButton.left = l;
+  l += self.importButton.width;
+  
+  self.friendHintLabel.x = CGRectGetMidX(r);
+
+  CGFloat t = CGRectGetMinY(self.footerContainerView.bounds);
+  self.addFriendButton.top = t;
+  self.importButton.top = t;
+  t += self.addFriendButton.height;
+  self.friendHintLabel.top = t;
+  t += self.friendHintLabel.height;
+  t += viewVMargin;
+  
+  if (self.footerContainerView.height == 0){
+    self.footerContainerView.height = t;
+    // set the table footer view after we've set the height
+    // so that the table can set its contentSize correctly
+    [self.tableView setTableFooterView:self.footerContainerView];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -115,6 +203,7 @@
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated{
   [super setEditing:editing animated:animated];
   [self.tableView setEditing:editing animated:animated];
+  self.kvoEditing = editing;
 }
 
 #pragma mark - private
@@ -193,6 +282,24 @@
    }];
   [self.navigationController pushViewController:userNameController animated:YES];
 
+}
+
+- (void)doImportFriends:(id)button{
+  self.importingFriends = YES;
+  TCSLastFMAPIClient *client = [TCSLastFMAPIClient clientForUser:self.userStore.user];
+  @weakify(self);
+  [[[[client fetchFriends] map:^id(NSArray *friends) {
+    @strongify(self);
+    [self.userStore addFriends:friends];
+    return friends;
+  }] deliverOn:[RACScheduler mainThreadScheduler]]
+   subscribeNext:^(NSArray *friends) {
+     @strongify(self);
+     [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+   }completed:^{
+     @strongify(self);
+     self.importingFriends = NO;
+   }];
 }
 
 #pragma mark - Table view data source
@@ -290,6 +397,7 @@
       @strongify(self);
       if (indexPath.section == 0){
         [self.userStore setUser:user];
+        [self.userStore removeAllFriends]; // changing primary users clears friends list
       }else{
         [self.userStore replaceFriendAtIndex:indexPath.row withFriend:user];
       }
@@ -345,6 +453,13 @@
   return _tableView;
 }
 
+- (UIView *)footerContainerView{
+  if (!_footerContainerView){
+    _footerContainerView = [[UIView alloc] init];
+  }
+  return _footerContainerView;
+}
+
 - (UIButton *)addFriendButton{
   if (!_addFriendButton){
     _addFriendButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -352,11 +467,38 @@
     [_addFriendButton setTitle:@"add a friend" forState:UIControlStateNormal];
     [_addFriendButton setTitleColor:BLUE_DARK forState:UIControlStateNormal];
     [_addFriendButton setShowsTouchWhenHighlighted:YES];
-    _addFriendButton.titleLabel.font = FONT_AVN_ULTRALIGHT(22);
+    _addFriendButton.titleLabel.font = FONT_AVN_ULTRALIGHT(18);
     _addFriendButton.backgroundColor = CLEAR;
     _addFriendButton.height = 50;
   }
   return _addFriendButton;
 }
+
+- (UIButton *)importButton{
+  if (!_importButton){
+    _importButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_importButton addTarget:self action:@selector(doImportFriends:) forControlEvents:UIControlEventTouchUpInside];
+    [_importButton setTitleColor:BLUE_DARK forState:UIControlStateNormal];
+    [_importButton setShowsTouchWhenHighlighted:YES];
+    _importButton.titleLabel.font = FONT_AVN_ULTRALIGHT(18);
+    _importButton.backgroundColor = CLEAR;
+    _importButton.height = 50;
+  }
+  return _importButton;
+}
+
+- (UILabel *)friendHintLabel{
+  if (!_friendHintLabel){
+    _friendHintLabel = [[UILabel alloc] init];
+    _friendHintLabel.numberOfLines = 0;
+    _friendHintLabel.backgroundColor = CLEAR;
+    _friendHintLabel.font = FONT_AVN_REGULAR(12);
+    _friendHintLabel.textColor = COLORA(BLUE_DARK, 0.4);
+    _friendHintLabel.textAlignment = NSTextAlignmentCenter;
+    _friendHintLabel.text = @"your vinylogue friend list is kept separate\nfrom your last.fm friends list\n\n'import' will add only your last.fm friends\nnot already in this list";
+  }
+  return _friendHintLabel;
+}
+
 
 @end

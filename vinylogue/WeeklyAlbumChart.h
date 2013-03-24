@@ -1,10 +1,11 @@
 
+#import "LastFMObject.h"
 
 @class WeeklyChart;
 @class User;
 @class Album;
 
-@interface WeeklyAlbumChart : NSObject
+@interface WeeklyAlbumChart : LastFMObject
 
 @property (nonatomic, strong) Album *album;
 @property (nonatomic, strong) NSNumber *playcount;

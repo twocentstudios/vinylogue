@@ -9,10 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @class User;
+@class RACReplaySubject;
 
 @interface TCSUserStore : NSObject
 
 @property (nonatomic, strong) User *user;
+@property (nonatomic, readonly) RACReplaySubject *friendListCountSignal;
 
 - (id)init;
 
@@ -22,7 +24,9 @@
 
 // write
 - (void)addFriend:(User *)user;
+- (void)addFriends:(NSArray *)friends;
 - (void)removeFriendAtIndex:(NSUInteger)index;
+- (void)removeAllFriends;
 - (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user;
 - (void)moveFriendAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 

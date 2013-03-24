@@ -133,7 +133,7 @@
   primaryColor = [UIColor colorWithRed:pRed green:pGreen blue:pBlue alpha:pAlpha];
   secondaryColor = [UIColor colorWithRed:sRed green:sGreen blue:sBlue alpha:sAlpha];
   averageColor = [UIColor colorWithRed:tRed green:tGreen blue:tBlue alpha:tAlpha];
-  brightness = 0.299*pRed + 0.587*pRed + 0.114*pRed;
+  brightness = 0.299*pRed + 0.587*pGreen + 0.114*pBlue;
   textGray = (brightness < 0.6) ? 1.0 : 0.0;
   textShadowGray = (brightness < 0.6) ? 0.0 : 1.0;
   textColor = [UIColor colorWithWhite:textGray alpha:1.0];

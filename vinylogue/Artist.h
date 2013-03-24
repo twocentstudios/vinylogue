@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Artist : NSObject
+#import "LastFMObject.h"
+
+@interface Artist : LastFMObject
 
 @property (nonatomic, strong) NSString *mbid;
 @property (nonatomic, strong) NSString *name;
