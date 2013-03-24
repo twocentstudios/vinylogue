@@ -85,6 +85,11 @@
        [self.albumImageView setImageWithURLRequest:request placeholderImage:self.albumImageView.image success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
          @strongify(self);
          self.albumImageView.image = image;
+         self.albumImageBackgroundView.image = image;
+         self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
+         self.albumImageBackgroundView.layer.shouldRasterize = YES;
+         
+         // Calculate album image derived colors on background thread
          [[RACScheduler scheduler] schedule:^{
            @strongify(self);
            RACTuple *t = [image getRepresentativeColors];
@@ -95,27 +100,11 @@
          }];
          self.loadingAlbumImage = NO;
        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-         DLog(@"image request failed");
          @strongify(self);
          self.loadingAlbumImage = NO;
        }];
-       //      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
-       //      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
-       //      self.albumImageBackgroundView.layer.shouldRasterize = YES;
      }];
-  
-    // Calculate album image derived colors when the image changes
-//    [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {
-//      return (value != nil);
-//    }] deliverOn:[RACScheduler scheduler]]
-//     subscribeNext:^(UIImage *image) {
-//       RACTuple *t = [image getRepresentativeColors];
-//       self.primaryAlbumColor = t.first;
-//       self.secondaryAlbumColor = t.second;
-//       self.textAlbumColor = t.fourth;
-//       self.textShadowAlbumColor = t.fifth;
-//     }];
-    
+      
     // Set label text colors when the album derived color changes
     [[RACAble(self.textAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
@@ -234,7 +223,7 @@
     _albumImageBackgroundView = [[UIImageView alloc] init];
     _albumImageBackgroundView.layer.masksToBounds = YES;
     _albumImageBackgroundView.clipsToBounds = YES;
-    _albumImageBackgroundView.hidden = YES; // TEMP?;
+    _albumImageBackgroundView.alpha = 0.2f;
   }
   return _albumImageBackgroundView;
 }
