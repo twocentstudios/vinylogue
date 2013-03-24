@@ -397,6 +397,7 @@
       @strongify(self);
       if (indexPath.section == 0){
         [self.userStore setUser:user];
+        [self.userStore removeAllFriends]; // changing primary users clears friends list
       }else{
         [self.userStore replaceFriendAtIndex:indexPath.row withFriend:user];
       }

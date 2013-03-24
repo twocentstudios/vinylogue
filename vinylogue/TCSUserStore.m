@@ -56,11 +56,7 @@
 }
 
 - (void)addFriend:(User *)user{
-  if (user != nil) {
-    [self.friendsList addObject:user];
-    [self friendCountChanged];
-    [self save];
-  }
+  [self addFriends:@[user]];
 }
 
 - (void)addFriends:(NSArray *)friends{
@@ -90,6 +86,12 @@
     [self friendCountChanged];
     [self save];
   }
+}
+
+- (void)removeAllFriends{
+  [self.friendsList removeAllObjects];
+  [self friendCountChanged];
+  [self save];
 }
 
 - (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user{
