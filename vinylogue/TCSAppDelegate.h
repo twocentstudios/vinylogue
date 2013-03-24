@@ -14,4 +14,6 @@
 
 - (NSURL *)applicationDocumentsDirectory;
 
+NSString *print_free_memory();
+
 @end
