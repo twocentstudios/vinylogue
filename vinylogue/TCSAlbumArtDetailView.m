@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UILabel *artistNameLabel;
 @property (nonatomic, strong) UILabel *albumNameLabel;
 @property (nonatomic, strong) UILabel *releaseDateLabel;
+@property (nonatomic, strong) UIImageView *loadingImageView;
 
 @property (nonatomic, strong) NSString *albumReleaseDateString;
 
@@ -28,6 +29,8 @@
 @property (atomic, strong) UIColor *secondaryAlbumColor;
 @property (atomic, strong) UIColor *textAlbumColor;
 @property (atomic, strong) UIColor *textShadowAlbumColor;
+
+@property (atomic) BOOL loadingAlbumImage;
 
 @end
 
@@ -37,12 +40,18 @@
   self = [super initWithFrame:CGRectZero];
   if (self) {
     self.backgroundColor = BLACKA(0.05);
+    self.clipsToBounds = YES;
     
     [self addSubview:self.albumImageBackgroundView];
     [self addSubview:self.albumImageView];
     [self addSubview:self.artistNameLabel];
     [self addSubview:self.albumNameLabel];
     [self addSubview:self.releaseDateLabel];
+    [self addSubview:self.loadingImageView];
+    
+    self.loadingAlbumImage = NO;
+    UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
+    self.albumImageView.image = placeholderImage;
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateStyle = NSDateFormatterLongStyle;
@@ -63,34 +72,55 @@
     }];
     
     // Set album images
-    [[[RACAble(self.albumImageURL) map:^id(NSString *imageURLString) {
+    RACSignal *albumImageURLSignal = RACAble(self.albumImageURL);
+    [[[[albumImageURLSignal filter:^BOOL(NSString *imageURLString) {
+      return ((imageURLString != nil) && (![imageURLString isEqualToString:@""]));
+    }] map:^id(NSString *imageURLString) {
       return [NSURL URLWithString:imageURLString];
     }] deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(NSURL *imageURL) {
        @strongify(self);
-       UIImage *placeholderImage = [UIImage imageNamed:@"recordPlaceholder"];
-       [self.albumImageView setImageWithURL:imageURL placeholderImage:placeholderImage];
+       self.loadingAlbumImage = YES;
+       NSURLRequest *request = [NSURLRequest requestWithURL:imageURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10];
+       [self.albumImageView setImageWithURLRequest:request placeholderImage:self.albumImageView.image success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+         @strongify(self);
+         self.albumImageView.image = image;
+         [[RACScheduler scheduler] schedule:^{
+           @strongify(self);
+           RACTuple *t = [image getRepresentativeColors];
+           self.primaryAlbumColor = t.first;
+           self.secondaryAlbumColor = t.second;
+           self.textAlbumColor = t.fourth;
+           self.textShadowAlbumColor = t.fifth;
+         }];
+         self.loadingAlbumImage = NO;
+       } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+         DLog(@"image request failed");
+         @strongify(self);
+         self.loadingAlbumImage = NO;
+       }];
        //      [self.albumImageBackgroundView setImageWithURL:imageURL placeholderImage:placeholderImage];
        //      self.albumImageBackgroundView.layer.rasterizationScale = 0.03;
        //      self.albumImageBackgroundView.layer.shouldRasterize = YES;
      }];
-    
+  
     // Calculate album image derived colors when the image changes
-    [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {
-      return (value != nil);
-    }] deliverOn:[RACScheduler scheduler]]
-     subscribeNext:^(UIImage *image) {
-       RACTuple *t = [image getRepresentativeColors];
-       self.primaryAlbumColor = t.first;
-       self.secondaryAlbumColor = t.second;
-       self.textAlbumColor = t.fourth;
-       self.textShadowAlbumColor = t.fifth;
-     }];
+//    [[[RACAble(self.albumImageView.image) filter:^BOOL(id value) {
+//      return (value != nil);
+//    }] deliverOn:[RACScheduler scheduler]]
+//     subscribeNext:^(UIImage *image) {
+//       RACTuple *t = [image getRepresentativeColors];
+//       self.primaryAlbumColor = t.first;
+//       self.secondaryAlbumColor = t.second;
+//       self.textAlbumColor = t.fourth;
+//       self.textShadowAlbumColor = t.fifth;
+//     }];
     
     // Set label text colors when the album derived color changes
     [[RACAble(self.textAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(UIColor *color) {
+      @strongify(self);
       self.artistNameLabel.textColor = COLORA(color, 0.85);
       self.albumNameLabel.textColor = color;
       self.releaseDateLabel.textColor = COLORA(color, 0.7);
@@ -99,9 +129,22 @@
     [[RACAble(self.textShadowAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(UIColor *color) {
+       @strongify(self);
       self.artistNameLabel.shadowColor = COLORA(color, 0.85);
       self.albumNameLabel.shadowColor = color;
       self.releaseDateLabel.shadowColor = COLORA(color, 0.7);
+    }];
+    
+    [[RACAbleWithStart(self.loadingAlbumImage) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSNumber *loadingNumber) {
+      BOOL loading = [loadingNumber boolValue];
+      @strongify(self);
+      if (loading){
+        self.loadingImageView.hidden = NO;
+        [self.loadingImageView startAnimating];
+      }else{
+        self.loadingImageView.hidden = YES;
+        [self.loadingImageView stopAnimating];
+      }
     }];
   }
   return self;
@@ -120,6 +163,7 @@
   CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   // Calculate individual heights and widths
+  self.loadingImageView.x = centerX;
   self.albumImageView.width = widthWithMargin;
   self.albumImageView.height = self.albumImageView.width;
   [self setLabelSizeForLabel:self.artistNameLabel width:widthWithMargin];
@@ -127,6 +171,7 @@
   [self setLabelSizeForLabel:self.releaseDateLabel width:widthWithMargin];
   
   // Set y position and calculate total height
+  self.loadingImageView.y = t;
   self.albumImageBackgroundView.top = t;
   t += viewHMargin;
   self.albumImageView.top = t;
@@ -242,6 +287,21 @@
     _releaseDateLabel.textAlignment = NSTextAlignmentCenter;
   }
   return _releaseDateLabel;
+}
+
+// Spinning record animation
+- (UIImageView *)loadingImageView{
+  if (!_loadingImageView){
+    _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    NSMutableArray *animationImages = [NSMutableArray arrayWithCapacity:12];
+    for (int i = 1; i < 13; i++){
+      [animationImages addObject:[UIImage imageNamed:[NSString stringWithFormat:@"loading%02i", i]]];
+    }
+    [_loadingImageView setAnimationImages:animationImages];
+    _loadingImageView.animationDuration = 0.5f;
+    _loadingImageView.animationRepeatCount = 0;
+  }
+  return _loadingImageView;
 }
 
 @end

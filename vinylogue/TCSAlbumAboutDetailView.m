@@ -27,8 +27,8 @@
   if (self) {
     self.backgroundColor = BLACKA(0.05);
     self.contentMode = UIViewContentModeRedraw;
-    self.labelTextColor = WHITE; // defaults
-    self.labelTextShadowColor = BLACK;
+    self.labelTextColor = BLACK; // defaults
+    self.labelTextShadowColor = WHITE;
 
     [self addSubview:self.headerLabel];
     [self addSubview:self.contentLabel];

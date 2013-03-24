@@ -1,20 +1,20 @@
 
 PODS:
-- AFNetworking (1.1.0)
+- AFNetworking (1.2.0)
 - FlurrySDK (4.1.0)
 - JRSwizzle (1.0)
-- ReactiveCocoa (1.0.0):
-  - ReactiveCocoa/Core (= 1.0.0)
-  - ReactiveCocoa/RACExtensions (= 1.0.0)
-- ReactiveCocoa/Core (1.0.0):
+- ReactiveCocoa (1.4.0):
+  - ReactiveCocoa/Core (= 1.4.0)
+  - ReactiveCocoa/RACExtensions (= 1.4.0)
+- ReactiveCocoa/Core (1.4.0):
   - JRSwizzle (~> 1.0)
   - libextobjc/EXTConcreteProtocol (~> 0.2.5)
   - libextobjc/EXTKeyPathCoding (~> 0.2.5)
   - libextobjc/EXTScope (~> 0.2.5)
-- ReactiveCocoa/RACExtensions (1.0.0):
+- ReactiveCocoa/RACExtensions (1.4.0):
   - ReactiveCocoa/Core
 - SDURLCache (1.2)
-- TestFlightSDK (1.2.3.beta1)
+- TestFlightSDK (1.3.0.beta)
 - UIViewDrawRectBlock (0.0.1)
 - ViewUtils (1.1)
 - libextobjc/EXTConcreteProtocol (0.2.5):
@@ -35,15 +35,15 @@ DEPENDENCIES:
 - ViewUtils
 
 SPEC CHECKSUMS:
-  AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
+  AFNetworking: 3cbae45f61a9f995cdbd56bd571223910d7f4e44
   FlurrySDK: 52245ae8c6fa31825dc74a6afb94b861da2435fa
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
-  ReactiveCocoa: bde72a9123e7bd565d06d677d8ad79b18971aec7
-  ReactiveCocoa/Core: bde72a9123e7bd565d06d677d8ad79b18971aec7
-  ReactiveCocoa/RACExtensions: bde72a9123e7bd565d06d677d8ad79b18971aec7
-  SDURLCache: 2208f93474756c694eed002fa7e3ab62ff3c6468
-  TestFlightSDK: f638b08651a37af099e40c47241fc58fd3cb1a66
-  UIViewDrawRectBlock: 3619cdb75fb42f8767e21d9625f529a9a49ff2b5
+  ReactiveCocoa: b375edb436250161a9328adc315fe1fecfadbb63
+  ReactiveCocoa/Core: b375edb436250161a9328adc315fe1fecfadbb63
+  ReactiveCocoa/RACExtensions: b375edb436250161a9328adc315fe1fecfadbb63
+  SDURLCache: cf4dcdd0d01473c334e9338e82a8733de156ef15
+  TestFlightSDK: 76c4d5ef22054ef719ca9743580482764caf9144
+  UIViewDrawRectBlock: 20c76d72d4a903a6a1e94d27f7ad2621225f9f49
   ViewUtils: 577b16fc6b770dff79f544c5c542ad278dd688ea
   libextobjc/EXTConcreteProtocol: 2cbc74caf8bdc74a86fdf24673f773c83424ea98
   libextobjc/EXTKeyPathCoding: 2cbc74caf8bdc74a86fdf24673f773c83424ea98
