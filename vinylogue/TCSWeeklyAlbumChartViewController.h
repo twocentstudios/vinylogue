@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class User;
+
 @interface TCSWeeklyAlbumChartViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter;
+- (id)initWithUser:(User *)user playCountFilter:(NSUInteger)playCountFilter;
 
 @end

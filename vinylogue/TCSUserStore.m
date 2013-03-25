@@ -9,9 +9,12 @@
 #import "TCSUserStore.h"
 #import "User.h"
 
+#import <ReactiveCocoa/ReactiveCocoa.h>
+
 @interface TCSUserStore ()
 
 @property (nonatomic, strong) NSMutableArray *friendsList;
+@property (nonatomic, strong) RACReplaySubject *friendListCountSignal;
 
 @end
 
@@ -20,9 +23,14 @@
 - (id)init{
   self = [super init];
   if (self) {
+    self.friendListCountSignal = [RACReplaySubject subject];
     [self load];
   }
   return self;
+}
+
+- (void)dealloc{
+  [self.friendListCountSignal sendCompleted];
 }
 
 - (void)setUser:(User *)user{
@@ -36,6 +44,10 @@
   return [self.friendsList count];
 }
 
+- (void)friendCountChanged{
+  [self.friendListCountSignal sendNext:@([self friendsCount])];
+}
+
 - (User *)friendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     return [self.friendsList objectAtIndex:index];
@@ -44,17 +56,42 @@
 }
 
 - (void)addFriend:(User *)user{
-  if (user != nil) {
-    [self.friendsList addObject:user];
-    [self save];
+  [self addFriends:@[user]];
+}
+
+- (void)addFriends:(NSArray *)friends{
+  if (friends != nil){
+    // Start with all new friends and remove those that are already in
+    // the user's friend list
+    NSMutableArray *friendsToAdd = [friends mutableCopy];
+    for (User *newFriend in friends){
+      for (User *oldFriend in self.friendsList) {
+        if ([oldFriend.userName isEqualToString:newFriend.userName]){
+          [friendsToAdd removeObject:newFriend];
+        }
+      }
+    }
+    
+    if ([friendsToAdd count] > 0){
+      [self.friendsList addObjectsFromArray:friendsToAdd];
+      [self friendCountChanged];
+      [self save];
+    }
   }
 }
 
 - (void)removeFriendAtIndex:(NSUInteger)index{
   if (index < [self friendsCount]){
     [self.friendsList removeObjectAtIndex:index];
+    [self friendCountChanged];
     [self save];
   }
+}
+
+- (void)removeAllFriends{
+  [self.friendsList removeAllObjects];
+  [self friendCountChanged];
+  [self save];
 }
 
 - (void)replaceFriendAtIndex:(NSUInteger)index withFriend:(User *)user{
@@ -98,6 +135,8 @@
   
   _user = storedUser;
   _friendsList = [storedFriendsList mutableCopy];
+  
+  [self friendCountChanged];
   
   DLog(@"loaded username: %@", self.user.userName);
   DLog(@"loaded friends: %@", self.friendsList);

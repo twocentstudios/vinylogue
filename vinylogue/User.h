@@ -8,9 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-@interface User : NSObject <NSCoding>
+#import "LastFMObject.h"
 
-@property (nonatomic, copy) NSString *userName;
+@interface User : LastFMObject <NSCoding>
+
+@property (nonatomic, strong) NSString *userName;
+@property (nonatomic, strong) NSString *realName;
+@property (nonatomic, strong) NSString *imageThumbURL;
+@property (nonatomic, strong) NSString *imageURL;
+@property (nonatomic, strong) NSString *lastFMid;
+@property (nonatomic, strong) NSString *url;
+@property (nonatomic, strong) NSString *totalPlayCount; // not saved
 
 - (id)initWithUserName:(NSString *)userName;
 

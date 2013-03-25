@@ -9,6 +9,7 @@
 #import "TCSWeeklyAlbumChartViewController.h"
 #import "TCSUserNameViewController.h"
 #import "TCSSettingsViewController.h"
+#import "TCSAlbumDetailViewController.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import "EXTScope.h"
@@ -16,6 +17,9 @@
 #import "TCSLastFMAPIClient.h"
 #import "WeeklyAlbumChart.h"
 #import "WeeklyChart.h"
+#import "User.h"
+#import "Album.h"
+#import "Artist.h"
 
 #import "TCSSlideSelectView.h"
 #import "TCSAlbumArtistPlayCountCell.h"
@@ -32,7 +36,7 @@
 @property (nonatomic, strong) UIImageView *loadingImageView;
 
 // Datasources
-@property (atomic, copy) NSString *userName;
+@property (atomic, strong) User *user;
 @property (atomic, strong) TCSLastFMAPIClient *lastFMClient;
 @property (atomic, strong) NSArray *weeklyCharts; // list of to:from: dates we can request
 @property (atomic, strong) NSArray *rawAlbumChartsForWeek; // prefiltered charts
@@ -61,13 +65,13 @@
 
 @implementation TCSWeeklyAlbumChartViewController
 
-- (id)initWithUserName:(NSString *)userName playCountFilter:(NSUInteger)playCountFilter{
+- (id)initWithUser:(User *)user playCountFilter:(NSUInteger)playCountFilter{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
     self.title = NSLocalizedString(@"charts", nil);
     
     // userName and playCountFilter are initialized on startup and cannot be changed in the controller's lifetime
-    self.userName = userName;
+    self.user = user;
     self.playCountFilter = playCountFilter;
     self.calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
   }
@@ -114,10 +118,10 @@
   
   // SlideSelectView: Top Label
   // Depends on: userName
-  [[RACAbleWithStart(self.userName) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSString *userName) {
+  [[RACAbleWithStart(self.user) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(User *user) {
     @strongify(self);
-    if (userName){
-      self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", userName];
+    if (user.userName){
+      self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", user.userName];
       self.showingError = NO;
     }else{
       self.slideSelectView.topLabel.text = @"No last.fm user";
@@ -183,7 +187,7 @@
     @strongify(self);
     BOOL isShowingEmpty = [showingEmpty boolValue];
     if (isShowingEmpty && !self.showingError){
-      NSString *subtitle = [NSString stringWithFormat:@"Looks like %@ didn't listen to much music this week.", self.userName];
+      NSString *subtitle = [NSString stringWithFormat:@"Looks like %@ didn't listen to much music this week.", self.user.userName];
       self.emptyView = [TCSEmptyErrorView emptyViewWithTitle:@"No charts!" subtitle:subtitle];
       [self.view addSubview:self.emptyView];
     }else{
@@ -241,12 +245,12 @@
   @weakify(self);
 
   // Setting the username triggers loading of the lastFMClient
-  [[RACAbleWithStart(self.userName) filter:^BOOL(id x) {
+  [[RACAbleWithStart(self.user) filter:^BOOL(id x) {
     return (x != nil);
-  }] subscribeNext:^(NSString *userName) {
-    DLog(@"Loading client for %@...", userName);
+  }] subscribeNext:^(User *user) {
+    DLog(@"Loading client for %@...", user.userName);
     @strongify(self);
-    self.lastFMClient = [TCSLastFMAPIClient clientForUserName:userName];
+    self.lastFMClient = [TCSLastFMAPIClient clientForUser:user];
   }];
     
   // Update the date being displayed based on the current date/time and how many years ago we want to go back
@@ -448,8 +452,10 @@
 // Selecting a cell just prints out its data right now
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
-  id object = [self.albumChartsForWeek objectAtIndex:indexPath.row];
-  DLog(@"%@", object);
+  
+  WeeklyAlbumChart *weeklyAlbumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
+  TCSAlbumDetailViewController *albumDetailController = [[TCSAlbumDetailViewController alloc] initWithWeeklyAlbumChart:weeklyAlbumChart];
+  [self.navigationController pushViewController:albumDetailController animated:YES];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -463,8 +469,8 @@
   // (Kind of ugly, but RAC wasn't working inside the cell (managedobject?) for some reason
   TCSAlbumArtistPlayCountCell *albumCell = (TCSAlbumArtistPlayCountCell *)cell;
   WeeklyAlbumChart *albumChart = [self.albumChartsForWeek objectAtIndex:indexPath.row];
-  if (albumChart.albumImageURL == nil) {
-    [[[self.lastFMClient fetchImageURLForWeeklyAlbumChart:albumChart] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSString *albumImageURL) {
+  if (albumChart.album.detailLoaded == NO) {
+    [[[self.lastFMClient fetchAlbumDetailsForAlbum:albumChart.album] deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(id x) {
       [albumCell refreshImage];
     }];
   }

@@ -74,13 +74,13 @@ static CGFloat buttonAlpha = 0.3f;
   self.scrollView.frame = r;
   self.scrollView.contentSize = r.size;
   
-  static CGFloat titleViewInset = 50.0f; // distance from left and right
+  const CGFloat titleViewInset = 50.0f; // distance from left and right
   self.frontView.width = CGRectGetWidth(r) - titleViewInset * 2.0f;
   self.frontView.height = CGRectGetHeight(r);
   self.frontView.center = self.contentCenter;
   
   // Size and position backView subviews
-  static CGFloat backButtonInset = 8.0f; // distance from edge
+  const CGFloat backButtonInset = 8.0f; // distance from edge
   self.backLeftButton.left = CGRectGetMinX(r) + backButtonInset;
   self.backLeftButton.y = CGRectGetMidY(r);
   self.backRightButton.right = CGRectGetMaxX(r) - backButtonInset;
@@ -88,7 +88,7 @@ static CGFloat buttonAlpha = 0.3f;
   
   self.backLeftLabel.size = [self sizeForLabel:self.backLeftLabel];
   self.backRightLabel.size = [self sizeForLabel:self.backRightLabel];
-  static CGFloat backLabelInset = 16.0f; // distance from backButton
+  const CGFloat backLabelInset = 16.0f; // distance from backButton
   self.backLeftLabel.left = self.backLeftButton.right + backLabelInset;
   self.backLeftLabel.y = CGRectGetMidY(r);
   self.backRightLabel.right = self.backRightButton.left - backLabelInset;
@@ -98,8 +98,8 @@ static CGFloat buttonAlpha = 0.3f;
   r = self.frontView.bounds;
   self.topLabel.size = [self sizeForLabel:self.topLabel];
   self.bottomLabel.size = [self sizeForLabel:self.bottomLabel];
-  static CGFloat topLabelOffset = 2.0f; // distance from superview center to bottom of label
-  static CGFloat bottomLabelOffset = -3.0f; // distance from superview center to top of label
+  const CGFloat topLabelOffset = 2.0f; // distance from superview center to bottom of label
+  const CGFloat bottomLabelOffset = -3.0f; // distance from superview center to top of label
   self.topLabel.bottom = CGRectGetMidY(r) - topLabelOffset;
   self.topLabel.x = CGRectGetMidX(r);
   self.bottomLabel.top = CGRectGetMidY(r) + bottomLabelOffset;

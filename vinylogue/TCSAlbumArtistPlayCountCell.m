@@ -9,6 +9,9 @@
 #import "TCSAlbumArtistPlayCountCell.h"
 
 #import "WeeklyAlbumChart.h"
+#import "Album.h"
+#import "Artist.h"
+
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
@@ -19,7 +22,7 @@ static CGFloat marginVertInAlbum = -2.0f;
 static CGFloat marginVertInPlays = -10.0f;
 static CGFloat imageViewSide = 80.0f;
 static CGFloat playsWidth = 50.0f;
-static NSString *placeholderImage = @"placeholder";
+static NSString *placeholderImageName = @"recordPlaceholderThumb";
 
 @interface TCSAlbumArtistPlayCountCell ()
 
@@ -27,6 +30,7 @@ static NSString *placeholderImage = @"placeholder";
 @property (nonatomic, strong) UILabel *playCountTitleLabel;
 @property (nonatomic, strong) UILabel *rankLabel;
 @property (nonatomic, strong) UIView *backView;
+@property (nonatomic, strong) UIView *backSelectedView;
 
 @property (nonatomic, strong) NSString *imageURLCache;
 
@@ -37,9 +41,10 @@ static NSString *placeholderImage = @"placeholder";
 - (id)init{
   self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:NSStringFromClass([self class])];
   if (self) {
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    self.selectionStyle = UITableViewCellSelectionStyleGray;
     
     self.backgroundView = self.backView;
+    self.selectedBackgroundView = self.backSelectedView;
         
     [self configureTextLabel];
     [self configureDetailTextLabel];
@@ -76,8 +81,8 @@ static NSString *placeholderImage = @"placeholder";
     return;
   
   _object = object;
-  self.textLabel.text = [object.artistName uppercaseString];
-  self.detailTextLabel.text = object.albumName;
+  self.textLabel.text = [object.album.artist.name uppercaseString];
+  self.detailTextLabel.text = object.album.name;
   self.playCountLabel.text = [object.playcount stringValue];
   self.rankLabel.text = [object.rank stringValue];
   
@@ -92,23 +97,33 @@ static NSString *placeholderImage = @"placeholder";
 
 
 - (void)refreshImage{
-  UIImage *placeHolderImage = [UIImage imageNamed:placeholderImage];
+  static UIImage *placeHolderImage = nil;
+  if (!placeHolderImage)
+    placeHolderImage = [UIImage imageNamed:placeholderImageName];
+  
+  @weakify(self);
   if (self.imageView.image == nil){
     self.imageView.image = placeHolderImage;
-  }else if(![self.object.albumImageURL isEqualToString:self.imageURLCache]){
+  }else if(![self.object.album.imageThumbURL isEqualToString:self.imageURLCache]){
     // prevent setting imageView unnecessarily
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.object.albumImageURL] placeholderImage:placeHolderImage];
-    self.imageURLCache = self.object.albumImageURL;
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.object.album.imageThumbURL] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10];
+    [self.imageView setImageWithURLRequest:request placeholderImage:placeHolderImage success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+      @strongify(self);
+      self.imageView.image = image;
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+
+    }];
+    self.imageURLCache = self.object.album.imageThumbURL;
   }
 }
 
 - (void)layoutSubviews{
   [super layoutSubviews];
   
-  CGRect r = self.contentView.bounds;
+  const CGRect r = self.contentView.bounds;
   
   // Define widths
-  CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:CGRectGetWidth(r)];
+  const CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:CGRectGetWidth(r)];
   
   // Calculate and set sizes of controls
   self.imageView.size = CGSizeMake(imageViewSide, imageViewSide);
@@ -142,7 +157,7 @@ static NSString *placeholderImage = @"placeholder";
   // Lay out vertically
   self.imageView.y = CGRectGetMidY(r);
   
-  CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertInAlbum - self.textLabel.height - self.detailTextLabel.height)/2.0f;
+  const CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertInAlbum - self.textLabel.height - self.detailTextLabel.height)/2.0f;
   CGFloat y = 0;
   y += albumArtistVertMargin;
   self.textLabel.top = y;
@@ -153,7 +168,7 @@ static NSString *placeholderImage = @"placeholder";
   y += albumArtistVertMargin;
   NSAssert(y == CGRectGetHeight(r), @"Vertical layout should traverse to the bounds of the contentView");
   
-  CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertInPlays - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
+  const CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertInPlays - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
   y = 0;
   y += playCountVertMargin;
   self.playCountLabel.top = y;
@@ -170,17 +185,17 @@ static NSString *placeholderImage = @"placeholder";
   WeeklyAlbumChart *chart = (WeeklyAlbumChart *)object;
   
   // Even though this isn't true, we have to assume the tableView.width == cell.contentView.width
-  CGFloat width = tableView.width;
-  CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:width];
+  const CGFloat width = tableView.width;
+  const CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:width];
   
 //  static CGFloat minimumHeight = 70.0f;
-  static CGFloat marginVert = 10.0f;
+  const CGFloat marginVert = 10.0f;
   
-  CGSize artistSize = [chart.albumName sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-  CGSize albumSize = [chart.albumName sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  const CGSize artistSize = [chart.album.name sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  const CGSize albumSize = [chart.album.name sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
   
-  CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
-  CGFloat imageHeight = marginVert*2 + imageViewSide;
+  const CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
+  const CGFloat imageHeight = marginVert*2 + imageViewSide;
   
   return MAX(artistAlbumHeight, imageHeight);
 }
@@ -290,5 +305,37 @@ static NSString *placeholderImage = @"placeholder";
   }
   return _backView;
 }
+
+- (UIView *)backSelectedView{
+  if (!_backSelectedView){
+    _backSelectedView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
+      CGContextRef c = UIGraphicsGetCurrentContext();
+      
+      CGRect r = rect;
+      
+      CGContextSaveGState(c);
+      {
+        // Fill background
+        [BLUE_DARK setFill];
+        CGContextFillRect(c, r);
+        
+        CGFloat borderHeight = 1.0f;
+        CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+        CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+        
+        // Fill top border
+        [WHITEA(0.8f) setFill];
+        CGContextFillRect(c, topBorder);
+        
+        // Fill bottom border
+        [BLACKA(0.1f) setFill];
+        CGContextFillRect(c, bottomBorder);
+      }
+      CGContextRestoreGState(c);
+    }];
+  }
+  return _backSelectedView;
+}
+
 
 @end
