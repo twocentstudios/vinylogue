@@ -26,7 +26,7 @@
 	UIColor *primaryColor, *secondaryColor, *averageColor, *textColor, *textShadowColor;
 	CGImageRef inImage = self.CGImage;
 	// Create off screen bitmap context to draw the image into. Format ARGB is 4 bytes for each pixel: Alpa, Red, Green, Blue
-	CGContextRef cgctx = [[self class] createARGBBitmapContextFromImage:inImage];
+	CGContextRef cgctx = [[self class] newARGBBitmapContextFromImage:inImage];
 	if (cgctx == NULL) { return nil; /* error */ }
   
   size_t w = CGImageGetWidth(inImage);
@@ -144,7 +144,7 @@
 	return t;
 }
 
-+ (CGContextRef)createARGBBitmapContextFromImage:(CGImageRef)inImage{
++ (CGContextRef)newARGBBitmapContextFromImage:(CGImageRef)inImage{
   
 	CGContextRef    context = NULL;
 	CGColorSpaceRef colorSpace;
