@@ -42,6 +42,7 @@
 
 - (void)loadView{
   self.view = [[UIView alloc] init];
+  self.view.backgroundColor = WHITE_SUBTLE;
   self.view.autoresizesSubviews = YES;
 }
 
