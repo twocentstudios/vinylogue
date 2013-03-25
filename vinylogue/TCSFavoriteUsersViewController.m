@@ -13,6 +13,7 @@
 #import "TCSWeeklyAlbumChartViewController.h"
 
 #import "TCSSimpleTableDataSource.h"
+#import "TCSLastFMAPIClient.h"
 #import "TCSUserStore.h"
 #import "User.h"
 #import "TCSSettingsCells.h"
@@ -22,9 +23,6 @@
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <EXTScope.h>
 
-
-// TEMP
-#import "TCSLastFMAPIClient.h"
 
 @interface TCSFavoriteUsersViewController ()
 

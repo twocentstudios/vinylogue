@@ -120,10 +120,10 @@ static NSString *placeholderImageName = @"recordPlaceholderThumb";
 - (void)layoutSubviews{
   [super layoutSubviews];
   
-  CGRect r = self.contentView.bounds;
+  const CGRect r = self.contentView.bounds;
   
   // Define widths
-  CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:CGRectGetWidth(r)];
+  const CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:CGRectGetWidth(r)];
   
   // Calculate and set sizes of controls
   self.imageView.size = CGSizeMake(imageViewSide, imageViewSide);
@@ -157,7 +157,7 @@ static NSString *placeholderImageName = @"recordPlaceholderThumb";
   // Lay out vertically
   self.imageView.y = CGRectGetMidY(r);
   
-  CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertInAlbum - self.textLabel.height - self.detailTextLabel.height)/2.0f;
+  const CGFloat albumArtistVertMargin = (CGRectGetHeight(r) - marginVertInAlbum - self.textLabel.height - self.detailTextLabel.height)/2.0f;
   CGFloat y = 0;
   y += albumArtistVertMargin;
   self.textLabel.top = y;
@@ -168,7 +168,7 @@ static NSString *placeholderImageName = @"recordPlaceholderThumb";
   y += albumArtistVertMargin;
   NSAssert(y == CGRectGetHeight(r), @"Vertical layout should traverse to the bounds of the contentView");
   
-  CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertInPlays - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
+  const CGFloat playCountVertMargin = (CGRectGetHeight(r) - marginVertInPlays - self.playCountLabel.height - self.playCountTitleLabel.height)/2.0f;
   y = 0;
   y += playCountVertMargin;
   self.playCountLabel.top = y;
@@ -185,17 +185,17 @@ static NSString *placeholderImageName = @"recordPlaceholderThumb";
   WeeklyAlbumChart *chart = (WeeklyAlbumChart *)object;
   
   // Even though this isn't true, we have to assume the tableView.width == cell.contentView.width
-  CGFloat width = tableView.width;
-  CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:width];
+  const CGFloat width = tableView.width;
+  const CGFloat artistAlbumWidth = [[self class] artistAlbumWidthForContentWidth:width];
   
 //  static CGFloat minimumHeight = 70.0f;
-  static CGFloat marginVert = 10.0f;
+  const CGFloat marginVert = 10.0f;
   
-  CGSize artistSize = [chart.album.name sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
-  CGSize albumSize = [chart.album.name sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  const CGSize artistSize = [chart.album.name sizeWithFont:[[self class] textLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
+  const CGSize albumSize = [chart.album.name sizeWithFont:[[self class] detailTextLabelFont] constrainedToSize:CGSizeMake(artistAlbumWidth, CGFLOAT_MAX) lineBreakMode:NSLineBreakByWordWrapping];
   
-  CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
-  CGFloat imageHeight = marginVert*2 + imageViewSide;
+  const CGFloat artistAlbumHeight = marginVert*2 + artistSize.height + marginVertInAlbum + albumSize.height;
+  const CGFloat imageHeight = marginVert*2 + imageViewSide;
   
   return MAX(artistAlbumHeight, imageHeight);
 }

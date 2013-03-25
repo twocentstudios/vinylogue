@@ -142,14 +142,14 @@
 - (void)layoutSubviews{
   [super layoutSubviews];
   
-  CGRect r = self.bounds;
-  CGFloat w = CGRectGetWidth(r);
+  const CGRect r = self.bounds;
+  const CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r); // used to set y position and calculate height
-  CGFloat centerX = CGRectGetMidX(r);
-  static CGFloat viewHMargin = 30.0f;
-  static CGFloat imageAndLabelMargin = 14.0f;
-  static CGFloat interLabelMargin = -1.0f;
-  CGFloat widthWithMargin = w - (viewHMargin * 2);
+  const CGFloat centerX = CGRectGetMidX(r);
+  const CGFloat viewHMargin = 30.0f;
+  const CGFloat imageAndLabelMargin = 14.0f;
+  const CGFloat interLabelMargin = -1.0f;
+  const CGFloat widthWithMargin = w - (viewHMargin * 2);
 
   // Calculate individual heights and widths
   self.loadingImageView.x = centerX;
@@ -198,7 +198,7 @@
 - (void)drawRect:(CGRect)rect{
   CGContextRef c = UIGraphicsGetCurrentContext();
   
-  CGRect r = rect;
+  const CGRect r = rect;
   
   CGContextSaveGState(c);
   {
@@ -206,7 +206,7 @@
     [self.backgroundColor setFill];
     CGContextFillRect(c, r);
     
-    CGFloat borderHeight = 1.0f;
+    const CGFloat borderHeight = 1.0f;
     CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
     CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
     

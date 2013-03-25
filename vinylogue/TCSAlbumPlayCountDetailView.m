@@ -87,16 +87,16 @@
 - (void)layoutSubviews{
   [super layoutSubviews];
   
-  CGRect r = self.bounds;
-  CGFloat w = CGRectGetWidth(r);
+  const CGRect r = self.bounds;
+  const CGFloat w = CGRectGetWidth(r);
   CGFloat tl, tr;
   tl = tr = CGRectGetMinY(r); // used to set y position and calculate height
-  CGFloat centerXL = CGRectGetMidX(r)/2.0f;
-  CGFloat centerXR = CGRectGetMidX(r)*3.0f/2.0f;
-  static CGFloat viewHMargin = 6.0f;
-  static CGFloat viewVMargin = 10.0f;
-  static CGFloat interLabelMargin = -3.0f;
-  CGFloat widthWithMargin = w/2.0 - (viewHMargin * 2);
+  const CGFloat centerXL = CGRectGetMidX(r)/2.0f;
+  const CGFloat centerXR = CGRectGetMidX(r)*3.0f/2.0f;
+  const CGFloat viewHMargin = 6.0f;
+  const CGFloat viewVMargin = 10.0f;
+  const CGFloat interLabelMargin = -3.0f;
+  const CGFloat widthWithMargin = w/2.0 - (viewHMargin * 2);
   
   // Calculate individual heights and widths
   [self setLabelSizeForLabel:self.playCountWeekLabel width:widthWithMargin];
@@ -148,7 +148,7 @@
 - (void)drawRect:(CGRect)rect{
   CGContextRef c = UIGraphicsGetCurrentContext();
   
-  CGRect r = rect;
+  const CGRect r = rect;
   
   CGContextSaveGState(c);
   {
@@ -156,11 +156,11 @@
     [self.backgroundColor setFill];
     CGContextFillRect(c, r);
     
-    CGFloat borderHeight = 1.0f;
-    CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
-    CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
-    CGRect leftCenterBorder = CGRectMake(CGRectGetMidX(r)-borderHeight/2.0f, CGRectGetMinY(r)+borderHeight, borderHeight, CGRectGetHeight(r)-borderHeight*2);
-    CGRect rightCenterBorder = CGRectMake(CGRectGetMidX(r)+borderHeight/2.0f, CGRectGetMinY(r)+borderHeight, borderHeight, CGRectGetHeight(r)-borderHeight*2);
+    const CGFloat borderHeight = 1.0f;
+    const CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+    const CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+    const CGRect leftCenterBorder = CGRectMake(CGRectGetMidX(r)-borderHeight/2.0f, CGRectGetMinY(r)+borderHeight, borderHeight, CGRectGetHeight(r)-borderHeight*2);
+    const CGRect rightCenterBorder = CGRectMake(CGRectGetMidX(r)+borderHeight/2.0f, CGRectGetMinY(r)+borderHeight, borderHeight, CGRectGetHeight(r)-borderHeight*2);
     
     // Fill top & left center border
     [WHITEA(0.35f) setFill];

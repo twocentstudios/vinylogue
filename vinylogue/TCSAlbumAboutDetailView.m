@@ -55,12 +55,12 @@
 - (void)layoutSubviews{
   [super layoutSubviews];
   
-  CGRect r = self.bounds;
-  CGFloat w = CGRectGetWidth(r);
+  const CGRect r = self.bounds;
+  const CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
-  static CGFloat viewHMargin = 26.0f;
-  static CGFloat viewVMargin = 24.0f;
-  CGFloat widthWithMargin = w - (viewHMargin * 2);
+  const CGFloat viewHMargin = 26.0f;
+  const CGFloat viewVMargin = 24.0f;
+  const CGFloat widthWithMargin = w - (viewHMargin * 2);
   
   [self.headerLabel setMultipleLineSizeForWidth:widthWithMargin];
   [self.contentLabel setMultipleLineSizeForWidth:widthWithMargin];
@@ -80,7 +80,7 @@
 - (void)drawRect:(CGRect)rect{
   CGContextRef c = UIGraphicsGetCurrentContext();
   
-  CGRect r = rect;
+  const CGRect r = rect;
   
   CGContextSaveGState(c);
   {
@@ -88,9 +88,9 @@
     [self.backgroundColor setFill];
     CGContextFillRect(c, r);
     
-    CGFloat borderHeight = 1.0f;
-    CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
-    CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
+    const CGFloat borderHeight = 1.0f;
+    const CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
+    const CGRect bottomBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMaxY(r)-borderHeight, CGRectGetWidth(r), borderHeight);
     
     // Fill top & left center border
     [BLACKA(0.05f) setFill];
