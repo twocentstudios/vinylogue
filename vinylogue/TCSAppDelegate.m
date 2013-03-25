@@ -144,6 +144,8 @@
 
 #pragma mark - debug
 
+#ifdef DEBUG
+
 NSString *print_free_memory(){
   mach_port_t host_port;
   mach_msg_type_number_t host_size;
@@ -167,5 +169,7 @@ NSString *print_free_memory(){
   natural_t megabyte = 1048576;
   return [NSString stringWithFormat:@"used: %f free: %f total: %f", (double)mem_used/(double)megabyte, (double)mem_free/(double)megabyte, (double)mem_total/(double)megabyte];
 }
+
+#endif
 
 @end

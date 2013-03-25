@@ -52,11 +52,6 @@
 
 @implementation TCSAlbumDetailViewController
 
-// TEMP
-- (void)doDebug:(id)sender{
-  NSLog(@"Debug");
-}
-
 - (id)initWithWeeklyAlbumChart:(WeeklyAlbumChart *)weeklyAlbumChart{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
@@ -66,9 +61,6 @@
     self.album = weeklyAlbumChart.album;
     self.user = weeklyAlbumChart.user;
     self.client = [TCSLastFMAPIClient clientForUser:self.user];
-    
-    // TEMP
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(doDebug:)];
   }
   return self;
 }
@@ -280,7 +272,6 @@
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.showsVerticalScrollIndicator = YES;
     _scrollView.directionalLockEnabled = YES;
-//    _scrollView.alwaysBounceHorizontal = YES;
     _scrollView.alwaysBounceVertical = YES;
     _scrollView.delegate = self;
   }
@@ -316,9 +307,6 @@
 - (TCSAlbumAboutDetailView *)aboutView{
   if (!_aboutView){
     _aboutView = [[TCSAlbumAboutDetailView alloc] init];
-//    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(doSwipe:)];
-//    swipe.direction = UISwipeGestureRecognizerDirectionRight;
-//    [_aboutView addGestureRecognizer:swipe];
   }
   return _aboutView;
 }
