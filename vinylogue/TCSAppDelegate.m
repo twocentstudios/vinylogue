@@ -36,8 +36,9 @@
 - (void)configureApplicationStyle{
   
   // STATUS BAR
-  //  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-  
+//  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
   // NAVIGATION BAR
   [[UINavigationBar appearance]
    setBackgroundImage:[[UIImage imageNamed:@"navBarPatch"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)]

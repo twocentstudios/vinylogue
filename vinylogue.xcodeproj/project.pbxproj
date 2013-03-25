@@ -129,6 +129,8 @@
 		34A62DB416EBC73D0070AE95 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DB216EBC73D0070AE95 /* Icon-Small.png */; };
 		34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 		34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
+		34D83EB317009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */; };
+		34D83EB417009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -253,6 +255,8 @@
 		34A62DB216EBC73D0070AE95 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Images/application/Icon-Small.png"; sourceTree = SOURCE_ROOT; };
 		34ABECCF16FA6E00007BF46A /* LastFMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMObject.h; sourceTree = "<group>"; };
 		34ABECD016FA6E01007BF46A /* LastFMObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMObject.m; sourceTree = "<group>"; };
+		34D83EB117009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+TCSPushPopHeaderBars.h"; sourceTree = "<group>"; };
+		34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+TCSPushPopHeaderBars.m"; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -519,6 +523,8 @@
 				3454CBC416F7B02B00B74623 /* UIImage+TCSImageRepresentativeColors.m */,
 				3454CBF816F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.h */,
 				3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */,
+				34D83EB117009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.h */,
+				34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -749,6 +755,7 @@
 				3454CBF216F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
 				3454CBFA16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
 				34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */,
+				34D83EB317009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -783,6 +790,7 @@
 				3454CBF316F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */,
 				3454CBFB16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */,
 				34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */,
+				34D83EB417009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
