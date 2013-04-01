@@ -110,6 +110,10 @@
 		3454CBF316F8CFB700B74623 /* TCSAlbumAboutDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */; };
 		3454CBFA16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */; };
 		3454CBFB16F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */; };
+		3462AD2E170A291200777226 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 3462AD2D170A291200777226 /* Podfile */; };
+		3462AD3D170A304400777226 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3462AD3C170A304400777226 /* libicucore.dylib */; };
+		3462AD3F170A304D00777226 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3462AD3E170A304D00777226 /* Security.framework */; };
+		3462AD41170A3A0E00777226 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3462AD40170A3A0E00777226 /* CFNetwork.framework */; };
 		3464744516DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3464744616DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */; };
 		3479A4D216D83E950042B8AE /* TCSSinglePageWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3479A4D116D83E950042B8AE /* TCSSinglePageWebViewController.m */; };
@@ -235,6 +239,10 @@
 		3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumAboutDetailView.m; sourceTree = "<group>"; };
 		3454CBF816F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+TCSLabelSizeCalculations.h"; sourceTree = "<group>"; };
 		3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+TCSLabelSizeCalculations.m"; sourceTree = "<group>"; };
+		3462AD2D170A291200777226 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; };
+		3462AD3C170A304400777226 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		3462AD3E170A304D00777226 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		3462AD40170A3A0E00777226 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		3464744316DC7568003E6350 /* NSDictionary+TCSDictionarySafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+TCSDictionarySafety.h"; sourceTree = "<group>"; };
 		3464744416DC7568003E6350 /* NSDictionary+TCSDictionarySafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+TCSDictionarySafety.m"; sourceTree = "<group>"; };
 		3479A4D016D83E950042B8AE /* TCSSinglePageWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSSinglePageWebViewController.h; sourceTree = "<group>"; };
@@ -265,6 +273,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3462AD41170A3A0E00777226 /* CFNetwork.framework in Frameworks */,
+				3462AD3F170A304D00777226 /* Security.framework in Frameworks */,
+				3462AD3D170A304400777226 /* libicucore.dylib in Frameworks */,
 				12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */,
 				3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */,
 				3479A4D716D83FDF0042B8AE /* MessageUI.framework in Frameworks */,
@@ -318,6 +329,9 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3462AD3E170A304D00777226 /* Security.framework */,
+				3462AD3C170A304400777226 /* libicucore.dylib */,
+				3462AD40170A3A0E00777226 /* CFNetwork.framework */,
 				3454CBBD16F7851E00B74623 /* CoreImage.framework */,
 				3480C5B916EFD3DE00443F08 /* Crashlytics.framework */,
 				3479A4D616D83FDF0042B8AE /* MessageUI.framework */,
@@ -362,6 +376,7 @@
 				343C0EF816D1C0270028A6FE /* main.m */,
 				343C0EFA16D1C0270028A6FE /* vinylogue-Prefix.pch */,
 				34A62DA716EBBF6E0070AE95 /* licenses.html */,
+				3462AD2D170A291200777226 /* Podfile */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -647,6 +662,7 @@
 				34A62DB416EBC73D0070AE95 /* Icon-Small.png in Resources */,
 				3454CBE916F81E3D00B74623 /* recordPlaceholder@2x.png in Resources */,
 				3454CBEB16F81E3D00B74623 /* recordPlaceholderThumb@2x.png in Resources */,
+				3462AD2E170A291200777226 /* Podfile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -45,6 +45,7 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.
   
   [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
   [self setDefaultHeader:@"Accept" value:@"application/json"];
+  [self setDefaultHeader:@"Accept-Encoding" value:nil];
   
   return self;
 }

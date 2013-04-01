@@ -24,6 +24,8 @@
 // For Debugging
 #import <mach/mach.h>
 #import <mach/mach_host.h>
+#import <PonyDebugger/PonyDebugger.h>
+#import "TargetConditionals.h"
 
 @implementation TCSAppDelegate
 
@@ -73,8 +75,20 @@
   [Crashlytics startWithAPIKey:kCrashlyticsAPIKey];
 #endif
   
+#define PONYDEBUGGER // comment this line out to skip PonyDebugger
+#if defined(PONYDEBUGGER) && defined(DEBUG) && TARGET_IPHONE_SIMULATOR
+  PDDebugger *debugger = [PDDebugger defaultInstance];
+  [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
+  [debugger enableNetworkTrafficDebugging];
+  [debugger forwardAllNetworkTraffic];
+  [debugger enableViewHierarchyDebugging];
+  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024 diskCapacity:50 * 1024 * 1024 diskPath:[SDURLCache defaultCachePath]];
+  [NSURLCache setSharedURLCache:URLCache];
+#else
+  // PonyDebugger does not work with SDURLCache
   SDURLCache *URLCache = [[SDURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024 diskCapacity:50 * 1024 * 1024 diskPath:[SDURLCache defaultCachePath]];
   [SDURLCache setSharedURLCache:URLCache];
+#endif
   
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
   
@@ -105,7 +119,7 @@
   [self.window makeKeyAndVisible];
   
 //  [self quicktest];
-    
+  
   return YES;
 }
 
