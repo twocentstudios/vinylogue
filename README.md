@@ -8,6 +8,8 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 
 ## Getting started
 
+Apologies, this is a little cumbersome.
+
 1. Clone the repo. `$ git clone git://github.com/twocentstudios/vinylogue.git`
 2. Install the pods. `$ pod install`
 3. Open `vinylogue.xcworkspace`.
@@ -19,7 +21,9 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 		#define kTestFlightAPIKey @""  
 		#define kTCSLastFMAPIKeyString @"YOUR_API_KEY"  
 6. Add your API keys to the above code (Only the Last.fm one is required).
-7. Build!
+7. Remove `Crashlytics.framework` from the Targets->Build Phases->Link Binary With Libraries menu. 
+8. Delete the "Run Script" build phase from the same menu.
+9. Build!
 
 ## Learn
 

@@ -8,9 +8,11 @@
 
 #import "TCSAppDelegate.h"
 
-#import <FlurrySDK/Flurry.h>
-#import <TestFlightSDK/TestFlight.h>
-#import <Crashlytics/Crashlytics.h>
+#if defined(BETATESTING) || defined(APPSTORE)
+  #import <FlurrySDK/Flurry.h>
+  #import <TestFlightSDK/TestFlight.h>
+  #import <Crashlytics/Crashlytics.h>
+#endif
 
 #import "TCSVinylogueSecret.h"
 #import <AFNetworking/AFNetworking.h>
@@ -75,7 +77,7 @@
   [Crashlytics startWithAPIKey:kCrashlyticsAPIKey];
 #endif
   
-#define PONYDEBUGGER // comment this line out to skip PonyDebugger
+//#define PONYDEBUGGER // comment this line out to skip PonyDebugger
 #if defined(PONYDEBUGGER) && defined(DEBUG) && TARGET_IPHONE_SIMULATOR
   PDDebugger *debugger = [PDDebugger defaultInstance];
   [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
