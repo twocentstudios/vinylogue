@@ -13,12 +13,11 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 3. Open `vinylogue.xcworkspace`.
 4. Create a new header file called `TCSVinylogueSecret.h`
 5. Copy and paste this code into `TCSVinylogueSecret.h`.
-```		
+	
 		#define kFlurryAPIKey @""  
 		#define kCrashlyticsAPIKey @""  
 		#define kTestFlightAPIKey @""  
 		#define kTCSLastFMAPIKeyString @"YOUR_API_KEY"  
-```
 6. Add your API keys to the above code (Only the Last.fm one is required).
 7. Build!
 
