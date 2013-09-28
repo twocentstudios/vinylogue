@@ -169,7 +169,8 @@ static CGFloat buttonAlpha = 0.3f;
 
 - (UIView *)backView{
   if (!_backView){
-    _backView = (UIView *)[[TCSInnerShadowView alloc] initWithColor:BLUE_PERI shadowColor:BLUE_PERI_SHADOW shadowRadius:3];
+    _backView = [[UIView alloc] init];
+    _backView.backgroundColor = BLUE_PERI;
   }
   return _backView;
 }
