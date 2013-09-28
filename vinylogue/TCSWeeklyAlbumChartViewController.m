@@ -493,7 +493,7 @@
   if (!_tableView){
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.backgroundView = [[TCSInnerShadowView alloc] initWithColor:WHITE_SUBTLE shadowColor:GRAYCOLOR(210) shadowRadius:3.0f];
+    _tableView.backgroundColor = WHITE_SUBTLE;
   }
   return _tableView;
 }
