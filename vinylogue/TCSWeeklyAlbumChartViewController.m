@@ -393,9 +393,10 @@
   CGRect r = self.view.bounds;
   CGFloat slideSelectHeight = 60.0f;
   
-  [self.slideSelectView setTop:CGRectGetMinY(r) bottom:slideSelectHeight];
+  [self.slideSelectView setTop:[self.topLayoutGuide length]];
+  self.slideSelectView.height = slideSelectHeight;
   self.slideSelectView.width = CGRectGetWidth(r);
-  [self.tableView setTop:slideSelectHeight bottom:CGRectGetMaxY(r)];
+  [self.tableView setTop:self.slideSelectView.bottom bottom:CGRectGetMaxY(r)];
   self.tableView.width = CGRectGetWidth(r);
   
   self.emptyView.frame = self.tableView.frame;
