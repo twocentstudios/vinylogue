@@ -409,18 +409,21 @@
   
 }
 
+- (BOOL)prefersStatusBarHidden {
+  return [self.navigationController isNavigationBarHidden];
+}
+
 #pragma mark - Private
 
 // Hide nav bar and status bar on double tap
 - (void)doDoubleTap:(UITapGestureRecognizer *)tap{
   if ([tap state] == UIGestureRecognizerStateEnded){
-    if ([[UIApplication sharedApplication] isStatusBarHidden] == NO){
-      [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    if ([self.navigationController isNavigationBarHidden] == NO){
       [self.navigationController setNavigationBarHidden:YES animated:YES];
     }else{
-      [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
       [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
+    [self setNeedsStatusBarAppearanceUpdate];
   }
 }
 
