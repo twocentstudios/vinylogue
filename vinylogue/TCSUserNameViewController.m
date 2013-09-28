@@ -79,7 +79,8 @@
   
   // Set vertical position
   CGFloat d = 0;
-  d += 46.0f; // top margin
+  d += [self.topLayoutGuide length];
+  d += 26.0f; // top margin
   
   if (self.showHeader){
     self.logoImageView.top = d;
