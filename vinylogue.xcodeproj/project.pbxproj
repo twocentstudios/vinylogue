@@ -124,7 +124,6 @@
 		3479A4D516D83FD20042B8AE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3479A4D416D83FD20042B8AE /* StoreKit.framework */; };
 		3479A4D716D83FDF0042B8AE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3479A4D616D83FDF0042B8AE /* MessageUI.framework */; };
 		3479A4DF16D853CB0042B8AE /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3479A4DE16D853CB0042B8AE /* Default@2x.png */; };
-		3479A4E116D856190042B8AE /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 3479A4E016D856190042B8AE /* Default.png */; };
 		3479A4E316D8561C0042B8AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3479A4E216D8561C0042B8AE /* Default-568h@2x.png */; };
 		3480C59816EE3D5A00443F08 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480C59716EE3D5A00443F08 /* User.m */; };
 		3480C5BA16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3480C5B916EFD3DE00443F08 /* Crashlytics.framework */; };
@@ -252,7 +251,6 @@
 		3479A4D416D83FD20042B8AE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3479A4D616D83FDF0042B8AE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		3479A4DE16D853CB0042B8AE /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../Images/application/Default@2x.png"; sourceTree = "<group>"; };
-		3479A4E016D856190042B8AE /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../Images/application/Default.png; sourceTree = "<group>"; };
 		3479A4E216D8561C0042B8AE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Images/application/Default-568h@2x.png"; sourceTree = "<group>"; };
 		3480C59616EE3D5A00443F08 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		3480C59716EE3D5A00443F08 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
@@ -549,7 +547,6 @@
 				344B9F7A17F6928D002AE959 /* icon-7-spotlight@2x.png */,
 				344B9F7B17F6928D002AE959 /* icon-7@2x.png */,
 				3479A4E216D8561C0042B8AE /* Default-568h@2x.png */,
-				3479A4E016D856190042B8AE /* Default.png */,
 				3479A4DE16D853CB0042B8AE /* Default@2x.png */,
 			);
 			name = application;
@@ -658,7 +655,6 @@
 				343C0FAD16D695620028A6FE /* loading12@2x.png in Resources */,
 				343C0FC416D70BE80028A6FE /* settings@2x.png in Resources */,
 				3479A4DF16D853CB0042B8AE /* Default@2x.png in Resources */,
-				3479A4E116D856190042B8AE /* Default.png in Resources */,
 				3479A4E316D8561C0042B8AE /* Default-568h@2x.png in Resources */,
 				34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */,
 				3454CBE916F81E3D00B74623 /* recordPlaceholder@2x.png in Resources */,
