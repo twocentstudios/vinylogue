@@ -237,7 +237,7 @@
     _albumImageView.layer.borderColor = BLACKA(0.2f).CGColor;
     _albumImageView.layer.shadowColor = BLACK.CGColor;
     _albumImageView.layer.shadowOffset = CGSizeMake(0, 1);
-    _albumImageView.layer.shadowOpacity = 0.6f;
+    _albumImageView.layer.shadowOpacity = 0.2f;
   }
   return _albumImageView;
 }
