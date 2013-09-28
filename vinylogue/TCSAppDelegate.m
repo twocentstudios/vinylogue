@@ -40,27 +40,17 @@
 - (void)configureApplicationStyle{
   
   // STATUS BAR
-//  [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+  
+  self.window.tintColor = BLUE_DARK;
 
-  // NAVIGATION BAR
-  [[UINavigationBar appearance]
-   setBackgroundImage:[[UIImage imageNamed:@"navBarPatch"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)]
-   forBarMetrics:UIBarMetricsDefault];
   NSDictionary *navBarTextAttributes = @{ UITextAttributeFont: FONT_AVN_REGULAR(20),
                                           UITextAttributeTextColor: BLUE_DARK,
                                           UITextAttributeTextShadowColor: CLEAR,
                                           UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0, 0)] };
   [[UINavigationBar appearance] setTitleTextAttributes:navBarTextAttributes];
   
-  // UIBARBUTTONITEM
-  NSDictionary *barButtonItemTextAttributes = @{ UITextAttributeFont: FONT_AVN_DEMIBOLD(12),
-                                                 UITextAttributeTextColor: WHITE,
-                                                 UITextAttributeTextShadowColor: GRAYCOLOR(140),
-                                                 UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0, -1)] };
-  [[UIBarButtonItem appearance] setTitleTextAttributes:barButtonItemTextAttributes forState:UIControlStateNormal];
-  [[UIBarButtonItem appearance] setTitlePositionAdjustment:UIOffsetMake(1, 1) forBarMetrics:UIBarMetricsDefault];
-  [[UIBarButtonItem appearance] setTintColor:BAR_BUTTON_TINT];
+  [[UINavigationBar appearance] setBarTintColor:WHITE_SUBTLE];
 }
 
 # pragma mark - App Delegate
@@ -94,8 +84,6 @@
   
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
   
-  [self configureApplicationStyle];
-  
   // Keep track of versions in case we need to do migrations in the future
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"init_1_1_0"] == NO) {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"init_1_1_0"];
@@ -120,6 +108,8 @@
   self.window.backgroundColor = [UIColor whiteColor];
   [self.window makeKeyAndVisible];
   
+  [self configureApplicationStyle];
+
 //  [self quicktest];
   
   return YES;
