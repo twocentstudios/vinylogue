@@ -35,6 +35,16 @@
   self.textLabel.text = nil;
 }
 
+// Inelegantly fixes an iOS7 bug where the cell's background is above the
+// delete button in the view hierarchy
+-(void)didTransitionToState:(UITableViewCellStateMask)state {
+  if (state & UITableViewCellStateShowingDeleteConfirmationMask ) {
+    [self sendSubviewToBack:self.backgroundView];
+  }
+  
+  [super didTransitionToState:state];
+}
+
 # pragma mark - TCSimpleCell
 
 + (UIFont *)font{
@@ -63,23 +73,8 @@
   if (self) {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.backgroundView = [UIView viewWithDrawRectBlock:^(CGRect rect) {
-      CGContextRef c = UIGraphicsGetCurrentContext();
-      CGRect r = rect;
-      
-      CGContextSaveGState(c);
-      {
-        [WHITE_SUBTLE setFill];
-        CGContextFillRect(c, r);
-        
-//        CGFloat borderHeight = 1.0f;
-//        CGRect topBorder = CGRectMake(CGRectGetMinX(r), CGRectGetMinY(r), CGRectGetWidth(r), borderHeight);
-//        
-//        [BLUE_DARK setFill];
-//        CGContextFillRect(c, topBorder);
-      }
-      CGContextRestoreGState(c);
-    }];
+    self.backgroundView = [[UIView alloc] init];
+    self.backgroundView.backgroundColor = WHITE_SUBTLE;
     
     self.textLabel.font = [[self class] font];
     self.textLabel.textColor = BLUE_DARK;
