@@ -197,7 +197,7 @@
     _userNameField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     _userNameField.autocorrectionType = UITextAutocorrectionTypeNo;
     _userNameField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    _userNameField.keyboardAppearance = UIKeyboardAppearanceAlert;
+    _userNameField.keyboardAppearance = UIKeyboardAppearanceDefault;
     _userNameField.returnKeyType = UIReturnKeyDone;
     _userNameField.clearButtonMode = UITextFieldViewModeAlways;
     _userNameField.enablesReturnKeyAutomatically = YES;
