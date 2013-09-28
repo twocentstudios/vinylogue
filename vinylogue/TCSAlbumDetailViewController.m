@@ -246,6 +246,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)prefersStatusBarHidden {
+  return YES;
+}
+
 - (void)doSwipe:(id)sender{
   [self.navigationController popViewControllerAnimated:YES];
 }
