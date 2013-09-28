@@ -95,6 +95,9 @@
 		343C0FC916D7F8F10028A6FE /* TCSFavoriteUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */; };
 		343C0FCC16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
 		343C0FCD16D816840028A6FE /* TCSUserStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 343C0FCB16D816840028A6FE /* TCSUserStore.m */; };
+		344B9F7C17F6928D002AE959 /* icon-7-settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B9F7917F6928D002AE959 /* icon-7-settings@2x.png */; };
+		344B9F7D17F6928D002AE959 /* icon-7-spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B9F7A17F6928D002AE959 /* icon-7-spotlight@2x.png */; };
+		344B9F7E17F6928D002AE959 /* icon-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 344B9F7B17F6928D002AE959 /* icon-7@2x.png */; };
 		3454CBBB16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
 		3454CBBC16F776F900B74623 /* TCSAlbumArtDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */; };
 		3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3454CBBD16F7851E00B74623 /* CoreImage.framework */; };
@@ -127,10 +130,6 @@
 		3480C5BA16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3480C5B916EFD3DE00443F08 /* Crashlytics.framework */; };
 		3480C5BB16EFD3DE00443F08 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3480C5B916EFD3DE00443F08 /* Crashlytics.framework */; };
 		34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DA716EBBF6E0070AE95 /* licenses.html */; };
-		34A62DAE16EBC7100070AE95 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DAD16EBC7100070AE95 /* Icon.png */; };
-		34A62DB016EBC7200070AE95 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DAF16EBC7200070AE95 /* Icon@2x.png */; };
-		34A62DB316EBC73D0070AE95 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DB116EBC73D0070AE95 /* Icon-Small-50.png */; };
-		34A62DB416EBC73D0070AE95 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DB216EBC73D0070AE95 /* Icon-Small.png */; };
 		34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 		34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 		34D83EB317009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */; };
@@ -226,6 +225,9 @@
 		343C0FC716D7F8F10028A6FE /* TCSFavoriteUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSFavoriteUsersViewController.m; sourceTree = "<group>"; };
 		343C0FCA16D816840028A6FE /* TCSUserStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSUserStore.h; sourceTree = "<group>"; };
 		343C0FCB16D816840028A6FE /* TCSUserStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSUserStore.m; sourceTree = "<group>"; };
+		344B9F7917F6928D002AE959 /* icon-7-settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-7-settings@2x.png"; sourceTree = "<group>"; };
+		344B9F7A17F6928D002AE959 /* icon-7-spotlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-7-spotlight@2x.png"; sourceTree = "<group>"; };
+		344B9F7B17F6928D002AE959 /* icon-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-7@2x.png"; sourceTree = "<group>"; };
 		3454CBB916F776F900B74623 /* TCSAlbumArtDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumArtDetailView.h; sourceTree = "<group>"; };
 		3454CBBA16F776F900B74623 /* TCSAlbumArtDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumArtDetailView.m; sourceTree = "<group>"; };
 		3454CBBD16F7851E00B74623 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
@@ -257,10 +259,6 @@
 		3480C5B716EF9E5E00443F08 /* TCSVinylogueSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSVinylogueSecret.h; sourceTree = "<group>"; };
 		3480C5B916EFD3DE00443F08 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics.framework; sourceTree = "<group>"; };
 		34A62DA716EBBF6E0070AE95 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = licenses.html; path = Resources/licenses.html; sourceTree = SOURCE_ROOT; };
-		34A62DAD16EBC7100070AE95 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Images/application/Icon.png; sourceTree = "<group>"; };
-		34A62DAF16EBC7200070AE95 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Images/application/Icon@2x.png"; sourceTree = "<group>"; };
-		34A62DB116EBC73D0070AE95 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Images/application/Icon-Small-50.png"; sourceTree = SOURCE_ROOT; };
-		34A62DB216EBC73D0070AE95 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Images/application/Icon-Small.png"; sourceTree = SOURCE_ROOT; };
 		34ABECCF16FA6E00007BF46A /* LastFMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMObject.h; sourceTree = "<group>"; };
 		34ABECD016FA6E01007BF46A /* LastFMObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMObject.m; sourceTree = "<group>"; };
 		34D83EB117009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+TCSPushPopHeaderBars.h"; sourceTree = "<group>"; };
@@ -547,13 +545,12 @@
 		3479A4D816D84DBB0042B8AE /* application */ = {
 			isa = PBXGroup;
 			children = (
+				344B9F7917F6928D002AE959 /* icon-7-settings@2x.png */,
+				344B9F7A17F6928D002AE959 /* icon-7-spotlight@2x.png */,
+				344B9F7B17F6928D002AE959 /* icon-7@2x.png */,
 				3479A4E216D8561C0042B8AE /* Default-568h@2x.png */,
 				3479A4E016D856190042B8AE /* Default.png */,
 				3479A4DE16D853CB0042B8AE /* Default@2x.png */,
-				34A62DAF16EBC7200070AE95 /* Icon@2x.png */,
-				34A62DAD16EBC7100070AE95 /* Icon.png */,
-				34A62DB116EBC73D0070AE95 /* Icon-Small-50.png */,
-				34A62DB216EBC73D0070AE95 /* Icon-Small.png */,
 			);
 			name = application;
 			sourceTree = "<group>";
@@ -608,6 +605,11 @@
 				CLASSPREFIX = TCS;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = TwoCentStudios;
+				TargetAttributes = {
+					343C0EE616D1C0270028A6FE = {
+						DevelopmentTeam = YK25EF78NT;
+					};
+				};
 			};
 			buildConfigurationList = 343C0EE216D1C0270028A6FE /* Build configuration list for PBXProject "vinylogue" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -636,6 +638,7 @@
 				343C0EF716D1C0270028A6FE /* InfoPlist.strings in Resources */,
 				343C0F6716D567810028A6FE /* leftArrow@2x.png in Resources */,
 				343C0F6816D567810028A6FE /* rightArrow@2x.png in Resources */,
+				344B9F7E17F6928D002AE959 /* icon-7@2x.png in Resources */,
 				343C0F6A16D5702C0028A6FE /* navBarPatch@2x.png in Resources */,
 				343C0F6C16D571020028A6FE /* logo@2x.png in Resources */,
 				343C0F9316D5D4640028A6FE /* blueButton@2x.png in Resources */,
@@ -645,7 +648,9 @@
 				343C0FA516D695620028A6FE /* loading04@2x.png in Resources */,
 				343C0FA616D695620028A6FE /* loading05@2x.png in Resources */,
 				343C0FA716D695620028A6FE /* loading06@2x.png in Resources */,
+				344B9F7D17F6928D002AE959 /* icon-7-spotlight@2x.png in Resources */,
 				343C0FA816D695620028A6FE /* loading07@2x.png in Resources */,
+				344B9F7C17F6928D002AE959 /* icon-7-settings@2x.png in Resources */,
 				343C0FA916D695620028A6FE /* loading08@2x.png in Resources */,
 				343C0FAA16D695620028A6FE /* loading09@2x.png in Resources */,
 				343C0FAB16D695620028A6FE /* loading10@2x.png in Resources */,
@@ -656,10 +661,6 @@
 				3479A4E116D856190042B8AE /* Default.png in Resources */,
 				3479A4E316D8561C0042B8AE /* Default-568h@2x.png in Resources */,
 				34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */,
-				34A62DAE16EBC7100070AE95 /* Icon.png in Resources */,
-				34A62DB016EBC7200070AE95 /* Icon@2x.png in Resources */,
-				34A62DB316EBC73D0070AE95 /* Icon-Small-50.png in Resources */,
-				34A62DB416EBC73D0070AE95 /* Icon-Small.png in Resources */,
 				3454CBE916F81E3D00B74623 /* recordPlaceholder@2x.png in Resources */,
 				3454CBEB16F81E3D00B74623 /* recordPlaceholderThumb@2x.png in Resources */,
 				3462AD2E170A291200777226 /* Podfile in Resources */,
@@ -905,6 +906,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -918,7 +920,7 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(PODS_ROOT)/TestFlightSDK\"",
 					"$(inherited)",
@@ -951,7 +953,7 @@
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Christopher Trott";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -967,7 +969,7 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(PODS_ROOT)/TestFlightSDK\"",
 					"$(inherited)",
@@ -1079,7 +1081,7 @@
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Christopher Trott";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1095,7 +1097,7 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(PODS_ROOT)/TestFlightSDK\"",
 					"$(inherited)",
