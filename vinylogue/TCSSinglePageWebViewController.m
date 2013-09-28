@@ -84,10 +84,11 @@
 }
 
 - (void)viewWillLayoutSubviews{
-  CGFloat buttonMargin = 4;
+  CGFloat hButtonMargin = 2;
+  CGFloat vButtonMargin = 14;
   self.webView.frame = self.view.bounds;
-  self.closeButton.right = self.view.right - buttonMargin;
-  self.closeButton.top = self.view.bounds.origin.y + buttonMargin;
+  self.closeButton.right = self.view.right - hButtonMargin;
+  self.closeButton.top = self.view.bounds.origin.y + vButtonMargin;
 }
 
 - (void)didReceiveMemoryWarning
