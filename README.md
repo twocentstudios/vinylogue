@@ -4,7 +4,11 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 
 * [App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8) (it's free).
 * [Landing page](http://twocentstudios.com/apps/vinylogue/) with screenshots.
-* [Blog post](http://twocentstudios.com/blog/2013/02/27/the-making-of-vinylogue/) walking through the source.
+* [Blog post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) walking through the source.
+
+![Screenshot 1](http://twocentstudios.com/apps/vinylogue/img/ss-charts.png)
+![Screenshot 2](http://twocentstudios.com/apps/vinylogue/img/ss-friends.png)
+![Screenshot 3](http://twocentstudios.com/apps/vinylogue/img/ss-album.png)
 
 ## Getting started
 
@@ -25,7 +29,7 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 
 This project was both an app I wanted to exist, and a learning experience for me regarding [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa). I hope other iOS devs can learn from it. I haven't done much open source in the past, and have learned by studying the source great projects such as [Cheddar](https://github.com/nothingmagical/cheddar-ios) and [news:yc](https://github.com/Xuzz/newsyc) (amongst many others), so it felt like it was time to give back.
 
-I wrote a pretty extensive [blog post](http://twocentstudios.com/blog/2013/02/27/the-making-of-vinylogue/) covering several parts of the design and development of this app. If you're looking for a guided tour through the source, check that out first.
+I wrote a pretty extensive [blog post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) covering several parts of the design and development of this app. If you're looking for a guided tour through the source, check that out first.
 
 ## License
 
