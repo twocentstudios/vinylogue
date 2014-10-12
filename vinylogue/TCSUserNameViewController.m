@@ -102,7 +102,7 @@
 - (void)viewDidLoad{
   [super viewDidLoad];
 	
-  [[RACAbleWithStart(self.loading) distinctUntilChanged] subscribeNext:^(id x) {
+  [[RACObserve(self, loading) distinctUntilChanged] subscribeNext:^(id x) {
     BOOL loading = [x boolValue];
     if (loading){
       [self.loadingImageView startAnimating];
@@ -118,7 +118,7 @@
     }
   }];
   
-  [[RACAbleWithStart(self.editing) distinctUntilChanged] subscribeNext:^(id x) {
+  [[RACObserve(self, editing) distinctUntilChanged] subscribeNext:^(id x) {
     BOOL editing = [x boolValue];
     if (editing){
       self.doneBarButtonItem.enabled = YES;

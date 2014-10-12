@@ -9,8 +9,8 @@
 #import "TCSSlideSelectView.h"
 #import "TCSInnerShadowView.h"
 
-#import "ReactiveCocoa/UIControl+RACSignalSupport.h"
-#import <EXTScope.h>
+#import <ReactiveCocoa/UIControl+RACSignalSupport.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 
 static CGFloat buttonAlpha = 0.3f;
 
@@ -57,8 +57,8 @@ static CGFloat buttonAlpha = 0.3f;
     // Set up commands
     self.pullLeftOffset = 40;
     self.pullRightOffset = 40;
-    self.pullLeftCommand = [RACCommand command];
-    self.pullRightCommand = [RACCommand command];
+    self.pullLeftCommand = nil;
+    self.pullRightCommand = nil;
   }
   return self;
 }

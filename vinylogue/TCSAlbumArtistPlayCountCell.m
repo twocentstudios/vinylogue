@@ -13,7 +13,7 @@
 #import "Artist.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
 static CGFloat marginHorzOut = 12.0f;

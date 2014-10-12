@@ -44,10 +44,8 @@
   
   self.window.tintColor = BLUE_DARK;
 
-  NSDictionary *navBarTextAttributes = @{ UITextAttributeFont: FONT_AVN_REGULAR(20),
-                                          UITextAttributeTextColor: BLUE_DARK,
-                                          UITextAttributeTextShadowColor: CLEAR,
-                                          UITextAttributeTextShadowOffset: [NSValue valueWithUIOffset:UIOffsetMake(0, 0)] };
+  NSDictionary *navBarTextAttributes = @{ NSFontAttributeName: FONT_AVN_REGULAR(20),
+                                          NSForegroundColorAttributeName: BLUE_DARK, };
   [[UINavigationBar appearance] setTitleTextAttributes:navBarTextAttributes];
   
   [[UINavigationBar appearance] setBarTintColor:WHITE_SUBTLE];

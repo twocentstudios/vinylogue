@@ -21,8 +21,8 @@
 #import "UILabel+TCSLabelSizeCalculations.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
-#import <EXTKeyPathCoding.h>
+#import <ReactiveCocoa/RACEXTScope.h>
+#import <ReactiveCocoa/RACEXTKeyPathCoding.h>
 
 // TEMP
 @class TCSAlbumCoverView;
@@ -97,15 +97,15 @@
 	 
   @weakify(self);
   
-  RACBind(self.albumDetailView.artistName) = RACBind(self.album.artist.name);
-  RACBind(self.albumDetailView.albumName) = RACBind(self.album.name);
-  RACBind(self.albumDetailView.albumReleaseDate) = RACBind(self.album.releaseDate);
-  RACBind(self.albumDetailView.albumImageURL) = RACBind(self.album.imageURL);
+  RAC(self.albumDetailView, artistName) = RACObserve(self.album.artist, name);
+  RAC(self.albumDetailView, albumName) = RACObserve(self.album, name);
+  RAC(self.albumDetailView, albumReleaseDate) = RACObserve(self.album, releaseDate);
+  RAC(self.albumDetailView, albumImageURL) = RACObserve(self.album, imageURL);
   
-  RACBind(self.aboutView.content) = RACBind(self.album.about);
+  RAC(self.aboutView, content) = RACObserve(self.album, about);
   self.pullLabel.text = @"← pull to go back";
   
-  [RACAbleWithStart(self.album.about) subscribeNext:^(NSString *about) {
+  [RACObserve(self.album, about) subscribeNext:^(NSString *about) {
     @strongify(self);
     if (!about || [about isEqualToString:@""]){
       self.aboutView.header = @"";
@@ -114,7 +114,7 @@
     }
   }];
   
-  [[[RACAbleWithStart(self.albumDetailView.primaryAlbumColor) map:^id(UIColor *color) {
+  [[[RACObserve(self.albumDetailView, primaryAlbumColor) map:^id(UIColor *color) {
     if (color == nil){
       return WHITE_SUBTLE;
     }else{
@@ -132,31 +132,31 @@
                      completion:NULL];
   }];
   
-  RACBind(self.playCountView.labelTextColor) = RACBind(self.albumDetailView.textAlbumColor);
-  RACBind(self.playCountView.labelTextShadowColor) = RACBind(self.albumDetailView.textShadowAlbumColor);
+  RAC(self.playCountView, labelTextColor) = RACObserve(self.albumDetailView, textAlbumColor);
+  RAC(self.playCountView, labelTextShadowColor) = RACObserve(self.albumDetailView, textShadowAlbumColor);
   
-  [[RACAble(self.albumDetailView.textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+  [[RACObserve(self.albumDetailView, textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
     @strongify(self);
     self.aboutView.labelTextColor = color;
     self.pullLabel.textColor = COLORA(color, 0.6);
   }];
-  [[RACAble(self.albumDetailView.textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+  [[RACObserve(self.albumDetailView, textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
     @strongify(self);
     self.aboutView.labelTextShadowColor = color;
   }];
   
-  RACBind(self.playCountView.playCountWeek) = RACBind(self.weeklyAlbumChart.playcount);
-  RAC(self.playCountView.durationWeek) = [RACAbleWithStart(self.weeklyChart.from) map:^id(NSDate *date) {
+  RAC(self.playCountView, playCountWeek) = RACObserve(self.weeklyAlbumChart, playcount);
+  RAC(self.playCountView, durationWeek) = [RACObserve(self.weeklyChart, from) map:^id(NSDate *date) {
     if (date != nil){
       NSDateComponents *components = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:date];
-      return [NSString stringWithFormat:@"week %i %i", components.weekOfYear, components.yearForWeekOfYear];
+      return [NSString stringWithFormat:@"week %li %li", (long)components.weekOfYear, (long)components.yearForWeekOfYear];
     }else{
       return @"week";
     }
   }];
-  RAC(self.playCountView.playCountAllTime) = RACBind(self.album.totalPlayCount);
+  RAC(self.playCountView, playCountAllTime) = RACObserve(self.album, totalPlayCount);
   
-  [RACAbleWithStart(self.showingLoading) subscribeNext:^(NSNumber *showingLoading) {
+  [RACObserve(self, showingLoading) subscribeNext:^(NSNumber *showingLoading) {
     BOOL isLoading = [showingLoading boolValue];
     @strongify(self);
     if (isLoading){
