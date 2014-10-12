@@ -11,7 +11,7 @@
 #import "UILabel+TCSLabelSizeCalculations.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 
 @interface TCSAlbumAboutDetailView ()
 
@@ -34,16 +34,16 @@
     [self addSubview:self.contentLabel];
     
     @weakify(self);
-    RACBind(self.headerLabel.text) = RACBind(self.header);
-    RACBind(self.contentLabel.text) = RACBind(self.content);
+    RAC(self.headerLabel, text) = RACObserve(self, header);
+    RAC(self.contentLabel, text) = RACObserve(self, content);
     
-    [[RACAbleWithStart(self.labelTextColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    [[RACObserve(self, labelTextColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
       @strongify(self);
       self.headerLabel.textColor = COLORA(color, 0.6);
       self.contentLabel.textColor = COLORA(color, 0.95);
     }];
     
-    [[RACAbleWithStart(self.labelTextShadowColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    [[RACObserve(self, labelTextShadowColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
       @strongify(self);
       self.headerLabel.shadowColor = COLORA(color, 0.3);
       self.contentLabel.shadowColor = COLORA(color, 0.2);
@@ -59,7 +59,7 @@
   const CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
   const CGFloat viewHMargin = 26.0f;
-  const CGFloat viewVMargin = 24.0f;
+  const CGFloat viewVMargin = 48.0f;
   const CGFloat widthWithMargin = w - (viewHMargin * 2);
   
   [self.headerLabel setMultipleLineSizeForWidth:widthWithMargin];

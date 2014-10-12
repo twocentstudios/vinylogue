@@ -21,8 +21,7 @@
 #import "UILabel+TCSLabelSizeCalculations.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
-
+#import <ReactiveCocoa/RACEXTScope.h>
 
 @interface TCSFavoriteUsersViewController ()
 
@@ -87,7 +86,7 @@
   @weakify(self);
   
   // Prompts for a user name if it's nil (Should only be needed for first run)
-  [[[RACAbleWithStart(self.userStore.user) distinctUntilChanged] filter:^BOOL(id value) {
+  [[[RACObserve(self.userStore, user) distinctUntilChanged] filter:^BOOL(id value) {
     return (value == nil);
   }] subscribeNext:^(id x) {
     @strongify(self);
@@ -102,7 +101,7 @@
   }];
   
   // Show the footer if in editing mode or have zero friends
-  [[[[RACSignal combineLatest:@[self.userStore.friendListCountSignal, RACAbleWithStart(self.kvoEditing)] reduce:^(NSNumber *countNumber, NSNumber *editingNumber){
+  [[[[RACSignal combineLatest:@[self.userStore.friendListCountSignal, RACObserve(self, kvoEditing)] reduce:^(NSNumber *countNumber, NSNumber *editingNumber){
     NSInteger count = [countNumber integerValue];
     BOOL editing = [editingNumber boolValue];
     return @((count == 0) || (editing == YES));
@@ -121,7 +120,7 @@
   }];
   
   // Disable UI when importing friends
-  [[[RACAbleWithStart(self.importingFriends)
+  [[[RACObserve(self, importingFriends)
      distinctUntilChanged]
     deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *importingNumber) {

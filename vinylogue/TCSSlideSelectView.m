@@ -9,8 +9,8 @@
 #import "TCSSlideSelectView.h"
 #import "TCSInnerShadowView.h"
 
-#import "ReactiveCocoa/UIControl+RACSignalSupport.h"
-#import <EXTScope.h>
+#import <ReactiveCocoa/UIControl+RACSignalSupport.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 
 static CGFloat buttonAlpha = 0.3f;
 
@@ -57,8 +57,8 @@ static CGFloat buttonAlpha = 0.3f;
     // Set up commands
     self.pullLeftOffset = 40;
     self.pullRightOffset = 40;
-    self.pullLeftCommand = [RACCommand command];
-    self.pullRightCommand = [RACCommand command];
+    self.pullLeftCommand = nil;
+    self.pullRightCommand = nil;
   }
   return self;
 }
@@ -169,7 +169,8 @@ static CGFloat buttonAlpha = 0.3f;
 
 - (UIView *)backView{
   if (!_backView){
-    _backView = (UIView *)[[TCSInnerShadowView alloc] initWithColor:BLUE_PERI shadowColor:BLUE_PERI_SHADOW shadowRadius:3];
+    _backView = [[UIView alloc] init];
+    _backView.backgroundColor = BLUE_PERI;
   }
   return _backView;
 }

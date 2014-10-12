@@ -17,7 +17,7 @@
 #import "TCSSettingsCells.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 
 @interface TCSSettingsViewController ()
 
@@ -54,7 +54,7 @@
   
   @weakify(self);
   
-  [[RACAble(self.playCountFilter) distinctUntilChanged] subscribeNext:^(NSNumber *playCountFilter) {
+  [[RACObserve(self, playCountFilter) distinctUntilChanged] subscribeNext:^(NSNumber *playCountFilter) {
     @strongify(self);
     [[NSUserDefaults standardUserDefaults] setObject:playCountFilter forKey:kTCSUserDefaultsPlayCountFilter];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -216,7 +216,7 @@
   }else if (self.playCountFilter == 1){
     return @"1 play";
   }else{
-    return [NSString stringWithFormat:@"%i plays", self.playCountFilter];
+    return [NSString stringWithFormat:@"%lu plays", (unsigned long)self.playCountFilter];
   }
 }
 

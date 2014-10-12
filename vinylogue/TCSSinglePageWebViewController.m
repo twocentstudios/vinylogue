@@ -69,6 +69,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+  [super viewDidAppear:animated];
   if (self.local){
     NSString *htmlFile = [[NSBundle mainBundle] pathForResource:self.localFileName ofType:@"html" inDirectory:nil];
     NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];
@@ -84,10 +85,11 @@
 }
 
 - (void)viewWillLayoutSubviews{
-  CGFloat buttonMargin = 4;
+  CGFloat hButtonMargin = 2;
+  CGFloat vButtonMargin = 14;
   self.webView.frame = self.view.bounds;
-  self.closeButton.right = self.view.right - buttonMargin;
-  self.closeButton.top = self.view.bounds.origin.y + buttonMargin;
+  self.closeButton.right = self.view.right - hButtonMargin;
+  self.closeButton.top = self.view.bounds.origin.y + vButtonMargin;
 }
 
 - (void)didReceiveMemoryWarning

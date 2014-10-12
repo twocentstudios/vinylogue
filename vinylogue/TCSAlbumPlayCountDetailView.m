@@ -10,7 +10,7 @@
 
 #import "UILabel+TCSLabelSizeCalculations.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 
 @interface TCSAlbumPlayCountDetailView ()
 
@@ -42,26 +42,26 @@
 
     @weakify(self);
     // Set label text
-    RAC(self.playCountWeekLabel.text) = [RACAble(self.playCountWeek) map:^id(NSNumber *count) {
+    RAC(self.playCountWeekLabel, text) = [RACObserve(self, playCountWeek) map:^id(NSNumber *count) {
       if (count == nil){
         return @"?";
       }else{
-        return [NSString stringWithFormat:@"%i", [count integerValue]];
+        return [NSString stringWithFormat:@"%li", (long)[count integerValue]];
       }
     }];
-    RAC(self.playCountAllTimeLabel.text) = [RACAble(self.playCountAllTime) map:^id(NSNumber *count) {
+    RAC(self.playCountAllTimeLabel, text) = [RACObserve(self, playCountAllTime) map:^id(NSNumber *count) {
       if (count == nil){
         return @"?";
       }else{
-        return [NSString stringWithFormat:@"%i", [count integerValue]];
+        return [NSString stringWithFormat:@"%li", (long)[count integerValue]];
       }
     }];
-    RACBind(self.durationWeekLabel.text) = RACBind(self.durationWeek);
+    RAC(self.durationWeekLabel, text) = RACObserve(self, durationWeek);
     self.playWeekLabel.text = @"plays";
     self.playAllTimeLabel.text = @"plays";
     self.durationAllTimeLabel.text = @"all-time";
     
-    [[RACAbleWithStart(self.labelTextColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    [[RACObserve(self, labelTextColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
       @strongify(self);
       self.playCountWeekLabel.textColor = COLORA(color, 0.85);
       self.playWeekLabel.textColor = COLORA(color, 0.7);
@@ -71,7 +71,7 @@
       self.durationAllTimeLabel.textColor = COLORA(color, 0.7);
     }];
     
-    [[RACAbleWithStart(self.labelTextShadowColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+    [[RACObserve(self, labelTextShadowColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
       @strongify(self);
       self.playCountWeekLabel.shadowColor = COLORA(color, 0.6);
       self.playWeekLabel.shadowColor = COLORA(color, 0.5);

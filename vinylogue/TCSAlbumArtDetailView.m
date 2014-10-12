@@ -10,7 +10,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import <EXTScope.h>
+#import <ReactiveCocoa/RACEXTScope.h>
 #import "UIImage+TCSImageRepresentativeColors.h"
 #import "UILabel+TCSLabelSizeCalculations.h"
 
@@ -58,11 +58,11 @@
     
     @weakify(self);
     // Set label text
-    RAC(self.artistNameLabel.text) = [RACAble(self.artistName) map:^id(NSString *name) {
+    RAC(self.artistNameLabel, text) = [RACObserve(self, artistName) map:^id(NSString *name) {
       return [name uppercaseString];
     }];
-    RAC(self.albumNameLabel.text) = RACAble(self.albumName);
-    RAC(self.releaseDateLabel.text) = [RACAble(self.albumReleaseDate) map:^id(NSDate *date) {
+    RAC(self.albumNameLabel, text) = RACObserve(self, albumName);
+    RAC(self.releaseDateLabel, text) = [RACObserve(self, albumReleaseDate) map:^id(NSDate *date) {
       if (date != nil){
         NSString *annotatedString = [NSString stringWithFormat:@"Released: %@", [formatter stringFromDate:date]];
         return annotatedString;
@@ -72,7 +72,7 @@
     }];
     
     // Set album images
-    RACSignal *albumImageURLSignal = RACAble(self.albumImageURL);
+    RACSignal *albumImageURLSignal = RACObserve(self, albumImageURL);
     [[[[albumImageURLSignal filter:^BOOL(NSString *imageURLString) {
       return ((imageURLString != nil) && (![imageURLString isEqualToString:@""]));
     }] map:^id(NSString *imageURLString) {
@@ -106,7 +106,7 @@
      }];
       
     // Set label text colors when the album derived color changes
-    [[RACAble(self.textAlbumColor)
+    [[RACObserve(self, textAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(UIColor *color) {
       @strongify(self);
@@ -115,7 +115,7 @@
       self.releaseDateLabel.textColor = COLORA(color, 0.7);
     }];
     
-    [[RACAble(self.textShadowAlbumColor)
+    [[RACObserve(self, textShadowAlbumColor)
       deliverOn:[RACScheduler mainThreadScheduler]]
      subscribeNext:^(UIColor *color) {
        @strongify(self);
@@ -124,7 +124,7 @@
       self.releaseDateLabel.shadowColor = COLORA(color, 0.7);
     }];
     
-    [[RACAbleWithStart(self.loadingAlbumImage) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSNumber *loadingNumber) {
+    [[RACObserve(self, loadingAlbumImage) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(NSNumber *loadingNumber) {
       BOOL loading = [loadingNumber boolValue];
       @strongify(self);
       if (loading){
@@ -237,7 +237,7 @@
     _albumImageView.layer.borderColor = BLACKA(0.2f).CGColor;
     _albumImageView.layer.shadowColor = BLACK.CGColor;
     _albumImageView.layer.shadowOffset = CGSizeMake(0, 1);
-    _albumImageView.layer.shadowOpacity = 0.6f;
+    _albumImageView.layer.shadowOpacity = 0.2f;
   }
   return _albumImageView;
 }

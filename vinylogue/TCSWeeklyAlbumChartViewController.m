@@ -12,7 +12,7 @@
 #import "TCSAlbumDetailViewController.h"
 
 #import <ReactiveCocoa/ReactiveCocoa.h>
-#import "EXTScope.h"
+#import <ReactiveCocoa/RACEXTScope.h>
 
 #import "TCSLastFMAPIClient.h"
 #import "WeeklyAlbumChart.h"
@@ -118,7 +118,7 @@
   
   // SlideSelectView: Top Label
   // Depends on: userName
-  [[RACAbleWithStart(self.user) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(User *user) {
+  [[RACObserve(self, user) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(User *user) {
     @strongify(self);
     if (user.userName){
       self.slideSelectView.topLabel.text = [NSString stringWithFormat:@"%@", user.userName];
@@ -133,7 +133,7 @@
   
   // SlideSelectView: Bottom Label, Left Label, Right Label
   // Depend on: displayingDate, earliestScrobbleDate, latestScrobbleDate
-  [[[RACSignal combineLatest:@[RACAbleWithStart(self.displayingDate), RACAbleWithStart(self.earliestScrobbleDate), RACAbleWithStart(self.latestScrobbleDate)] ] deliverOn:[RACScheduler mainThreadScheduler]]
+  [[[RACSignal combineLatest:@[RACObserve(self, displayingDate), RACObserve(self, earliestScrobbleDate), RACObserve(self, latestScrobbleDate)] ] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(RACTuple *dates) {
      NSDate *displayingDate = dates.first;
      NSDate *earliestScrobbleDate = dates.second;
@@ -142,7 +142,7 @@
     if (displayingDate){
       // Set the displaying date
       NSDateComponents *components = [self.calendar components:NSYearForWeekOfYearCalendarUnit|NSYearCalendarUnit|NSWeekOfYearCalendarUnit fromDate:displayingDate];
-      self.slideSelectView.bottomLabel.text = [NSString stringWithFormat:@"WEEK %i of %i", components.weekOfYear, components.yearForWeekOfYear];
+      self.slideSelectView.bottomLabel.text = [NSString stringWithFormat:@"WEEK %li of %li", (long)components.weekOfYear, (long)components.yearForWeekOfYear];
       
       // Set up date calculation shenanigans
       NSDateComponents *pastComponents = [[NSDateComponents alloc] init];
@@ -157,14 +157,14 @@
       
       // Only show the left and right labels/arrows if there's data there to jump to
       if (self.canMoveBackOneYear){
-        self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear-1];
+        self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%li", (long)components.yearForWeekOfYear-1];
         self.slideSelectView.backLeftButton.hidden = NO;
       }else{
         self.slideSelectView.backLeftLabel.text = nil;
         self.slideSelectView.backLeftButton.hidden = YES;
       }
       if (self.canMoveForwardOneYear){
-        self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%i", components.yearForWeekOfYear+1];
+        self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%li", (long)components.yearForWeekOfYear+1];
         self.slideSelectView.backRightButton.hidden = NO;
       }else{
         self.slideSelectView.backRightLabel.text = nil;
@@ -182,7 +182,7 @@
   }];
   
   // Show or hide the empty view
-  [[[RACAble(self.showingEmpty) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+  [[[RACObserve(self, showingEmpty) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingEmpty) {
     @strongify(self);
     BOOL isShowingEmpty = [showingEmpty boolValue];
@@ -197,7 +197,7 @@
   }];
   
   // Show or hide the error view
-  [[[RACAble(self.showingError) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+  [[[RACObserve(self, showingError) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingError) {
     @strongify(self);
     BOOL isShowingError = [showingError boolValue];
@@ -216,7 +216,7 @@
   }];
   
   // Show or hide the loading view
-  [[[RACAble(self.showingLoading) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
+  [[[RACObserve(self, showingLoading) distinctUntilChanged] deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(NSNumber *showingLoading) {
     @strongify(self);
     BOOL isShowingLoading = [showingLoading boolValue];
@@ -232,7 +232,7 @@
   }];
 
   // Dim the tableview when the slide select view is sliding
-  [RACAble(self.slideSelectView.scrollView.contentOffset) subscribeNext:^(id offset) {
+  [RACObserve(self.slideSelectView.scrollView, contentOffset) subscribeNext:^(id offset) {
     @strongify(self);
     CGFloat x = [offset CGPointValue].x;
     self.tableView.alpha = MAX(1 - (fabsf(x)/50.0f), 0.4f);
@@ -245,7 +245,7 @@
   @weakify(self);
 
   // Setting the username triggers loading of the lastFMClient
-  [[RACAbleWithStart(self.user) filter:^BOOL(id x) {
+  [[RACObserve(self, user) filter:^BOOL(id x) {
     return (x != nil);
   }] subscribeNext:^(User *user) {
     DLog(@"Loading client for %@...", user.userName);
@@ -254,7 +254,7 @@
   }];
     
   // Update the date being displayed based on the current date/time and how many years ago we want to go back
-  RAC(self.displayingDate) = [[[[RACSignal combineLatest:@[ RACAble(self.now), RACAble(self.displayingYearsAgo) ]]
+  RAC(self, displayingDate) = [[[[RACSignal combineLatest:@[ [RACObserve(self, now) ignore:nil], [RACObserve(self, displayingYearsAgo) skip:1]]]
                                 deliverOn:[RACScheduler scheduler]]
                                map:^(RACTuple *t){
                                  NSDate *now = [t first];
@@ -269,7 +269,7 @@
                                }];
   
   // When the lastFMClient changes (probably because the username changed), look up the weekly chart list
-  [[[RACAbleWithStart(self.lastFMClient) filter:^BOOL(id x) {
+  [[[RACObserve(self, lastFMClient) filter:^BOOL(id x) {
     return (x != nil);
   }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(id x) {
     DLog(@"Fetching date ranges for available charts...");
@@ -294,8 +294,8 @@
   }];
   
   // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
-  RAC(self.displayingWeeklyChart) =
-  [[[RACSignal combineLatest:@[ RACAble(self.weeklyCharts), RACAble(self.displayingDate)]]
+  RAC(self, displayingWeeklyChart) =
+  [[[RACSignal combineLatest:@[ [RACObserve(self, weeklyCharts) ignore:nil], [RACObserve(self, displayingDate) ignore:nil]]]
     deliverOn:[RACScheduler scheduler]]
    map:^id(RACTuple *t) {
      DLog(@"Calculating the date range for the weekly chart...");
@@ -311,7 +311,7 @@
    }];
   
   // When the weeklychart changes (being loaded the first time, or the display date changed), fetch the list of albums for that time period
-  [[[RACAble(self.displayingWeeklyChart) filter:^BOOL(id x) {
+  [[[RACObserve(self, displayingWeeklyChart) filter:^BOOL(id x) {
     return (x != nil);
   }] deliverOn:[RACScheduler scheduler]]
    subscribeNext:^(WeeklyChart *displayingWeeklyChart) {
@@ -334,7 +334,7 @@
   
   // Filter the raw album charts returned by the server based on user's play count filter
   // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[[RACSignal combineLatest:@[RACAble(self.rawAlbumChartsForWeek), RACAbleWithStart(self.playCountFilter)]
+  [[[RACSignal combineLatest:@[RACObserve(self, rawAlbumChartsForWeek), RACObserve(self, playCountFilter)]
                       reduce:^(id first, id second){
                         return first; // we only care about the raw album charts value
                       }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
@@ -348,7 +348,7 @@
                       }];
   
   // When the album charts gets changed, reload the table
-  [[RACAble(self.albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
+  [[RACObserve(self, albumChartsForWeek) deliverOn:[RACScheduler mainThreadScheduler]]
    subscribeNext:^(id x){
      @strongify(self);
      DLog(@"Refreshing table...");
@@ -358,21 +358,22 @@
    }];
   
   // Change displayed year by sliding the slideSelectView left or right
-  self.slideSelectView.pullLeftCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveBackOneYear)];
-  [self.slideSelectView.pullLeftCommand subscribeNext:^(id x) {
+  self.slideSelectView.pullLeftCommand = [[RACCommand alloc] initWithEnabled:RACObserve(self, canMoveBackOneYear) signalBlock:^RACSignal *(id _) {
     @strongify(self);
     self.displayingYearsAgo += 1;
+    return [RACSignal empty];
   }];
-  self.slideSelectView.pullRightCommand = [RACCommand commandWithCanExecuteSignal:RACAble(self.canMoveForwardOneYear)];
-  [self.slideSelectView.pullRightCommand subscribeNext:^(id x) {
+
+  self.slideSelectView.pullRightCommand = [[RACCommand alloc] initWithEnabled:RACObserve(self, canMoveForwardOneYear) signalBlock:^RACSignal *(id _) {
     @strongify(self);
     self.displayingYearsAgo -= 1;
+    return [RACSignal empty];
   }];
   
   // Monitor datasource array to determine empty view
-  [RACAble(self.albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
+  [RACObserve(self, albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
     @strongify(self);
-    if ((albumCharts == nil) || ([albumCharts count] == 0)){
+    if ((albumCharts != nil) && ([albumCharts count] == 0)){
       self.showingEmpty = YES;
     }else{
       self.showingEmpty = NO;
@@ -393,9 +394,10 @@
   CGRect r = self.view.bounds;
   CGFloat slideSelectHeight = 60.0f;
   
-  [self.slideSelectView setTop:CGRectGetMinY(r) bottom:slideSelectHeight];
+  [self.slideSelectView setTop:[self.topLayoutGuide length]];
+  self.slideSelectView.height = slideSelectHeight;
   self.slideSelectView.width = CGRectGetWidth(r);
-  [self.tableView setTop:slideSelectHeight bottom:CGRectGetMaxY(r)];
+  [self.tableView setTop:self.slideSelectView.bottom bottom:CGRectGetMaxY(r)];
   self.tableView.width = CGRectGetWidth(r);
   
   self.emptyView.frame = self.tableView.frame;
@@ -408,18 +410,21 @@
   
 }
 
+- (BOOL)prefersStatusBarHidden {
+  return [self.navigationController isNavigationBarHidden];
+}
+
 #pragma mark - Private
 
 // Hide nav bar and status bar on double tap
 - (void)doDoubleTap:(UITapGestureRecognizer *)tap{
   if ([tap state] == UIGestureRecognizerStateEnded){
-    if ([[UIApplication sharedApplication] isStatusBarHidden] == NO){
-      [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    if ([self.navigationController isNavigationBarHidden] == NO){
       [self.navigationController setNavigationBarHidden:YES animated:YES];
     }else{
-      [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
       [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
+    [self setNeedsStatusBarAppearanceUpdate];
   }
 }
 
@@ -489,7 +494,7 @@
   if (!_tableView){
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _tableView.backgroundView = [[TCSInnerShadowView alloc] initWithColor:WHITE_SUBTLE shadowColor:GRAYCOLOR(210) shadowRadius:3.0f];
+    _tableView.backgroundColor = WHITE_SUBTLE;
   }
   return _tableView;
 }
