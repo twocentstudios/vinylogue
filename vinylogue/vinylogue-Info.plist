@@ -8,24 +8,8 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>icon-7-spotlight</string>
-				<string>icon-7-settings</string>
-				<string>icon-7</string>
-				<string>Icon@2x.png</string>
-				<string>Icon.png</string>
-			</array>
-			<key>UIPrerenderedIcon</key>
-			<true/>
-		</dict>
-	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.twocentstudios.${PRODUCT_NAME:rfc1034identifier}Beta</string>
+	<string>com.twocentstudios.$(PRODUCT_NAME:rfc1034identifier)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -37,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>842</string>
+	<string>875</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -57,11 +41,11 @@
 			<key>TintColor</key>
 			<dict>
 				<key>Blue</key>
-				<real>0.92335766553878784</real>
+				<real>0.9233576655387878</real>
 				<key>Green</key>
-				<real>0.92335766553878784</real>
+				<real>0.9233576655387878</real>
 				<key>Red</key>
-				<real>0.92335766553878784</real>
+				<real>0.9233576655387878</real>
 			</dict>
 			<key>Translucent</key>
 			<false/>
