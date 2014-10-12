@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */; };
+		3407044419EA3AA6005CCC7E /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3407044319EA3AA6005CCC7E /* Launch Screen.xib */; };
 		3423A44916F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
 		3423A44A16F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
 		3423A44D16F3D081009FB1F0 /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44C16F3D081009FB1F0 /* Album.m */; };
@@ -144,6 +145,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3407044319EA3AA6005CCC7E /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		3423A44716F3CF29009FB1F0 /* TCSAlbumDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSAlbumDetailViewController.h; sourceTree = "<group>"; };
 		3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumDetailViewController.m; sourceTree = "<group>"; };
 		3423A44B16F3D081009FB1F0 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				343C0EF816D1C0270028A6FE /* main.m */,
 				343C0EFA16D1C0270028A6FE /* vinylogue-Prefix.pch */,
 				34A62DA716EBBF6E0070AE95 /* licenses.html */,
+				3407044319EA3AA6005CCC7E /* Launch Screen.xib */,
 				3462AD2D170A291200777226 /* Podfile */,
 			);
 			name = "Supporting Files";
@@ -639,6 +642,7 @@
 			files = (
 				343C0EF716D1C0270028A6FE /* InfoPlist.strings in Resources */,
 				343C0F6716D567810028A6FE /* leftArrow@2x.png in Resources */,
+				3407044419EA3AA6005CCC7E /* Launch Screen.xib in Resources */,
 				343C0F6816D567810028A6FE /* rightArrow@2x.png in Resources */,
 				344B9F7E17F6928D002AE959 /* icon-7@2x.png in Resources */,
 				343C0F6A16D5702C0028A6FE /* navBarPatch@2x.png in Resources */,
