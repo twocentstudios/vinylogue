@@ -254,7 +254,7 @@
   }];
     
   // Update the date being displayed based on the current date/time and how many years ago we want to go back
-  RAC(self, displayingDate) = [[[[RACSignal combineLatest:@[ RACObserve(self, now), RACObserve(self, displayingYearsAgo) ]]
+  RAC(self, displayingDate) = [[[[RACSignal combineLatest:@[ [RACObserve(self, now) ignore:nil], [RACObserve(self, displayingYearsAgo) skip:1]]]
                                 deliverOn:[RACScheduler scheduler]]
                                map:^(RACTuple *t){
                                  NSDate *now = [t first];
@@ -295,7 +295,7 @@
   
   // When the weekly charts array changes (probably loading for the first time), or the displaying date changes (probably looking for a previous year), set the new weeklyChart (the exact week range that last.fm expects)
   RAC(self, displayingWeeklyChart) =
-  [[[RACSignal combineLatest:@[ RACObserve(self, weeklyCharts), RACObserve(self, displayingDate)]]
+  [[[RACSignal combineLatest:@[ [RACObserve(self, weeklyCharts) ignore:nil], [RACObserve(self, displayingDate) ignore:nil]]]
     deliverOn:[RACScheduler scheduler]]
    map:^id(RACTuple *t) {
      DLog(@"Calculating the date range for the weekly chart...");
@@ -334,7 +334,7 @@
   
   // Filter the raw album charts returned by the server based on user's play count filter
   // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[[RACSignal combineLatest:@[RACObserve(self, rawAlbumChartsForWeek), RACObserve(self, playCountFilter)]
+  [[[RACSignal combineLatest:@[[RACObserve(self, rawAlbumChartsForWeek) ignore:nil], RACObserve(self, playCountFilter)]
                       reduce:^(id first, id second){
                         return first; // we only care about the raw album charts value
                       }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {

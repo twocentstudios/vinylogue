@@ -135,12 +135,16 @@
   RAC(self.playCountView, labelTextColor) = RACObserve(self.albumDetailView, textAlbumColor);
   RAC(self.playCountView, labelTextShadowColor) = RACObserve(self.albumDetailView, textShadowAlbumColor);
   
-  [[RACObserve(self.albumDetailView, textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+  [[[RACObserve(self.albumDetailView, textAlbumColor)
+    ignore:nil]
+    deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
     @strongify(self);
     self.aboutView.labelTextColor = color;
     self.pullLabel.textColor = COLORA(color, 0.6);
   }];
-  [[RACObserve(self.albumDetailView, textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
+  [[[RACObserve(self.albumDetailView, textShadowAlbumColor)
+    ignore:nil]
+    deliverOn:[RACScheduler mainThreadScheduler]] subscribeNext:^(UIColor *color) {
     @strongify(self);
     self.aboutView.labelTextShadowColor = color;
   }];
