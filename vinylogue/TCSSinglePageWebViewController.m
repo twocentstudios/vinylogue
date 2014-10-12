@@ -69,6 +69,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+  [super viewDidAppear:animated];
   if (self.local){
     NSString *htmlFile = [[NSBundle mainBundle] pathForResource:self.localFileName ofType:@"html" inDirectory:nil];
     NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];

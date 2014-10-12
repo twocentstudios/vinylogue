@@ -157,14 +157,14 @@
       
       // Only show the left and right labels/arrows if there's data there to jump to
       if (self.canMoveBackOneYear){
-        self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%li", components.yearForWeekOfYear-1];
+        self.slideSelectView.backLeftLabel.text = [NSString stringWithFormat:@"%li", (long)components.yearForWeekOfYear-1];
         self.slideSelectView.backLeftButton.hidden = NO;
       }else{
         self.slideSelectView.backLeftLabel.text = nil;
         self.slideSelectView.backLeftButton.hidden = YES;
       }
       if (self.canMoveForwardOneYear){
-        self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%li", components.yearForWeekOfYear+1];
+        self.slideSelectView.backRightLabel.text = [NSString stringWithFormat:@"%li", (long)components.yearForWeekOfYear+1];
         self.slideSelectView.backRightButton.hidden = NO;
       }else{
         self.slideSelectView.backRightLabel.text = nil;
