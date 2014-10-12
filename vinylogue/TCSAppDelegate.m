@@ -83,8 +83,8 @@
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
   
   // Keep track of versions in case we need to do migrations in the future
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"init_1_1_0"] == NO) {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"init_1_1_0"];
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"init_1_2_0"] == NO) {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"init_1_2_0"];
     [[NSUserDefaults standardUserDefaults] synchronize];
   }
   
