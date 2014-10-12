@@ -12,6 +12,7 @@
 
 // If the original returned object is an array, it is returned as is
 // If the original returned object is a dictionary, it is added to an array and returned
+// If the original returned object is nil, an empty array is returned
 - (NSArray*)arrayForKey:(id)key;
 
 @end

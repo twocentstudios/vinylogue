@@ -10,17 +10,17 @@
 
 @implementation NSDictionary (TCSDictionarySafety)
 
-- (NSArray*)arrayForKey:(id)key{
+- (NSArray *)arrayForKey:(id)key{
   id obj = [self objectForKey:key];
-  if ([obj isKindOfClass:[NSArray class]]){
+  if ([obj isKindOfClass:[NSArray class]]) {
     return obj;
-  }else if ([obj isKindOfClass:[NSDictionary class]]){
+  } else if ([obj isKindOfClass:[NSDictionary class]]) {
     return @[ obj ];
-  }else if (obj != nil){
+  } else if (obj != nil) {
     // Not sure if we should return nil here...
     return @[ obj ];
-  }else{
-    return nil;
+  } else {
+    return @[];
   }
 }
 

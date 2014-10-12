@@ -334,7 +334,7 @@
   
   // Filter the raw album charts returned by the server based on user's play count filter
   // Run whenever the raw albums change or the play count filter changes (from settings screen)
-  [[[RACSignal combineLatest:@[[RACObserve(self, rawAlbumChartsForWeek) ignore:nil], RACObserve(self, playCountFilter)]
+  [[[RACSignal combineLatest:@[RACObserve(self, rawAlbumChartsForWeek), RACObserve(self, playCountFilter)]
                       reduce:^(id first, id second){
                         return first; // we only care about the raw album charts value
                       }] deliverOn:[RACScheduler scheduler]] subscribeNext:^(NSArray *rawAlbumChartsForWeek) {
