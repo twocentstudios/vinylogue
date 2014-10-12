@@ -59,7 +59,7 @@
   const CGFloat w = CGRectGetWidth(r);
   CGFloat t = CGRectGetMinY(r);
   const CGFloat viewHMargin = 26.0f;
-  const CGFloat viewVMargin = 24.0f;
+  const CGFloat viewVMargin = 48.0f;
   const CGFloat widthWithMargin = w - (viewHMargin * 2);
   
   [self.headerLabel setMultipleLineSizeForWidth:widthWithMargin];
