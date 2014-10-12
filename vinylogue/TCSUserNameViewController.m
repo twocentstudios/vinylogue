@@ -73,9 +73,9 @@
   CGRect r = self.view.bounds;
   
   // Set sizes
-  self.userNameField.height = [self heightForTextField:self.userNameField];
+  [self.userNameField sizeToFit];
   self.userNameField.width = CGRectGetWidth(r);
-  self.titleLabel.size = [self sizeForLabel:self.titleLabel];
+  [self.titleLabel sizeToFit];
   
   // Set vertical position
   CGFloat d = 0;
@@ -168,14 +168,6 @@
 
 #pragma mark - view getters
 
-- (CGSize)sizeForLabel:(UILabel *)label{
-  return [label.text sizeWithFont:label.font constrainedToSize:label.superview.bounds.size lineBreakMode:NSLineBreakByWordWrapping];
-}
-
-- (CGFloat)heightForTextField:(UITextField *)textField{
-  return [@"TEST" sizeWithFont:textField.font forWidth:self.view.width lineBreakMode:NSLineBreakByTruncatingTail].height;
-}
-
 - (UILabel *)titleLabel{
   if (!_titleLabel){
     _titleLabel = [[UILabel alloc] init];
@@ -222,7 +214,7 @@
     _notLoadingSymbolLabel.textColor = GRAYCOLOR(160);
     _notLoadingSymbolLabel.textAlignment = NSTextAlignmentCenter;
     _notLoadingSymbolLabel.backgroundColor = CLEAR;
-    _notLoadingSymbolLabel.size = [_notLoadingSymbolLabel.text sizeWithFont:_notLoadingSymbolLabel.font];
+    [_notLoadingSymbolLabel sizeToFit];
     _notLoadingSymbolLabel.width += 20;
   }
   return _notLoadingSymbolLabel;
