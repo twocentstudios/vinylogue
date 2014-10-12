@@ -131,6 +131,7 @@
 		34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DA716EBBF6E0070AE95 /* licenses.html */; };
 		34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 		34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
+		34CD8AAC1814FC65005BD7EA /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34CD8AAB1814FC65005BD7EA /* Crashlytics.framework */; };
 		34D83EB317009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */; };
 		34D83EB417009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m in Sources */ = {isa = PBXBuildFile; fileRef = 34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */; };
 /* End PBXBuildFile section */
@@ -240,7 +241,7 @@
 		3454CBF116F8CFB700B74623 /* TCSAlbumAboutDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCSAlbumAboutDetailView.m; sourceTree = "<group>"; };
 		3454CBF816F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+TCSLabelSizeCalculations.h"; sourceTree = "<group>"; };
 		3454CBF916F8D25400B74623 /* UILabel+TCSLabelSizeCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+TCSLabelSizeCalculations.m"; sourceTree = "<group>"; };
-		3462AD2D170A291200777226 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; };
+		3462AD2D170A291200777226 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		3462AD3C170A304400777226 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		3462AD3E170A304D00777226 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3462AD40170A3A0E00777226 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -259,6 +260,7 @@
 		34A62DA716EBBF6E0070AE95 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = licenses.html; path = Resources/licenses.html; sourceTree = SOURCE_ROOT; };
 		34ABECCF16FA6E00007BF46A /* LastFMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMObject.h; sourceTree = "<group>"; };
 		34ABECD016FA6E01007BF46A /* LastFMObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMObject.m; sourceTree = "<group>"; };
+		34CD8AAB1814FC65005BD7EA /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Vendor/Crashlytics.framework; sourceTree = "<group>"; };
 		34D83EB117009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+TCSPushPopHeaderBars.h"; sourceTree = "<group>"; };
 		34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+TCSPushPopHeaderBars.m"; sourceTree = "<group>"; };
 		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -279,6 +281,7 @@
 				343C0F5E16D325880028A6FE /* QuartzCore.framework in Frameworks */,
 				343C0F4E16D1D51C0028A6FE /* MobileCoreServices.framework in Frameworks */,
 				343C0F4C16D1D5160028A6FE /* SystemConfiguration.framework in Frameworks */,
+				34CD8AAC1814FC65005BD7EA /* Crashlytics.framework in Frameworks */,
 				343C0EEB16D1C0270028A6FE /* UIKit.framework in Frameworks */,
 				343C0EED16D1C0270028A6FE /* Foundation.framework in Frameworks */,
 				343C0EEF16D1C0270028A6FE /* CoreGraphics.framework in Frameworks */,
@@ -325,6 +328,7 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				34CD8AAB1814FC65005BD7EA /* Crashlytics.framework */,
 				3462AD3E170A304D00777226 /* Security.framework */,
 				3462AD3C170A304400777226 /* libicucore.dylib */,
 				3462AD40170A3A0E00777226 /* CFNetwork.framework */,
@@ -715,7 +719,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Pods/Crashlytics.framework/run 8c3a9a7e14696514a381dd10494e079c73147506";
+			shellScript = "./Vendor/Crashlytics.framework/run 8c3a9a7e14696514a381dd10494e079c73147506";
 		};
 		6BFBDD49407443D5AC745FB0 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -905,8 +909,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(PODS_ROOT)\"",
+					"$(SRCROOT)",
+					"$(PODS_ROOT)",
+					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -948,13 +953,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(PODS_ROOT)\"",
+					"$(SRCROOT)",
+					"$(PODS_ROOT)",
+					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -1076,13 +1081,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2000F782F5C947DDB1A0F8C5 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Christopher Trott";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(PODS_ROOT)\"",
+					"$(SRCROOT)",
+					"$(PODS_ROOT)",
+					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";

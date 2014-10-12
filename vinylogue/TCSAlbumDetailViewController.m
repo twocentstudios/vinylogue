@@ -55,7 +55,6 @@
 - (id)initWithWeeklyAlbumChart:(WeeklyAlbumChart *)weeklyAlbumChart{
   self = [super initWithNibName:nil bundle:nil];
   if (self) {
-    self.wantsFullScreenLayout = YES;
     self.weeklyAlbumChart = weeklyAlbumChart;
     self.weeklyChart = weeklyAlbumChart.weeklyChart;
     self.album = weeklyAlbumChart.album;
@@ -95,7 +94,7 @@
 
 - (void)viewDidLoad{
   [super viewDidLoad];
-	
+	 
   @weakify(self);
   
   RACBind(self.albumDetailView.artistName) = RACBind(self.album.artist.name);

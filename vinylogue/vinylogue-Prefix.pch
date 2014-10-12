@@ -16,8 +16,8 @@
   #import <CoreData/CoreData.h>
   #import <QuartzCore/QuartzCore.h>
   #import <CoreGraphics/CoreGraphics.h>
-  #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
   #import <ViewUtils/ViewUtils.h>
+  #import <UIViewDrawRectBlock/UIView+DrawRectBlock.h>
   #import "TCSVinylogueDesign.h"
   #import "TCSVinylogueGlobals.h"
   #import "NSDictionary+TCSDictionarySafety.h"

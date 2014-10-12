@@ -67,7 +67,7 @@
   [Crashlytics startWithAPIKey:kCrashlyticsAPIKey];
 #endif
   
-//#define PONYDEBUGGER // comment this line out to skip PonyDebugger
+#define PONYDEBUGGER // comment this line out to skip PonyDebugger
 #if defined(PONYDEBUGGER) && defined(DEBUG) && TARGET_IPHONE_SIMULATOR
   PDDebugger *debugger = [PDDebugger defaultInstance];
   [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
