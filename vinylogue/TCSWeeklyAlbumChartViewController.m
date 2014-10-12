@@ -373,7 +373,7 @@
   // Monitor datasource array to determine empty view
   [RACObserve(self, albumChartsForWeek) subscribeNext:^(NSArray *albumCharts) {
     @strongify(self);
-    if ((albumCharts == nil) || ([albumCharts count] == 0)){
+    if ((albumCharts != nil) && ([albumCharts count] == 0)){
       self.showingEmpty = YES;
     }else{
       self.showingEmpty = NO;
