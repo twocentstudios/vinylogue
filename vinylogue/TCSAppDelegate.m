@@ -10,7 +10,6 @@
 
 #if defined(BETATESTING) || defined(APPSTORE)
   #import <FlurrySDK/Flurry.h>
-  #import <TestFlightSDK/TestFlight.h>
   #import <Crashlytics/Crashlytics.h>
 #endif
 
@@ -26,7 +25,6 @@
 // For Debugging
 #import <mach/mach.h>
 #import <mach/mach_host.h>
-#import <PonyDebugger/PonyDebugger.h>
 #import "TargetConditionals.h"
 
 @implementation TCSAppDelegate
@@ -56,7 +54,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
   
 #ifdef BETATESTING
-  [TestFlight takeOff:kTestFlightAPIKey];
 #elif APPSTORE
   [Flurry startSession:kFlurryAPIKey];
 #endif
@@ -65,7 +62,7 @@
   [Crashlytics startWithAPIKey:kCrashlyticsAPIKey];
 #endif
   
-#define PONYDEBUGGER // comment this line out to skip PonyDebugger
+//#define PONYDEBUGGER // comment this line out to skip PonyDebugger
 #if defined(PONYDEBUGGER) && defined(DEBUG) && TARGET_IPHONE_SIMULATOR
   PDDebugger *debugger = [PDDebugger defaultInstance];
   [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];

@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */; };
 		3407044419EA3AA6005CCC7E /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3407044319EA3AA6005CCC7E /* Launch Screen.xib */; };
 		3423A44916F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
 		3423A44A16F3CF2A009FB1F0 /* TCSAlbumDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3423A44816F3CF29009FB1F0 /* TCSAlbumDetailViewController.m */; };
@@ -123,6 +122,7 @@
 		3479A4D516D83FD20042B8AE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3479A4D416D83FD20042B8AE /* StoreKit.framework */; };
 		3479A4D716D83FDF0042B8AE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3479A4D616D83FDF0042B8AE /* MessageUI.framework */; };
 		3480C59816EE3D5A00443F08 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 3480C59716EE3D5A00443F08 /* User.m */; };
+		3488ED45204BC9E800A66DD0 /* Pods_vinylogue.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3488ED46204BC9E800A66DD0 /* Pods_vinylogue.framework */; };
 		34A62DA816EBBF6E0070AE95 /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 34A62DA716EBBF6E0070AE95 /* licenses.html */; };
 		34ABECD116FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
 		34ABECD216FA6E01007BF46A /* LastFMObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 34ABECD016FA6E01007BF46A /* LastFMObject.m */; };
@@ -246,15 +246,16 @@
 		3480C59616EE3D5A00443F08 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		3480C59716EE3D5A00443F08 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		3480C5B716EF9E5E00443F08 /* TCSVinylogueSecret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCSVinylogueSecret.h; sourceTree = "<group>"; };
+		3488ED46204BC9E800A66DD0 /* Pods_vinylogue.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_vinylogue.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		34A62DA716EBBF6E0070AE95 /* licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = licenses.html; path = Resources/licenses.html; sourceTree = SOURCE_ROOT; };
 		34ABECCF16FA6E00007BF46A /* LastFMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LastFMObject.h; sourceTree = "<group>"; };
 		34ABECD016FA6E01007BF46A /* LastFMObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LastFMObject.m; sourceTree = "<group>"; };
 		34D83EB117009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+TCSPushPopHeaderBars.h"; sourceTree = "<group>"; };
 		34D83EB217009400002D8B0C /* UINavigationController+TCSPushPopHeaderBars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+TCSPushPopHeaderBars.m"; sourceTree = "<group>"; };
-		5D6E5D96E9C2AC58CDAA72BB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		C540D7E928EF8ECAAA2F56B9 /* Pods.appstore.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.appstore.xcconfig; path = "Pods/Target Support Files/Pods/Pods.appstore.xcconfig"; sourceTree = "<group>"; };
-		CEC59F7DE3D7ED86876DBBAA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		78A2488D940844A433379723 /* Pods-vinylogue.appstore.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vinylogue.appstore.xcconfig"; path = "Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue.appstore.xcconfig"; sourceTree = "<group>"; };
+		9C4F5BADDA79D870FFC010EC /* Pods-vinylogue.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vinylogue.debug.xcconfig"; path = "Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue.debug.xcconfig"; sourceTree = "<group>"; };
+		B69DB5D259BD99707E5BE723 /* Pods-vinylogue.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vinylogue.release.xcconfig"; path = "Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue.release.xcconfig"; sourceTree = "<group>"; };
+		C4A4CA9FAF94E1DA7E92E813 /* Pods_vinylogue.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_vinylogue.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,10 +263,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3488ED45204BC9E800A66DD0 /* Pods_vinylogue.framework in Frameworks */,
 				3462AD41170A3A0E00777226 /* CFNetwork.framework in Frameworks */,
 				3462AD3F170A304D00777226 /* Security.framework in Frameworks */,
 				3462AD3D170A304400777226 /* libicucore.dylib in Frameworks */,
-				12A5FD52A4EF4225843E50E0 /* libPods.a in Frameworks */,
 				3454CBBE16F7851E00B74623 /* CoreImage.framework in Frameworks */,
 				3479A4D716D83FDF0042B8AE /* MessageUI.framework in Frameworks */,
 				3479A4D516D83FD20042B8AE /* StoreKit.framework in Frameworks */,
@@ -300,7 +301,7 @@
 				343C0F1416D1C0270028A6FE /* vinylogueTests */,
 				343C0EE916D1C0270028A6FE /* Frameworks */,
 				343C0EE816D1C0270028A6FE /* Products */,
-				9455F474A3A639154E701D22 /* Pods */,
+				81F1A4665CBAB3E5B3DBDA62 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -316,6 +317,7 @@
 		343C0EE916D1C0270028A6FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3488ED46204BC9E800A66DD0 /* Pods_vinylogue.framework */,
 				3462AD3E170A304D00777226 /* Security.framework */,
 				3462AD3C170A304400777226 /* libicucore.dylib */,
 				3462AD40170A3A0E00777226 /* CFNetwork.framework */,
@@ -330,7 +332,7 @@
 				343C0EEE16D1C0270028A6FE /* CoreGraphics.framework */,
 				343C0EF016D1C0270028A6FE /* CoreData.framework */,
 				343C0F0D16D1C0270028A6FE /* SenTestingKit.framework */,
-				D7DEBAFFCE0A4706B44FA7D9 /* libPods.a */,
+				C4A4CA9FAF94E1DA7E92E813 /* Pods_vinylogue.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -531,12 +533,12 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
-		9455F474A3A639154E701D22 /* Pods */ = {
+		81F1A4665CBAB3E5B3DBDA62 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5D6E5D96E9C2AC58CDAA72BB /* Pods.debug.xcconfig */,
-				CEC59F7DE3D7ED86876DBBAA /* Pods.release.xcconfig */,
-				C540D7E928EF8ECAAA2F56B9 /* Pods.appstore.xcconfig */,
+				9C4F5BADDA79D870FFC010EC /* Pods-vinylogue.debug.xcconfig */,
+				B69DB5D259BD99707E5BE723 /* Pods-vinylogue.release.xcconfig */,
+				78A2488D940844A433379723 /* Pods-vinylogue.appstore.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -548,10 +550,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 343C0F1F16D1C0270028A6FE /* Build configuration list for PBXNativeTarget "vinylogue" */;
 			buildPhases = (
+				BD74840A49E99D1A21EFCD84 /* [CP] Check Pods Manifest.lock */,
 				343C0EE316D1C0270028A6FE /* Sources */,
 				343C0EE416D1C0270028A6FE /* Frameworks */,
 				343C0EE516D1C0270028A6FE /* Resources */,
-				6BFBDD49407443D5AC745FB0 /* Copy Pods Resources */,
+				82799031712A2104DC098099 /* [CP] Embed Pods Frameworks */,
+				32FB82A45C7A0F81CDF9267F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -663,6 +667,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		32FB82A45C7A0F81CDF9267F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		343C0F0A16D1C0270028A6FE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -689,19 +708,49 @@
 			shellPath = /bin/sh;
 			shellScript = "PATH=${PATH}:/usr/local/bin\ncd ~/Dropbox/Code/vinylogue/vinylogue\nmogenerator -m vinylogue.xcdatamodeld/vinylogue.xcdatamodel --template-var arc=true";
 		};
-		6BFBDD49407443D5AC745FB0 /* Copy Pods Resources */ = {
+		82799031712A2104DC098099 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/SDURLCache/SDURLCache.framework",
+				"${BUILT_PRODUCTS_DIR}/UIViewDrawRectBlock/UIViewDrawRectBlock.framework",
+				"${BUILT_PRODUCTS_DIR}/ViewUtils/ViewUtils.framework",
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactiveCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDURLCache.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIViewDrawRectBlock.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ViewUtils.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-vinylogue/Pods-vinylogue-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD74840A49E99D1A21EFCD84 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-vinylogue-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -834,7 +883,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -860,7 +909,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
@@ -872,7 +921,7 @@
 		};
 		343C0F2016D1C0270028A6FE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D6E5D96E9C2AC58CDAA72BB /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 9C4F5BADDA79D870FFC010EC /* Pods-vinylogue.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -882,7 +931,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PODS_ROOT)",
-					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -892,11 +940,8 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(PODS_ROOT)/TestFlightSDK\"",
-					"$(inherited)",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-framework",
@@ -910,12 +955,10 @@
 					"-framework",
 					SystemConfiguration,
 					"$(inherited)",
-					"-force_load",
-					"$(TARGET_BUILD_DIR)/libPods.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts\" $(inherited)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -923,7 +966,7 @@
 		};
 		343C0F2116D1C0270028A6FE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CEC59F7DE3D7ED86876DBBAA /* Pods.release.xcconfig */;
+			baseConfigurationReference = B69DB5D259BD99707E5BE723 /* Pods-vinylogue.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -933,7 +976,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PODS_ROOT)",
-					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -944,11 +986,8 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(PODS_ROOT)/TestFlightSDK\"",
-					"$(inherited)",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-framework",
@@ -966,7 +1005,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts\" $(inherited)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1041,7 +1080,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BCC63C0F-A894-41F3-ADB8-6290601BD481";
@@ -1053,7 +1092,7 @@
 		};
 		34A62DAA16EBC4B90070AE95 /* AppStore */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C540D7E928EF8ECAAA2F56B9 /* Pods.appstore.xcconfig */;
+			baseConfigurationReference = 78A2488D940844A433379723 /* Pods-vinylogue.appstore.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1063,7 +1102,6 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PODS_ROOT)",
-					/Users/ctrott/Dropbox/Code/vinylogue/Vendor,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "vinylogue/vinylogue-Prefix.pch";
@@ -1074,11 +1112,8 @@
 				);
 				INFOPLIST_FILE = "vinylogue/vinylogue-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(PODS_ROOT)/TestFlightSDK\"",
-					"$(inherited)",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-framework",
@@ -1096,7 +1131,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "df7bb9eb-f7ca-4c85-aa4f-6672452c7373";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "df7bb9eb-f7ca-4c85-aa4f-6672452c7373";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts\" $(inherited)";
 				WRAPPER_EXTENSION = app;
 			};
