@@ -1,45 +1,30 @@
 PODS:
   - AFNetworking (1.3.3)
-  - CrashlyticsFramework (2.2.4)
-  - FlurrySDK (5.4.0):
-    - FlurrySDK/FlurrySDK
-  - FlurrySDK/FlurrySDK (5.4.0)
-  - PonyDebugger (0.3.0):
-    - SocketRocket
   - ReactiveCocoa (2.3.1):
-    - ReactiveCocoa/UI
+    - ReactiveCocoa/UI (= 2.3.1)
   - ReactiveCocoa/Core (2.3.1):
     - ReactiveCocoa/no-arc
   - ReactiveCocoa/no-arc (2.3.1)
   - ReactiveCocoa/UI (2.3.1):
     - ReactiveCocoa/Core
   - SDURLCache (1.3)
-  - SocketRocket (0.3.1-beta2)
-  - TestFlightSDK (3.0.2)
   - UIViewDrawRectBlock (0.0.1)
   - ViewUtils (1.1.2)
 
 DEPENDENCIES:
   - AFNetworking (= 1.3.3)
-  - CrashlyticsFramework (= 2.2.4)
-  - FlurrySDK (= 5.4.0)
-  - PonyDebugger
   - ReactiveCocoa (= 2.3.1)
   - SDURLCache (= 1.3.0)
-  - TestFlightSDK (= 3.0.2)
   - UIViewDrawRectBlock (= 0.0.1)
   - ViewUtils (= 1.1.2)
 
 SPEC CHECKSUMS:
-  AFNetworking: 5f5b2a731d6fc2082b8abc63d40fcaed5482c42f
-  CrashlyticsFramework: 0c28a2c07a51b7691e6668b83824b0b0be77f307
-  FlurrySDK: bed9e5598353f867508d164795a451e3ada92cb6
-  PonyDebugger: e1067eb7b40a456448e042f5033b85b6afe15508
-  ReactiveCocoa: dca75777b9d18990c8714a3a6f2149f29b4d1462
-  SDURLCache: 814ea358784cb2f99bc7eb0dc5e88862bd0de937
-  SocketRocket: 79a68ae186063c65e1fe6f638b1ae2927aa5f304
-  TestFlightSDK: 0c24c533748d0d84bfe7a3cb6036fa79124d84ee
-  UIViewDrawRectBlock: 8442d46b06450bde42ae4bb0d318e0456c7f276d
-  ViewUtils: 11aaceb3b215b3d051c2f00ae143133a71095365
+  AFNetworking: 127629aef6e631d57291c25154defc678c8a7337
+  ReactiveCocoa: 3fe9b233ca6db810e86681b5749488564c1179a1
+  SDURLCache: 8b271cce7263032f6345b6dc838dea23c98844ac
+  UIViewDrawRectBlock: b173f4817ab9a47e1e8a26d7b150613318c2f3e9
+  ViewUtils: 68e42c708a4b3912e39691cef5080282dc5013fb
 
-COCOAPODS: 0.34.2
+PODFILE CHECKSUM: 351dd01a8ae92be26947a4608619bfca99b178b7
+
+COCOAPODS: 1.4.0

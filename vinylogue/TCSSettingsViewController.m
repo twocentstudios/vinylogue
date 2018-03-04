@@ -202,7 +202,7 @@
 }
 
 - (void)doLastFMWebsite{
-  NSString *urlString = @"http://last.fm";
+  NSString *urlString = @"https://last.fm";
   if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
   }

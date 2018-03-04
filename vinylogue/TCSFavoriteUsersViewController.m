@@ -293,7 +293,11 @@
    subscribeNext:^(NSArray *friends) {
      @strongify(self);
      [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
-   }completed:^{
+   }error:^(NSError *error) {
+       @strongify(self);
+       self.importingFriends = NO;
+   }
+   completed:^{
      @strongify(self);
      self.importingFriends = NO;
    }];
