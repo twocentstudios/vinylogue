@@ -14,7 +14,7 @@ Vinylogue is a simple Last.fm client for iOS that shows you and your friends' ch
 
 1. Clone the repo. `$ git clone git://github.com/twocentstudios/vinylogue.git`
 2. Install Cocoapods. `$ bundle install`
-3. Install the pods. `$ pod install`
+3. Install the pods. `$ bundle exec pod install`
 4. Open `vinylogue.xcworkspace`.
 5. Create a new header file called `TCSVinylogueSecret.h`
 6. Copy and paste this code into `TCSVinylogueSecret.h`.
