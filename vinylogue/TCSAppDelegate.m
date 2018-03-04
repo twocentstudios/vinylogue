@@ -8,11 +8,6 @@
 
 #import "TCSAppDelegate.h"
 
-#if defined(BETATESTING) || defined(APPSTORE)
-  #import <FlurrySDK/Flurry.h>
-  #import <Crashlytics/Crashlytics.h>
-#endif
-
 #import "TCSVinylogueSecret.h"
 #import <AFNetworking/AFNetworking.h>
 #import <SDURLCache/SDURLCache.h>
@@ -53,29 +48,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
   
-#ifdef BETATESTING
-#elif APPSTORE
-  [Flurry startSession:kFlurryAPIKey];
-#endif
-
-#if defined(BETATESTING) || defined(APPSTORE)
-  [Crashlytics startWithAPIKey:kCrashlyticsAPIKey];
-#endif
-  
-//#define PONYDEBUGGER // comment this line out to skip PonyDebugger
-#if defined(PONYDEBUGGER) && defined(DEBUG) && TARGET_IPHONE_SIMULATOR
-  PDDebugger *debugger = [PDDebugger defaultInstance];
-  [debugger connectToURL:[NSURL URLWithString:@"ws://localhost:9000/device"]];
-  [debugger enableNetworkTrafficDebugging];
-  [debugger forwardAllNetworkTraffic];
-  [debugger enableViewHierarchyDebugging];
-  NSURLCache *URLCache = [[NSURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024 diskCapacity:50 * 1024 * 1024 diskPath:[SDURLCache defaultCachePath]];
-  [NSURLCache setSharedURLCache:URLCache];
-#else
-  // PonyDebugger does not work with SDURLCache
   SDURLCache *URLCache = [[SDURLCache alloc] initWithMemoryCapacity:20 * 1024 * 1024 diskCapacity:50 * 1024 * 1024 diskPath:[SDURLCache defaultCachePath]];
   [SDURLCache setSharedURLCache:URLCache];
-#endif
   
   [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
   

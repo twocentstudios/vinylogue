@@ -10,8 +10,6 @@ def shared_pods
     pod 'ViewUtils', '1.1.2'
     pod 'UIViewDrawRectBlock', '0.0.1'
     pod 'SDURLCache', '1.3.0'
-    pod 'FlurrySDK', '5.4.0'
-    pod 'CrashlyticsFramework', '2.2.4'
 end
 
 target 'vinylogue' do

@@ -1,9 +1,5 @@
 PODS:
   - AFNetworking (1.3.3)
-  - CrashlyticsFramework (2.2.4)
-  - FlurrySDK (5.4.0):
-    - FlurrySDK/FlurrySDK (= 5.4.0)
-  - FlurrySDK/FlurrySDK (5.4.0)
   - ReactiveCocoa (2.3.1):
     - ReactiveCocoa/UI (= 2.3.1)
   - ReactiveCocoa/Core (2.3.1):
@@ -17,8 +13,6 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (= 1.3.3)
-  - CrashlyticsFramework (= 2.2.4)
-  - FlurrySDK (= 5.4.0)
   - ReactiveCocoa (= 2.3.1)
   - SDURLCache (= 1.3.0)
   - UIViewDrawRectBlock (= 0.0.1)
@@ -26,13 +20,11 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 127629aef6e631d57291c25154defc678c8a7337
-  CrashlyticsFramework: c6a95c773a968e5de6c8965a8af1141c805820aa
-  FlurrySDK: b58d7061711e13977e3c43b29acfefd80f65f4cd
   ReactiveCocoa: 3fe9b233ca6db810e86681b5749488564c1179a1
   SDURLCache: 8b271cce7263032f6345b6dc838dea23c98844ac
   UIViewDrawRectBlock: b173f4817ab9a47e1e8a26d7b150613318c2f3e9
   ViewUtils: 68e42c708a4b3912e39691cef5080282dc5013fb
 
-PODFILE CHECKSUM: 5bd8c1a6e91e6300cd6e1ab94bd10dead5fbbcc5
+PODFILE CHECKSUM: 351dd01a8ae92be26947a4608619bfca99b178b7
 
 COCOAPODS: 1.4.0
