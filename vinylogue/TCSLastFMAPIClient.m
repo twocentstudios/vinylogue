@@ -16,7 +16,7 @@
 #import "Album.h"
 #import "Artist.h"
 
-static NSString * const kTCSLastFMAPIBaseURLString = @"http://ws.audioscrobbler.com/2.0/";
+static NSString * const kTCSLastFMAPIBaseURLString = @"https://ws.audioscrobbler.com/2.0/";
 
 @interface TCSLastFMAPIClient ()
 
