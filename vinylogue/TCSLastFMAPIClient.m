@@ -194,10 +194,10 @@ static NSString * const kTCSLastFMAPIBaseURLString = @"https://ws.audioscrobbler
     return [RACSignal error:nil];
   }
   
-  // Limit 0 returns all (I think)
+  // Limit is 1-500, so we'll use 500
   NSMutableDictionary *params = [@{ @"method": @"user.getfriends",
                                  @"user": user.userName,
-                                 @"limit": @"0",
+                                 @"limit": @"500",
                                  @"api_key": kTCSLastFMAPIKeyString,
                                  @"format": @"json" } mutableCopy];
   
