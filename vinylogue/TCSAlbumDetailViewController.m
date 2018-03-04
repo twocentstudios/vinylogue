@@ -132,8 +132,8 @@
                      completion:NULL];
   }];
   
-  RAC(self.playCountView, labelTextColor) = RACObserve(self.albumDetailView, textAlbumColor);
-  RAC(self.playCountView, labelTextShadowColor) = RACObserve(self.albumDetailView, textShadowAlbumColor);
+  RAC(self.playCountView, labelTextColor) = [RACObserve(self.albumDetailView, textAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]];
+  RAC(self.playCountView, labelTextShadowColor) = [RACObserve(self.albumDetailView, textShadowAlbumColor) deliverOn:[RACScheduler mainThreadScheduler]];
   
   [[[RACObserve(self.albumDetailView, textAlbumColor)
     ignore:nil]
