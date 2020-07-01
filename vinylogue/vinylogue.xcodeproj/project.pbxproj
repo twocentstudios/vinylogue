@@ -16,6 +16,8 @@
 		09F1736C24ACDA79000E2B6B /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1736B24ACDA79000E2B6B /* Style.swift */; };
 		09F1736E24ACDAA8000E2B6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1736D24ACDAA8000E2B6B /* LoginView.swift */; };
 		09F1737024ACDB75000E2B6B /* FavoriteUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1736F24ACDB75000E2B6B /* FavoriteUsersView.swift */; };
+		09F1737224ACEAF4000E2B6B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1737124ACEAF4000E2B6B /* SettingsView.swift */; };
+		09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1737324ACF176000E2B6B /* SimpleCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		09F1736B24ACDA79000E2B6B /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		09F1736D24ACDAA8000E2B6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		09F1736F24ACDB75000E2B6B /* FavoriteUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteUsersView.swift; sourceTree = "<group>"; };
+		09F1737124ACEAF4000E2B6B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		09F1737324ACF176000E2B6B /* SimpleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 				09F1734224ACC72A000E2B6B /* RootView.swift */,
 				09F1736D24ACDAA8000E2B6B /* LoginView.swift */,
 				09F1736F24ACDB75000E2B6B /* FavoriteUsersView.swift */,
+				09F1737124ACEAF4000E2B6B /* SettingsView.swift */,
+				09F1737324ACF176000E2B6B /* SimpleCell.swift */,
 				09F1736B24ACDA79000E2B6B /* Style.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
@@ -269,8 +275,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				09F1737024ACDB75000E2B6B /* FavoriteUsersView.swift in Sources */,
+				09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */,
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,
+				09F1737224ACEAF4000E2B6B /* SettingsView.swift in Sources */,
 				09F1736E24ACDAA8000E2B6B /* LoginView.swift in Sources */,
 				09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */,
 			);

@@ -7,28 +7,11 @@ struct FavoriteUsersView: View {
     var body: some View {
         ScrollView {
             LazyVStack {
-                Header(label: "me")
-                Button {} label: {
-                    HStack {
-                        Text(me)
-                            .font(.avnRegular(34))
-                            .padding(.leading, 20)
-                        Spacer()
-                    }
-                }
-                .buttonStyle(CellButtonStyle())
-                Header(label: "friends")
+                SimpleHeader("me")
+                LargeSimpleCell(me)
+                SimpleHeader("friends")
                 ForEach(friends, id: \.self) { friend in
-                    Button {} label: {
-                        HStack {
-                            Text(friend)
-                                .font(.avnRegular(24))
-                                .padding(.leading, 20)
-                                .padding(.vertical, 6)
-                            Spacer()
-                        }
-                    }
-                    .buttonStyle(CellButtonStyle())
+                    SimpleCell(friend)
                 }
             }
         }
@@ -56,29 +39,6 @@ struct FavoriteUsersView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             FavoriteUsersView(me: me, friends: friends)
-        }
-    }
-}
-
-private struct CellButtonStyle: ButtonStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        configuration.label
-            .foregroundColor(!configuration.isPressed ? Color.blueDark : Color.whiteSubtle)
-            .background(!configuration.isPressed ? Color.whiteSubtle : Color.blueDark)
-    }
-}
-
-private struct Header: View {
-    let label: String
-
-    var body: some View {
-        HStack {
-            Text(label)
-                .font(.avnUltraLight(17))
-                .foregroundColor(.blueDark)
-                .padding(.leading, 20)
-                .padding(.top, 20)
-            Spacer()
         }
     }
 }
