@@ -11,14 +11,14 @@ private struct CustomTextFieldStyle: TextFieldStyle {
 
 struct LoginView: View {
     @Binding var userName: String
-    @State var isLoading: Bool = true
+    @State var isLoading: Bool = false
 
     var body: some View {
         VStack(spacing: 12) {
             Text("welcome to vinylogue")
                 .font(.avnUltraLight(30))
                 .foregroundColor(.blueDark)
-                .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/, 30)
+                .padding(.all, 30)
             HStack {
                 if !isLoading {
                     Text("♫")
@@ -26,10 +26,11 @@ struct LoginView: View {
                         .foregroundColor(.gray(160))
                 } else {
                     ProgressView()
-                        .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+                        .padding(.all, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                 }
                 TextField("username", text: $userName)
                     .textFieldStyle(CustomTextFieldStyle())
+                    .disabled(isLoading)
             }
             .padding(.horizontal, 10)
             .background(Color.blacka(0.05))
@@ -37,7 +38,7 @@ struct LoginView: View {
                 .font(.avnUltraLight(17))
                 .foregroundColor(.gray(70))
                 .multilineTextAlignment(.center)
-            Button { } label: {
+            Button {} label: {
                 Text("start")
                     .font(.avnDemiBold(30))
                     .foregroundColor(!isLoading ? .blueDark : .gray(160))
@@ -45,5 +46,11 @@ struct LoginView: View {
             .disabled(isLoading)
             Spacer()
         }
+    }
+}
+
+struct LoginView_Previews: PreviewProvider {
+    static var previews: some View {
+        LoginView(userName: .constant("name"))
     }
 }
