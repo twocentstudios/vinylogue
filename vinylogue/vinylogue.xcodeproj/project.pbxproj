@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
-		09F1734324ACC72A000E2B6B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* ContentView.swift */; };
+		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
 		09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734424ACC72B000E2B6B /* Assets.xcassets */; };
 		09F1734824ACC72B000E2B6B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734724ACC72B000E2B6B /* Preview Assets.xcassets */; };
 		09F1735324ACC72B000E2B6B /* vinylogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1735224ACC72B000E2B6B /* vinylogueTests.swift */; };
@@ -35,7 +35,7 @@
 /* Begin PBXFileReference section */
 		09F1733D24ACC72A000E2B6B /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09F1734024ACC72A000E2B6B /* vinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vinylogueApp.swift; sourceTree = "<group>"; };
-		09F1734224ACC72A000E2B6B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		09F1734224ACC72A000E2B6B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		09F1734424ACC72B000E2B6B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		09F1734724ACC72B000E2B6B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		09F1734924ACC72B000E2B6B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				09F1734024ACC72A000E2B6B /* vinylogueApp.swift */,
-				09F1734224ACC72A000E2B6B /* ContentView.swift */,
+				09F1734224ACC72A000E2B6B /* RootView.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
 				09F1734624ACC72B000E2B6B /* Preview Content */,
@@ -259,7 +259,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09F1734324ACC72A000E2B6B /* ContentView.swift in Sources */,
+				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
