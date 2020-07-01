@@ -32,6 +32,20 @@ struct FavoriteUsersView: View {
                 }
             }
         }
+        .navigationTitle("scrobblers")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(
+            leading: Button {
+                print("settings")
+            } label: {
+                Image(systemName: "gear")
+            },
+            trailing: Button {
+                print("edit")
+            } label: {
+                Text("Edit")
+            }
+        )
         .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
 }
@@ -40,7 +54,9 @@ struct FavoriteUsersView_Previews: PreviewProvider {
     static let me = "ybsc"
     static let friends = ["BobbyStompy", "slippydrums", "esheikh"]
     static var previews: some View {
-        FavoriteUsersView(me: me, friends: friends)
+        NavigationView {
+            FavoriteUsersView(me: me, friends: friends)
+        }
     }
 }
 
