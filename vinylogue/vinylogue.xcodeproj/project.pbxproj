@@ -13,6 +13,8 @@
 		09F1734824ACC72B000E2B6B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734724ACC72B000E2B6B /* Preview Assets.xcassets */; };
 		09F1735324ACC72B000E2B6B /* vinylogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1735224ACC72B000E2B6B /* vinylogueTests.swift */; };
 		09F1735E24ACC72B000E2B6B /* vinylogueUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1735D24ACC72B000E2B6B /* vinylogueUITests.swift */; };
+		09F1736C24ACDA79000E2B6B /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1736B24ACDA79000E2B6B /* Style.swift */; };
+		09F1736E24ACDAA8000E2B6B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1736D24ACDAA8000E2B6B /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		09F1735924ACC72B000E2B6B /* vinylogueUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vinylogueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		09F1735D24ACC72B000E2B6B /* vinylogueUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vinylogueUITests.swift; sourceTree = "<group>"; };
 		09F1735F24ACC72B000E2B6B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		09F1736B24ACDA79000E2B6B /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
+		09F1736D24ACDAA8000E2B6B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,8 @@
 			children = (
 				09F1734024ACC72A000E2B6B /* vinylogueApp.swift */,
 				09F1734224ACC72A000E2B6B /* RootView.swift */,
+				09F1736D24ACDAA8000E2B6B /* LoginView.swift */,
+				09F1736B24ACDA79000E2B6B /* Style.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
 				09F1734624ACC72B000E2B6B /* Preview Content */,
@@ -260,6 +266,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
+				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,
+				09F1736E24ACDAA8000E2B6B /* LoginView.swift in Sources */,
 				09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
