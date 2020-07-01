@@ -5,31 +5,32 @@ struct FavoriteUsersView: View {
     @State var friends: [String]
 
     var body: some View {
-        VStack {
-            Header(label: "me")
-            Button {} label: {
-                HStack {
-                    Text(me)
-                        .font(.avnRegular(34))
-                        .padding(.leading, 20)
-                    Spacer()
-                }
-            }
-            .buttonStyle(CellButtonStyle())
-            Header(label: "friends")
-            ForEach(friends, id: \.self) { friend in
+        ScrollView {
+            LazyVStack {
+                Header(label: "me")
                 Button {} label: {
                     HStack {
-                        Text(friend)
-                            .font(.avnRegular(24))
+                        Text(me)
+                            .font(.avnRegular(34))
                             .padding(.leading, 20)
-                            .padding(.vertical, 6)
                         Spacer()
                     }
                 }
                 .buttonStyle(CellButtonStyle())
+                Header(label: "friends")
+                ForEach(friends, id: \.self) { friend in
+                    Button {} label: {
+                        HStack {
+                            Text(friend)
+                                .font(.avnRegular(24))
+                                .padding(.leading, 20)
+                                .padding(.vertical, 6)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(CellButtonStyle())
+                }
             }
-            Spacer()
         }
         .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
