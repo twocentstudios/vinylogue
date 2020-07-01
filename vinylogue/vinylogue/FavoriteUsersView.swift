@@ -35,7 +35,7 @@ struct FavoriteUsersView: View {
     }
 }
 
-struct FavoritesView_Previews: PreviewProvider {
+struct FavoriteUsersView_Previews: PreviewProvider {
     static let me = "ybsc"
     static let friends = ["BobbyStompy", "slippydrums", "esheikh"]
     static var previews: some View {
