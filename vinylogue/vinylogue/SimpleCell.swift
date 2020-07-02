@@ -72,3 +72,25 @@ private struct SimpleCellButtonStyle: ButtonStyle {
             .background(!configuration.isPressed ? Color.whiteSubtle : Color.blueDark)
     }
 }
+
+struct SimpleHeader_Previews: PreviewProvider {
+    static var previews: some View {
+        SimpleHeader("me")
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct SimpleCell_Previews: PreviewProvider {
+    static var previews: some View {
+        SimpleCell("ybsc")
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct LargeSimpleCell_Previews: PreviewProvider {
+    static var previews: some View {
+        LargeSimpleCell("ybsc")
+            .previewLayout(.sizeThatFits)
+    }
+}
+
