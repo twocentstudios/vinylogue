@@ -7,12 +7,14 @@ struct FavoriteUsersView: View {
     var body: some View {
         ScrollView {
             // TODO: consider List for editing/reordering
-            LazyVStack {
-                SimpleHeader("me")
-                LargeSimpleCell(me)
-                SimpleHeader("friends")
-                ForEach(friends, id: \.self) { friend in
-                    SimpleCell(friend)
+            LazyVStack(pinnedViews: [.sectionHeaders]) {
+                Section(header: SimpleHeader("me")) {
+                    LargeSimpleCell(me)
+                }
+                Section(header: SimpleHeader("friends")) {
+                    ForEach(friends, id: \.self) { friend in
+                        SimpleCell(friend)
+                    }
                 }
             }
         }

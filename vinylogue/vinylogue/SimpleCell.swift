@@ -16,6 +16,7 @@ struct SimpleHeader: View {
                 .padding(.top, 20)
             Spacer()
         }
+        .background(Color.whiteSubtle)
     }
 }
 
