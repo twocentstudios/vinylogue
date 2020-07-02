@@ -60,9 +60,17 @@ struct WeeklyAlbumChartCell: View {
 
     let model: Model
 
+    private var imageView: Image {
+        if let image = model.image {
+            return Image(uiImage: image)
+        } else {
+            return Image("recordPlaceholderThumb")
+        }
+    }
+
     var body: some View {
         HStack(spacing: 9) {
-            Image(uiImage: model.image ?? UIImage())
+            imageView
                 .resizable()
                 .frame(width: 80, height: 80, alignment: .center)
                 .overlay(
@@ -118,6 +126,7 @@ struct WeeklyAlbumChartCell: View {
                     .lineLimit(1)
                     .padding(.top, -5)
             }
+            .padding(.trailing, 2)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)

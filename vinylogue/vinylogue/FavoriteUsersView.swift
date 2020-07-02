@@ -22,7 +22,8 @@ struct FavoriteUsersView: View {
             leading: Button {
                 print("settings")
             } label: {
-                Image(systemName: "gear")
+                Image("settings")
+                    .renderingMode(.original)
             },
             trailing: Button {
                 print("edit")
