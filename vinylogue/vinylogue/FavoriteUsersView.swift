@@ -6,6 +6,7 @@ struct FavoriteUsersView: View {
 
     var body: some View {
         ScrollView {
+            // TODO: consider List for editing/reordering
             LazyVStack {
                 SimpleHeader("me")
                 LargeSimpleCell(me)
