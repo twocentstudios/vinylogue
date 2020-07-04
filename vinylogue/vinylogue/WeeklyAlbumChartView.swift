@@ -30,22 +30,27 @@ struct WeeklyAlbumChartView: View {
                         // TODO: real ids are required
                         ForEach(model.sections, id: \.label) { section in
                             Section(header: WeeklyAlbumChartHeaderView(label: section.label)) {
-                                ForEach(section.albums, id: \.album) { album in
-                                    VStack {
-                                        NavigationLink(
-                                            destination: Text("Destination"),
-                                            isActive: Binding(get: {
-                                                self.selectedItem == album.album
-                                            }, set: { value in
-                                                self.selectedItem = value ? album.album : nil
+                                if !section.albums.isEmpty {
+                                    ForEach(section.albums, id: \.album) { album in
+                                        VStack {
+                                            NavigationLink(
+                                                destination: Text("Destination"),
+                                                isActive: Binding(get: {
+                                                    self.selectedItem == album.album
+                                                }, set: { value in
+                                                    self.selectedItem = value ? album.album : nil
                                         })
-                                        ) {
-                                            EmptyView()
-                                        }
-                                        WeeklyAlbumChartCell(album) {
-                                            self.selectedItem = album.album
+                                            ) {
+                                                EmptyView()
+                                            }
+                                            WeeklyAlbumChartCell(album) {
+                                                self.selectedItem = album.album
+                                            }
                                         }
                                     }
+
+                                } else {
+                                    WeeklyAlbumChartEmptyCell()
                                 }
                             }
                         }
@@ -69,9 +74,11 @@ struct WeeklyAlbumChartView: View {
 }
 
 struct WeeklyAlbumChartView_Previews: PreviewProvider {
+    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
+    static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
     static var previews: some View {
         NavigationView {
-            WeeklyAlbumChartView(model: .init(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false))
+            WeeklyAlbumChartView(model: mock)
         }
     }
 }
@@ -127,9 +134,7 @@ struct WeeklyAlbumChartCell: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 0) {
-                Rectangle()
-                    .foregroundColor(.whitea(0.8))
-                    .frame(height: 1)
+                TopBorderView()
                 HStack(spacing: 9) {
                     imageView
                         .resizable()
@@ -191,9 +196,7 @@ struct WeeklyAlbumChartCell: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                Rectangle()
-                    .foregroundColor(.blacka(0.1))
-                    .frame(height: 1)
+                BottomBorderView()
             }
             .background(Color.whiteSubtle)
         }
@@ -204,6 +207,30 @@ struct WeeklyAlbumChartCell: View {
 struct WeeklyAlbumChartCell_Previews: PreviewProvider {
     static var previews: some View {
         WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct WeeklyAlbumChartEmptyCell: View {
+    var body: some View {
+        VStack {
+            TopBorderView()
+            HStack {
+                Spacer()
+                Text("no charts this week")
+                    .font(.avnUltraLight(18))
+                    .foregroundColor(.blueDark)
+                Spacer()
+            }
+            .padding(.vertical, 20)
+            BottomBorderView()
+        }
+    }
+}
+
+struct WeeklyAlbumChartEmptyCell_Previews: PreviewProvider {
+    static var previews: some View {
+        WeeklyAlbumChartEmptyCell()
             .previewLayout(.sizeThatFits)
     }
 }
@@ -277,4 +304,21 @@ let mockAlbums: [WeeklyAlbumChartCell.Model] =
 let mockSections: [WeeklyAlbumChartView.Model.Section] =
     [
         .init(label: "2019", albums: mockAlbums),
+        .init(label: "2018", albums: []),
     ]
+
+private struct TopBorderView: View {
+    var body: some View {
+        Rectangle()
+            .foregroundColor(.whitea(0.8))
+            .frame(height: 1)
+    }
+}
+
+private struct BottomBorderView: View {
+    var body: some View {
+        Rectangle()
+            .foregroundColor(.blacka(0.1))
+            .frame(height: 1)
+    }
+}
