@@ -8,6 +8,7 @@ struct WeeklyAlbumChartView: View {
         }
 
         let sections: [Section]
+        let error: ErrorRetryView.Model?
     }
 
     let model: Model
@@ -15,25 +16,35 @@ struct WeeklyAlbumChartView: View {
     @State var selectedItem: String?
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                // TODO: real ids are required
-                ForEach(model.sections, id: \.label) { section in
-                    Section(header: WeeklyAlbumChartHeaderView(label: section.label)) {
-                        ForEach(section.albums, id: \.album) { album in
-                            VStack {
-                                NavigationLink(
-                                    destination: Text("Destination"),
-                                    isActive: Binding(get: {
-                                        self.selectedItem == album.album
-                                    }, set: { value in
-                                        self.selectedItem = value ? album.album : nil
-                                    })
-                                ) {
-                                    EmptyView()
-                                }
-                                WeeklyAlbumChartCell(album) {
-                                    self.selectedItem = album.album
+        ZStack {
+            if let error = model.error {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .overlay(
+                        ErrorRetryView(model: error)
+                    )
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                        // TODO: real ids are required
+                        ForEach(model.sections, id: \.label) { section in
+                            Section(header: WeeklyAlbumChartHeaderView(label: section.label)) {
+                                ForEach(section.albums, id: \.album) { album in
+                                    VStack {
+                                        NavigationLink(
+                                            destination: Text("Destination"),
+                                            isActive: Binding(get: {
+                                                self.selectedItem == album.album
+                                            }, set: { value in
+                                                self.selectedItem = value ? album.album : nil
+                                        })
+                                        ) {
+                                            EmptyView()
+                                        }
+                                        WeeklyAlbumChartCell(album) {
+                                            self.selectedItem = album.album
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -53,7 +64,7 @@ struct WeeklyAlbumChartView: View {
 struct WeeklyAlbumChartView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            WeeklyAlbumChartView(model: .init(sections: mockSections))
+            WeeklyAlbumChartView(model: .init(sections: mockSections, error: ErrorRetryView_Previews.mock))
         }
     }
 }
@@ -191,7 +202,7 @@ struct WeeklyAlbumChartCell_Previews: PreviewProvider {
 }
 
 struct ErrorRetryView: View {
-    struct State {
+    struct Model {
         let title: String
         let subtitle: String
         let action: (() -> ())?
@@ -203,7 +214,7 @@ struct ErrorRetryView: View {
         }
     }
 
-    let state: State
+    let model: Model
 
     var body: some View {
         HStack {
@@ -212,18 +223,18 @@ struct ErrorRetryView: View {
                     .resizable()
                     .frame(width: 100, height: 100, alignment: .center)
                     .foregroundColor(.blueDark)
-                Text(state.title)
+                Text(model.title)
                     .font(.avnMedium(27))
                     .foregroundColor(.blueDark)
                     .shadow(color: .white, radius: 1, x: 0, y: -0.5)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 6)
-                Text(state.subtitle)
+                Text(model.subtitle)
                     .font(.avnRegular(13))
                     .foregroundColor(.blueDark)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 12)
-                if let action = state.action {
+                if let action = model.action {
                     Button(action: action) {
                         Text("try again")
                             .font(.avnMedium(18))
@@ -242,9 +253,9 @@ struct ErrorRetryView: View {
 }
 
 struct ErrorRetryView_Previews: PreviewProvider {
-    static let mock = ErrorRetryView.State(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.")
+    static let mock = ErrorRetryView.Model(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.")
     static var previews: some View {
-        ErrorRetryView(state: mock)
+        ErrorRetryView(model: mock)
             .previewLayout(.sizeThatFits)
     }
 }
