@@ -38,7 +38,19 @@ struct AlbumDetailHeaderView: View {
             }
             .padding(.vertical, 30)
             .padding(.horizontal, 26)
+            .overlay(
+                VStack {
+                    Rectangle()
+                        .foregroundColor(.blacka(0.5))
+                        .frame(height: 1)
+                    Spacer()
+                    Rectangle()
+                        .foregroundColor(.blacka(0.5))
+                        .frame(height: 1)
+                }
+            )
             .background(BackgroundImageView(uiImage: model.image))
+
         }
         .background(Color.blacka(0.05))
         .clipped()
