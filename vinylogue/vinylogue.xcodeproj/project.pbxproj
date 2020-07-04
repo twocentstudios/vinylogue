@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */; };
+		0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */; };
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
 		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
 		09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734424ACC72B000E2B6B /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
+		0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonViews.swift; sourceTree = "<group>"; };
 		09F1733D24ACC72A000E2B6B /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09F1734024ACC72A000E2B6B /* vinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vinylogueApp.swift; sourceTree = "<group>"; };
 		09F1734224ACC72A000E2B6B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */,
 				09F1737124ACEAF4000E2B6B /* SettingsView.swift */,
 				09F1737324ACF176000E2B6B /* SimpleCell.swift */,
+				0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */,
 				09F1736B24ACDA79000E2B6B /* Style.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09F1737024ACDB75000E2B6B /* FavoriteUsersView.swift in Sources */,
+				0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */,
 				09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */,
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,

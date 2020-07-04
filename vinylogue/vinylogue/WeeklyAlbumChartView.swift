@@ -123,20 +123,12 @@ struct WeeklyAlbumChartCell: View {
         self.action = action
     }
 
-    private var imageView: Image {
-        if let image = model.image {
-            return Image(uiImage: image)
-        } else {
-            return Image("recordPlaceholderThumb")
-        }
-    }
-
     var body: some View {
         Button(action: action) {
             VStack(spacing: 0) {
                 TopBorderView()
                 HStack(spacing: 9) {
-                    imageView
+                    Image(uiImage: model.image, placeholder: "recordPlaceholderThumb")
                         .resizable()
                         .frame(width: 80, height: 80, alignment: .center)
                         .overlay(

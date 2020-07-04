@@ -12,28 +12,6 @@ struct AlbumDetailHeaderView: View {
 
     let model: Model
 
-    private var imageView: Image {
-        if let image = model.image {
-            return Image(uiImage: image)
-        } else {
-            return Image("recordPlaceholder")
-        }
-    }
-
-    private var backgroundImageView: some View {
-        Group {
-            if let image = model.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .blur(radius: 14)
-                    .opacity(0.3)
-            } else {
-                EmptyView()
-            }
-        }
-    }
-
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             if model.isLoading {
@@ -42,7 +20,7 @@ struct AlbumDetailHeaderView: View {
                     .offset(CGSize(width: 0, height: -20.0))
             }
             VStack(spacing: 0) {
-                imageView
+                Image(uiImage: model.image, placeholder: "recordPlaceholder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .padding(.bottom, 14)
@@ -60,7 +38,7 @@ struct AlbumDetailHeaderView: View {
             }
             .padding(.vertical, 30)
             .padding(.horizontal, 26)
-            .background(backgroundImageView)
+            .background(BackgroundImageView(uiImage: model.image))
         }
         .background(Color.blacka(0.05))
         .clipped()
@@ -78,3 +56,22 @@ struct AlbumDetailHeaderView_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
+
+private struct BackgroundImageView: View {
+    let uiImage: UIImage?
+
+    var body: some View {
+        Group {
+            if let uiImage = uiImage {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .blur(radius: 14)
+                    .opacity(0.3)
+            } else {
+                EmptyView()
+            }
+        }
+    }
+}
+
