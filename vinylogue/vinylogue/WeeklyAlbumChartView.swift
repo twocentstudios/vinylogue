@@ -23,7 +23,7 @@ struct WeeklyAlbumChartView: View {
                     .foregroundColor(.clear)
                     .overlay(
                         VStack() {
-                            RecordLoadingImage()
+                            RecordLoadingView()
                                 .offset(x: 0, y: -20)
                             Spacer()
                         }

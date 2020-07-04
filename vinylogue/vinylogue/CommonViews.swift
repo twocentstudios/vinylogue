@@ -11,7 +11,7 @@ extension Image {
     }
 }
 
-struct RecordLoadingImage: View {
+struct RecordLoadingView: View {
     private struct Represented: UIViewRepresentable {
         func makeUIView(context: Self.Context) -> UIImageView {
             let view = UIImageView()
@@ -36,6 +36,6 @@ struct RecordLoadingImage: View {
 
 struct CommonViews_Previews: PreviewProvider {
     static var previews: some View {
-        RecordLoadingImage()
+        RecordLoadingView()
     }
 }

@@ -15,7 +15,7 @@ struct AlbumDetailHeaderView: View {
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             if model.isLoading {
-                RecordLoadingImage()
+                RecordLoadingView()
                     .offset(CGSize(width: 0, height: -20.0))
             }
             VStack(spacing: 0) {
