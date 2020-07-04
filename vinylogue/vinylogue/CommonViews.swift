@@ -32,3 +32,10 @@ struct RecordLoadingView: View {
             .frame(width: 40, height: 40)
     }
 }
+
+struct OffsetRecordLoadingView: View {
+    var body: some View {
+        RecordLoadingView()
+            .offset(x: 0, y: -20)
+    }
+}

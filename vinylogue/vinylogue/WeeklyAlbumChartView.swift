@@ -23,8 +23,7 @@ struct WeeklyAlbumChartView: View {
                     .foregroundColor(.clear)
                     .overlay(
                         VStack() {
-                            RecordLoadingView()
-                                .offset(x: 0, y: -20)
+                            OffsetRecordLoadingView()
                             Spacer()
                         }
                     )
@@ -75,7 +74,8 @@ struct WeeklyAlbumChartView: View {
 }
 
 struct WeeklyAlbumChartView_Previews: PreviewProvider {
-    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: true)
+    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
+    static let mockLoading = WeeklyAlbumChartView.Model(sections: [], error: nil, isLoading: true)
     static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
     static var previews: some View {
         NavigationView {
