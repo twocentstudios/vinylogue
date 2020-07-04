@@ -18,7 +18,17 @@ struct WeeklyAlbumChartView: View {
 
     var body: some View {
         ZStack {
-            if let error = model.error {
+            if model.isLoading {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .overlay(
+                        VStack() {
+                            RecordLoadingImage()
+                                .offset(x: 0, y: -20)
+                            Spacer()
+                        }
+                    )
+            } else if let error = model.error {
                 Rectangle()
                     .foregroundColor(.clear)
                     .overlay(
@@ -60,21 +70,12 @@ struct WeeklyAlbumChartView: View {
         }
         .navigationTitle("ybsc's week 27 charts")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing:
-            ZStack {
-                if model.isLoading {
-                    ProgressView()
-                } else {
-                    EmptyView()
-                }
-            }
-        )
         .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
 }
 
 struct WeeklyAlbumChartView_Previews: PreviewProvider {
-    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
+    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: true)
     static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
     static var previews: some View {
         NavigationView {
