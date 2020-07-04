@@ -213,7 +213,7 @@ struct WeeklyAlbumChartCell_Previews: PreviewProvider {
 
 struct WeeklyAlbumChartEmptyCell: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             TopBorderView()
             HStack {
                 Spacer()
@@ -223,6 +223,7 @@ struct WeeklyAlbumChartEmptyCell: View {
                 Spacer()
             }
             .padding(.vertical, 20)
+            .frame(minHeight: 100)
             BottomBorderView()
         }
     }
@@ -231,6 +232,29 @@ struct WeeklyAlbumChartEmptyCell: View {
 struct WeeklyAlbumChartEmptyCell_Previews: PreviewProvider {
     static var previews: some View {
         WeeklyAlbumChartEmptyCell()
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct WeeklyAlbumChartLoadingCell: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            TopBorderView()
+            HStack {
+                Spacer()
+                ProgressView()
+                Spacer()
+            }
+            .padding(.vertical, 20)
+            .frame(minHeight: 100)
+            BottomBorderView()
+        }
+    }
+}
+
+struct WeeklyAlbumChartLoadingCell_Previews: PreviewProvider {
+    static var previews: some View {
+        WeeklyAlbumChartLoadingCell()
             .previewLayout(.sizeThatFits)
     }
 }
