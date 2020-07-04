@@ -259,6 +259,52 @@ struct WeeklyAlbumChartLoadingCell_Previews: PreviewProvider {
     }
 }
 
+struct WeeklyAlbumChartErrorCell: View {
+    let action: (() -> ())?
+
+    init(action: (() -> ())? = nil) {
+        self.action = action
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            TopBorderView()
+            VStack(spacing: 8) {
+                HStack {
+                    Spacer()
+                    Text("\(Image(systemName: "xmark.circle")) failed to fetch charts")
+                        .font(.avnRegular(18))
+                        .foregroundColor(.blueDark)
+                    Spacer()
+                }
+                if let action = action {
+                    Button(action: action) {
+                        Text("try again")
+                            .font(.avnMedium(14))
+                            .foregroundColor(.blueDark)
+                            .padding(.all, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8.0)
+                                    .stroke(Color.blueDark)
+                            )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+            .padding(.vertical, 20)
+            .frame(minHeight: 100)
+            BottomBorderView()
+        }
+    }
+}
+
+struct WeeklyAlbumChartErrorCell_Previews: PreviewProvider {
+    static var previews: some View {
+        WeeklyAlbumChartErrorCell {}
+            .previewLayout(.sizeThatFits)
+    }
+}
+
 struct ErrorRetryView: View {
     struct Model {
         let title: String
