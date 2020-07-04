@@ -25,9 +25,8 @@ struct LoginView: View {
                         .font(.avnDemiBold(50))
                         .foregroundColor(.gray(160))
                 } else {
-                    // TODO: replace with record spinning image
-                    ProgressView()
-                        .padding(.all, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+                    RecordLoadingView()
+                        .padding(.all, 4)
                 }
                 TextField("username", text: $userName)
                     .textFieldStyle(CustomTextFieldStyle())
