@@ -9,6 +9,7 @@ struct WeeklyAlbumChartView: View {
 
         let sections: [Section]
         let error: ErrorRetryView.Model?
+        let isLoading: Bool
     }
 
     let model: Model
@@ -55,7 +56,13 @@ struct WeeklyAlbumChartView: View {
         .navigationTitle("ybsc's week 27 charts")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing:
-            ProgressView()
+            ZStack {
+                if model.isLoading {
+                    ProgressView()
+                } else {
+                    EmptyView()
+                }
+            }
         )
         .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
@@ -64,7 +71,7 @@ struct WeeklyAlbumChartView: View {
 struct WeeklyAlbumChartView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            WeeklyAlbumChartView(model: .init(sections: mockSections, error: ErrorRetryView_Previews.mock))
+            WeeklyAlbumChartView(model: .init(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false))
         }
     }
 }
