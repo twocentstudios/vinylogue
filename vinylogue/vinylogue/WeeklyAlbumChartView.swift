@@ -190,6 +190,65 @@ struct WeeklyAlbumChartCell_Previews: PreviewProvider {
     }
 }
 
+struct ErrorRetryView: View {
+    struct State {
+        let title: String
+        let subtitle: String
+        let action: (() -> ())?
+
+        init(title: String, subtitle: String, action: (() -> ())? = nil) {
+            self.title = title
+            self.subtitle = subtitle
+            self.action = action
+        }
+    }
+
+    let state: State
+
+    var body: some View {
+        HStack {
+            VStack {
+                Image(systemName: "xmark.circle")
+                    .resizable()
+                    .frame(width: 100, height: 100, alignment: .center)
+                    .foregroundColor(.blueDark)
+                Text(state.title)
+                    .font(.avnMedium(27))
+                    .foregroundColor(.blueDark)
+                    .shadow(color: .white, radius: 1, x: 0, y: -0.5)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 6)
+                Text(state.subtitle)
+                    .font(.avnRegular(13))
+                    .foregroundColor(.blueDark)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 12)
+                if let action = state.action {
+                    Button(action: action) {
+                        Text("try again")
+                            .font(.avnMedium(18))
+                            .foregroundColor(.bluePeri)
+                            .padding(.all, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8.0)
+                                    .foregroundColor(.blueDark)
+                            )
+                    }
+                }
+            }
+            .padding(.all, 16)
+        }
+    }
+}
+
+struct ErrorRetryView_Previews: PreviewProvider {
+    static let mock = ErrorRetryView.State(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.")
+    static var previews: some View {
+        ErrorRetryView(state: mock)
+            .previewLayout(.sizeThatFits)
+    }
+}
+
 let mockAlbums: [WeeklyAlbumChartCell.Model] =
     [
         .init(image: nil, artist: "Weezer", album: "Maladroit", plays: "20"),
