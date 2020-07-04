@@ -32,10 +32,3 @@ struct RecordLoadingView: View {
             .frame(width: 40, height: 40)
     }
 }
-
-
-struct CommonViews_Previews: PreviewProvider {
-    static var previews: some View {
-        RecordLoadingView()
-    }
-}
