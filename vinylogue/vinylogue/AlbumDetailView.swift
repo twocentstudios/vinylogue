@@ -10,7 +10,7 @@ struct AlbumDetailView: View {
             }
         }
         .navigationBarHidden(true)
-        .background(Color.init(.systemRed).edgesIgnoringSafeArea(.all))
+        .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -212,7 +212,7 @@ struct AlbumDetailPlayCountView: View {
 
 struct AlbumDetailAboutView: View {
     struct Model {
-        let text: String
+        let text: String?
         let textColor: Color
         let shadowColor: Color
     }
@@ -221,18 +221,24 @@ struct AlbumDetailAboutView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("about this album")
-                .font(.avnDemiBold(24))
-                .foregroundColor(model.textColor.opacity(0.6))
-                .shadow(color: Color.blue.opacity(0.3), radius: 1, x: 0, y: 0.5)
-                .multilineTextAlignment(.leading)
-                .lineLimit(nil)
-            Text(model.text)
-                .font(.avnRegular(16))
-                .foregroundColor(model.textColor.opacity(0.95))
-                .shadow(color: Color.blue.opacity(0.2), radius: 1, x: 0, y: 0.5)
-                .multilineTextAlignment(.leading)
-                .lineLimit(nil)
+            if let text = model.text {
+                Text("about this album")
+                    .font(.avnDemiBold(24))
+                    .foregroundColor(model.textColor.opacity(0.6))
+                    .shadow(color: Color.blue.opacity(0.3), radius: 1, x: 0, y: 0.5)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                Text(text)
+                    .font(.avnRegular(16))
+                    .foregroundColor(model.textColor.opacity(0.95))
+                    .shadow(color: Color.blue.opacity(0.2), radius: 1, x: 0, y: 0.5)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+            } else {
+                HStack {
+                    Spacer()
+                }
+            }
         }
         .padding(.horizontal, 26.0)
         .padding(.vertical, 48.0)
@@ -253,8 +259,9 @@ struct AlbumDetailAboutView: View {
 
 struct AlbumDetailAboutView_Previews: PreviewProvider {
     static let mock = AlbumDetailAboutView.Model(text: "Maladroit is the fourth studio album by the American alternative rock band Weezer, released on May 14, 2002 on Geffen Records. This is the first Weezer album to feature bassist Scott Shriner, who joined the band in 2001 after the breakdown and departure of Mikey Welsh.", textColor: .black, shadowColor: .white)
+    static let mockEmpty = AlbumDetailAboutView.Model(text: nil, textColor: .black, shadowColor: .white)
     static var previews: some View {
-        AlbumDetailAboutView(model: mock)
+        AlbumDetailAboutView(model: mockEmpty)
             .previewLayout(.sizeThatFits)
     }
 }
