@@ -2,14 +2,24 @@ import SwiftUI
 
 struct AlbumDetailView: View {
     var body: some View {
-        EmptyView()
+        ScrollView {
+            VStack(spacing: 0) {
+                AlbumDetailHeaderView(model: AlbumDetailHeaderView_Previews.mock)
+                AlbumDetailPlayCountsView(model: AlbumDetailPlayCountsView_Previews.mock)
+                AlbumDetailAboutView(model: AlbumDetailAboutView_Previews.mock)
+            }
+        }
+        .navigationBarHidden(true)
+        .background(Color.init(.systemRed).edgesIgnoringSafeArea(.all))
     }
 }
 
 struct AlbumDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        AlbumDetailView()
-            .previewLayout(.sizeThatFits)
+        NavigationView {
+            AlbumDetailView()
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
 
@@ -34,6 +44,8 @@ struct AlbumDetailHeaderView: View {
                 Image(uiImage: model.image, placeholder: "recordPlaceholder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .border(Color.blacka(0.2), width: 1)
+                    .shadow(color: .blacka(0.2), radius: 3, x: 0, y: 1)
                     .padding(.bottom, 14)
                 Text(model.artist.uppercased())
                     .font(.avnRegular(15))
@@ -52,11 +64,11 @@ struct AlbumDetailHeaderView: View {
             .overlay(
                 VStack {
                     Rectangle()
-                        .foregroundColor(.blacka(0.5))
+                        .foregroundColor(.blacka(0.1))
                         .frame(height: 1)
                     Spacer()
                     Rectangle()
-                        .foregroundColor(.blacka(0.5))
+                        .foregroundColor(.blacka(0.1))
                         .frame(height: 1)
                 }
             )
@@ -88,8 +100,8 @@ private struct BackgroundImageView: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .blur(radius: 14)
-                    .opacity(0.3)
+                    .blur(radius: 10)
+                    .opacity(0.45)
             } else {
                 EmptyView()
             }
@@ -106,11 +118,11 @@ struct AlbumDetailPlayCountsView: View {
         let shadowColor: Color
 
         var weekModel: AlbumDetailPlayCountView.Model {
-            .init(playCount: weekPlayCount, timeLabel: weekLabel, textColor: textColor, shadowColor: shadowColor)
+            .init(playCount: weekPlayCount, timePeriodLabel: weekLabel, textColor: textColor, shadowColor: shadowColor)
         }
 
         var allTimeModel: AlbumDetailPlayCountView.Model {
-            .init(playCount: allTimePlayCount, timeLabel: "all-time", textColor: textColor, shadowColor: shadowColor)
+            .init(playCount: allTimePlayCount, timePeriodLabel: "all-time", textColor: textColor, shadowColor: shadowColor)
         }
     }
 
@@ -162,7 +174,7 @@ struct AlbumDetailPlayCountsView_Previews: PreviewProvider {
 struct AlbumDetailPlayCountView: View {
     struct Model {
         let playCount: String
-        let timeLabel: String
+        let timePeriodLabel: String
         let textColor: Color
         let shadowColor: Color
     }
@@ -170,27 +182,31 @@ struct AlbumDetailPlayCountView: View {
     let model: Model
 
     var body: some View {
-        VStack {
-            Text(model.playCount)
-                .font(.avnDemiBold(30))
-                .foregroundColor(model.textColor.opacity(0.85))
-                .shadow(color: model.shadowColor.opacity(0.6), radius: 1, x: 0, y: 0.5)
-                .multilineTextAlignment(.center)
-                .padding(.bottom, -3.0)
-            Text("plays")
-                .font(.avnUltraLight(14))
-                .foregroundColor(model.textColor.opacity(0.7))
-                .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
-                .multilineTextAlignment(.center)
-                .padding(.bottom, -3.0)
-            Text("week 27 2019")
-                .font(.avnRegular(18))
-                .foregroundColor(model.textColor.opacity(0.7))
-                .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
-                .multilineTextAlignment(.center)
+        HStack {
+            Spacer()
+            VStack {
+                Text(model.playCount)
+                    .font(.avnDemiBold(30))
+                    .foregroundColor(model.textColor.opacity(0.85))
+                    .shadow(color: model.shadowColor.opacity(0.6), radius: 1, x: 0, y: 0.5)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, -3.0)
+                Text("plays")
+                    .font(.avnUltraLight(14))
+                    .foregroundColor(model.textColor.opacity(0.7))
+                    .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, -3.0)
+                Text(model.timePeriodLabel)
+                    .font(.avnRegular(18))
+                    .foregroundColor(model.textColor.opacity(0.7))
+                    .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, 6.0)
+            .padding(.vertical, 10.0)
+            Spacer()
         }
-        .padding(.horizontal, 6.0)
-        .padding(.vertical, 10.0)
     }
 }
 
@@ -231,6 +247,7 @@ struct AlbumDetailAboutView: View {
                     .frame(height: 1)
             }
         )
+        .background(Color.blacka(0.05))
     }
 }
 
