@@ -119,8 +119,6 @@ struct AlbumDetailPlayCountsView: View {
     var body: some View {
         HStack(spacing: 0) {
             AlbumDetailPlayCountView(model: model.weekModel)
-                .padding(.horizontal, 6.0)
-                .padding(.vertical, 10.0)
                 .overlay(
                     HStack {
                         Spacer()
@@ -130,8 +128,6 @@ struct AlbumDetailPlayCountsView: View {
                     }
                 )
             AlbumDetailPlayCountView(model: model.allTimeModel)
-                .padding(.horizontal, 6.0)
-                .padding(.vertical, 10.0)
                 .overlay(
                     HStack {
                         Rectangle()
@@ -193,5 +189,7 @@ struct AlbumDetailPlayCountView: View {
                 .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
         }
+        .padding(.horizontal, 6.0)
+        .padding(.vertical, 10.0)
     }
 }
