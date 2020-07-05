@@ -1,5 +1,18 @@
 import SwiftUI
 
+struct AlbumDetailView: View {
+    var body: some View {
+        EmptyView()
+    }
+}
+
+struct AlbumDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        AlbumDetailView()
+            .previewLayout(.sizeThatFits)
+    }
+}
+
 struct AlbumDetailHeaderView: View {
     struct Model {
         let image: UIImage?
@@ -48,7 +61,6 @@ struct AlbumDetailHeaderView: View {
                 }
             )
             .background(BackgroundImageView(uiImage: model.image))
-
         }
         .background(Color.blacka(0.05))
         .clipped()
@@ -85,3 +97,73 @@ private struct BackgroundImageView: View {
     }
 }
 
+struct AlbumDetailPlayCountsView: View {
+    var body: some View {
+        HStack(spacing: 0) {
+            AlbumDetailPlayCountView()
+                .padding(.horizontal, 6.0)
+                .padding(.vertical, 10.0)
+                .overlay(
+                    HStack {
+                        Spacer()
+                        Rectangle()
+                            .foregroundColor(.whitea(0.35))
+                            .frame(width: 1)
+                    }
+                )
+            AlbumDetailPlayCountView()
+                .padding(.horizontal, 6.0)
+                .padding(.vertical, 10.0)
+                .overlay(
+                    HStack {
+                        Rectangle()
+                            .foregroundColor(.blacka(0.25))
+                            .frame(width: 1)
+                        Spacer()
+                    }
+                )
+        }
+        .overlay(
+            VStack {
+                Rectangle()
+                    .foregroundColor(.whitea(0.35))
+                    .frame(height: 1)
+                Spacer()
+                Rectangle()
+                    .foregroundColor(.blacka(0.25))
+                    .frame(height: 1)
+            }
+        )
+    }
+}
+
+struct AlbumDetailPlayCountsView_Previews: PreviewProvider {
+    static var previews: some View {
+        AlbumDetailPlayCountsView()
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct AlbumDetailPlayCountView: View {
+    var body: some View {
+        VStack {
+            Text("13")
+                .font(.avnDemiBold(30))
+                .foregroundColor(.black)
+                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, -3.0)
+            Text("plays")
+                .font(.avnUltraLight(14))
+                .foregroundColor(.black)
+                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, -3.0)
+            Text("week 27 2019")
+                .font(.avnRegular(18))
+                .foregroundColor(.black)
+                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .multilineTextAlignment(.center)
+        }
+    }
+}
