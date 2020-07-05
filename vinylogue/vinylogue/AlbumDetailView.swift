@@ -98,9 +98,27 @@ private struct BackgroundImageView: View {
 }
 
 struct AlbumDetailPlayCountsView: View {
+    struct Model {
+        let weekPlayCount: String
+        let allTimePlayCount: String
+        let weekLabel: String
+        let textColor: Color
+        let shadowColor: Color
+
+        var weekModel: AlbumDetailPlayCountView.Model {
+            .init(playCount: weekPlayCount, timeLabel: weekLabel, textColor: textColor, shadowColor: shadowColor)
+        }
+
+        var allTimeModel: AlbumDetailPlayCountView.Model {
+            .init(playCount: allTimePlayCount, timeLabel: "all-time", textColor: textColor, shadowColor: shadowColor)
+        }
+    }
+
+    let model: Model
+
     var body: some View {
         HStack(spacing: 0) {
-            AlbumDetailPlayCountView()
+            AlbumDetailPlayCountView(model: model.weekModel)
                 .padding(.horizontal, 6.0)
                 .padding(.vertical, 10.0)
                 .overlay(
@@ -111,7 +129,7 @@ struct AlbumDetailPlayCountsView: View {
                             .frame(width: 1)
                     }
                 )
-            AlbumDetailPlayCountView()
+            AlbumDetailPlayCountView(model: model.allTimeModel)
                 .padding(.horizontal, 6.0)
                 .padding(.vertical, 10.0)
                 .overlay(
@@ -138,31 +156,41 @@ struct AlbumDetailPlayCountsView: View {
 }
 
 struct AlbumDetailPlayCountsView_Previews: PreviewProvider {
+    static let mock = AlbumDetailPlayCountsView.Model(weekPlayCount: "13", allTimePlayCount: "39", weekLabel: "week 27 2019", textColor: .black, shadowColor: .white)
     static var previews: some View {
-        AlbumDetailPlayCountsView()
+        AlbumDetailPlayCountsView(model: mock)
             .previewLayout(.sizeThatFits)
     }
 }
 
 struct AlbumDetailPlayCountView: View {
+    struct Model {
+        let playCount: String
+        let timeLabel: String
+        let textColor: Color
+        let shadowColor: Color
+    }
+
+    let model: Model
+
     var body: some View {
         VStack {
-            Text("13")
+            Text(model.playCount)
                 .font(.avnDemiBold(30))
-                .foregroundColor(.black)
-                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .foregroundColor(model.textColor.opacity(0.85))
+                .shadow(color: model.shadowColor.opacity(0.6), radius: 1, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, -3.0)
             Text("plays")
                 .font(.avnUltraLight(14))
-                .foregroundColor(.black)
-                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .foregroundColor(model.textColor.opacity(0.7))
+                .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
                 .padding(.bottom, -3.0)
             Text("week 27 2019")
                 .font(.avnRegular(18))
-                .foregroundColor(.black)
-                .shadow(color: .white, radius: 1, x: 0, y: 0.5)
+                .foregroundColor(model.textColor.opacity(0.7))
+                .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
         }
     }
