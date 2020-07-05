@@ -1,25 +1,74 @@
 import SwiftUI
 
 struct AlbumDetailView: View {
+    struct Model {
+        let image: UIImage?
+        let artist: String
+        let album: String
+
+        let weekPlayCount: String
+        let allTimePlayCount: String
+        let weekLabel: String
+
+        let albumAboutText: String?
+
+        let backgroundColor: Color?
+        let textColor: Color?
+        let shadowColor: Color?
+
+        let isLoading: Bool
+
+        var derivedBackgroundColor: Color { backgroundColor ?? .whiteSubtle }
+        var derivedTextColor: Color { textColor ?? .black }
+        var derivedShadowColor: Color { shadowColor ?? .white }
+
+        var headerModel: AlbumDetailHeaderView.Model {
+            .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedTextColor, isLoading: isLoading)
+        }
+
+        var playCountsModel: AlbumDetailPlayCountsView.Model {
+            .init(weekPlayCount: weekPlayCount, allTimePlayCount: allTimePlayCount, weekLabel: weekLabel, textColor: derivedTextColor, shadowColor: derivedShadowColor)
+        }
+
+        var aboutModel: AlbumDetailAboutView.Model {
+            .init(text: albumAboutText, textColor: derivedTextColor, shadowColor: derivedShadowColor)
+        }
+    }
+
+    let model: Model
+
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                AlbumDetailHeaderView(model: AlbumDetailHeaderView_Previews.mock)
-                AlbumDetailPlayCountsView(model: AlbumDetailPlayCountsView_Previews.mock)
-                AlbumDetailAboutView(model: AlbumDetailAboutView_Previews.mock)
+                AlbumDetailHeaderView(model: model.headerModel)
+                AlbumDetailPlayCountsView(model: model.playCountsModel)
+                AlbumDetailAboutView(model: model.aboutModel)
             }
         }
         .navigationBarHidden(true)
-        .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
+        .background(model.derivedBackgroundColor.edgesIgnoringSafeArea(.all))
     }
 }
 
 struct AlbumDetailView_Previews: PreviewProvider {
+    static let mock: AlbumDetailView.Model = .init(
+        image: AlbumDetailHeaderView_Previews.mock.image,
+        artist: AlbumDetailHeaderView_Previews.mock.artist,
+        album: AlbumDetailHeaderView_Previews.mock.album,
+        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
+        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
+        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
+        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
+        backgroundColor: Color(.systemRed),
+        textColor: .black,
+        shadowColor: .white,
+        isLoading: false
+    )
+
     static var previews: some View {
         NavigationView {
-            AlbumDetailView()
+            AlbumDetailView(model: mock)
         }
-        .previewLayout(.sizeThatFits)
     }
 }
 
