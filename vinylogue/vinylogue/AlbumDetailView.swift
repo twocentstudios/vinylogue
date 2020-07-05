@@ -59,7 +59,7 @@ struct AlbumDetailView_Previews: PreviewProvider {
         allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
         weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
         albumAboutText: AlbumDetailAboutView_Previews.mock.text,
-        backgroundColor: .init(red: 218.0/255.0, green: 38.0/255.0, blue: 15.0/255.0),
+        backgroundColor: .init(red: 218.0 / 255.0, green: 38.0 / 255.0, blue: 15.0 / 255.0),
         textColor: .white,
         shadowColor: .black,
         isLoading: false
