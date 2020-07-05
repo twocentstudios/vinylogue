@@ -23,7 +23,7 @@ struct AlbumDetailView: View {
         var derivedShadowColor: Color { shadowColor ?? .white }
 
         var headerModel: AlbumDetailHeaderView.Model {
-            .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedTextColor, isLoading: isLoading)
+            .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedShadowColor, isLoading: isLoading)
         }
 
         var playCountsModel: AlbumDetailPlayCountsView.Model {
@@ -59,9 +59,9 @@ struct AlbumDetailView_Previews: PreviewProvider {
         allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
         weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
         albumAboutText: AlbumDetailAboutView_Previews.mock.text,
-        backgroundColor: Color(.systemRed),
-        textColor: .black,
-        shadowColor: .white,
+        backgroundColor: .init(red: 218.0/255.0, green: 38.0/255.0, blue: 15.0/255.0),
+        textColor: .white,
+        shadowColor: .black,
         isLoading: false
     )
 
@@ -99,12 +99,12 @@ struct AlbumDetailHeaderView: View {
                 Text(model.artist.uppercased())
                     .font(.avnRegular(15))
                     .foregroundColor(model.textColor)
-                    .shadow(color: model.shadowColor.opacity(0.85), radius: 1, x: 0, y: 0.5)
+                    .shadow(color: model.shadowColor, radius: 1, x: 0, y: 0.5)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, -1)
                 Text(model.album)
                     .font(.avnDemiBold(30))
-                    .foregroundColor(model.textColor.opacity(0.85))
+                    .foregroundColor(model.textColor)
                     .shadow(color: model.shadowColor, radius: 1, x: 0, y: 0.5)
                     .multilineTextAlignment(.center)
             }
