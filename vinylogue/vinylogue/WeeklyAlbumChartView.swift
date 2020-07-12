@@ -23,35 +23,31 @@ struct WeeklyAlbumChartView: View {
                 ErrorRetryView(model: error)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                        // TODO: real ids are required
-                        ForEach(model.sections, id: \.label) { section in
-                            Section(
-                                header: WeeklyAlbumChartHeaderView(label: section.label)
-                            ) {
-                                if !section.albums.isEmpty {
-                                    ForEach(section.albums, id: \.album) { album in
-                                        VStack {
-                                            NavigationLink(
-                                                destination: Text("Destination")
-                                            )
-                                            {
-                                                WeeklyAlbumChartCell(album)
-                                            }
-                                        }
+                List {
+                    // TODO: real ids are required
+                    ForEach(model.sections, id: \.label) { section in
+                        Section(
+                            header: WeeklyAlbumChartHeaderView(label: section.label)
+                        ) {
+                            if !section.albums.isEmpty {
+                                ForEach(section.albums, id: \.album) { album in
+                                    NavigationLink(
+                                        destination: Text("Destination")
+                                    )
+                                    {
+                                        WeeklyAlbumChartCell(album)
                                     }
-
-                                } else {
-                                    WeeklyAlbumChartEmptyCell()
                                 }
+
+                            } else {
+                                WeeklyAlbumChartEmptyCell()
                             }
                         }
                     }
                 }
+                .listStyle(GroupedListStyle())
             }
         }
-        .background(Color(.secondarySystemBackground).edgesIgnoringSafeArea(.all))
         .navigationTitle("ybsc's week 27 charts")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -83,9 +79,6 @@ struct WeeklyAlbumChartHeaderView: View {
             .foregroundColor(Color(.secondaryLabel))
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 12)
-            .padding(.bottom, 4)
-            .padding(.horizontal, 12)
-            .background(Color(.secondarySystemBackground))
     }
 }
 
@@ -112,7 +105,6 @@ struct WeeklyAlbumChartCell: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TopBorderView()
             HStack(spacing: 9) {
                 // TODO: light/dark placeholder
                 Image(uiImage: model.image, placeholder: "recordPlaceholderThumb")
@@ -141,7 +133,7 @@ struct WeeklyAlbumChartCell: View {
                 VStack {
                     Text(model.plays)
                         .font(.avnRegular(28))
-                        .foregroundColor(Color(.secondaryLabel))
+                        .foregroundColor(Color(.label).opacity(0.8))
                         .lineLimit(1)
                         .padding(.bottom, -5)
                     Text("plays")
@@ -152,11 +144,8 @@ struct WeeklyAlbumChartCell: View {
                 }
                 .padding(.trailing, 2)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-            BottomBorderView()
+            .padding(.vertical, 6)
         }
-        .background(Color(.systemBackground))
     }
 }
 
@@ -175,16 +164,13 @@ struct WeeklyAlbumChartCell_Previews: PreviewProvider {
 struct WeeklyAlbumChartEmptyCell: View {
     var body: some View {
         VStack(spacing: 0) {
-            TopBorderView()
             Text("no charts this week")
                 .font(.avnUltraLight(18))
                 .foregroundColor(Color(.secondaryLabel))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
                 .frame(minHeight: 100)
-            BottomBorderView()
         }
-        .background(Color(.systemBackground))
     }
 }
 
@@ -198,14 +184,11 @@ struct WeeklyAlbumChartEmptyCell_Previews: PreviewProvider {
 struct WeeklyAlbumChartLoadingCell: View {
     var body: some View {
         VStack(spacing: 0) {
-            TopBorderView()
             ProgressView()
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
                 .frame(minHeight: 100)
-            BottomBorderView()
         }
-        .background(Color(.systemBackground))
     }
 }
 
@@ -225,7 +208,6 @@ struct WeeklyAlbumChartErrorCell: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TopBorderView()
             VStack(spacing: 0) {
                 Text("\(Image(systemName: "xmark.circle")) failed to fetch charts")
                     .font(.avnRegular(18))
@@ -242,9 +224,7 @@ struct WeeklyAlbumChartErrorCell: View {
             }
             .padding(.vertical, 20)
             .frame(minHeight: 100)
-            BottomBorderView()
         }
-        .background(Color(.systemBackground))
     }
 }
 
