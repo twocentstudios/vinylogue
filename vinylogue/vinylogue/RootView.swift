@@ -3,9 +3,11 @@ import SwiftUI
 struct RootView: View {
     var body: some View {
         NavigationView {
-            FavoriteUsersListView(me: FavoriteUsersListView_Previews.me, friends: FavoriteUsersListView_Previews.friends)
+            LoginView(userName: .constant(""))
+//            FavoriteUsersListView(me: FavoriteUsersListView_Previews.me, friends: FavoriteUsersListView_Previews.friends)
+//            WeeklyAlbumChartView(model: WeeklyAlbumChartView_Previews.mock)
+//            AlbumDetailView(model: AlbumDetailView_Previews.mock)
         }
-//        LoginView(userName: .constant(""))
     }
 }
 

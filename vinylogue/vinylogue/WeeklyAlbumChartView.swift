@@ -27,7 +27,9 @@ struct WeeklyAlbumChartView: View {
                     LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                         // TODO: real ids are required
                         ForEach(model.sections, id: \.label) { section in
-                            Section(header: WeeklyAlbumChartHeaderView(label: section.label)) {
+                            Section(
+                                header: WeeklyAlbumChartHeaderView(label: section.label)
+                            ) {
                                 if !section.albums.isEmpty {
                                     ForEach(section.albums, id: \.album) { album in
                                         VStack {
@@ -49,6 +51,7 @@ struct WeeklyAlbumChartView: View {
                 }
             }
         }
+        .background(Color(.secondarySystemBackground).edgesIgnoringSafeArea(.all))
         .navigationTitle("ybsc's week 27 charts")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -82,7 +85,7 @@ struct WeeklyAlbumChartHeaderView: View {
             .padding(.top, 12)
             .padding(.bottom, 4)
             .padding(.horizontal, 12)
-            .background(Color(.tertiarySystemBackground))
+            .background(Color(.secondarySystemBackground))
     }
 }
 
@@ -153,7 +156,7 @@ struct WeeklyAlbumChartCell: View {
             .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
             BottomBorderView()
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
     }
 }
 
@@ -181,7 +184,7 @@ struct WeeklyAlbumChartEmptyCell: View {
                 .frame(minHeight: 100)
             BottomBorderView()
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
     }
 }
 
@@ -202,7 +205,7 @@ struct WeeklyAlbumChartLoadingCell: View {
                 .frame(minHeight: 100)
             BottomBorderView()
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
     }
 }
 
@@ -241,7 +244,7 @@ struct WeeklyAlbumChartErrorCell: View {
             .frame(minHeight: 100)
             BottomBorderView()
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
     }
 }
 
@@ -329,16 +332,18 @@ let mockSections: [WeeklyAlbumChartView.Model.Section] =
 
 private struct TopBorderView: View {
     var body: some View {
+        EmptyView()
         Rectangle()
-            .foregroundColor(.whitea(0.2))
+            .foregroundColor(.highlighta(0.2))
             .frame(height: 1)
     }
 }
 
 private struct BottomBorderView: View {
     var body: some View {
+        EmptyView()
         Rectangle()
-            .foregroundColor(.blacka(0.1))
+            .foregroundColor(.shadowa(0.1))
             .frame(height: 1)
     }
 }
