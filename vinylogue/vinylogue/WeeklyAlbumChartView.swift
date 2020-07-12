@@ -14,8 +14,6 @@ struct WeeklyAlbumChartView: View {
 
     let model: Model
 
-    @State var selectedItem: String?
-
     var body: some View {
         ZStack {
             if model.isLoading {
@@ -34,17 +32,10 @@ struct WeeklyAlbumChartView: View {
                                     ForEach(section.albums, id: \.album) { album in
                                         VStack {
                                             NavigationLink(
-                                                destination: Text("Destination"),
-                                                isActive: Binding(get: {
-                                                    self.selectedItem == album.album
-                                                }, set: { value in
-                                                    self.selectedItem = value ? album.album : nil
-                                        })
-                                            ) {
-                                                EmptyView()
-                                            }
-                                            WeeklyAlbumChartCell(album) {
-                                                self.selectedItem = album.album
+                                                destination: Text("Destination")
+                                            )
+                                            {
+                                                WeeklyAlbumChartCell(album)
                                             }
                                         }
                                     }
@@ -70,10 +61,10 @@ struct WeeklyAlbumChartView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             NavigationView {
-                WeeklyAlbumChartView(model: mockError)
+                WeeklyAlbumChartView(model: mock)
             }
             NavigationView {
-                WeeklyAlbumChartView(model: mockError)
+                WeeklyAlbumChartView(model: mock)
             }
             .preferredColorScheme(.dark)
         }
@@ -111,59 +102,58 @@ struct WeeklyAlbumChartCell: View {
     }
 
     let model: Model
-    let action: () -> ()
 
-    init(_ model: Model, action: @escaping () -> () = {}) {
+    init(_ model: Model) {
         self.model = model
-        self.action = action
     }
 
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                TopBorderView()
-                HStack(spacing: 9) {
-                    Image(uiImage: model.image, placeholder: "recordPlaceholderThumb")
-                        .resizable()
-                        .frame(width: 80, height: 80, alignment: .center)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 2.0, style: .circular)
-                                .strokeBorder(Color.blacka(0.2), lineWidth: 1.0, antialiased: true)
-                        )
-                        .cornerRadius(2.0)
-                    VStack {
-                        Text(model.artist.uppercased())
-                            .font(.avnUltraLight(12))
-                            .multilineTextAlignment(.leading)
-                            .padding(.bottom, -1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(model.album)
-                            .font(.avnRegular(16))
-                            .multilineTextAlignment(.leading)
-                            .padding(.top, -1)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    VStack {
-                        Text(model.plays)
-                            .font(.avnRegular(28))
-                            .foregroundColor(Color(.secondaryLabel))
-                            .lineLimit(1)
-                            .padding(.bottom, -5)
-                        Text("plays")
-                            .font(.avnUltraLight(15))
-                            .foregroundColor(Color(.secondaryLabel))
-                            .lineLimit(1)
-                            .padding(.top, -5)
-                    }
-                    .padding(.trailing, 2)
+        VStack(spacing: 0) {
+            TopBorderView()
+            HStack(spacing: 9) {
+                // TODO: light/dark placeholder
+                Image(uiImage: model.image, placeholder: "recordPlaceholderThumb")
+                    .renderingMode(.original)
+                    .resizable()
+                    .frame(width: 80, height: 80, alignment: .center)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 2.0, style: .circular)
+                            .strokeBorder(Color.blacka(0.2), lineWidth: 1.0, antialiased: true)
+                    )
+                    .cornerRadius(2.0)
+                VStack {
+                    Text(model.artist.uppercased())
+                        .font(.avnUltraLight(12))
+                        .foregroundColor(Color(.label))
+                        .multilineTextAlignment(.leading)
+                        .padding(.bottom, -1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(model.album)
+                        .font(.avnRegular(16))
+                        .foregroundColor(Color(.label))
+                        .multilineTextAlignment(.leading)
+                        .padding(.top, -1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                BottomBorderView()
+                VStack {
+                    Text(model.plays)
+                        .font(.avnRegular(28))
+                        .foregroundColor(Color(.secondaryLabel))
+                        .lineLimit(1)
+                        .padding(.bottom, -5)
+                    Text("plays")
+                        .font(.avnUltraLight(15))
+                        .foregroundColor(Color(.secondaryLabel))
+                        .lineLimit(1)
+                        .padding(.top, -5)
+                }
+                .padding(.trailing, 2)
             }
-            .background(Color(.secondarySystemBackground))
+            .padding(.horizontal, 12)
+            .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+            BottomBorderView()
         }
-        .buttonStyle(PlainButtonStyle())
+        .background(Color(.secondarySystemBackground))
     }
 }
 
