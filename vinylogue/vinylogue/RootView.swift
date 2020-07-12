@@ -13,7 +13,7 @@ struct RootView: View {
                         viewStore.send(.loadUserFromDisk)
                     }
             } else if case .loggedOut = viewStore.userState {
-                LoginView(userName: .constant(""))
+                LoginView(store: store.scope(state: { $0.userState }, action: AppAction.login))
             } else if case let .loggedIn(user) = viewStore.userState {
                 NavigationView {
                     FavoriteUsersListView(me: user.me, friends: user.friends)
@@ -37,7 +37,7 @@ struct RootView_Previews: PreviewProvider {
             store: Store(
                 initialState: AppState(userState: UserState.uninitialized),
                 reducer: appReducer,
-                environment: mockFirstTimeEnvironment
+                environment: .mockFirstTime
             ))
     }
 }
