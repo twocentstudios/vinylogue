@@ -3,12 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0924C35224BB31FA002855E3 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0924C35124BB31FA002855E3 /* Store.swift */; };
 		0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */; };
 		0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */; };
+		09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 09B7EA2924BB185D00E8328B /* ComposableArchitecture */; };
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
 		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
 		09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734424ACC72B000E2B6B /* Assets.xcassets */; };
@@ -41,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0924C35124BB31FA002855E3 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 		0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonViews.swift; sourceTree = "<group>"; };
 		09F1733D24ACC72A000E2B6B /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +115,7 @@
 		09F1733F24ACC72A000E2B6B /* vinylogue */ = {
 			isa = PBXGroup;
 			children = (
+				0924C35124BB31FA002855E3 /* Store.swift */,
 				09F1734024ACC72A000E2B6B /* vinylogueApp.swift */,
 				09F1734224ACC72A000E2B6B /* RootView.swift */,
 				09F1736D24ACDAA8000E2B6B /* LoginView.swift */,
@@ -170,6 +175,9 @@
 			dependencies = (
 			);
 			name = vinylogue;
+			packageProductDependencies = (
+				09B7EA2924BB185D00E8328B /* ComposableArchitecture */,
+			);
 			productName = vinylogue;
 			productReference = 09F1733D24ACC72A000E2B6B /* vinylogue.app */;
 			productType = "com.apple.product-type.application";
@@ -241,6 +249,9 @@
 				Base,
 			);
 			mainGroup = 09F1733424ACC72A000E2B6B;
+			packageReferences = (
+				09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
 			productRefGroup = 09F1733E24ACC72A000E2B6B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -289,6 +300,7 @@
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,
 				0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */,
+				0924C35224BB31FA002855E3 /* Store.swift in Sources */,
 				09F93D4A24AE39E900CD98C8 /* WeeklyAlbumChartView.swift in Sources */,
 				09F1737224ACEAF4000E2B6B /* SettingsView.swift in Sources */,
 				09F1736E24ACDAA8000E2B6B /* LoginView.swift in Sources */,
@@ -612,6 +624,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		09B7EA2924BB185D00E8328B /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 09F1733524ACC72A000E2B6B /* Project object */;
 }
