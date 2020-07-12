@@ -2,7 +2,10 @@ import SwiftUI
 
 struct RootView: View {
     var body: some View {
-        LoginView(userName: .constant(""))
+        NavigationView {
+            FavoriteUsersListView(me: FavoriteUsersListView_Previews.me, friends: FavoriteUsersListView_Previews.friends)
+        }
+//        LoginView(userName: .constant(""))
     }
 }
 

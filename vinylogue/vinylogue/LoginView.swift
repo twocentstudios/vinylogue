@@ -4,7 +4,7 @@ private struct CustomTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<_Label>) -> some View {
         configuration
             .font(.avnDemiBold(60))
-            .foregroundColor(.blueDark)
+            .foregroundColor(Color(.secondaryLabel))
             .minimumScaleFactor(0.4)
     }
 }
@@ -17,13 +17,12 @@ struct LoginView: View {
         VStack(spacing: 12) {
             Text("welcome to vinylogue")
                 .font(.avnUltraLight(30))
-                .foregroundColor(.blueDark)
                 .padding(.all, 30)
             HStack {
                 if !isLoading {
                     Text("♫")
                         .font(.avnDemiBold(50))
-                        .foregroundColor(.gray(160))
+                        .foregroundColor(Color(.tertiaryLabel))
                 } else {
                     RecordLoadingView()
                         .padding(.all, 4)
@@ -33,24 +32,27 @@ struct LoginView: View {
                     .disabled(isLoading)
             }
             .padding(.horizontal, 10)
-            .background(Color.blacka(0.05))
+            .background(Color(.secondarySystemBackgroundColor))
             Text(!isLoading ? "enter your last.fm username (ex. ybsc)" : "validating username...")
                 .font(.avnUltraLight(17))
-                .foregroundColor(.gray(70))
                 .multilineTextAlignment(.center)
             Button {} label: {
                 Text("start")
                     .font(.avnDemiBold(30))
-                    .foregroundColor(!isLoading ? .blueDark : .gray(160))
+                    .saturation(!isLoading ? 1.0 : 0.0)
             }
             .disabled(isLoading)
-            Spacer()
         }
+        .frame(maxHeight: .infinity, alignment: .top)
     }
 }
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView(userName: .constant("name"))
+        Group {
+            LoginView(userName: .constant("name"))
+            LoginView(userName: .constant("name"))
+                .preferredColorScheme(.dark)
+        }
     }
 }
