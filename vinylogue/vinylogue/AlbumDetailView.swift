@@ -18,9 +18,9 @@ struct AlbumDetailView: View {
 
         let isLoading: Bool
 
-        var derivedBackgroundColor: Color { backgroundColor ?? .whiteSubtle }
-        var derivedTextColor: Color { textColor ?? .black }
-        var derivedShadowColor: Color { shadowColor ?? .white }
+        var derivedBackgroundColor: Color { backgroundColor ?? Color(.tertiarySystemBackground) }
+        var derivedTextColor: Color { textColor ?? Color(.label) }
+        var derivedShadowColor: Color { shadowColor ?? Color.highlighta(1.0) }
 
         var headerModel: AlbumDetailHeaderView.Model {
             .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedShadowColor, isLoading: isLoading)
@@ -65,9 +65,32 @@ struct AlbumDetailView_Previews: PreviewProvider {
         isLoading: false
     )
 
+    static let mockLoading: AlbumDetailView.Model = .init(
+        image: nil,
+        artist: AlbumDetailHeaderView_Previews.mock.artist,
+        album: AlbumDetailHeaderView_Previews.mock.album,
+        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
+        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
+        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
+        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
+        backgroundColor: nil,
+        textColor: nil,
+        shadowColor: nil,
+        isLoading: true
+    )
+
     static var previews: some View {
-        NavigationView {
-            AlbumDetailView(model: mock)
+        Group {
+            NavigationView {
+                AlbumDetailView(model: mock)
+            }
+            NavigationView {
+                AlbumDetailView(model: mockLoading)
+            }
+            NavigationView {
+                AlbumDetailView(model: mockLoading)
+            }
+            .preferredColorScheme(.dark)
         }
     }
 }
@@ -123,7 +146,7 @@ struct AlbumDetailHeaderView: View {
             )
             .background(BackgroundImageView(uiImage: model.image))
         }
-        .background(Color.blacka(0.05))
+        .background(Color.black.opacity(0.15))
         .clipped()
     }
 }
@@ -242,7 +265,7 @@ struct AlbumDetailPlayCountView: View {
                     .padding(.bottom, -3.0)
                 Text("plays")
                     .font(.avnUltraLight(14))
-                    .foregroundColor(model.textColor.opacity(0.7))
+                    .foregroundColor(model.textColor.opacity(1.0))
                     .shadow(color: model.shadowColor.opacity(0.5), radius: 1, x: 0, y: 0.5)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, -3.0)
@@ -273,14 +296,14 @@ struct AlbumDetailAboutView: View {
             if let text = model.text {
                 Text("about this album")
                     .font(.avnDemiBold(24))
-                    .foregroundColor(model.textColor.opacity(0.6))
-                    .shadow(color: Color.blue.opacity(0.3), radius: 1, x: 0, y: 0.5)
+                    .foregroundColor(model.textColor.opacity(0.7))
+                    .shadow(color: model.shadowColor.opacity(0.3), radius: 1, x: 0, y: 0.5)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
                 Text(text)
                     .font(.avnRegular(16))
                     .foregroundColor(model.textColor.opacity(0.95))
-                    .shadow(color: Color.blue.opacity(0.2), radius: 1, x: 0, y: 0.5)
+                    .shadow(color: model.shadowColor.opacity(0.2), radius: 1, x: 0, y: 0.5)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
             } else {
@@ -294,7 +317,7 @@ struct AlbumDetailAboutView: View {
         .overlay(
             VStack {
                 Rectangle()
-                    .foregroundColor(.blacka(0.05))
+                    .foregroundColor(.blacka(0.1))
                     .frame(height: 1)
                 Spacer()
                 Rectangle()
@@ -302,7 +325,7 @@ struct AlbumDetailAboutView: View {
                     .frame(height: 1)
             }
         )
-        .background(Color.blacka(0.05))
+        .background(Color.black.opacity(0.15))
     }
 }
 

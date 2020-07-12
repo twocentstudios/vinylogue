@@ -17,6 +17,9 @@ extension Color {
     static func whitea(_ opacity: Double) -> Color { graya(255, opacity) }
     static func blacka(_ opacity: Double) -> Color { graya(0, opacity) }
 
+    static func highlighta(_ opacity: Double) -> Color { Color(.systemBackground).opacity(opacity) }
+    static func shadowa(_ opacity: Double) -> Color { Color(.label).opacity(opacity) }
+
     static let whiteSubtle = gray(240)
     static let blueDark = rgb(15, 24, 46)
     static let blueBold = rgb(67, 85, 129)
