@@ -2,47 +2,46 @@ import SwiftUI
 
 struct SettingsView: View {
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                Group {
-                    SimpleHeader("play count filter")
-                    SimpleCell("off")
-                }
-                Group {
-                    SimpleHeader("support")
-                    SimpleCell("report an issue")
-                    SimpleCell("rate on appstore")
-                    SimpleCell("licenses")
-                }
-                Group {
-                    SimpleHeader("about")
-                    SimpleCell("twocentstudios.com")
-                    SimpleCell("@twocentstudios")
-                }
-                Group {
-                    SimpleHeader("artist & album data")
-                    SimpleCell("last.fm")
-                }
+        List {
+            Section(header:
+                SimpleHeader("play count filter")
+            ) {
+                SimpleCell("off")
+            }
+            Section(header:
+                SimpleHeader("support")
+            ) {
+                SimpleCell("report an issue")
+                SimpleCell("rate on appstore")
+                SimpleCell("licenses")
+            }
+            Section(header:
+                SimpleHeader("about")
+            ) {
+                SimpleCell("twocentstudios.com")
+                SimpleCell("@twocentstudios")
+            }
+            Section(header:
+                SimpleHeader("artist & album data")
+            ) {
+                SimpleCell("last.fm")
             }
         }
+        .listStyle(GroupedListStyle())
         .navigationTitle("settings")
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            SettingsView()
+        Group {
+            NavigationView {
+                SettingsView()
+            }
+            NavigationView {
+                SettingsView()
+            }
+            .preferredColorScheme(.dark)
         }
-    }
-}
-
-private struct CellButtonStyle: ButtonStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        configuration.label
-            .foregroundColor(!configuration.isPressed ? Color.blueDark : Color.whiteSubtle)
-            .background(!configuration.isPressed ? Color.whiteSubtle : Color.blueDark)
     }
 }

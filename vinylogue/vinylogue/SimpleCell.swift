@@ -8,15 +8,10 @@ struct SimpleHeader: View {
     }
 
     var body: some View {
-        HStack {
-            Text(label)
-                .font(.avnUltraLight(17))
-                .foregroundColor(.blueDark)
-                .padding(.leading, 20)
-                .padding(.top, 20)
-            Spacer()
-        }
-        .background(Color.whiteSubtle)
+        Text(label)
+            .font(.avnRegular(17))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
     }
 }
 
@@ -30,16 +25,10 @@ struct SimpleCell: View {
     }
 
     var body: some View {
-        Button(action: action) {
-            HStack {
-                Text(label)
-                    .font(.avnRegular(24))
-                    .padding(.leading, 20)
-                    .padding(.vertical, 6)
-                Spacer()
-            }
-        }
-        .buttonStyle(SimpleCellButtonStyle())
+        Text(label)
+            .font(.avnRegular(24))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 3)
     }
 }
 
@@ -53,23 +42,9 @@ struct LargeSimpleCell: View {
     }
 
     var body: some View {
-        Button(action: action) {
-            HStack {
-                Text(label)
-                    .font(.avnRegular(34))
-                    .padding(.leading, 20)
-                Spacer()
-            }
-        }
-        .buttonStyle(SimpleCellButtonStyle())
-    }
-}
-
-private struct SimpleCellButtonStyle: ButtonStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        configuration.label
-            .foregroundColor(!configuration.isPressed ? Color.blueDark : Color.whiteSubtle)
-            .background(!configuration.isPressed ? Color.whiteSubtle : Color.blueDark)
+        Text(label)
+            .font(.avnRegular(34))
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -93,4 +68,3 @@ struct LargeSimpleCell_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
-
