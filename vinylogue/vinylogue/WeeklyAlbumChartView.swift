@@ -19,20 +19,11 @@ struct WeeklyAlbumChartView: View {
     var body: some View {
         ZStack {
             if model.isLoading {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .overlay(
-                        VStack() {
-                            OffsetRecordLoadingView()
-                            Spacer()
-                        }
-                    )
+                OffsetRecordLoadingView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             } else if let error = model.error {
-                Rectangle()
-                    .foregroundColor(.clear)
-                    .overlay(
-                        ErrorRetryView(model: error)
-                    )
+                ErrorRetryView(model: error)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             } else {
                 ScrollView {
                     LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
@@ -69,7 +60,6 @@ struct WeeklyAlbumChartView: View {
         }
         .navigationTitle("ybsc's week 27 charts")
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color.whiteSubtle.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -78,8 +68,14 @@ struct WeeklyAlbumChartView_Previews: PreviewProvider {
     static let mockLoading = WeeklyAlbumChartView.Model(sections: [], error: nil, isLoading: true)
     static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
     static var previews: some View {
-        NavigationView {
-            WeeklyAlbumChartView(model: mock)
+        Group {
+            NavigationView {
+                WeeklyAlbumChartView(model: mockError)
+            }
+            NavigationView {
+                WeeklyAlbumChartView(model: mockError)
+            }
+            .preferredColorScheme(.dark)
         }
     }
 }
@@ -88,16 +84,14 @@ struct WeeklyAlbumChartHeaderView: View {
     let label: String
 
     var body: some View {
-        HStack {
-            Text(label)
-                .font(.avnMedium(19))
-                .foregroundColor(.gray(120))
-            Spacer()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 4)
-        .padding(.horizontal, 12)
-        .background(Color.bluePeri)
+        Text(label)
+            .font(.avnMedium(19))
+            .foregroundColor(Color(.secondaryLabel))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 12)
+            .padding(.bottom, 4)
+            .padding(.horizontal, 12)
+            .background(Color(.tertiarySystemBackground))
     }
 }
 
@@ -138,50 +132,26 @@ struct WeeklyAlbumChartCell: View {
                         )
                         .cornerRadius(2.0)
                     VStack {
-                        HStack {
-                            Text(model.artist.uppercased())
-                                .font(.avnUltraLight(12))
-                                .foregroundColor(.blueDark)
-                                .multilineTextAlignment(.leading)
-                                .shadow(
-                                    color: .whitea(0.8),
-                                    radius: 1,
-                                    x: 0,
-                                    y: -0.5
-                                )
-                                .padding(.bottom, -1)
-                            Spacer()
-                        }
-                        HStack {
-                            Text(model.album)
-                                .font(.avnRegular(16))
-                                .foregroundColor(.blueDark)
-                                .multilineTextAlignment(.leading)
-                                .shadow(
-                                    color: .blacka(0.25),
-                                    radius: 1,
-                                    x: 0,
-                                    y: 0.5
-                                )
-                                .padding(.top, -1)
-                            Spacer()
-                        }
+                        Text(model.artist.uppercased())
+                            .font(.avnUltraLight(12))
+                            .multilineTextAlignment(.leading)
+                            .padding(.bottom, -1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(model.album)
+                            .font(.avnRegular(16))
+                            .multilineTextAlignment(.leading)
+                            .padding(.top, -1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     VStack {
                         Text(model.plays)
                             .font(.avnRegular(28))
-                            .foregroundColor(.blueBold)
+                            .foregroundColor(Color(.secondaryLabel))
                             .lineLimit(1)
-                            .shadow(
-                                color: .whitea(0.8),
-                                radius: 1,
-                                x: 0,
-                                y: -0.5
-                            )
                             .padding(.bottom, -5)
                         Text("plays")
                             .font(.avnUltraLight(15))
-                            .foregroundColor(.gray(126))
+                            .foregroundColor(Color(.secondaryLabel))
                             .lineLimit(1)
                             .padding(.top, -5)
                     }
@@ -191,7 +161,7 @@ struct WeeklyAlbumChartCell: View {
                 .padding(.vertical, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
                 BottomBorderView()
             }
-            .background(Color.whiteSubtle)
+            .background(Color(.secondarySystemBackground))
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -199,8 +169,13 @@ struct WeeklyAlbumChartCell: View {
 
 struct WeeklyAlbumChartCell_Previews: PreviewProvider {
     static var previews: some View {
-        WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
-            .previewLayout(.sizeThatFits)
+        Group {
+            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
+                .previewLayout(.sizeThatFits)
+            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
+                .previewLayout(.sizeThatFits)
+                .preferredColorScheme(.dark)
+        }
     }
 }
 
@@ -208,17 +183,15 @@ struct WeeklyAlbumChartEmptyCell: View {
     var body: some View {
         VStack(spacing: 0) {
             TopBorderView()
-            HStack {
-                Spacer()
-                Text("no charts this week")
-                    .font(.avnUltraLight(18))
-                    .foregroundColor(.blueDark)
-                Spacer()
-            }
-            .padding(.vertical, 20)
-            .frame(minHeight: 100)
+            Text("no charts this week")
+                .font(.avnUltraLight(18))
+                .foregroundColor(Color(.secondaryLabel))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 20)
+                .frame(minHeight: 100)
             BottomBorderView()
         }
+        .background(Color(.secondarySystemBackground))
     }
 }
 
@@ -233,15 +206,13 @@ struct WeeklyAlbumChartLoadingCell: View {
     var body: some View {
         VStack(spacing: 0) {
             TopBorderView()
-            HStack {
-                Spacer()
-                ProgressView()
-                Spacer()
-            }
-            .padding(.vertical, 20)
-            .frame(minHeight: 100)
+            ProgressView()
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 20)
+                .frame(minHeight: 100)
             BottomBorderView()
         }
+        .background(Color(.secondarySystemBackground))
     }
 }
 
@@ -262,24 +233,16 @@ struct WeeklyAlbumChartErrorCell: View {
     var body: some View {
         VStack(spacing: 0) {
             TopBorderView()
-            VStack(spacing: 8) {
-                HStack {
-                    Spacer()
-                    Text("\(Image(systemName: "xmark.circle")) failed to fetch charts")
-                        .font(.avnRegular(18))
-                        .foregroundColor(.blueDark)
-                    Spacer()
-                }
+            VStack(spacing: 0) {
+                Text("\(Image(systemName: "xmark.circle")) failed to fetch charts")
+                    .font(.avnRegular(18))
+                    .frame(maxWidth: .infinity, alignment: .center)
                 if let action = action {
                     Button(action: action) {
                         Text("try again")
-                            .font(.avnMedium(14))
-                            .foregroundColor(.blueDark)
+                            .font(.avnDemiBold(20))
+                            .foregroundColor(.accentColor)
                             .padding(.all, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8.0)
-                                    .stroke(Color.blueDark)
-                            )
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
@@ -288,13 +251,19 @@ struct WeeklyAlbumChartErrorCell: View {
             .frame(minHeight: 100)
             BottomBorderView()
         }
+        .background(Color(.secondarySystemBackground))
     }
 }
 
 struct WeeklyAlbumChartErrorCell_Previews: PreviewProvider {
     static var previews: some View {
-        WeeklyAlbumChartErrorCell {}
-            .previewLayout(.sizeThatFits)
+        Group {
+            WeeklyAlbumChartErrorCell {}
+                .previewLayout(.sizeThatFits)
+            WeeklyAlbumChartErrorCell {}
+                .previewLayout(.sizeThatFits)
+                .preferredColorScheme(.dark)
+        }
     }
 }
 
@@ -319,29 +288,22 @@ struct ErrorRetryView: View {
                 Image(systemName: "xmark.circle")
                     .resizable()
                     .frame(width: 100, height: 100, alignment: .center)
-                    .foregroundColor(.blueDark)
                 Text(model.title)
                     .font(.avnMedium(27))
-                    .foregroundColor(.blueDark)
-                    .shadow(color: .white, radius: 1, x: 0, y: -0.5)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 6)
                 Text(model.subtitle)
                     .font(.avnRegular(13))
-                    .foregroundColor(.blueDark)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 12)
                 if let action = model.action {
                     Button(action: action) {
                         Text("try again")
-                            .font(.avnMedium(18))
-                            .foregroundColor(.bluePeri)
+                            .font(.avnDemiBold(20))
+                            .foregroundColor(.accentColor)
                             .padding(.all, 10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8.0)
-                                    .foregroundColor(.blueDark)
-                            )
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
             .padding(.all, 16)
@@ -350,10 +312,15 @@ struct ErrorRetryView: View {
 }
 
 struct ErrorRetryView_Previews: PreviewProvider {
-    static let mock = ErrorRetryView.Model(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.")
+    static let mock = ErrorRetryView.Model(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.", action: {})
     static var previews: some View {
-        ErrorRetryView(model: mock)
-            .previewLayout(.sizeThatFits)
+        Group {
+            ErrorRetryView(model: mock)
+                .previewLayout(.sizeThatFits)
+            ErrorRetryView(model: mock)
+                .previewLayout(.sizeThatFits)
+                .preferredColorScheme(.dark)
+        }
     }
 }
 
@@ -373,7 +340,7 @@ let mockSections: [WeeklyAlbumChartView.Model.Section] =
 private struct TopBorderView: View {
     var body: some View {
         Rectangle()
-            .foregroundColor(.whitea(0.8))
+            .foregroundColor(.whitea(0.2))
             .frame(height: 1)
     }
 }
