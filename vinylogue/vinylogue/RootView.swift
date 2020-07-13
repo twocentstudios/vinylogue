@@ -13,7 +13,9 @@ struct RootView: View {
                         viewStore.send(.loadUserFromDisk)
                     }
             } else if case .loggedOut = viewStore.userState {
-                LoginView(store: store.scope(state: { $0.userState }, action: AppAction.login))
+                IfLetStore(store.scope(state: { $0.userState.loginState }, action: AppAction.login)) {
+                    LoginView(store: $0)
+                }
             } else if case let .loggedIn(user) = viewStore.userState {
                 NavigationView {
                     FavoriteUsersListView(me: user.me, friends: user.friends)

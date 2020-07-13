@@ -16,9 +16,7 @@ struct LoginView: View {
         let isLoading: Bool
     }
 
-    // TODO: Composable architecture limitation
-    // TODO: This should be LoginState instead of UserState
-    let store: Store<UserState, LoginAction>
+    let store: Store<LoginState, LoginAction>
 
     var body: some View {
         WithViewStore(self.store.scope(state: { $0.view })) { viewStore in
@@ -59,9 +57,9 @@ struct LoginView: View {
 }
 
 struct LoginView_Previews: PreviewProvider {
-    static var store: Store<UserState, LoginAction> = {
+    static var store: Store<LoginState, LoginAction> = {
         Store(
-            initialState: UserState.loggedOut(.empty),
+            initialState: .empty,
             reducer: loginReducer,
             environment: .mock
         )
@@ -77,20 +75,16 @@ struct LoginView_Previews: PreviewProvider {
 
 // TODO: Composable architecture limitation
 // TODO: This should be an extension on LoginState
-extension UserState {
+extension LoginState {
     var view: LoginView.State {
         switch self {
-        case let .loggedOut(.input(text)):
+        case let .input(text):
             return .init(userName: text, isLoading: false)
-        case let .loggedOut(.verifying(text)):
+        case let .verifying(text):
             return .init(userName: text, isLoading: true)
-        case let .loggedOut(.verified(text)):
+        case let .verified(text):
             // TODO: replace loading spinner with green check when complete
             return .init(userName: text, isLoading: true)
-        case .loggedIn, .uninitialized:
-            // TODO: This path gets called with .loggedIn... but should it?
-//            assertionFailure("Unexpected state")
-            return .init(userName: "", isLoading: false)
         }
     }
 }

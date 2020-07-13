@@ -1,15 +1,21 @@
 import Combine
 import ComposableArchitecture
+import SwiftUI
 
 typealias Username = String
-struct User: Equatable {
+struct User: Equatable, Codable {
     let me: Username
     var friends: [Username]
     var settings: Bool = false // TODO:
-}
 
-struct UnverifiedUser: Equatable {
-    let me: Username
+    var editMode: EditMode = .inactive
+    var isLoadingFriends: Bool = false
+
+    enum CodingKeys: CodingKey {
+        case me
+        case friends
+        case settings
+    }
 }
 
 struct AppState: Equatable {
@@ -20,6 +26,18 @@ enum UserState: Equatable {
     case uninitialized
     case loggedOut(LoginState)
     case loggedIn(User)
+
+    var loginState: LoginState? {
+        get {
+            guard case let .loggedOut(value) = self else { return nil }
+            return value
+        }
+        set {
+            if let value = newValue {
+                self = .loggedOut(value)
+            }
+        }
+    }
 }
 
 enum AppAction: Equatable {
@@ -37,6 +55,11 @@ struct AppEnvironment {
 }
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
+    loginReducer.optional.pullback(
+        state: \.userState.loginState,
+        action: /AppAction.login,
+        environment: LoginEnvironment.init
+    ),
     Reducer { state, action, environment in
         switch action {
         case .loadUserFromDisk:
@@ -72,12 +95,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 environment.saveUserToDisk(user)
             }
         }
-    },
-    loginReducer.pullback(
-        state: \.userState,
-        action: /AppAction.login,
-        environment: LoginEnvironment.init
-    )
+    }
 )
 
 struct LastFMClient {
@@ -105,19 +123,17 @@ struct LoginEnvironment {
     let mainQueue: AnySchedulerOf<DispatchQueue>
     let verifyUsername: (String) -> Effect<Username, LoginError>
 }
-// TODO: ComposableArchitecture limitation:
-//       UserState should be LoginState once there's a way to pullback into an associated value
-//       We could then removed .loggedOut(...) from all the state cases
-let loginReducer = Reducer<UserState, LoginAction, LoginEnvironment> { state, action, environment in
+
+let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, action, environment in
     switch action {
     case let .textFieldChanged(text):
-        guard case .loggedOut(.input) = state else { assertionFailure("Unexpected state"); return .none }
-        state = .loggedOut(.input(text))
+        guard case .input = state else { assertionFailure("Unexpected state"); return .none }
+        state = .input(text)
         return .none
 
     case .startButtonTapped:
-        guard case let .loggedOut(.input(text)) = state else { assertionFailure("Unexpected state"); return .none }
-        state = .loggedOut(.verifying(text))
+        guard case let .input(text) = state else { assertionFailure("Unexpected state"); return .none }
+        state = .verifying(text)
 
         return environment.verifyUsername(text)
             .receive(on: environment.mainQueue)
@@ -125,17 +141,17 @@ let loginReducer = Reducer<UserState, LoginAction, LoginEnvironment> { state, ac
             .map(LoginAction.verificationResponse)
 
     case let .verificationResponse(result):
-        guard case let .loggedOut(.verifying(text)) = state else { assertionFailure("Unexpected state"); return .none }
+        guard case let .verifying(text) = state else { assertionFailure("Unexpected state"); return .none }
         switch result {
         case let .success(username):
-            state = .loggedOut(.verified(username))
+            state = .verified(username)
             return Effect(value: LoginAction.logIn(User(me: username, friends: [])))
                 .delay(for: .seconds(1.5), scheduler: environment.mainQueue)
                 .eraseToEffect()
 
         case let .failure(error):
             // TODO: show error
-            state = .loggedOut(.input(text))
+            state = .input(text)
             return .none
         }
 
@@ -143,7 +159,6 @@ let loginReducer = Reducer<UserState, LoginAction, LoginEnvironment> { state, ac
         return .none
     }
 }
-
 
 extension AppEnvironment {
     static let mockUser = AppEnvironment(
