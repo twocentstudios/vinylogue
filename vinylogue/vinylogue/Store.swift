@@ -175,3 +175,88 @@ extension LastFMClient {
         verifyUsername: { username in Effect(value: username) }
     )
 }
+
+enum FavoriteUsersAction: Equatable {
+    case editModeChanged(EditMode)
+    case deleteFriend(IndexSet)
+    case moveFriend(IndexSet, Int)
+    case importLastFMFriends
+    case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
+    case didTapMe
+    case logOut
+}
+
+struct FavoriteUsersError: Error, Equatable {}
+struct FavoriteUsersEnvironment {
+    let mainQueue: AnySchedulerOf<DispatchQueue>
+    let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
+}
+
+// TODO: ComposableArchitecture limitation:
+//       UserState should be FavoriteUsersState once there's a way to pullback into an associated value
+//       We could then removed .loggedIn(...) from all the state cases
+let favoriteUsersReducer = Reducer<UserState, FavoriteUsersAction, FavoriteUsersEnvironment> { state, action, environment in
+    switch action {
+    case let .editModeChanged(editMode):
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        user.editMode = editMode
+        state = .loggedIn(user) // TODO: is this needed?
+        return .none
+
+    case let .deleteFriend(indexSet):
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        guard user.editMode != .inactive,
+            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        user.friends.remove(atOffsets: indexSet)
+        state = .loggedIn(user) // TODO: is this needed?
+        return .none
+
+    case let .moveFriend(source, destination):
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        guard user.editMode != .inactive,
+            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        user.friends.move(fromOffsets: source, toOffset: destination)
+        state = .loggedIn(user) // TODO: is this needed?
+        return .none
+
+    case .importLastFMFriends:
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        guard user.editMode != .inactive,
+            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        user.isLoadingFriends = true
+        return environment.friendsForUsername(user.me)
+            .receive(on: environment.mainQueue)
+            .catchToEffect()
+            .map(FavoriteUsersAction.importLastFMFriendsResponse)
+
+    case let .importLastFMFriendsResponse(result):
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        guard user.editMode != .inactive,
+            user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        user.isLoadingFriends = false
+        switch result {
+        case let .success(friends):
+            var friendsToAdd = friends
+            friendsToAdd.removeAll(where: { user.friends.contains($0) })
+            user.friends.append(contentsOf: friendsToAdd)
+            state = .loggedIn(user) // TODO: is this needed?
+        case let .failure(error):
+            // TODO: surface error
+            break
+        }
+        return .none
+
+    case .didTapMe:
+        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
+        guard !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        if user.editMode == .inactive {
+            // open charts
+            return .none
+        } else {
+            return Effect(value: .logOut)
+        }
+
+    case .logOut:
+        return .none
+    }
+}
