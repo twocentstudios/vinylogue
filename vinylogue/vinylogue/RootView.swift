@@ -20,8 +20,7 @@ struct RootView: View {
             } else if case .favoriteUsers = viewStore.viewState {
                 IfLetStore(store.scope(state: { $0.favoriteUsersState }, action: AppAction.favoriteUsers)) { store in
                     NavigationView {
-                        FavoriteUsersListView(me: "TODO", friends: [])
-//                        FavoriteUsersListView(me: store.state.user.me, friends: store.state.user.friends)
+                        FavoriteUsersListView(store: store)
                     }
                 }
             } else {

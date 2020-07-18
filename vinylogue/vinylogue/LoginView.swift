@@ -61,7 +61,7 @@ struct LoginView_Previews: PreviewProvider {
         Store(
             initialState: .empty,
             reducer: loginReducer,
-            environment: .mock
+            environment: .mockFirstTime
         )
     }()
     static var previews: some View {
@@ -73,8 +73,6 @@ struct LoginView_Previews: PreviewProvider {
     }
 }
 
-// TODO: Composable architecture limitation
-// TODO: This should be an extension on LoginState
 extension LoginState {
     var view: LoginView.State {
         switch self {

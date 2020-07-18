@@ -13,6 +13,10 @@ struct User: Equatable, Codable {
     }
 }
 
+extension User {
+    static let mock = Self(me: "ybsc", friends: ["BobbyStompy", "slippysoup"], settings: .default)
+}
+
 struct Settings: Equatable, Codable {
     enum PlayCountFilter: String, Equatable, Codable {
         case off
@@ -96,12 +100,12 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     loginReducer.optional.pullback(
         state: \.loginState,
         action: /AppAction.login,
-        environment: LoginEnvironment.init
+        environment: { $0 }
     ),
     favoriteUsersReducer.optional.pullback(
         state: \.favoriteUsersState,
         action: /AppAction.favoriteUsers,
-        environment: FavoriteUsersEnvironment.init
+        environment: { $0 }
     ),
     Reducer { state, action, environment in
         switch action {
@@ -159,12 +163,7 @@ enum LoginAction: Equatable {
 
 struct LoginError: Error, Equatable {}
 
-struct LoginEnvironment {
-    let mainQueue: AnySchedulerOf<DispatchQueue>
-    let verifyUsername: (String) -> Effect<Username, LoginError>
-}
-
-let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, action, environment in
+let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment> { state, action, environment in
     switch action {
     case let .textFieldChanged(text):
         guard case .input = state else { assertionFailure("Unexpected state"); return .none }
@@ -175,7 +174,7 @@ let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, a
         guard case let .input(text) = state else { assertionFailure("Unexpected state"); return .none }
         state = .verifying(text)
 
-        return environment.verifyUsername(text)
+        return environment.lastFMClient.verifyUsername(text)
             .receive(on: environment.mainQueue)
             .catchToEffect()
             .map(LoginAction.verificationResponse)
@@ -216,15 +215,6 @@ extension AppEnvironment {
     )
 }
 
-extension LoginEnvironment {
-    static let mock: Self = .init(.mockUser)
-
-    init(_ environment: AppEnvironment) {
-        mainQueue = environment.mainQueue
-        verifyUsername = environment.lastFMClient.verifyUsername
-    }
-}
-
 extension LastFMClient {
     static let mock = LastFMClient(
         verifyUsername: { username in Effect(value: username) },
@@ -236,6 +226,27 @@ struct FavoriteUsersState: Equatable {
     var user: User
     var editMode: EditMode = .inactive
     var isLoadingFriends: Bool = false
+
+    enum ViewState: Equatable {
+        case settings(SettingsState)
+        case albumChart
+    }
+
+    var viewState: ViewState?
+
+    var settingsState: SettingsState? {
+        get {
+            guard case let .settings(state) = viewState else { return nil }
+            return state
+        }
+        set {
+            guard case .settings = viewState,
+                let newState = newValue else { return }
+
+            // settingsState is only allowed to modify settings.
+            user.settings = newState.user.settings
+        }
+    }
 }
 
 enum FavoriteUsersAction: Equatable {
@@ -245,79 +256,101 @@ enum FavoriteUsersAction: Equatable {
     case importLastFMFriends
     case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
     case didTapMe
-//    case didTapSettings
 //    case didTapFriend
 //    case showCharts(Username)
+    case didTapSettings
+    case settings(SettingsAction)
     case logOut
 }
 
 struct FavoriteUsersError: Error, Equatable {}
-struct FavoriteUsersEnvironment {
-    let mainQueue: AnySchedulerOf<DispatchQueue>
-    let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
-}
 
-extension FavoriteUsersEnvironment {
-    static let mock: Self = .init(.mockUser)
-
-    init(_ environment: AppEnvironment) {
-        mainQueue = environment.mainQueue
-        friendsForUsername = environment.lastFMClient.friendsForUsername
-    }
-}
-
-let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, FavoriteUsersEnvironment> { state, action, environment in
-    switch action {
-    case let .editModeChanged(editMode):
-        state.editMode = editMode
-        return .none
-
-    case let .deleteFriend(indexSet):
-        guard state.editMode != .inactive,
-            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.user.friends.remove(atOffsets: indexSet)
-        return .none
-
-    case let .moveFriend(source, destination):
-        guard state.editMode != .inactive,
-            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.user.friends.move(fromOffsets: source, toOffset: destination)
-        return .none
-
-    case .importLastFMFriends:
-        guard state.editMode != .inactive,
-            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.isLoadingFriends = true
-        return environment.friendsForUsername(state.user.me)
-            .receive(on: environment.mainQueue)
-            .catchToEffect()
-            .map(FavoriteUsersAction.importLastFMFriendsResponse)
-
-    case let .importLastFMFriendsResponse(result):
-        guard state.editMode != .inactive,
-            state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.isLoadingFriends = false
-        switch result {
-        case let .success(friends):
-            var friendsToAdd = friends
-            friendsToAdd.removeAll(where: { state.user.friends.contains($0) })
-            state.user.friends.append(contentsOf: friendsToAdd)
-        case let .failure(error):
-            // TODO: surface error
-            break
-        }
-        return .none
-
-    case .didTapMe:
-        guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        if state.editMode == .inactive {
-            // open charts
+let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppEnvironment>.combine(
+    settingsReducer.optional.pullback(
+        state: \.settingsState,
+        action: /FavoriteUsersAction.settings,
+        environment: { $0 }
+    ),
+    Reducer { state, action, environment in
+        switch action {
+        case let .editModeChanged(editMode):
+            state.editMode = editMode
             return .none
-        } else {
-            return Effect(value: .logOut)
-        }
 
-    case .logOut:
+        case let .deleteFriend(indexSet):
+            guard state.editMode != .inactive,
+                !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.user.friends.remove(atOffsets: indexSet)
+            return .none
+
+        case let .moveFriend(source, destination):
+            guard state.editMode != .inactive,
+                !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.user.friends.move(fromOffsets: source, toOffset: destination)
+            return .none
+
+        case .importLastFMFriends:
+            guard state.editMode != .inactive,
+                !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.isLoadingFriends = true
+            return environment.lastFMClient.friendsForUsername(state.user.me)
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map(FavoriteUsersAction.importLastFMFriendsResponse)
+
+        case let .importLastFMFriendsResponse(result):
+            guard state.editMode != .inactive,
+                state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.isLoadingFriends = false
+            switch result {
+            case let .success(friends):
+                var friendsToAdd = friends
+                friendsToAdd.removeAll(where: { state.user.friends.contains($0) })
+                state.user.friends.append(contentsOf: friendsToAdd)
+            case let .failure(error):
+                // TODO: surface error
+                break
+            }
+            return .none
+
+        case .didTapMe:
+            guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            if state.editMode == .inactive {
+                // open charts
+                return .none
+            } else {
+                return Effect(value: .logOut)
+            }
+
+        case .didTapSettings:
+            guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.viewState = .settings(SettingsState(user: state.user))
+            return .none
+
+        case .settings(.dismiss):
+            guard case .settings = state.viewState else { assertionFailure("Unexpected state"); return .none }
+            state.viewState = nil
+            return .none
+
+        case .settings:
+            return .none
+
+        case .logOut:
+            return .none
+        }
+    }
+)
+
+struct SettingsState: Equatable {
+    let user: User
+}
+enum SettingsAction: Equatable {
+    case dismiss
+}
+
+let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { state, action, environment in
+    switch action {
+    case .dismiss:
         return .none
     }
 }
