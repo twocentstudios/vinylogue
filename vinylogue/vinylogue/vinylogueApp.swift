@@ -7,7 +7,7 @@ struct vinylogueApp: App {
         WindowGroup {
             RootView(
                 store: Store(
-                    initialState: AppState(userState: UserState.uninitialized),
+                    initialState: AppState(userState: UserState.uninitialized, viewState: .startup),
                     reducer: appReducer,
                     environment: .mockFirstTime
                 ))

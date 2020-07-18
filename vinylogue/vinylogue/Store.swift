@@ -6,45 +6,79 @@ typealias Username = String
 struct User: Equatable, Codable {
     let me: Username
     var friends: [Username]
-    var settings: Bool = false // TODO:
+    var settings: Settings
 
-    var editMode: EditMode = .inactive
-    var isLoadingFriends: Bool = false
-
-    enum CodingKeys: CodingKey {
-        case me
-        case friends
-        case settings
+    static func new(me: Username) -> Self {
+        User(me: me, friends: [], settings: .default)
     }
+}
+
+struct Settings: Equatable, Codable {
+    enum PlayCountFilter: String, Equatable, Codable {
+        case off
+        case p1
+        case p2
+        case p4
+        case p8
+        case p16
+    }
+
+    let playCountFilter: PlayCountFilter
+
+    static let `default` = Self(playCountFilter: .off)
+}
+
+enum AppViewState: Equatable {
+    case startup
+    case login(LoginState)
+    case favoriteUsers(FavoriteUsersState)
 }
 
 struct AppState: Equatable {
     var userState: UserState
+
+    var viewState: AppViewState
+
+    var loginState: LoginState? {
+        get {
+            guard case let .login(state) = viewState else { return nil }
+            return state
+        }
+        set {
+            if let value = newValue,
+                case .login = viewState {
+                viewState = .login(value)
+            }
+        }
+    }
+
+    var favoriteUsersState: FavoriteUsersState? {
+        get {
+            guard case let .favoriteUsers(state) = viewState else { return nil }
+            return state
+        }
+        set {
+            guard case var .loggedIn(user) = userState,
+                case .favoriteUsers = viewState,
+                let state = newValue else { return }
+            user.friends = state.friends // favoriteUsers is only allowed to modify friends
+            userState = .loggedIn(user)
+            viewState = .favoriteUsers(state)
+        }
+    }
 }
 
 enum UserState: Equatable {
     case uninitialized
-    case loggedOut(LoginState)
+    case loggedOut
     case loggedIn(User)
-
-    var loginState: LoginState? {
-        get {
-            guard case let .loggedOut(value) = self else { return nil }
-            return value
-        }
-        set {
-            if let value = newValue {
-                self = .loggedOut(value)
-            }
-        }
-    }
 }
 
 enum AppAction: Equatable {
     case loadUserFromDisk
     case logOut
     case login(LoginAction)
-    case updateFriends([Username])
+    case favoriteUsers(FavoriteUsersAction)
 }
 
 struct AppEnvironment {
@@ -56,22 +90,29 @@ struct AppEnvironment {
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     loginReducer.optional.pullback(
-        state: \.userState.loginState,
+        state: \.loginState,
         action: /AppAction.login,
         environment: LoginEnvironment.init
+    ),
+    favoriteUsersReducer.optional.pullback(
+        state: \.favoriteUsersState,
+        action: /AppAction.favoriteUsers,
+        environment: FavoriteUsersEnvironment.init
     ),
     Reducer { state, action, environment in
         switch action {
         case .loadUserFromDisk:
             if let user = environment.loadUserFromDisk() {
                 state.userState = .loggedIn(user)
+                state.viewState = .favoriteUsers(.init(user))
             } else {
-                state.userState = .loggedOut(.empty)
+                state.userState = .loggedOut
+                state.viewState = .login(.empty)
             }
             return .none
 
         case .logOut:
-            state.userState = .loggedOut(.empty)
+            state.userState = .loggedOut
             return Effect.fireAndForget {
                 environment.saveUserToDisk(nil)
             }
@@ -85,21 +126,16 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .login:
             return .none
 
-        case let .updateFriends(friends):
-            guard case let .loggedIn(user) = state.userState else {
-                assertionFailure()
-                return .none
-            }
-            state.userState = .loggedIn(user)
-            return Effect.fireAndForget {
-                environment.saveUserToDisk(user)
-            }
+        case .favoriteUsers:
+            // TODO:
+            return .none
         }
     }
 )
 
 struct LastFMClient {
     let verifyUsername: (String) -> Effect<Username, LoginError>
+    let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
 }
 
 enum LoginState: Equatable {
@@ -145,7 +181,7 @@ let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> { state, a
         switch result {
         case let .success(username):
             state = .verified(username)
-            return Effect(value: LoginAction.logIn(User(me: username, friends: [])))
+            return Effect(value: LoginAction.logIn(User.new(me: username)))
                 .delay(for: .seconds(1.5), scheduler: environment.mainQueue)
                 .eraseToEffect()
 
@@ -164,7 +200,7 @@ extension AppEnvironment {
     static let mockUser = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .mock,
-        loadUserFromDisk: { User(me: "ybsc", friends: []) },
+        loadUserFromDisk: { User.new(me: "ybsc") },
         saveUserToDisk: { _ in }
     )
 
@@ -187,8 +223,23 @@ extension LoginEnvironment {
 
 extension LastFMClient {
     static let mock = LastFMClient(
-        verifyUsername: { username in Effect(value: username) }
+        verifyUsername: { username in Effect(value: username) },
+        friendsForUsername: { username in Effect(value: []) }
     )
+}
+
+struct FavoriteUsersState: Equatable {
+    let me: Username
+    var friends: [Username]
+    var editMode: EditMode = .inactive
+    var isLoadingFriends: Bool = false
+}
+
+extension FavoriteUsersState {
+    init(_ user: User) {
+        me = user.me
+        friends = user.friends
+    }
 }
 
 enum FavoriteUsersAction: Equatable {
@@ -198,6 +249,9 @@ enum FavoriteUsersAction: Equatable {
     case importLastFMFriends
     case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
     case didTapMe
+//    case didTapSettings
+//    case didTapFriend
+//    case showCharts(Username)
     case logOut
 }
 
@@ -207,54 +261,51 @@ struct FavoriteUsersEnvironment {
     let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
 }
 
-// TODO: ComposableArchitecture limitation:
-//       UserState should be FavoriteUsersState once there's a way to pullback into an associated value
-//       We could then removed .loggedIn(...) from all the state cases
-let favoriteUsersReducer = Reducer<UserState, FavoriteUsersAction, FavoriteUsersEnvironment> { state, action, environment in
+extension FavoriteUsersEnvironment {
+    static let mock: Self = .init(.mockUser)
+
+    init(_ environment: AppEnvironment) {
+        mainQueue = environment.mainQueue
+        friendsForUsername = environment.lastFMClient.friendsForUsername
+    }
+}
+
+let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, FavoriteUsersEnvironment> { state, action, environment in
     switch action {
     case let .editModeChanged(editMode):
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        user.editMode = editMode
-        state = .loggedIn(user) // TODO: is this needed?
+        state.editMode = editMode
         return .none
 
     case let .deleteFriend(indexSet):
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        guard user.editMode != .inactive,
-            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        user.friends.remove(atOffsets: indexSet)
-        state = .loggedIn(user) // TODO: is this needed?
+        guard state.editMode != .inactive,
+            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        state.friends.remove(atOffsets: indexSet)
         return .none
 
     case let .moveFriend(source, destination):
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        guard user.editMode != .inactive,
-            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        user.friends.move(fromOffsets: source, toOffset: destination)
-        state = .loggedIn(user) // TODO: is this needed?
+        guard state.editMode != .inactive,
+            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        state.friends.move(fromOffsets: source, toOffset: destination)
         return .none
 
     case .importLastFMFriends:
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        guard user.editMode != .inactive,
-            !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        user.isLoadingFriends = true
-        return environment.friendsForUsername(user.me)
+        guard state.editMode != .inactive,
+            !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        state.isLoadingFriends = true
+        return environment.friendsForUsername(state.me)
             .receive(on: environment.mainQueue)
             .catchToEffect()
             .map(FavoriteUsersAction.importLastFMFriendsResponse)
 
     case let .importLastFMFriendsResponse(result):
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        guard user.editMode != .inactive,
-            user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        user.isLoadingFriends = false
+        guard state.editMode != .inactive,
+            state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        state.isLoadingFriends = false
         switch result {
         case let .success(friends):
             var friendsToAdd = friends
-            friendsToAdd.removeAll(where: { user.friends.contains($0) })
-            user.friends.append(contentsOf: friendsToAdd)
-            state = .loggedIn(user) // TODO: is this needed?
+            friendsToAdd.removeAll(where: { state.friends.contains($0) })
+            state.friends.append(contentsOf: friendsToAdd)
         case let .failure(error):
             // TODO: surface error
             break
@@ -262,9 +313,8 @@ let favoriteUsersReducer = Reducer<UserState, FavoriteUsersAction, FavoriteUsers
         return .none
 
     case .didTapMe:
-        guard case var .loggedIn(user) = state else { assertionFailure("Unexpected state"); return .none }
-        guard !user.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        if user.editMode == .inactive {
+        guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+        if state.editMode == .inactive {
             // open charts
             return .none
         } else {

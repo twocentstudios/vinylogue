@@ -7,18 +7,22 @@ struct RootView: View {
     var body: some View {
         WithViewStore(self.store) { viewStore in
             // TODO: using `switch` with a Store or ViewStore breaks the compiler
-            if case .uninitialized = viewStore.userState {
+
+            if case .startup = viewStore.viewState {
                 ProgressView()
                     .onAppear {
                         viewStore.send(.loadUserFromDisk)
                     }
-            } else if case .loggedOut = viewStore.userState {
-                IfLetStore(store.scope(state: { $0.userState.loginState }, action: AppAction.login)) {
+            } else if case .login = viewStore.viewState {
+                IfLetStore(store.scope(state: { $0.loginState }, action: AppAction.login)) {
                     LoginView(store: $0)
                 }
-            } else if case let .loggedIn(user) = viewStore.userState {
-                NavigationView {
-                    FavoriteUsersListView(me: user.me, friends: user.friends)
+            } else if case .favoriteUsers = viewStore.viewState {
+                IfLetStore(store.scope(state: { $0.favoriteUsersState }, action: AppAction.favoriteUsers)) { store in
+                    NavigationView {
+                        FavoriteUsersListView(me: "TODO", friends: [])
+//                        FavoriteUsersListView(me: store.state.user.me, friends: store.state.user.friends)
+                    }
                 }
             } else {
                 fatalError()
@@ -37,7 +41,7 @@ struct RootView_Previews: PreviewProvider {
     static var previews: some View {
         RootView(
             store: Store(
-                initialState: AppState(userState: UserState.uninitialized),
+                initialState: AppState(userState: UserState.uninitialized, viewState: .startup),
                 reducer: appReducer,
                 environment: .mockFirstTime
             ))
