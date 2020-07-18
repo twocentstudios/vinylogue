@@ -61,7 +61,11 @@ struct AppState: Equatable {
             guard case var .loggedIn(user) = userState,
                 case .favoriteUsers = viewState,
                 let state = newValue else { return }
-            user.friends = state.friends // favoriteUsers is only allowed to modify friends
+
+            // favoriteUsers is only allowed to modify settings or friends
+            user.friends = state.user.friends
+            user.settings = state.user.settings
+
             userState = .loggedIn(user)
             viewState = .favoriteUsers(state)
         }
@@ -104,7 +108,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .loadUserFromDisk:
             if let user = environment.loadUserFromDisk() {
                 state.userState = .loggedIn(user)
-                state.viewState = .favoriteUsers(.init(user))
+                state.viewState = .favoriteUsers(.init(user: user))
             } else {
                 state.userState = .loggedOut
                 state.viewState = .login(.empty)
@@ -229,17 +233,9 @@ extension LastFMClient {
 }
 
 struct FavoriteUsersState: Equatable {
-    let me: Username
-    var friends: [Username]
+    var user: User
     var editMode: EditMode = .inactive
     var isLoadingFriends: Bool = false
-}
-
-extension FavoriteUsersState {
-    init(_ user: User) {
-        me = user.me
-        friends = user.friends
-    }
 }
 
 enum FavoriteUsersAction: Equatable {
@@ -279,20 +275,20 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, Favo
     case let .deleteFriend(indexSet):
         guard state.editMode != .inactive,
             !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.friends.remove(atOffsets: indexSet)
+        state.user.friends.remove(atOffsets: indexSet)
         return .none
 
     case let .moveFriend(source, destination):
         guard state.editMode != .inactive,
             !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-        state.friends.move(fromOffsets: source, toOffset: destination)
+        state.user.friends.move(fromOffsets: source, toOffset: destination)
         return .none
 
     case .importLastFMFriends:
         guard state.editMode != .inactive,
             !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
         state.isLoadingFriends = true
-        return environment.friendsForUsername(state.me)
+        return environment.friendsForUsername(state.user.me)
             .receive(on: environment.mainQueue)
             .catchToEffect()
             .map(FavoriteUsersAction.importLastFMFriendsResponse)
@@ -304,8 +300,8 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, Favo
         switch result {
         case let .success(friends):
             var friendsToAdd = friends
-            friendsToAdd.removeAll(where: { state.friends.contains($0) })
-            state.friends.append(contentsOf: friendsToAdd)
+            friendsToAdd.removeAll(where: { state.user.friends.contains($0) })
+            state.user.friends.append(contentsOf: friendsToAdd)
         case let .failure(error):
             // TODO: surface error
             break
