@@ -5,6 +5,7 @@ struct FavoriteUsersListView: View {
     struct State: Equatable {
         let me: String
         let friends: [String]
+        let isSettingsActive: Bool
         // TODO: add friends button / loading
     }
 
@@ -33,10 +34,19 @@ struct FavoriteUsersListView: View {
             .listStyle(GroupedListStyle())
             .navigationTitle("scrobblers")
             .navigationBarItems(
-                leading: Button {
-                    viewStore.send(.didTapSettings)
-                    print("settings")
-                } label: {
+                leading: NavigationLink(
+                    destination: IfLetStore(
+                        self.store.scope(
+                            state: \.settingsState,
+                            action: FavoriteUsersAction.settings
+                        ),
+                        then: SettingsView.init(store:)
+                    ),
+                    isActive: viewStore.binding(
+                        get: \.isSettingsActive,
+                        send: FavoriteUsersAction.setSettings(isActive:)
+                    )
+                ) {
                     Image("settings")
                         .renderingMode(.original)
                 },
@@ -46,7 +56,7 @@ struct FavoriteUsersListView: View {
     }
 }
 
- struct FavoriteUsersListView_Previews: PreviewProvider {
+struct FavoriteUsersListView_Previews: PreviewProvider {
     static let me = "ybsc"
     static let friends = ["BobbyStompy", "slippydrums", "esheikh"]
     static var store: Store<FavoriteUsersState, FavoriteUsersAction> = {
@@ -67,10 +77,14 @@ struct FavoriteUsersListView: View {
             }
         }
     }
- }
+}
 
 extension FavoriteUsersState {
     var view: FavoriteUsersListView.State {
-        .init(me: user.me, friends: user.friends)
+        .init(
+            me: user.me,
+            friends: user.friends,
+            isSettingsActive: settingsState != nil
+        )
     }
 }

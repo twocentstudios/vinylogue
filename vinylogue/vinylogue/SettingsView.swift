@@ -1,6 +1,9 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct SettingsView: View {
+    let store: Store<SettingsState, SettingsAction>
+
     var body: some View {
         List {
             Section(header:
@@ -32,16 +35,16 @@ struct SettingsView: View {
     }
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            NavigationView {
-                SettingsView()
-            }
-            NavigationView {
-                SettingsView()
-            }
-            .preferredColorScheme(.dark)
-        }
-    }
-}
+// struct SettingsView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Group {
+//            NavigationView {
+//                SettingsView()
+//            }
+//            NavigationView {
+//                SettingsView()
+//            }
+//            .preferredColorScheme(.dark)
+//        }
+//    }
+// }
