@@ -258,7 +258,7 @@ enum FavoriteUsersAction: Equatable {
     case didTapMe
 //    case didTapFriend
 //    case showCharts(Username)
-    case setSettings(isActive: Bool)
+    case setSettingsView(isActive: Bool)
     case settings(SettingsAction)
     case logOut
 }
@@ -322,12 +322,12 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
                 return Effect(value: .logOut)
             }
 
-        case .setSettings(isActive: true):
+        case .setSettingsView(isActive: true):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
             state.viewState = .settings(SettingsState(user: state.user))
             return .none
 
-        case .setSettings(isActive: false):
+        case .setSettingsView(isActive: false):
             // TODO: this action is sent twice in a row (I don't know why), which asserts the line below.
             // guard case .settings = state.viewState else { assertionFailure("Unexpected state"); return .none }
             state.viewState = nil
