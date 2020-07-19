@@ -49,25 +49,22 @@ struct FavoriteUsersListView: View {
                     header: SimpleHeader("friends")
                 ) {
                     ForEach(viewStore.friends, id: \.self) { friend in
-                        if viewStore.isEditingFriends {
-                            SimpleCell(friend)
-                        } else {
-                            NavigationLink(
-                                destination: IfLetStore(
-                                    self.store.scope(
-                                        state: \.weeklyAlbumChartState,
-                                        action: FavoriteUsersAction.weeklyAlbumChart
-                                    ),
-                                    then: WeeklyAlbumChartView.init(store:)
+                        NavigationLink(
+                            destination: IfLetStore(
+                                self.store.scope(
+                                    state: \.weeklyAlbumChartState,
+                                    action: FavoriteUsersAction.weeklyAlbumChart
                                 ),
-                                isActive: viewStore.binding(
-                                    get: { $0.weeklyAlbumChartViewUsername == friend },
-                                    send: { FavoriteUsersAction.setFriendWeeklyAlbumChartView(isActive: $0, username: friend) }
-                                )
-                            ) {
-                                SimpleCell(friend)
-                            }
+                                then: WeeklyAlbumChartView.init(store:)
+                            ),
+                            isActive: viewStore.binding(
+                                get: { $0.weeklyAlbumChartViewUsername == friend },
+                                send: { FavoriteUsersAction.setFriendWeeklyAlbumChartView(isActive: $0, username: friend) }
+                            )
+                        ) {
+                            SimpleCell(friend)
                         }
+                        .disabled(viewStore.isEditingFriends)
                     }
                     .onDelete { viewStore.send(.deleteFriend($0)) }
                     .onMove { viewStore.send(.moveFriend($0, $1)) }
