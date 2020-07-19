@@ -44,7 +44,7 @@ struct FavoriteUsersListView: View {
                     ),
                     isActive: viewStore.binding(
                         get: \.isSettingsActive,
-                        send: FavoriteUsersAction.setSettings(isActive:)
+                        send: FavoriteUsersAction.setSettingsView(isActive:)
                     )
                 ) {
                     Image("settings")
