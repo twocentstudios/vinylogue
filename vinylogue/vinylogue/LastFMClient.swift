@@ -3,11 +3,6 @@ import ComposableArchitecture
 import Foundation
 
 struct LastFMClient {
-    let verifyUsername: (String) -> Effect<Username, LoginError>
-    let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
-}
-
-struct LastFMClient2 {
     let verifyUsername: (String) -> Effect<Username, Error>
     let friendsForUsername: (Username) -> Effect<[Username], Error>
     let weeklyChartList: (Username) -> Effect<LastFM.WeeklyChartList, Error>
@@ -15,7 +10,7 @@ struct LastFMClient2 {
     let album: (Username, LastFM.ArtistStub, LastFM.AlbumStub) -> Effect<LastFM.Album, Error>
 }
 
-extension LastFMClient2 {
+extension LastFMClient {
     static let live = Self(
         verifyUsername: { (username: String) -> Effect<Username, Error> in
             let request = LastFM.GetUserRequest(username: username)
@@ -80,7 +75,7 @@ extension LastFMClient2 {
     }
 }
 
-extension LastFMClient2 {
+extension LastFMClient {
     enum Error: Equatable, Swift.Error {
         case api(LastFM.Error)
         case system(URLError)
@@ -196,7 +191,7 @@ extension LastFM {
     }
 
     struct GetFriendsResponse: Equatable, Decodable {
-        let friends: [FriendUser]
+        let friends: [User]
 
         enum CodingKeys: String, CodingKey {
             case friends
@@ -209,7 +204,7 @@ extension LastFM {
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             let friendsContainer = try values.nestedContainer(keyedBy: FriendsKeys.self, forKey: .friends)
-            friends = try friendsContainer.decode([FriendUser].self, forKey: .user)
+            friends = try friendsContainer.decode([User].self, forKey: .user)
         }
     }
 
@@ -232,14 +227,6 @@ extension LastFM {
 
 extension LastFM {
     struct User: Equatable, Decodable {
-        let username: String
-
-        enum CodingKeys: String, CodingKey {
-            case username = "user"
-        }
-    }
-
-    struct FriendUser: Equatable, Decodable {
         let username: String
 
         enum CodingKeys: String, CodingKey {
@@ -455,7 +442,7 @@ extension LastFM {
 }
 
 #if DEBUG
-extension LastFMClient2 {
+extension LastFMClient {
     static let mock = Self(
         verifyUsername: { (username: String) -> Effect<Username, Error> in
             let response: Effect<LastFM.GetUserResponse, Error> = mockJsonFetch(LastFM.user_getInfo_json)
@@ -487,9 +474,13 @@ extension LastFMClient2 {
                     return error
                 } else if let error = error as? URLError {
                     return Error.system(error)
+                } else if let error = error as? DecodingError {
+                    print(error)
+                    return Error.decoding(error.localizedDescription)
                 }
                 return Error.unknown
             }
+//            .delay(for: .seconds(1.5), scheduler: DispatchQueue.main.eraseToAnyScheduler()) // TODO: Testing only
             .eraseToEffect()
     }
 }

@@ -158,7 +158,7 @@ enum LoginState: Equatable {
 enum LoginAction: Equatable {
     case textFieldChanged(String)
     case startButtonTapped
-    case verificationResponse(Result<Username, LoginError>)
+    case verificationResponse(Result<Username, LastFMClient.Error>)
     case logIn(User)
 }
 
@@ -186,8 +186,6 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment> { state, act
         case let .success(username):
             state = .verified(username)
             return Effect(value: LoginAction.logIn(User.new(me: username)))
-                .delay(for: .seconds(1.5), scheduler: environment.mainQueue) // TODO
-                .eraseToEffect()
 
         case let .failure(error):
             // TODO: show error
@@ -213,13 +211,6 @@ extension AppEnvironment {
         lastFMClient: .mock,
         loadUserFromDisk: { nil },
         saveUserToDisk: { _ in }
-    )
-}
-
-extension LastFMClient {
-    static let mock = LastFMClient(
-        verifyUsername: { username in Effect(value: username) },
-        friendsForUsername: { username in Effect(value: ["BobbyStompy", "slippydrums", "esheikh"]) }
     )
 }
 
@@ -268,7 +259,7 @@ enum FavoriteUsersAction: Equatable {
     case deleteFriend(IndexSet)
     case moveFriend(IndexSet, Int)
     case importLastFMFriends
-    case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
+    case importLastFMFriendsResponse(Result<[Username], LastFMClient.Error>)
     case setFriendWeeklyAlbumChartView(isActive: Bool, username: Username)
     case setMeWeeklyAlbumChartView(isActive: Bool)
     case setWeeklyAlbumChartView(isActive: Bool, username: Username)
@@ -309,7 +300,6 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
                 !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
             state.isLoadingFriends = true
             return environment.lastFMClient.friendsForUsername(state.user.me)
-                .delay(for: .seconds(1.5), scheduler: environment.mainQueue) // TODO
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(FavoriteUsersAction.importLastFMFriendsResponse)
