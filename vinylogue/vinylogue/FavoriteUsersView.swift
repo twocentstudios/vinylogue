@@ -11,7 +11,7 @@ struct FavoriteUsersListView: View {
         let isLogoutButtonActive: Bool
         let isEditingFriends: Bool
         let editMode: EditMode
-        // TODO: add friends button / loading
+        let isLoadingFriends: Bool
     }
 
     let store: Store<FavoriteUsersState, FavoriteUsersAction>
@@ -21,12 +21,9 @@ struct FavoriteUsersListView: View {
             List {
                 Section(header: SimpleHeader("me")) {
                     if viewStore.isLogoutButtonActive {
-                        Button(action: { viewStore.send(.logOut) }) {
-                            // TODO: this button only extends to the width of the text
-                            LargeSimpleCell("log out")
-                                .foregroundColor(Color(.systemRed))
+                        ButtonSimpleCell("log out", isDestructive: true) {
+                            viewStore.send(.logOut)
                         }
-                        .buttonStyle(PlainButtonStyle())
                     } else {
                         NavigationLink(
                             destination: IfLetStore(
@@ -68,6 +65,11 @@ struct FavoriteUsersListView: View {
                     }
                     .onDelete { viewStore.send(.deleteFriend($0)) }
                     .onMove { viewStore.send(.moveFriend($0, $1)) }
+                    if viewStore.isEditingFriends {
+                        ButtonSimpleCell("import friends") {
+                            viewStore.send(.importLastFMFriends)
+                        }
+                    }
                 }
             }
             .listStyle(GroupedListStyle())
@@ -95,6 +97,7 @@ struct FavoriteUsersListView: View {
                 \.editMode,
                 viewStore.binding(get: { $0.editMode }, send: FavoriteUsersAction.editModeChanged)
             )
+            .disabled(viewStore.isLoadingFriends)
         }
     }
 }
@@ -132,7 +135,8 @@ extension FavoriteUsersState {
             weeklyAlbumChartViewUsername: weeklyAlbumChartState?.username,
             isLogoutButtonActive: editMode == .active,
             isEditingFriends: editMode != .inactive,
-            editMode: editMode
+            editMode: editMode,
+            isLoadingFriends: isLoadingFriends
         )
     }
 }

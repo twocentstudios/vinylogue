@@ -17,11 +17,9 @@ struct SimpleHeader: View {
 
 struct SimpleCell: View {
     let label: String
-    let action: () -> ()
 
-    init(_ label: String, action: @escaping () -> () = {}) {
+    init(_ label: String) {
         self.label = label
-        self.action = action
     }
 
     var body: some View {
@@ -34,17 +32,39 @@ struct SimpleCell: View {
 
 struct LargeSimpleCell: View {
     let label: String
-    let action: () -> ()
 
-    init(_ label: String, action: @escaping () -> () = {}) {
+    init(_ label: String) {
         self.label = label
-        self.action = action
     }
 
     var body: some View {
         Text(label)
             .font(.avnRegular(34))
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct ButtonSimpleCell: View {
+    let label: String
+    let isDestructive: Bool
+    let action: () -> ()
+
+    init(_ label: String, isDestructive: Bool = false, action: @escaping () -> () = {}) {
+        self.label = label
+        self.isDestructive = isDestructive
+        self.action = action
+    }
+
+    var body: some View {
+        // TODO: this button only extends to the width of the text
+        Button(action: action) {
+            Text(label)
+                .font(.avnRegular(24))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 3)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .foregroundColor(isDestructive ? Color(.systemRed) : .accentColor)
     }
 }
 
@@ -65,6 +85,13 @@ struct SimpleCell_Previews: PreviewProvider {
 struct LargeSimpleCell_Previews: PreviewProvider {
     static var previews: some View {
         LargeSimpleCell("ybsc")
+            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct ButtonSimpleCell_Previews: PreviewProvider {
+    static var previews: some View {
+        ButtonSimpleCell("ybsc")
             .previewLayout(.sizeThatFits)
     }
 }
