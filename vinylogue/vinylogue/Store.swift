@@ -199,6 +199,13 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment> { state, act
 }
 
 extension AppEnvironment {
+    static let live = AppEnvironment(
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        lastFMClient: .live,
+        loadUserFromDisk: { nil },
+        saveUserToDisk: { _ in }
+    )
+
     static let mockUser = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .mock,
