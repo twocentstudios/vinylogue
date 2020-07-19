@@ -3,10 +3,11 @@ import SwiftUI
 
 struct FavoriteUsersListView: View {
     struct Model: Equatable {
-        let me: String
-        let friends: [String]
+        let me: Username
+        let friends: [Username]
         let isSettingsActive: Bool
         let isWeeklyAlbumChartActive: Bool
+        let weeklyAlbumChartViewUsername: Username?
         let isLogoutButtonActive: Bool
         let editMode: EditMode
         // TODO: add friends button / loading
@@ -35,7 +36,7 @@ struct FavoriteUsersListView: View {
                                 then: WeeklyAlbumChartView.init(store:)
                             ),
                             isActive: viewStore.binding(
-                                get: \.isWeeklyAlbumChartActive,
+                                get: { $0.weeklyAlbumChartViewUsername == $0.me },
                                 send: FavoriteUsersAction.setMeWeeklyAlbumChartView(isActive:)
                             )
                         ) {
@@ -47,7 +48,21 @@ struct FavoriteUsersListView: View {
                     header: SimpleHeader("friends")
                 ) {
                     ForEach(viewStore.friends, id: \.self) { friend in
-                        SimpleCell(friend)
+                        NavigationLink(
+                            destination: IfLetStore(
+                                self.store.scope(
+                                    state: \.weeklyAlbumChartState,
+                                    action: FavoriteUsersAction.weeklyAlbumChart
+                                ),
+                                then: WeeklyAlbumChartView.init(store:)
+                            ),
+                            isActive: viewStore.binding(
+                                get: { $0.weeklyAlbumChartViewUsername == friend },
+                                send: { FavoriteUsersAction.setFriendWeeklyAlbumChartView(isActive: $0, username: friend) }
+                            )
+                        ) {
+                            SimpleCell(friend)
+                        }
                     }
                     .onDelete { indexSet in
                         print(indexSet)
@@ -116,6 +131,7 @@ extension FavoriteUsersState {
             friends: user.friends,
             isSettingsActive: settingsState != nil,
             isWeeklyAlbumChartActive: weeklyAlbumChartState != nil,
+            weeklyAlbumChartViewUsername: weeklyAlbumChartState?.username,
             isLogoutButtonActive: editMode == .active,
             editMode: editMode
         )

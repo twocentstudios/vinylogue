@@ -209,7 +209,7 @@ extension AppEnvironment {
     static let mockUser = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .mock,
-        loadUserFromDisk: { User.new(me: "ybsc") },
+        loadUserFromDisk: { User.mock },
         saveUserToDisk: { _ in }
     )
 
@@ -274,7 +274,7 @@ enum FavoriteUsersAction: Equatable {
     case moveFriend(IndexSet, Int)
     case importLastFMFriends
     case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
-//    case didTapFriend
+    case setFriendWeeklyAlbumChartView(isActive: Bool, username: Username)
     case setMeWeeklyAlbumChartView(isActive: Bool)
     case setWeeklyAlbumChartView(isActive: Bool, username: Username)
     case weeklyAlbumChart(WeeklyAlbumChartAction)
@@ -334,8 +334,10 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
             return .none
 
         case let .setMeWeeklyAlbumChartView(isActive):
-            guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
             return Effect(value: .setWeeklyAlbumChartView(isActive: isActive, username: state.user.me))
+
+        case let .setFriendWeeklyAlbumChartView(isActive, username):
+            return Effect(value: .setWeeklyAlbumChartView(isActive: isActive, username: username))
 
         case let .setWeeklyAlbumChartView(isActive: true, username):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
