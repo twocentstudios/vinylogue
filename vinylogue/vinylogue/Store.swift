@@ -58,8 +58,9 @@ struct AppState: Equatable {
 
     var favoriteUsersState: FavoriteUsersState? {
         get {
-            guard case let .favoriteUsers(state) = viewState else { return nil }
-            return state
+            guard case let .loggedIn(user) = userState,
+                case let .favoriteUsers(state) = viewState else { return nil }
+            return .init(user: user, editMode: state.editMode, isLoadingFriends: state.isLoadingFriends, viewState: state.viewState)
         }
         set {
             guard case var .loggedIn(user) = userState,
