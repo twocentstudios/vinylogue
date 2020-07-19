@@ -11,6 +11,17 @@ struct LastFMClient {
 }
 
 extension LastFMClient {
+    enum Error: Equatable, Swift.Error {
+        case api(LastFM.Error)
+        case system(URLError)
+        case http(Int)
+        case badResponse
+        case unknown
+        case decoding(String)
+    }
+}
+
+extension LastFMClient {
     static let live = Self(
         verifyUsername: { (username: String) -> Effect<Username, Error> in
             let request = LastFM.GetUserRequest(username: username)
@@ -72,17 +83,6 @@ extension LastFMClient {
                 return Error.unknown
             }
             .eraseToEffect()
-    }
-}
-
-extension LastFMClient {
-    enum Error: Equatable, Swift.Error {
-        case api(LastFM.Error)
-        case system(URLError)
-        case http(Int)
-        case badResponse
-        case unknown
-        case decoding(String)
     }
 }
 
