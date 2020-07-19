@@ -122,12 +122,14 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
 
         case .logOut:
             state.userState = .loggedOut
+            state.viewState = .login(.empty)
             return Effect.fireAndForget {
                 environment.saveUserToDisk(nil)
             }
 
         case let .login(.logIn(user)):
             state.userState = .loggedIn(user)
+            state.viewState = .favoriteUsers(.init(user: user))
             return Effect.fireAndForget {
                 environment.saveUserToDisk(user)
             }
