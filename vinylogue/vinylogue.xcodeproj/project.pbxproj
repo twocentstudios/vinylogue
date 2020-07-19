@@ -10,6 +10,7 @@
 		0924C35224BB31FA002855E3 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0924C35124BB31FA002855E3 /* Store.swift */; };
 		0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */; };
 		0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */; };
+		097377A224C4457A001DD6E1 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097377A124C4457A001DD6E1 /* LastFMClient.swift */; };
 		09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 09B7EA2924BB185D00E8328B /* ComposableArchitecture */; };
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
 		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
@@ -46,6 +47,7 @@
 		0924C35124BB31FA002855E3 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 		0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonViews.swift; sourceTree = "<group>"; };
+		097377A124C4457A001DD6E1 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
 		09F1733D24ACC72A000E2B6B /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09F1734024ACC72A000E2B6B /* vinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = vinylogueApp.swift; sourceTree = "<group>"; };
 		09F1734224ACC72A000E2B6B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				09F1737324ACF176000E2B6B /* SimpleCell.swift */,
 				0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */,
 				09F1736B24ACDA79000E2B6B /* Style.swift */,
+				097377A124C4457A001DD6E1 /* LastFMClient.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
 				09F1734624ACC72B000E2B6B /* Preview Content */,
@@ -297,6 +300,7 @@
 				09F1737024ACDB75000E2B6B /* FavoriteUsersView.swift in Sources */,
 				0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */,
 				09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */,
+				097377A224C4457A001DD6E1 /* LastFMClient.swift in Sources */,
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,
 				0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */,

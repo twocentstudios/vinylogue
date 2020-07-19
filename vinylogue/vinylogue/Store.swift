@@ -147,11 +147,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     }
 )
 
-struct LastFMClient {
-    let verifyUsername: (String) -> Effect<Username, LoginError>
-    let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
-}
-
 enum LoginState: Equatable {
     case input(String)
     case verifying(String)
