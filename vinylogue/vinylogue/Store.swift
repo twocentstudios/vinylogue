@@ -18,7 +18,7 @@ extension User {
 }
 
 struct Settings: Equatable, Codable {
-    enum PlayCountFilter: String, Equatable, Codable {
+    enum PlayCountFilter: String, Equatable, CaseIterable, Codable {
         case off
         case p1
         case p2
@@ -27,7 +27,7 @@ struct Settings: Equatable, Codable {
         case p16
     }
 
-    let playCountFilter: PlayCountFilter
+    var playCountFilter: PlayCountFilter
 
     static let `default` = Self(playCountFilter: .off)
 }
@@ -236,8 +236,8 @@ struct FavoriteUsersState: Equatable {
 
     var settingsState: SettingsState? {
         get {
-            guard case let .settings(state) = viewState else { return nil }
-            return state
+            guard case .settings = viewState else { return nil }
+            return .init(user: user)
         }
         set {
             guard case .settings = viewState,
@@ -343,15 +343,19 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 )
 
 struct SettingsState: Equatable {
-    let user: User
+    var user: User
 }
 enum SettingsAction: Equatable {
-    case empty
+    case updatePlayCountFilter
 }
 
 let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { state, action, environment in
     switch action {
-    case .empty:
+    case .updatePlayCountFilter:
+        let cases = Settings.PlayCountFilter.allCases + Settings.PlayCountFilter.allCases
+        let nextIndex = cases.firstIndex(of: state.user.settings.playCountFilter)! + 1
+        let newCase = cases[nextIndex]
+        state.user.settings.playCountFilter = newCase
         return .none
     }
 }

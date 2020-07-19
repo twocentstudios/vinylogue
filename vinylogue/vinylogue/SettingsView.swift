@@ -14,7 +14,9 @@ struct SettingsView: View {
                 Section(header:
                     SimpleHeader("play count filter")
                 ) {
-                    SimpleCell(viewStore.playCountFilter)
+                    Button(action: { viewStore.send(.updatePlayCountFilter) }) {
+                        SimpleCell(viewStore.playCountFilter)
+                    }
                 }
                 Section(header:
                     SimpleHeader("support")
