@@ -12,6 +12,7 @@ struct FavoriteUsersListView: View {
         let isEditingFriends: Bool
         let editMode: EditMode
         let isLoadingFriends: Bool
+        let loadingFriendsTitle: String?
     }
 
     let store: Store<FavoriteUsersState, FavoriteUsersAction>
@@ -65,8 +66,8 @@ struct FavoriteUsersListView: View {
                     }
                     .onDelete { viewStore.send(.deleteFriend($0)) }
                     .onMove { viewStore.send(.moveFriend($0, $1)) }
-                    if viewStore.isEditingFriends {
-                        ButtonSimpleCell("import friends") {
+                    if let loadingFriendsTitle = viewStore.loadingFriendsTitle {
+                        ButtonSimpleCell(loadingFriendsTitle, isLoading: viewStore.isLoadingFriends) {
                             viewStore.send(.importLastFMFriends)
                         }
                     }
@@ -136,7 +137,8 @@ extension FavoriteUsersState {
             isLogoutButtonActive: editMode == .active,
             isEditingFriends: editMode != .inactive,
             editMode: editMode,
-            isLoadingFriends: isLoadingFriends
+            isLoadingFriends: isLoadingFriends,
+            loadingFriendsTitle: editMode == .active ? (isLoadingFriends ? "importing friends..." : "import friends") : nil
         )
     }
 }

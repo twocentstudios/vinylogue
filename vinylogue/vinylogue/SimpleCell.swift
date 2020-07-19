@@ -47,21 +47,28 @@ struct LargeSimpleCell: View {
 struct ButtonSimpleCell: View {
     let label: String
     let isDestructive: Bool
+    let isLoading: Bool
     let action: () -> ()
 
-    init(_ label: String, isDestructive: Bool = false, action: @escaping () -> () = {}) {
+    init(_ label: String, isDestructive: Bool = false, isLoading: Bool = false, action: @escaping () -> () = {}) {
         self.label = label
         self.isDestructive = isDestructive
+        self.isLoading = isLoading
         self.action = action
     }
 
     var body: some View {
         // TODO: this button only extends to the width of the text
         Button(action: action) {
-            Text(label)
-                .font(.avnRegular(24))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 3)
+            HStack(spacing: 8) {
+                if isLoading {
+                    ProgressView()
+                }
+                Text(label)
+                    .font(.avnRegular(24))
+                    .padding(.vertical, 3)
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
         }
         .buttonStyle(PlainButtonStyle())
         .foregroundColor(isDestructive ? Color(.systemRed) : .accentColor)
@@ -91,7 +98,7 @@ struct LargeSimpleCell_Previews: PreviewProvider {
 
 struct ButtonSimpleCell_Previews: PreviewProvider {
     static var previews: some View {
-        ButtonSimpleCell("ybsc")
+        ButtonSimpleCell("import friends")
             .previewLayout(.sizeThatFits)
     }
 }

@@ -14,7 +14,7 @@ struct User: Equatable, Codable {
 }
 
 extension User {
-    static let mock = Self(me: "ybsc", friends: ["BobbyStompy", "slippysoup"], settings: .default)
+    static let mock = Self(me: "ybsc", friends: ["BobbyStompy", "slippydrums"], settings: .default)
 }
 
 struct Settings: Equatable, Codable {
@@ -191,7 +191,7 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment> { state, act
         case let .success(username):
             state = .verified(username)
             return Effect(value: LoginAction.logIn(User.new(me: username)))
-                .delay(for: .seconds(1.5), scheduler: environment.mainQueue)
+                .delay(for: .seconds(1.5), scheduler: environment.mainQueue) // TODO
                 .eraseToEffect()
 
         case let .failure(error):
@@ -224,7 +224,7 @@ extension AppEnvironment {
 extension LastFMClient {
     static let mock = LastFMClient(
         verifyUsername: { username in Effect(value: username) },
-        friendsForUsername: { username in Effect(value: []) }
+        friendsForUsername: { username in Effect(value: ["BobbyStompy", "slippydrums", "esheikh"]) }
     )
 }
 
@@ -314,6 +314,7 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
                 !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
             state.isLoadingFriends = true
             return environment.lastFMClient.friendsForUsername(state.user.me)
+                .delay(for: .seconds(1.5), scheduler: environment.mainQueue) // TODO
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(FavoriteUsersAction.importLastFMFriendsResponse)
