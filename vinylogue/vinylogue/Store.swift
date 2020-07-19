@@ -388,7 +388,15 @@ let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { s
 }
 
 struct WeeklyAlbumChartState: Equatable {
+    enum Status {
+        case initialized
+        case loading
+        case loaded
+        case failed
+    }
+
     let username: Username
+//    let playCountFilter: Settings.PlayCountFilter
 }
 
 enum WeeklyAlbumChartAction: Equatable {

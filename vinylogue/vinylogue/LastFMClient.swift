@@ -1,3 +1,4 @@
+import Combine
 import ComposableArchitecture
 import Foundation
 
@@ -6,12 +7,107 @@ struct LastFMClient {
     let friendsForUsername: (Username) -> Effect<[Username], FavoriteUsersError>
 }
 
+struct LastFMClient2 {
+    let verifyUsername: (String) -> Effect<Username, Error>
+    let friendsForUsername: (Username) -> Effect<[Username], Error>
+    let weeklyChartList: (Username) -> Effect<LastFM.WeeklyChartList, Error>
+    let weeklyAlbumChart: (Username, LastFM.WeeklyChartRange) -> Effect<LastFM.WeeklyAlbumCharts, Error>
+    let album: (Username, LastFM.ArtistStub, LastFM.AlbumStub) -> Effect<LastFM.Album, Error>
+}
+
+extension LastFMClient2 {
+    static let live = Self(
+        verifyUsername: { (username: String) -> Effect<Username, Error> in
+            let request = LastFM.GetUserRequest(username: username)
+            return fetch(request).map(\.user.username)
+        },
+        friendsForUsername: { (username: Username) -> Effect<[Username], Error> in
+            let request = LastFM.GetFriendsRequest(username: username)
+            return fetch(request).map { $0.friends.map(\.username) }
+        },
+        weeklyChartList: { (username: Username) -> Effect<LastFM.WeeklyChartList, Error> in
+            let request = LastFM.GetWeeklyChartListRequest(username: username)
+            return fetch(request).map(\.weeklyChartList)
+        },
+        weeklyAlbumChart: { (username: Username, range: LastFM.WeeklyChartRange) -> Effect<LastFM.WeeklyAlbumCharts, Error> in
+            let request = LastFM.GetWeeklyAlbumChartRequest(username: username, range: range)
+            return fetch(request).map(\.weeklyAlbumCharts)
+        },
+        album: { (username: Username, artist: LastFM.ArtistStub, album: LastFM.AlbumStub) -> Effect<LastFM.Album, Error> in
+            let request = LastFM.GetAlbumRequest(username: username, artist: artist, album: album)
+            return fetch(request).map(\.album)
+        }
+    )
+
+    private static let baseRequest = LastFM.Request(apiKey: "")
+    private static let jsonDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        return decoder
+    }()
+
+    private static func fetch<Request: LastFMRequest>(_ request: Request) -> Effect<Request.Response, Error> {
+        var urlRequest = baseRequest.urlRequest
+        request.appendParameters(to: &urlRequest)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, urlResponse -> Request.Response in
+                guard let statusCode = (urlResponse as? HTTPURLResponse)?.statusCode else {
+                    throw Error.badResponse
+                }
+                guard statusCode >= 200,
+                    statusCode < 400
+                else {
+                    throw Error.http(statusCode)
+                }
+                if let apiError = try? jsonDecoder.decode(LastFM.Error.self, from: data) {
+                    throw Error.api(apiError)
+                }
+                do {
+                    return try jsonDecoder.decode(Request.Response.self, from: data)
+                } catch {
+                    throw Error.decoding(error.localizedDescription)
+                }
+            }
+            .mapError { error -> Error in
+                if let error = error as? Error {
+                    return error
+                } else if let error = error as? URLError {
+                    return Error.system(error)
+                }
+                return Error.unknown
+            }
+            .eraseToEffect()
+    }
+}
+
+extension LastFMClient2 {
+    enum Error: Equatable, Swift.Error {
+        case api(LastFM.Error)
+        case system(URLError)
+        case http(Int)
+        case badResponse
+        case unknown
+        case decoding(String)
+    }
+}
+
 // Namespace
 enum LastFM {}
 
+protocol LastFMRequest {
+    associatedtype Response: Decodable
+    func appendParameters(to urlRequest: inout URLRequest)
+}
+
+extension LastFM.GetUserRequest: LastFMRequest {}
+extension LastFM.GetFriendsRequest: LastFMRequest {}
+extension LastFM.GetWeeklyChartListRequest: LastFMRequest {}
+extension LastFM.GetWeeklyAlbumChartRequest: LastFMRequest {}
+extension LastFM.GetAlbumRequest: LastFMRequest {}
+
 extension LastFM {
     struct Request: Equatable {
-        let baseURL: URL
+        let baseURL: URL = URL(string: "https://ws.audioscrobbler.com/2.0/")!
         let apiKey: String
         let format = "json"
         let method = "GET"
@@ -26,9 +122,9 @@ extension LastFM {
     }
 
     struct GetUserRequest {
+        typealias Response = GetUserResponse
         let method = "user.getinfo"
         let username: Username
-        let responseType: GetUserResponse.Type
 
         func appendParameters(to urlRequest: inout URLRequest) {
             urlRequest.setValue(method, forHTTPHeaderField: "method")
@@ -37,10 +133,10 @@ extension LastFM {
     }
 
     struct GetFriendsRequest {
+        typealias Response = GetFriendsResponse
         let method = "user.getfriends"
         let username: Username
         let limit = "500"
-        let responseType: GetFriendsResponse.Type
 
         func appendParameters(to urlRequest: inout URLRequest) {
             urlRequest.setValue(method, forHTTPHeaderField: "method")
@@ -50,9 +146,9 @@ extension LastFM {
     }
 
     struct GetWeeklyChartListRequest {
+        typealias Response = GetWeeklyChartListResponse
         let method = "user.getweeklychartlist"
         let username: Username
-        let responseType: GetWeeklyChartListResponse.Type
 
         func appendParameters(to urlRequest: inout URLRequest) {
             urlRequest.setValue(method, forHTTPHeaderField: "method")
@@ -61,10 +157,10 @@ extension LastFM {
     }
 
     struct GetWeeklyAlbumChartRequest {
+        typealias Response = GetWeeklyAlbumChartResponse
         let method = "user.getweeklyalbumchart"
         let username: Username
         let range: WeeklyChartRange
-        let responseType: GetWeeklyAlbumChartResponse.Type
 
         func appendParameters(to urlRequest: inout URLRequest) {
             urlRequest.setValue(method, forHTTPHeaderField: "method")
@@ -75,11 +171,11 @@ extension LastFM {
     }
 
     struct GetAlbumRequest {
+        typealias Response = GetAlbumResponse
         let method = "album.getinfo"
         let username: Username
         let artist: ArtistStub
         let album: AlbumStub
-        let responseType: GetWeeklyAlbumChartResponse.Type
 
         func appendParameters(to urlRequest: inout URLRequest) {
             urlRequest.setValue(method, forHTTPHeaderField: "method")
@@ -130,7 +226,7 @@ extension LastFM {
     }
 
     struct GetAlbumResponse: Equatable, Decodable {
-        let album: [Album]
+        let album: Album
     }
 }
 
