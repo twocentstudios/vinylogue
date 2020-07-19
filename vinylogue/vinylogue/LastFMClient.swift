@@ -53,8 +53,7 @@ extension LastFMClient {
     }()
 
     private static func fetch<Request: LastFMRequest>(_ request: Request) -> Effect<Request.Response, Error> {
-        var urlRequest = baseRequest.urlRequest
-        request.appendParameters(to: &urlRequest)
+        let urlRequest = baseRequest.urlRequest(with: request.queryItems)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .tryMap { data, urlResponse -> Request.Response in
                 guard let statusCode = (urlResponse as? HTTPURLResponse)?.statusCode else {
@@ -91,7 +90,7 @@ enum LastFM {}
 
 protocol LastFMRequest {
     associatedtype Response: Decodable
-    func appendParameters(to urlRequest: inout URLRequest)
+    var queryItems: [URLQueryItem] { get }
 }
 
 extension LastFM.GetUserRequest: LastFMRequest {}
@@ -106,11 +105,20 @@ extension LastFM {
         let apiKey: String
         let format = "json"
         let method = "GET"
+        let accept = "application/json"
 
-        var urlRequest: URLRequest {
-            var request = URLRequest(url: baseURL)
-            request.setValue(apiKey, forHTTPHeaderField: "api_key")
-            request.setValue(format, forHTTPHeaderField: "format")
+        func urlRequest(with queryItems: [URLQueryItem]) -> URLRequest {
+            let defaultQueryItems = [
+                URLQueryItem(name: "api_key", value: apiKey),
+                URLQueryItem(name: "format", value: format),
+            ]
+
+            var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+            urlComponents.queryItems = defaultQueryItems + queryItems
+
+            var request = URLRequest(url: urlComponents.url!)
+            request.setValue(accept, forHTTPHeaderField: "Accept")
+            request.setValue(nil, forHTTPHeaderField: "Accept-Encoding")
             request.httpMethod = method
             return request
         }
@@ -121,9 +129,11 @@ extension LastFM {
         let method = "user.getinfo"
         let username: Username
 
-        func appendParameters(to urlRequest: inout URLRequest) {
-            urlRequest.setValue(method, forHTTPHeaderField: "method")
-            urlRequest.setValue(username, forHTTPHeaderField: "user")
+        var queryItems: [URLQueryItem] {
+            [
+                URLQueryItem(name: "method", value: method),
+                URLQueryItem(name: "user", value: username),
+            ]
         }
     }
 
@@ -133,10 +143,12 @@ extension LastFM {
         let username: Username
         let limit = "500"
 
-        func appendParameters(to urlRequest: inout URLRequest) {
-            urlRequest.setValue(method, forHTTPHeaderField: "method")
-            urlRequest.setValue(username, forHTTPHeaderField: "user")
-            urlRequest.setValue(limit, forHTTPHeaderField: "limit")
+        var queryItems: [URLQueryItem] {
+            [
+                URLQueryItem(name: "method", value: method),
+                URLQueryItem(name: "user", value: username),
+                URLQueryItem(name: "limit", value: limit),
+            ]
         }
     }
 
@@ -145,9 +157,11 @@ extension LastFM {
         let method = "user.getweeklychartlist"
         let username: Username
 
-        func appendParameters(to urlRequest: inout URLRequest) {
-            urlRequest.setValue(method, forHTTPHeaderField: "method")
-            urlRequest.setValue(username, forHTTPHeaderField: "user")
+        var queryItems: [URLQueryItem] {
+            [
+                URLQueryItem(name: "method", value: method),
+                URLQueryItem(name: "user", value: username),
+            ]
         }
     }
 
@@ -157,11 +171,13 @@ extension LastFM {
         let username: Username
         let range: WeeklyChartRange
 
-        func appendParameters(to urlRequest: inout URLRequest) {
-            urlRequest.setValue(method, forHTTPHeaderField: "method")
-            urlRequest.setValue(username, forHTTPHeaderField: "user")
-            urlRequest.setValue(String(range.from.timeIntervalSince1970), forHTTPHeaderField: "from")
-            urlRequest.setValue(String(range.to.timeIntervalSince1970), forHTTPHeaderField: "to")
+        var queryItems: [URLQueryItem] {
+            [
+                URLQueryItem(name: "method", value: method),
+                URLQueryItem(name: "user", value: username),
+                URLQueryItem(name: "from", value: String(range.from.timeIntervalSince1970)),
+                URLQueryItem(name: "to", value: String(range.to.timeIntervalSince1970)),
+            ]
         }
     }
 
@@ -172,15 +188,22 @@ extension LastFM {
         let artist: ArtistStub
         let album: AlbumStub
 
-        func appendParameters(to urlRequest: inout URLRequest) {
-            urlRequest.setValue(method, forHTTPHeaderField: "method")
-            urlRequest.setValue(username, forHTTPHeaderField: "username")
+        var queryItems: [URLQueryItem] {
+            var items = [
+                URLQueryItem(name: "method", value: method),
+                URLQueryItem(name: "username", value: username),
+            ]
+
             if let mbid = album.mbid {
-                urlRequest.setValue(mbid, forHTTPHeaderField: "mbid")
+                items.append(URLQueryItem(name: "mbid", value: mbid))
             } else {
-                urlRequest.setValue(artist.name, forHTTPHeaderField: "artist")
-                urlRequest.setValue(album.name, forHTTPHeaderField: "album")
+                items.append(contentsOf: [
+                    URLQueryItem(name: "artist", value: artist.name),
+                    URLQueryItem(name: "artist", value: album.name),
+                ])
             }
+
+            return items
         }
     }
 }
