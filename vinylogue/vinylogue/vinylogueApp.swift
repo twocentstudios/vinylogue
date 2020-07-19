@@ -9,7 +9,7 @@ struct vinylogueApp: App {
                 store: Store(
                     initialState: AppState(userState: UserState.uninitialized, viewState: .startup),
                     reducer: appReducer.debug(),
-                    environment: .mockFirstTime
+                    environment: .mockUser
                 ))
                 .onAppear {
                     UINavigationBar.appearance().titleTextAttributes =

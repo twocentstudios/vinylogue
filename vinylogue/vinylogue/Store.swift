@@ -137,6 +137,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .login:
             return .none
 
+        case .favoriteUsers(.logOut):
+            return Effect(value: .logOut)
+
         case .favoriteUsers:
             // TODO:
             return .none
@@ -232,7 +235,7 @@ struct FavoriteUsersState: Equatable {
 
     enum ViewState: Equatable {
         case settings(SettingsState)
-        case albumChart
+        case weeklyAlbumChart(WeeklyAlbumChartState)
     }
 
     var viewState: ViewState?
@@ -250,6 +253,19 @@ struct FavoriteUsersState: Equatable {
             user.settings = newState.user.settings
         }
     }
+
+    var albumChart: WeeklyAlbumChartState? {
+        get {
+            // TODO:
+            guard case let .weeklyAlbumChart(state) = viewState else { return nil }
+            return .init(username: state.username)
+        }
+        set {
+            // TODO:
+            guard case .weeklyAlbumChart = viewState,
+                let newState = newValue else { return }
+        }
+    }
 }
 
 enum FavoriteUsersAction: Equatable {
@@ -258,9 +274,10 @@ enum FavoriteUsersAction: Equatable {
     case moveFriend(IndexSet, Int)
     case importLastFMFriends
     case importLastFMFriendsResponse(Result<[Username], FavoriteUsersError>)
-    case didTapMe
 //    case didTapFriend
-//    case showCharts(Username)
+    case setMeWeeklyAlbumChartView(isActive: Bool)
+    case setWeeklyAlbumChartView(isActive: Bool, username: Username)
+    case weeklyAlbumChart(WeeklyAlbumChartAction)
     case setSettingsView(isActive: Bool)
     case settings(SettingsAction)
     case logOut
@@ -316,14 +333,23 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
             }
             return .none
 
-        case .didTapMe:
+        case let .setMeWeeklyAlbumChartView(isActive):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-            if state.editMode == .inactive {
-                // open charts
-                return .none
-            } else {
-                return Effect(value: .logOut)
-            }
+            return Effect(value: .setWeeklyAlbumChartView(isActive: isActive, username: state.user.me))
+
+        case let .setWeeklyAlbumChartView(isActive: true, username):
+            guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
+            state.viewState = .weeklyAlbumChart(.init(username: username))
+            return .none
+
+        case .setWeeklyAlbumChartView(isActive: false, _):
+            // TODO: this action is sent twice in a row (I don't know why), which asserts the line below.
+            // guard case .weeklyAlbumChart = state.viewState else { assertionFailure("Unexpected state"); return .none }
+            state.viewState = nil
+            return .none
+
+        case .weeklyAlbumChart:
+            return .none
 
         case .setSettingsView(isActive: true):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
@@ -361,4 +387,12 @@ let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { s
         state.user.settings.playCountFilter = newCase
         return .none
     }
+}
+
+struct WeeklyAlbumChartState: Equatable {
+    let username: Username
+}
+
+enum WeeklyAlbumChartAction: Equatable {
+    case empty
 }

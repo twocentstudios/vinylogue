@@ -6,6 +6,9 @@ struct FavoriteUsersListView: View {
         let me: String
         let friends: [String]
         let isSettingsActive: Bool
+        let isWeeklyAlbumChartActive: Bool
+        let isLogoutButtonActive: Bool
+        let editMode: EditMode
         // TODO: add friends button / loading
     }
 
@@ -15,7 +18,31 @@ struct FavoriteUsersListView: View {
         WithViewStore(self.store.scope(state: \.view)) { viewStore in
             List {
                 Section(header: SimpleHeader("me")) {
-                    LargeSimpleCell(viewStore.me)
+                    if viewStore.isLogoutButtonActive {
+                        Button(action: { viewStore.send(.logOut) }) {
+                            // TODO: this button only extends to the width of the text
+                            LargeSimpleCell("log out")
+                                .foregroundColor(Color(.systemRed))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        NavigationLink(
+                            destination: Text("hello"),
+//                            destination: IfLetStore(
+//                                self.store.scope(
+//                                    state: \.weeklyAlbumChart,
+//                                    action: FavoriteUsersAction.weeklyAlbumChart
+//                                ),
+//                                then: WeeklyAlbumChartView.init(store:)
+//                            ),
+                            isActive: viewStore.binding(
+                                get: \.isWeeklyAlbumChartActive,
+                                send: FavoriteUsersAction.setMeWeeklyAlbumChartView(isActive:)
+                            )
+                        ) {
+                            LargeSimpleCell(viewStore.me)
+                        }
+                    }
                 }
                 Section(
                     header: SimpleHeader("friends")
@@ -52,6 +79,10 @@ struct FavoriteUsersListView: View {
                 },
                 trailing: EditButton()
             )
+            .environment(
+                \.editMode,
+                viewStore.binding(get: { $0.editMode }, send: FavoriteUsersAction.editModeChanged)
+            )
         }
     }
 }
@@ -84,7 +115,10 @@ extension FavoriteUsersState {
         .init(
             me: user.me,
             friends: user.friends,
-            isSettingsActive: settingsState != nil
+            isSettingsActive: settingsState != nil,
+            isWeeklyAlbumChartActive: albumChart != nil,
+            isLogoutButtonActive: editMode == .active,
+            editMode: editMode
         )
     }
 }
