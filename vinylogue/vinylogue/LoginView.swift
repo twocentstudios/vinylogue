@@ -11,7 +11,7 @@ private struct CustomTextFieldStyle: TextFieldStyle {
 }
 
 struct LoginView: View {
-    struct State: Equatable {
+    struct Model: Equatable {
         let userName: String
         let isLoading: Bool
     }
@@ -74,7 +74,7 @@ struct LoginView_Previews: PreviewProvider {
 }
 
 extension LoginState {
-    var view: LoginView.State {
+    var view: LoginView.Model {
         switch self {
         case let .input(text):
             return .init(userName: text, isLoading: false)

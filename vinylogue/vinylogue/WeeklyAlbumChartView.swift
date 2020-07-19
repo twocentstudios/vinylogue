@@ -1,8 +1,9 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct WeeklyAlbumChartView: View {
-    struct Model {
-        struct Section {
+    struct Model: Equatable {
+        struct Section: Equatable {
             let label: String
             let albums: [WeeklyAlbumChartCell.Model]
         }
@@ -12,61 +13,70 @@ struct WeeklyAlbumChartView: View {
         let isLoading: Bool
     }
 
-    let model: Model
+    let store: Store<WeeklyAlbumChartState, WeeklyAlbumChartAction>
 
     var body: some View {
-        ZStack {
-            if model.isLoading {
-                OffsetRecordLoadingView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            } else if let error = model.error {
-                ErrorRetryView(model: error)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            } else {
-                List {
-                    // TODO: real ids are required
-                    ForEach(model.sections, id: \.label) { section in
-                        Section(
-                            header: WeeklyAlbumChartHeaderView(label: section.label)
-                        ) {
-                            if !section.albums.isEmpty {
-                                ForEach(section.albums, id: \.album) { album in
-                                    NavigationLink(
-                                        destination: Text("Destination")
-                                    )
-                                    {
-                                        WeeklyAlbumChartCell(album)
+        WithViewStore(self.store.scope(state: \.view)) { viewStore in
+            ZStack {
+                if viewStore.isLoading {
+                    OffsetRecordLoadingView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                } else if let error = viewStore.error {
+                    ErrorRetryView(model: error)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else {
+                    List {
+                        // TODO: real ids are required
+                        ForEach(viewStore.sections, id: \.label) { section in
+                            Section(
+                                header: WeeklyAlbumChartHeaderView(label: section.label)
+                            ) {
+                                if !section.albums.isEmpty {
+                                    ForEach(section.albums, id: \.album) { album in
+                                        NavigationLink(
+                                            destination: Text("Destination")
+                                        )
+                                        {
+                                            WeeklyAlbumChartCell(album)
+                                        }
                                     }
-                                }
 
-                            } else {
-                                WeeklyAlbumChartEmptyCell()
+                                } else {
+                                    WeeklyAlbumChartEmptyCell()
+                                }
                             }
                         }
                     }
+                    .listStyle(GroupedListStyle())
                 }
-                .listStyle(GroupedListStyle())
             }
+            .navigationTitle("ybsc's week 27 charts") // TODO:
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationTitle("ybsc's week 27 charts")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-struct WeeklyAlbumChartView_Previews: PreviewProvider {
-    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
-    static let mockLoading = WeeklyAlbumChartView.Model(sections: [], error: nil, isLoading: true)
-    static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
-    static var previews: some View {
-        Group {
-            NavigationView {
-                WeeklyAlbumChartView(model: mock)
-            }
-            NavigationView {
-                WeeklyAlbumChartView(model: mock)
-            }
-            .preferredColorScheme(.dark)
-        }
+// struct WeeklyAlbumChartView_Previews: PreviewProvider {
+//    static let mock = WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
+//    static let mockLoading = WeeklyAlbumChartView.Model(sections: [], error: nil, isLoading: true)
+//    static let mockError = WeeklyAlbumChartView.Model(sections: mockSections, error: ErrorRetryView_Previews.mock, isLoading: false)
+//    static var previews: some View {
+//        Group {
+//            NavigationView {
+//                WeeklyAlbumChartView(model: mock)
+//            }
+//            NavigationView {
+//                WeeklyAlbumChartView(model: mock)
+//            }
+//            .preferredColorScheme(.dark)
+//        }
+//    }
+// }
+
+extension WeeklyAlbumChartState {
+    var view: WeeklyAlbumChartView.Model {
+        // TODO:
+        WeeklyAlbumChartView.Model(sections: mockSections, error: nil, isLoading: false)
     }
 }
 
@@ -90,7 +100,7 @@ struct WeeklyAlbumChartHeaderView_Previews: PreviewProvider {
 }
 
 struct WeeklyAlbumChartCell: View {
-    struct Model {
+    struct Model: Equatable {
         let image: UIImage?
         let artist: String
         let album: String
@@ -241,19 +251,18 @@ struct WeeklyAlbumChartErrorCell_Previews: PreviewProvider {
 }
 
 struct ErrorRetryView: View {
-    struct Model {
+    struct Model: Equatable {
         let title: String
         let subtitle: String
-        let action: (() -> ())?
 
-        init(title: String, subtitle: String, action: (() -> ())? = nil) {
+        init(title: String, subtitle: String) {
             self.title = title
             self.subtitle = subtitle
-            self.action = action
         }
     }
 
     let model: Model
+    let action: (() -> ())? = nil
 
     var body: some View {
         HStack {
@@ -269,7 +278,7 @@ struct ErrorRetryView: View {
                     .font(.avnRegular(13))
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 12)
-                if let action = model.action {
+                if let action = action {
                     Button(action: action) {
                         Text("try again")
                             .font(.avnDemiBold(20))
@@ -285,7 +294,7 @@ struct ErrorRetryView: View {
 }
 
 struct ErrorRetryView_Previews: PreviewProvider {
-    static let mock = ErrorRetryView.Model(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.", action: {})
+    static let mock = ErrorRetryView.Model(title: "The internet connection appears to be offline.", subtitle: "Connect to the internet and try again.")
     static var previews: some View {
         Group {
             ErrorRetryView(model: mock)

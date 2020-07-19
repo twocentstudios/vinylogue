@@ -254,7 +254,7 @@ struct FavoriteUsersState: Equatable {
         }
     }
 
-    var albumChart: WeeklyAlbumChartState? {
+    var weeklyAlbumChartState: WeeklyAlbumChartState? {
         get {
             // TODO:
             guard case let .weeklyAlbumChart(state) = viewState else { return nil }

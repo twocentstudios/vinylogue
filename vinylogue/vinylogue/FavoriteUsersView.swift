@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct FavoriteUsersListView: View {
-    struct State: Equatable {
+    struct Model: Equatable {
         let me: String
         let friends: [String]
         let isSettingsActive: Bool
@@ -27,14 +27,13 @@ struct FavoriteUsersListView: View {
                         .buttonStyle(PlainButtonStyle())
                     } else {
                         NavigationLink(
-                            destination: Text("hello"),
-//                            destination: IfLetStore(
-//                                self.store.scope(
-//                                    state: \.weeklyAlbumChart,
-//                                    action: FavoriteUsersAction.weeklyAlbumChart
-//                                ),
-//                                then: WeeklyAlbumChartView.init(store:)
-//                            ),
+                            destination: IfLetStore(
+                                self.store.scope(
+                                    state: \.weeklyAlbumChartState,
+                                    action: FavoriteUsersAction.weeklyAlbumChart
+                                ),
+                                then: WeeklyAlbumChartView.init(store:)
+                            ),
                             isActive: viewStore.binding(
                                 get: \.isWeeklyAlbumChartActive,
                                 send: FavoriteUsersAction.setMeWeeklyAlbumChartView(isActive:)
@@ -111,12 +110,12 @@ struct FavoriteUsersListView_Previews: PreviewProvider {
 }
 
 extension FavoriteUsersState {
-    var view: FavoriteUsersListView.State {
+    var view: FavoriteUsersListView.Model {
         .init(
             me: user.me,
             friends: user.friends,
             isSettingsActive: settingsState != nil,
-            isWeeklyAlbumChartActive: albumChart != nil,
+            isWeeklyAlbumChartActive: weeklyAlbumChartState != nil,
             isLogoutButtonActive: editMode == .active,
             editMode: editMode
         )
