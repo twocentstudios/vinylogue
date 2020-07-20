@@ -11,6 +11,7 @@ struct LastFMClient {
 }
 
 extension LastFMClient {
+    // TODO: LocalizedError
     enum Error: Equatable, Swift.Error {
         case api(LastFM.Error)
         case system(URLError)
@@ -273,7 +274,7 @@ extension LastFM {
         }
     }
 
-    struct WeeklyChartRange: Equatable, Decodable {
+    struct WeeklyChartRange: Equatable, Hashable, Decodable {
         let from: Date // unix timestamp
         let to: Date
     }
@@ -286,7 +287,7 @@ extension LastFM {
         }
     }
 
-    struct WeeklyAlbumChartStub: Equatable, Decodable {
+    struct WeeklyAlbumChartStub: Equatable, Hashable, Decodable {
         let album: AlbumStub
         let artist: ArtistStub
         let playCount: Int
@@ -323,7 +324,7 @@ extension LastFM {
         let name: String
     }
 
-    struct Album: Equatable, Decodable {
+    struct Album: Equatable, Hashable, Decodable {
         let mbid: String?
         let name: String
         // let releaseDate: Date
@@ -370,7 +371,7 @@ extension LastFM {
         }
     }
 
-    struct Track: Equatable, Decodable {
+    struct Track: Equatable, Hashable, Decodable {
         let name: String
         let seconds: Int?
 
@@ -380,11 +381,11 @@ extension LastFM {
         }
     }
 
-    struct ImageSet: Equatable, Decodable {
+    struct ImageSet: Equatable, Hashable, Decodable {
         let images: [Image]
     }
 
-    struct Image: Equatable, Decodable {
+    struct Image: Equatable, Hashable, Decodable {
         let url: URL
         let size: String?
 
