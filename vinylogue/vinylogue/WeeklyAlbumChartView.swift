@@ -34,12 +34,12 @@ struct WeeklyAlbumChartView: View {
             ZStack {
                 switch viewStore.status {
                 case .initialized:
-                    EmptyView()
+                    EmptyView().onAppear { viewStore.send(.fetchWeeklyChartList) }
                 case .loading:
                     OffsetRecordLoadingView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 case let .failed(error):
-                    ErrorRetryView(model: error) // TODO: retry action
+                    ErrorRetryView(model: error) { viewStore.send(.fetchWeeklyChartList) }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 case let .loaded(sections):
                     List {
@@ -335,7 +335,12 @@ struct ErrorRetryView: View {
     }
 
     let model: Model
-    let action: (() -> ())? = nil
+    let action: (() -> ())?
+
+    init(model: Model, action: (() -> ())? = nil) {
+        self.model = model
+        self.action = action
+    }
 
     var body: some View {
         HStack {
