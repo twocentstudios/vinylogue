@@ -10,7 +10,7 @@ struct ImageClient {
 }
 
 extension ImageClient {
-    struct Error: Swift.Error {}
+    struct Error: Swift.Error, Equatable {}
 }
 
 extension ImageClient {

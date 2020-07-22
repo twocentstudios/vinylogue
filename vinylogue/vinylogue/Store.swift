@@ -457,7 +457,7 @@ enum WeeklyAlbumChartAction: Equatable {
     case fetchAlbum(LastFM.WeeklyAlbumChartStub)
     case fetchAlbumResponse(LastFM.WeeklyAlbumChartStub, Result<LastFM.Album, LastFMClient.Error>)
     case fetchImageThumbnail(LastFM.Album)
-    case fetchImageThumbnailResponse(LastFM.Album, Result<LastFM.Album, LastFMClient.Error>)
+    case fetchImageThumbnailResponse(LastFM.Album, Result<UIImage, ImageClient.Error>)
     case setAlbumDetailView(isActive: Bool, LastFM.WeeklyAlbumChartStub)
 }
 
@@ -544,9 +544,25 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             }
 
         case let .fetchImageThumbnail(album):
-            return .none
+            switch state.albumImageThumbnails[album] {
+            case .none, .initialized, .failed: break
+            case .loading, .loaded: return .none
+            }
+
+            guard let thumbnailURL = album.imageSet?.thumbnailURL else { return .none }
+            return environment.imageClient.fetchImage(thumbnailURL)
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map { WeeklyAlbumChartAction.fetchImageThumbnailResponse(album, $0) }
+
         case let .fetchImageThumbnailResponse(album, result):
+            guard case .loading = state.albumImageThumbnails[album] else { assertionFailure("Unexpected state"); return .none }
+            switch result {
+            case let .success(value): state.albumImageThumbnails[album] = .loaded(value)
+            case let .failure(error): state.albumImageThumbnails[album] = .failed
+            }
             return .none
+
         case let .setAlbumDetailView(isActive, albumChartStub):
             return .none
         }

@@ -465,6 +465,18 @@ extension LastFM {
     }
 }
 
+extension LastFM.ImageSet {
+    /// LastFM's image size labels aren't that useful, so we just assume the last entry is the largest.
+    var url: URL? {
+        images.last?.url
+    }
+
+    /// The largest entry is often not even big enough for a thumbnail size, so just use the largest.
+    var thumbnailURL: URL? {
+        url
+    }
+}
+
 #if DEBUG
 extension LastFMClient {
     static let mock = Self(
