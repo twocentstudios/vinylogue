@@ -460,7 +460,7 @@ extension WeeklyAlbumChartState {
 
         datesForYearsWithCurrentWeek = (1 ... 30)
             .map { -$0 }
-            .map { var d = DateComponents(); d.weekOfYear = $0; return d }
+            .map { var d = DateComponents(); d.yearForWeekOfYear = $0; return d }
             .map { calendar.date(byAdding: $0, to: now)! } // TODO: ensure this never returns nil
 
         displayingChartRanges = []
