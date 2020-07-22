@@ -459,14 +459,14 @@ extension WeeklyAlbumChartState {
         weekOfYear = components.weekOfYear!
 
         datesForYearsWithCurrentWeek = (-1 ... -30)
-            .map { var d = DateComponents(); d.year = $0; return d }
+            .map { var d = DateComponents(); d.weekOfYear = $0; return d }
             .map { calendar.date(byAdding: $0, to: now)! } // TODO: ensure this never returns nil
 
         displayingChartRanges = []
         titlesForChartRanges = [:]
     }
 
-    mutating func updateDerivedChartRanges(_ yearFormatter: (Date) -> String) {
+    mutating func updateDerivedChartRanges(_ calendar: Calendar) {
         guard case let .loaded(weeklyChartList) = weeklyChartListState else { return }
         displayingChartRanges = weeklyChartList.ranges
             .map { range in
@@ -474,7 +474,8 @@ extension WeeklyAlbumChartState {
             }
             .compactMap { $0 }
         titlesForChartRanges = displayingChartRanges.reduce(into: [:]) { result, range in
-            result[range] = yearFormatter(range.from)
+            let yearForWeekOfYear = calendar.component(.yearForWeekOfYear, from: range.from)
+            result[range] = String(yearForWeekOfYear)
         }
     }
 }
@@ -517,7 +518,7 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             case let .success(value): state.weeklyChartListState = .loaded(value)
             case let .failure(error): state.weeklyChartListState = .failed(error)
             }
-            state.updateDerivedChartRanges(environment.dateClient.yearFormatter)
+            state.updateDerivedChartRanges(environment.dateClient.calendar)
             return .none
 
         case let .fetchWeeklyAlbumChart(chartRange):
