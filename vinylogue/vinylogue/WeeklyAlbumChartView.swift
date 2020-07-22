@@ -19,6 +19,7 @@ struct WeeklyAlbumChartView: View {
                 case failed
             }
 
+            let id: LastFM.WeeklyChartRange
             let label: String
             let status: Status
         }
@@ -44,13 +45,15 @@ struct WeeklyAlbumChartView: View {
                 case let .loaded(sections):
                     List {
                         // TODO: real ids are required
-                        ForEach(sections, id: \.label) { section in
+                        ForEach(sections, id: \.id) { section in
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
                                 switch section.status {
                                 case .initialized:
-                                    EmptyView()
+                                    Rectangle().onAppear {
+                                        viewStore.send(.fetchWeeklyAlbumChart(section.id))
+                                    }
                                 case .loading:
                                     WeeklyAlbumChartLoadingCell()
                                 case .empty:
@@ -65,7 +68,7 @@ struct WeeklyAlbumChartView: View {
                                         }
                                     }
                                 case .failed:
-                                    WeeklyAlbumChartErrorCell() // TODO: retry action
+                                    WeeklyAlbumChartErrorCell { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
                                 }
                             }
                         }
@@ -128,6 +131,7 @@ extension WeeklyAlbumChartState {
             status = .failed
         }
         return WeeklyAlbumChartView.Model.Section(
+            id: range,
             label: title,
             status: status
         )
@@ -393,16 +397,16 @@ let mockAlbums: [WeeklyAlbumChartCell.Model] =
 
 let mockSections: [WeeklyAlbumChartView.Model.Section] =
     [
-        .init(label: "2019", status: .loaded(mockAlbums)),
-        .init(label: "2018", status: .empty),
-        .init(label: "2017", status: .failed),
-        .init(label: "2016", status: .loading),
-        .init(label: "2015", status: .initialized),
+//        .init(label: "2019", status: .loaded(mockAlbums)),
+//        .init(label: "2018", status: .empty),
+//        .init(label: "2017", status: .failed),
+//        .init(label: "2016", status: .loading),
+//        .init(label: "2015", status: .initialized),
     ]
 
 private struct TopBorderView: View {
     var body: some View {
-        EmptyView()
+        EmptyView() // TODO: did I leave this in by mistake?
         Rectangle()
             .foregroundColor(.highlighta(0.2))
             .frame(height: 1)
