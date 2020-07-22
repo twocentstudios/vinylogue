@@ -60,14 +60,17 @@ extension LastFMClient {
                 guard let statusCode = (urlResponse as? HTTPURLResponse)?.statusCode else {
                     throw Error.badResponse
                 }
+
                 guard statusCode >= 200,
-                    statusCode < 400
+                    statusCode < 500
                 else {
                     throw Error.http(statusCode)
                 }
+
                 if let apiError = try? jsonDecoder.decode(LastFM.Error.self, from: data) {
                     throw Error.api(apiError)
                 }
+
                 do {
                     return try jsonDecoder.decode(Request.Response.self, from: data)
                 } catch {
@@ -79,8 +82,9 @@ extension LastFMClient {
                     return error
                 } else if let error = error as? URLError {
                     return Error.system(error)
+                } else {
+                    return Error.unknown
                 }
-                return Error.unknown
             }
             .eraseToEffect()
     }
@@ -398,6 +402,11 @@ extension LastFM {
     struct Error: Swift.Error, Equatable, Decodable {
         let message: String
         let code: Int
+
+        enum CodingKeys: String, CodingKey {
+            case message
+            case code = "error"
+        }
 
         var title: String {
             switch code {
