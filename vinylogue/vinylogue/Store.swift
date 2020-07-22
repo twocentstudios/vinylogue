@@ -458,7 +458,8 @@ extension WeeklyAlbumChartState {
         let components = calendar.dateComponents([.weekOfYear], from: now)
         weekOfYear = components.weekOfYear!
 
-        datesForYearsWithCurrentWeek = (-1 ... -30)
+        datesForYearsWithCurrentWeek = (1 ... 30)
+            .map { -$0 }
             .map { var d = DateComponents(); d.weekOfYear = $0; return d }
             .map { calendar.date(byAdding: $0, to: now)! } // TODO: ensure this never returns nil
 
