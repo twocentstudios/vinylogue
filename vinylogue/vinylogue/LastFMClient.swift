@@ -238,6 +238,10 @@ extension LastFM {
 
     struct GetWeeklyChartListResponse: Equatable, Decodable {
         let weeklyChartList: WeeklyChartList
+
+        enum CodingKeys: String, CodingKey {
+            case weeklyChartList = "weeklychartlist"
+        }
     }
 
     struct GetWeeklyAlbumChartResponse: Equatable, Decodable {
@@ -281,6 +285,25 @@ extension LastFM {
     struct WeeklyChartRange: Equatable, Hashable, Decodable {
         let from: Date // unix timestamp
         let to: Date
+
+        enum CodingKeys: String, CodingKey {
+            case from
+            case to
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            let fromString = try values.decode(String.self, forKey: .from)
+            let toString = try values.decode(String.self, forKey: .to)
+            guard let fromTimeInterval = TimeInterval(fromString) else {
+                throw DecodingError.dataCorruptedError(forKey: .from, in: values, debugDescription: "String could not be converted to Double")
+            }
+            guard let toTimeInterval = TimeInterval(toString) else {
+                throw DecodingError.dataCorruptedError(forKey: .to, in: values, debugDescription: "String could not be converted to Double")
+            }
+            from = Date(timeIntervalSince1970: fromTimeInterval)
+            to = Date(timeIntervalSince1970: toTimeInterval)
+        }
     }
 
     struct WeeklyAlbumCharts: Equatable, Decodable {
