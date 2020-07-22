@@ -262,9 +262,9 @@ struct FavoriteUsersState: Equatable {
             return state // TODO: I guess it's okay not to reinitialize with the root state's user
         }
         set {
-            // TODO:
             guard case .weeklyAlbumChart = viewState,
-                let _ = newValue else { return }
+                  let state = newValue else { return }
+            viewState = .weeklyAlbumChart(state)
         }
     }
 }
@@ -290,6 +290,11 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
     settingsReducer.optional.pullback(
         state: \.settingsState,
         action: /FavoriteUsersAction.settings,
+        environment: { $0 }
+    ),
+    weeklyAlbumChartReducer.optional.pullback(
+        state: \.weeklyAlbumChartState,
+        action: /FavoriteUsersAction.weeklyAlbumChart,
         environment: { $0 }
     ),
     Reducer { state, action, environment in
