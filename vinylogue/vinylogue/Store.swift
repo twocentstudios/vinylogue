@@ -475,6 +475,7 @@ extension WeeklyAlbumChartState {
     mutating func updateDerivedChartRanges(_ calendar: Calendar) {
         guard case let .loaded(weeklyChartList) = weeklyChartListState else { return }
         displayingChartRanges = weeklyChartList.ranges
+            .sorted(by: { $0.from > $1.from })
             .map { range in
                 datesForYearsWithCurrentWeek.map { (range.from ... range.to).contains($0) }.contains(true) ? range : nil
             }
