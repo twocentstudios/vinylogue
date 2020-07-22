@@ -3,6 +3,13 @@ import SwiftUI
 
 struct WeeklyAlbumChartView: View {
     struct Model: Equatable {
+        enum Status: Equatable {
+            case initialized
+            case loading
+            case loaded([Section])
+            case failed(ErrorRetryView.Model)
+        }
+
         struct Section: Equatable {
             enum Status: Equatable {
                 case initialized
@@ -16,9 +23,8 @@ struct WeeklyAlbumChartView: View {
             let status: Status
         }
 
-        let sections: [Section]
-        let error: ErrorRetryView.Model?
-        let isLoading: Bool
+        let title: String
+        let status: Status
     }
 
     let store: Store<WeeklyAlbumChartState, WeeklyAlbumChartAction>
@@ -26,16 +32,19 @@ struct WeeklyAlbumChartView: View {
     var body: some View {
         WithViewStore(self.store.scope(state: \.view)) { viewStore in
             ZStack {
-                if viewStore.isLoading {
+                switch viewStore.status {
+                case .initialized:
+                    EmptyView()
+                case .loading:
                     OffsetRecordLoadingView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                } else if let error = viewStore.error {
-                    ErrorRetryView(model: error)
+                case let .failed(error):
+                    ErrorRetryView(model: error) // TODO: retry action
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                } else {
+                case let .loaded(sections):
                     List {
                         // TODO: real ids are required
-                        ForEach(viewStore.sections, id: \.label) { section in
+                        ForEach(sections, id: \.label) { section in
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
@@ -64,7 +73,7 @@ struct WeeklyAlbumChartView: View {
                     .listStyle(GroupedListStyle())
                 }
             }
-            .navigationTitle("ybsc's week 27 charts") // TODO:
+            .navigationTitle(viewStore.title)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
