@@ -51,9 +51,7 @@ struct WeeklyAlbumChartView: View {
                             ) {
                                 switch section.status {
                                 case .initialized:
-                                    Rectangle().onAppear {
-                                        viewStore.send(.fetchWeeklyAlbumChart(section.id))
-                                    }
+                                    Rectangle().onAppear { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
                                 case .loading:
                                     WeeklyAlbumChartLoadingCell()
                                 case .empty:
