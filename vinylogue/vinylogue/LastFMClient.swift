@@ -175,13 +175,14 @@ extension LastFM {
         let method = "user.getweeklyalbumchart"
         let username: Username
         let range: WeeklyChartRange
+        private static func format(_ interval: TimeInterval) -> String { .init(format:"%.0f", interval) }
 
         var queryItems: [URLQueryItem] {
             [
                 URLQueryItem(name: "method", value: method),
                 URLQueryItem(name: "user", value: username),
-                URLQueryItem(name: "from", value: String(range.from.timeIntervalSince1970)),
-                URLQueryItem(name: "to", value: String(range.to.timeIntervalSince1970)),
+                URLQueryItem(name: "from", value: Self.format(range.from.timeIntervalSince1970)),
+                URLQueryItem(name: "to", value: Self.format(range.to.timeIntervalSince1970)),
             ]
         }
     }
