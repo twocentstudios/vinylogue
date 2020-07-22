@@ -407,7 +407,7 @@ struct WeeklyAlbumChartState: Equatable {
         case failed(LastFMClient.Error)
     }
 
-    enum WeeklyAlbumChartState: Equatable {
+    enum AlbumChartsState: Equatable {
         case initialized
         case loading
         case loaded(LastFM.WeeklyAlbumCharts)
@@ -433,7 +433,7 @@ struct WeeklyAlbumChartState: Equatable {
     let playCountFilter: Settings.PlayCountFilter
 
     var weeklyChartListState: WeeklyChartListState
-    var weeklyCharts: [LastFM.WeeklyChartRange: WeeklyAlbumChartState]
+    var albumCharts: [LastFM.WeeklyChartRange: AlbumChartsState]
     var albums: [LastFM.WeeklyAlbumChartStub: AlbumState]
     var albumImageThumbnails: [LastFM.Album: ImageState]
 
@@ -451,7 +451,7 @@ extension WeeklyAlbumChartState {
         self.playCountFilter = playCountFilter
 
         weeklyChartListState = .initialized
-        weeklyCharts = [:]
+        albumCharts = [:]
         albums = [:]
         albumImageThumbnails = [:]
 
@@ -522,21 +522,21 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             return .none
 
         case let .fetchWeeklyAlbumChart(chartRange):
-            switch state.weeklyCharts[chartRange] {
+            switch state.albumCharts[chartRange] {
             case .none, .initialized, .failed: break
             case .loading, .loaded: assertionFailure("Unexpected state"); return .none
             }
-            state.weeklyCharts[chartRange] = .loading
+            state.albumCharts[chartRange] = .loading
             return environment.lastFMClient.weeklyAlbumChart(state.username, chartRange)
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map { WeeklyAlbumChartAction.fetchWeeklyAlbumChartResponse(chartRange, $0) }
 
         case let .fetchWeeklyAlbumChartResponse(chartRange, result):
-            guard case .loading = state.weeklyCharts[chartRange] else { assertionFailure("Unexpected state"); return .none }
+            guard case .loading = state.albumCharts[chartRange] else { assertionFailure("Unexpected state"); return .none }
             switch result {
-            case let .success(value): state.weeklyCharts[chartRange] = .loaded(value)
-            case let .failure(error): state.weeklyCharts[chartRange] = .failed(error)
+            case let .success(value): state.albumCharts[chartRange] = .loaded(value)
+            case let .failure(error): state.albumCharts[chartRange] = .failed(error)
             }
             return .none // TODO: consider prefetching logic for albums and thumbnails
 
