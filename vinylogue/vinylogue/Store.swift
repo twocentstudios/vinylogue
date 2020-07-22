@@ -505,7 +505,7 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
 
         case let .fetchImageThumbnailForChart(albumChartStub):
             switch state.albums[albumChartStub] {
-            case .none, .initialized, .failed: return Effect(value: .fetchAlbum(albumChartStub))
+            case .none, .initialized, .failed: return Effect(value: .fetchAlbum(albumChartStub)) // TODO: consider not automatically retrying failed
             case .loading: return .none
             case let .loaded(album):
                 switch state.albumImageThumbnails[album] {
