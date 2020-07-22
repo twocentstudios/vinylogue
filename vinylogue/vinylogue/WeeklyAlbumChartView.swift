@@ -4,11 +4,16 @@ import SwiftUI
 struct WeeklyAlbumChartView: View {
     struct Model: Equatable {
         struct Section: Equatable {
+            enum Status: Equatable {
+                case initialized
+                case loading
+                case loaded([WeeklyAlbumChartCell.Model])
+                case empty
+                case failed
+            }
+
             let label: String
-            let albums: [WeeklyAlbumChartCell.Model]
-            let isLoading: Bool
-            let isEmpty: Bool
-            let hasError: Bool
+            let status: Status
         }
 
         let sections: [Section]
@@ -34,14 +39,15 @@ struct WeeklyAlbumChartView: View {
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
-                                if section.isLoading {
+                                switch section.status {
+                                case .initialized:
+                                    EmptyView()
+                                case .loading:
                                     WeeklyAlbumChartLoadingCell()
-                                } else if section.isEmpty {
+                                case .empty:
                                     WeeklyAlbumChartEmptyCell()
-                                } else if section.hasError {
-                                    WeeklyAlbumChartErrorCell() // TODO: retry action
-                                } else {
-                                    ForEach(section.albums, id: \.album) { album in
+                                case let .loaded(albums):
+                                    ForEach(albums, id: \.album) { album in
                                         NavigationLink(
                                             destination: Text("Destination")
                                         )
@@ -49,6 +55,8 @@ struct WeeklyAlbumChartView: View {
                                             WeeklyAlbumChartCell(album)
                                         }
                                     }
+                                case .failed:
+                                    WeeklyAlbumChartErrorCell() // TODO: retry action
                                 }
                             }
                         }
@@ -321,8 +329,11 @@ let mockAlbums: [WeeklyAlbumChartCell.Model] =
 
 let mockSections: [WeeklyAlbumChartView.Model.Section] =
     [
-        .init(label: "2019", albums: mockAlbums, isLoading: false, isEmpty: false, hasError: false),
-        .init(label: "2018", albums: [], isLoading: false, isEmpty: true, hasError: false),
+        .init(label: "2019", status: .loaded(mockAlbums)),
+        .init(label: "2018", status: .empty),
+        .init(label: "2017", status: .failed),
+        .init(label: "2016", status: .loading),
+        .init(label: "2015", status: .initialized),
     ]
 
 private struct TopBorderView: View {
