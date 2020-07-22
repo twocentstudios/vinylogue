@@ -93,6 +93,7 @@ enum AppAction: Equatable {
 struct AppEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue>
     var lastFMClient: LastFMClient
+    var imageClient: ImageClient
     var loadUserFromDisk: () -> User?
     var saveUserToDisk: (User?) -> ()
 }
@@ -202,6 +203,7 @@ extension AppEnvironment {
     static let live = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .live,
+        imageClient: .live,
         loadUserFromDisk: { nil },
         saveUserToDisk: { _ in }
     )
@@ -209,6 +211,7 @@ extension AppEnvironment {
     static let mockUser = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .mock,
+        imageClient: .mock,
         loadUserFromDisk: { User.mock },
         saveUserToDisk: { _ in }
     )
@@ -216,6 +219,7 @@ extension AppEnvironment {
     static let mockFirstTime = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
         lastFMClient: .mock,
+        imageClient: .mock,
         loadUserFromDisk: { nil },
         saveUserToDisk: { _ in }
     )
