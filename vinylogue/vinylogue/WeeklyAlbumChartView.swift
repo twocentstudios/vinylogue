@@ -34,7 +34,7 @@ struct WeeklyAlbumChartView: View {
             ZStack {
                 switch viewStore.status {
                 case .initialized:
-                    EmptyView().onAppear { viewStore.send(.fetchWeeklyChartList) }
+                    Rectangle().onAppear { viewStore.send(.fetchWeeklyChartList) }
                 case .loading:
                     OffsetRecordLoadingView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
