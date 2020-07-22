@@ -334,7 +334,7 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 
         case let .setWeeklyAlbumChartView(isActive: true, username):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-            state.viewState = .weeklyAlbumChart(.init(username: username, now: Date(), playCountFilter: .off)) // TODO real values from state/env
+            state.viewState = .weeklyAlbumChart(.init(username: username, now: Date(), playCountFilter: .off)) // TODO: real values from state/env
             return .none
 
         case .setWeeklyAlbumChartView(isActive: false, _):
@@ -449,6 +449,7 @@ enum WeeklyAlbumChartAction: Equatable {
     case fetchWeeklyChartListResponse(Result<LastFM.WeeklyChartList, LastFMClient.Error>)
     case fetchWeeklyAlbumChart(LastFM.WeeklyChartRange)
     case fetchWeeklyAlbumChartResponse(LastFM.WeeklyChartRange, Result<LastFM.WeeklyAlbumCharts, LastFMClient.Error>)
+    case fetchImageThumbnailForChart(LastFM.WeeklyAlbumChartStub)
     case fetchAlbum(LastFM.WeeklyAlbumChartStub)
     case fetchAlbumResponse(LastFM.WeeklyAlbumChartStub, Result<LastFM.Album, LastFMClient.Error>)
     case fetchImageThumbnail(LastFM.Album)
@@ -485,8 +486,8 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
 
         case let .fetchWeeklyAlbumChart(chartRange):
             switch state.weeklyCharts[chartRange] {
-            case .none, .initialized?, .failed?: break
-            case .loading?, .loaded?: assertionFailure("Unexpected state"); return .none
+            case .none, .initialized, .failed: break
+            case .loading, .loaded: assertionFailure("Unexpected state"); return .none
             }
             state.weeklyCharts[chartRange] = .loading
             return environment.lastFMClient.weeklyAlbumChart(state.username, chartRange)
@@ -495,17 +496,28 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
                 .map { WeeklyAlbumChartAction.fetchWeeklyAlbumChartResponse(chartRange, $0) }
 
         case let .fetchWeeklyAlbumChartResponse(chartRange, result):
-            guard case .loading? = state.weeklyCharts[chartRange] else { assertionFailure("Unexpected state"); return .none }
+            guard case .loading = state.weeklyCharts[chartRange] else { assertionFailure("Unexpected state"); return .none }
             switch result {
             case let .success(value): state.weeklyCharts[chartRange] = .loaded(value)
             case let .failure(error): state.weeklyCharts[chartRange] = .failed(error)
             }
             return .none // TODO: consider prefetching logic for albums and thumbnails
 
+        case let .fetchImageThumbnailForChart(albumChartStub):
+            switch state.albums[albumChartStub] {
+            case .none, .initialized, .failed: return Effect(value: .fetchAlbum(albumChartStub))
+            case .loading: return .none
+            case let .loaded(album):
+                switch state.albumImageThumbnails[album] {
+                case .none, .initialized, .failed: return Effect(value: .fetchImageThumbnail(album))
+                case .loading, .loaded: return .none
+                }
+            }
+
         case let .fetchAlbum(albumChartStub):
             switch state.albums[albumChartStub] {
-            case .none, .initialized?, .failed?: break
-            case .loading?, .loaded?: assertionFailure("Unexpected state"); return .none
+            case .none, .initialized, .failed: break
+            case .loading, .loaded: assertionFailure("Unexpected state"); return .none
             }
             state.albums[albumChartStub] = .loading
             return environment.lastFMClient.album(state.username, albumChartStub.artist, albumChartStub.album)
@@ -514,12 +526,18 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
                 .map { WeeklyAlbumChartAction.fetchAlbumResponse(albumChartStub, $0) }
 
         case let .fetchAlbumResponse(albumChartStub, result):
-            guard case .loading? = state.albums[albumChartStub] else { assertionFailure("Unexpected state"); return .none }
+            guard case .loading = state.albums[albumChartStub] else { assertionFailure("Unexpected state"); return .none }
             switch result {
-            case let .success(value): state.albums[albumChartStub] = .loaded(value)
-            case let .failure(error): state.albums[albumChartStub] = .failed(error)
+            case let .success(value):
+                state.albums[albumChartStub] = .loaded(value)
+                switch state.albumImageThumbnails[value] {
+                case .none, .initialized, .failed: return Effect(value: .fetchImageThumbnail(value))
+                case .loading, .loaded: return .none
+                }
+            case let .failure(error):
+                state.albums[albumChartStub] = .failed(error)
+                return .none
             }
-            return .none
 
         case let .fetchImageThumbnail(album):
             return .none
