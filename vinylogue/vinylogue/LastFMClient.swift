@@ -309,7 +309,7 @@ extension LastFM {
         }
     }
 
-    struct ArtistStub: Equatable, Decodable {
+    struct ArtistStub: Equatable, Hashable, Decodable {
         let mbid: String?
         let name: String
 
@@ -319,7 +319,7 @@ extension LastFM {
         }
     }
 
-    struct AlbumStub: Equatable {
+    struct AlbumStub: Equatable, Hashable {
         let mbid: String?
         let name: String
     }
