@@ -92,10 +92,40 @@ enum AppAction: Equatable {
 
 struct AppEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var dateClient: DateClient
     var lastFMClient: LastFMClient
     var imageClient: ImageClient
     var loadUserFromDisk: () -> User?
     var saveUserToDisk: (User?) -> ()
+}
+
+extension AppEnvironment {
+    static let live = AppEnvironment(
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        dateClient: .live,
+        lastFMClient: .live,
+        imageClient: .live,
+        loadUserFromDisk: { nil },
+        saveUserToDisk: { _ in }
+    )
+
+    static let mockUser = AppEnvironment(
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        dateClient: .mock,
+        lastFMClient: .mock,
+        imageClient: .mock,
+        loadUserFromDisk: { User.mock },
+        saveUserToDisk: { _ in }
+    )
+
+    static let mockFirstTime = AppEnvironment(
+        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        dateClient: .mock,
+        lastFMClient: .mock,
+        imageClient: .mock,
+        loadUserFromDisk: { nil },
+        saveUserToDisk: { _ in }
+    )
 }
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
@@ -197,32 +227,6 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment> { state, act
     case .logIn:
         return .none
     }
-}
-
-extension AppEnvironment {
-    static let live = AppEnvironment(
-        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-        lastFMClient: .live,
-        imageClient: .live,
-        loadUserFromDisk: { nil },
-        saveUserToDisk: { _ in }
-    )
-
-    static let mockUser = AppEnvironment(
-        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-        lastFMClient: .mock,
-        imageClient: .mock,
-        loadUserFromDisk: { User.mock },
-        saveUserToDisk: { _ in }
-    )
-
-    static let mockFirstTime = AppEnvironment(
-        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
-        lastFMClient: .mock,
-        imageClient: .mock,
-        loadUserFromDisk: { nil },
-        saveUserToDisk: { _ in }
-    )
 }
 
 struct FavoriteUsersState: Equatable {
