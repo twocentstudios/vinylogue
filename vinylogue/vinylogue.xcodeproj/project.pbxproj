@@ -14,6 +14,7 @@
 		09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 09B7EA2924BB185D00E8328B /* ComposableArchitecture */; };
 		09D1B91924C86E6100CC42CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 09D1B91824C86E6100CC42CD /* Nuke */; };
 		09D1B91B24C86FB400CC42CD /* ImageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D1B91A24C86FB400CC42CD /* ImageClient.swift */; };
+		09D1B91E24C8736600CC42CD /* ImagePublisher in Frameworks */ = {isa = PBXBuildFile; productRef = 09D1B91D24C8736600CC42CD /* ImagePublisher */; };
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
 		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
 		09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734424ACC72B000E2B6B /* Assets.xcassets */; };
@@ -77,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */,
+				09D1B91E24C8736600CC42CD /* ImagePublisher in Frameworks */,
 				09D1B91924C86E6100CC42CD /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,6 +188,7 @@
 			packageProductDependencies = (
 				09B7EA2924BB185D00E8328B /* ComposableArchitecture */,
 				09D1B91824C86E6100CC42CD /* Nuke */,
+				09D1B91D24C8736600CC42CD /* ImagePublisher */,
 			);
 			productName = vinylogue;
 			productReference = 09F1733D24ACC72A000E2B6B /* vinylogue.app */;
@@ -261,6 +264,7 @@
 			packageReferences = (
 				09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				09D1B91724C86E6100CC42CD /* XCRemoteSwiftPackageReference "Nuke" */,
+				09D1B91C24C8736600CC42CD /* XCRemoteSwiftPackageReference "ImagePublisher" */,
 			);
 			productRefGroup = 09F1733E24ACC72A000E2B6B /* Products */;
 			projectDirPath = "";
@@ -654,6 +658,14 @@
 				minimumVersion = 9.1.1;
 			};
 		};
+		09D1B91C24C8736600CC42CD /* XCRemoteSwiftPackageReference "ImagePublisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/ImagePublisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -666,6 +678,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 09D1B91724C86E6100CC42CD /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = Nuke;
+		};
+		09D1B91D24C8736600CC42CD /* ImagePublisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09D1B91C24C8736600CC42CD /* XCRemoteSwiftPackageReference "ImagePublisher" */;
+			productName = ImagePublisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
