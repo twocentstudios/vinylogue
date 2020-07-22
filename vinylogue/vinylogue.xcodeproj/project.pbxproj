@@ -12,6 +12,7 @@
 		0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */; };
 		097377A224C4457A001DD6E1 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097377A124C4457A001DD6E1 /* LastFMClient.swift */; };
 		09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 09B7EA2924BB185D00E8328B /* ComposableArchitecture */; };
+		09D1B91924C86E6100CC42CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 09D1B91824C86E6100CC42CD /* Nuke */; };
 		09F1734124ACC72A000E2B6B /* vinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734024ACC72A000E2B6B /* vinylogueApp.swift */; };
 		09F1734324ACC72A000E2B6B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1734224ACC72A000E2B6B /* RootView.swift */; };
 		09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09F1734424ACC72B000E2B6B /* Assets.xcassets */; };
@@ -74,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */,
+				09D1B91924C86E6100CC42CD /* Nuke in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +182,7 @@
 			name = vinylogue;
 			packageProductDependencies = (
 				09B7EA2924BB185D00E8328B /* ComposableArchitecture */,
+				09D1B91824C86E6100CC42CD /* Nuke */,
 			);
 			productName = vinylogue;
 			productReference = 09F1733D24ACC72A000E2B6B /* vinylogue.app */;
@@ -254,6 +257,7 @@
 			mainGroup = 09F1733424ACC72A000E2B6B;
 			packageReferences = (
 				09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				09D1B91724C86E6100CC42CD /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 09F1733E24ACC72A000E2B6B /* Products */;
 			projectDirPath = "";
@@ -638,6 +642,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		09D1B91724C86E6100CC42CD /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -645,6 +657,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 09B7EA2824BB185D00E8328B /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		09D1B91824C86E6100CC42CD /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09D1B91724C86E6100CC42CD /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
