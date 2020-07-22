@@ -6,6 +6,9 @@ struct WeeklyAlbumChartView: View {
         struct Section: Equatable {
             let label: String
             let albums: [WeeklyAlbumChartCell.Model]
+            let isLoading: Bool
+            let isEmpty: Bool
+            let hasError: Bool
         }
 
         let sections: [Section]
@@ -31,7 +34,13 @@ struct WeeklyAlbumChartView: View {
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
-                                if !section.albums.isEmpty {
+                                if section.isLoading {
+                                    WeeklyAlbumChartLoadingCell()
+                                } else if section.isEmpty {
+                                    WeeklyAlbumChartEmptyCell()
+                                } else if section.hasError {
+                                    WeeklyAlbumChartErrorCell() // TODO: retry action
+                                } else {
                                     ForEach(section.albums, id: \.album) { album in
                                         NavigationLink(
                                             destination: Text("Destination")
@@ -40,9 +49,6 @@ struct WeeklyAlbumChartView: View {
                                             WeeklyAlbumChartCell(album)
                                         }
                                     }
-
-                                } else {
-                                    WeeklyAlbumChartEmptyCell()
                                 }
                             }
                         }
@@ -315,8 +321,8 @@ let mockAlbums: [WeeklyAlbumChartCell.Model] =
 
 let mockSections: [WeeklyAlbumChartView.Model.Section] =
     [
-        .init(label: "2019", albums: mockAlbums),
-        .init(label: "2018", albums: []),
+        .init(label: "2019", albums: mockAlbums, isLoading: false, isEmpty: false, hasError: false),
+        .init(label: "2018", albums: [], isLoading: false, isEmpty: true, hasError: false),
     ]
 
 private struct TopBorderView: View {
