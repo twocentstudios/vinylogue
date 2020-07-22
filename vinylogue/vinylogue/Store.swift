@@ -251,7 +251,7 @@ struct FavoriteUsersState: Equatable {
         get {
             // TODO:
             guard case let .weeklyAlbumChart(state) = viewState else { return nil }
-            return .init(username: state.username)
+            return .init(username: state.username, now: state.now, playCountFilter: user.settings.playCountFilter)
         }
         set {
             // TODO:
@@ -334,7 +334,7 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 
         case let .setWeeklyAlbumChartView(isActive: true, username):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-            state.viewState = .weeklyAlbumChart(.init(username: username))
+            state.viewState = .weeklyAlbumChart(.init(username: username, now: Date(), playCountFilter: .off)) // TODO real values from state/env
             return .none
 
         case .setWeeklyAlbumChartView(isActive: false, _):
