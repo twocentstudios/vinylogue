@@ -126,7 +126,8 @@ extension WeeklyAlbumChartState {
         case .loading:
             status = .loading
         case let .loaded(albumChart):
-            status = .loaded(albumChart.charts.map(cellModel))
+            let cellModels = albumChart.charts.map(cellModel)
+            status = cellModels.isEmpty ? .empty : .loaded(cellModels)
         case .failed:
             status = .failed
         }
@@ -251,7 +252,7 @@ struct WeeklyAlbumChartCell_Previews: PreviewProvider {
 struct WeeklyAlbumChartEmptyCell: View {
     var body: some View {
         VStack(spacing: 0) {
-            Text("no charts this week")
+            Text("no charts this year")
                 .font(.avnUltraLight(18))
                 .foregroundColor(Color(.secondaryLabel))
                 .frame(maxWidth: .infinity, alignment: .center)
