@@ -259,7 +259,7 @@ struct FavoriteUsersState: Equatable {
         get {
             // TODO:
             guard case let .weeklyAlbumChart(state) = viewState else { return nil }
-            return .init(username: state.username, now: state.now, playCountFilter: user.settings.playCountFilter)
+            return state // TODO: I guess it's okay not to reinitialize with the root state's user
         }
         set {
             // TODO:
@@ -342,7 +342,14 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 
         case let .setWeeklyAlbumChartView(isActive: true, username):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-            state.viewState = .weeklyAlbumChart(.init(username: username, now: Date(), playCountFilter: .off)) // TODO: real values from state/env
+            state.viewState = .weeklyAlbumChart(
+                .init(
+                    username: username,
+                    now: environment.dateClient.date(),
+                    playCountFilter: .off,
+                    calendar: environment.dateClient.calendar
+                )
+            )
             return .none
 
         case .setWeeklyAlbumChartView(isActive: false, _):
@@ -421,14 +428,6 @@ struct WeeklyAlbumChartState: Equatable {
         case failed
     }
 
-    private var displayingDates: [Date] {
-        fatalError()
-    }
-
-    var displayingChartRanges: [LastFM.WeeklyChartRange] {
-        fatalError()
-    }
-
     let username: Username
     let now: Date
     let playCountFilter: Settings.PlayCountFilter
@@ -437,10 +436,16 @@ struct WeeklyAlbumChartState: Equatable {
     var weeklyCharts: [LastFM.WeeklyChartRange: WeeklyAlbumChartState]
     var albums: [LastFM.WeeklyAlbumChartStub: AlbumState]
     var albumImageThumbnails: [LastFM.Album: ImageState]
+
+    // derived
+    let weekOfYear: Int // for `now`
+    let datesForYearsWithCurrentWeek: [Date]
+    var displayingChartRanges: [LastFM.WeeklyChartRange]
+    var titlesForChartRanges: [LastFM.WeeklyChartRange: String]
 }
 
 extension WeeklyAlbumChartState {
-    init(username: Username, now: Date, playCountFilter: Settings.PlayCountFilter) {
+    init(username: Username, now: Date, playCountFilter: Settings.PlayCountFilter, calendar: Calendar) {
         self.username = username
         self.now = now
         self.playCountFilter = playCountFilter
@@ -449,6 +454,28 @@ extension WeeklyAlbumChartState {
         weeklyCharts = [:]
         albums = [:]
         albumImageThumbnails = [:]
+
+        let components = calendar.dateComponents([.weekOfYear], from: now)
+        weekOfYear = components.weekOfYear!
+
+        datesForYearsWithCurrentWeek = (-1 ... -30)
+            .map { var d = DateComponents(); d.year = $0; return d }
+            .map { calendar.date(byAdding: $0, to: now)! } // TODO: ensure this never returns nil
+
+        displayingChartRanges = []
+        titlesForChartRanges = [:]
+    }
+
+    mutating func updateDerivedChartRanges(_ yearFormatter: (Date) -> String) {
+        guard case let .loaded(weeklyChartList) = weeklyChartListState else { return }
+        displayingChartRanges = weeklyChartList.ranges
+            .map { range in
+                datesForYearsWithCurrentWeek.map { (range.from ... range.to).contains($0) }.contains(true) ? range : nil
+            }
+            .compactMap { $0 }
+        titlesForChartRanges = displayingChartRanges.reduce(into: [:]) { result, range in
+            result[range] = yearFormatter(range.from)
+        }
     }
 }
 
@@ -490,6 +517,7 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             case let .success(value): state.weeklyChartListState = .loaded(value)
             case let .failure(error): state.weeklyChartListState = .failed(error)
             }
+            state.updateDerivedChartRanges(environment.dateClient.yearFormatter)
             return .none
 
         case let .fetchWeeklyAlbumChart(chartRange):
