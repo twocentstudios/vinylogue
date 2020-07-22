@@ -332,7 +332,11 @@ extension LastFM {
             let mbid = try values.decodeIfPresent(String.self, forKey: .mbid)
             album = AlbumStub(mbid: mbid, name: name)
             artist = try values.decode(ArtistStub.self, forKey: .artist)
-            playCount = try values.decode(Int.self, forKey: .playCount)
+            let playCountString = try values.decode(String.self, forKey: .playCount)
+            guard let playCountInt = Int(playCountString) else {
+                throw DecodingError.dataCorruptedError(forKey: .playCount, in: values, debugDescription: "String could not be converted to Int")
+            }
+            playCount = playCountInt
         }
     }
 
