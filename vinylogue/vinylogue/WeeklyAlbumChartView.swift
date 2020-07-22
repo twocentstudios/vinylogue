@@ -106,50 +106,50 @@ extension WeeklyAlbumChartState {
         case .loading:
             status = .loading
         case .loaded:
-            let sections: [WeeklyAlbumChartView.Model.Section] = displayingChartRanges
-                .map { range in
-                    let title = titlesForChartRanges[range] ?? ""
-                    let status: WeeklyAlbumChartView.Model.Section.Status
-                    switch albumCharts[range] {
-                    case .none, .initialized:
-                        status = .initialized
-                    case .loading:
-                        status = .loading
-                    case let .loaded(albumChart):
-                        let models = albumChart.charts
-                            .map { (chart: LastFM.WeeklyAlbumChartStub) -> WeeklyAlbumChartCell.Model in
-                                let image: UIImage?
-                                // TODO: is it possible to use CasePaths?
-                                let albumState: AlbumState? = albums[chart]
-                                if case let .loaded(album) = albumState,
-                                    let imageState = albumImageThumbnails[album],
-                                    case let .loaded(loadedImage) = imageState {
-                                    image = loadedImage
-                                } else {
-                                    image = nil
-                                }
-                                return WeeklyAlbumChartCell.Model(
-                                    image: image,
-                                    artist: chart.artist.name,
-                                    album: chart.album.name,
-                                    plays: String(chart.playCount)
-                                )
-                            }
-                        status = .loaded(models)
-                    case .failed:
-                        status = .failed
-                    }
-                    return WeeklyAlbumChartView.Model.Section(
-                        label: title,
-                        status: status
-                    )
-                }
-            status = .loaded(sections)
+            status = .loaded(displayingChartRanges.map(section))
         case let .failed(error):
             _ = error // TODO: format error
             status = .failed(ErrorRetryView.Model(title: "An error occurred", subtitle: "Please try again"))
         }
         return WeeklyAlbumChartView.Model(title: title, status: status)
+    }
+
+    private func section(_ range: LastFM.WeeklyChartRange) -> WeeklyAlbumChartView.Model.Section {
+        let title = titlesForChartRanges[range] ?? ""
+        let status: WeeklyAlbumChartView.Model.Section.Status
+        switch albumCharts[range] {
+        case .none, .initialized:
+            status = .initialized
+        case .loading:
+            status = .loading
+        case let .loaded(albumChart):
+            status = .loaded(albumChart.charts.map(cellModel))
+        case .failed:
+            status = .failed
+        }
+        return WeeklyAlbumChartView.Model.Section(
+            label: title,
+            status: status
+        )
+    }
+
+    private func cellModel(_ chart: LastFM.WeeklyAlbumChartStub) -> WeeklyAlbumChartCell.Model {
+        let image: UIImage?
+        // TODO: is it possible to use CasePaths?
+        let albumState: AlbumState? = albums[chart]
+        if case let .loaded(album) = albumState,
+            let imageState = albumImageThumbnails[album],
+            case let .loaded(loadedImage) = imageState {
+            image = loadedImage
+        } else {
+            image = nil
+        }
+        return WeeklyAlbumChartCell.Model(
+            image: image,
+            artist: chart.artist.name,
+            album: chart.album.name,
+            plays: String(chart.playCount)
+        )
     }
 }
 
