@@ -389,7 +389,8 @@ extension LastFM {
             mbid = try values.decodeIfPresent(String.self, forKey: .mbid)
             name = try values.decode(String.self, forKey: .name)
             artist = try values.decode(String.self, forKey: .artist)
-            totalPlayCount = try values.decodeIfPresent(Int.self, forKey: .totalPlayCount)
+            let totalPlayCountString = try values.decodeIfPresent(String.self, forKey: .totalPlayCount)
+            totalPlayCount = totalPlayCountString.flatMap(Int.init)
 
             // TODO: clean up content HTML
             let wikiValues = try values.nestedContainer(keyedBy: WikiKeys.self, forKey: .wiki)
