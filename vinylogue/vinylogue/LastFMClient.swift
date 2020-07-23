@@ -175,7 +175,7 @@ extension LastFM {
         let method = "user.getweeklyalbumchart"
         let username: Username
         let range: WeeklyChartRange
-        private static func format(_ interval: TimeInterval) -> String { .init(format:"%.0f", interval) }
+        private static func format(_ interval: TimeInterval) -> String { .init(format: "%.0f", interval) }
 
         var queryItems: [URLQueryItem] {
             [
