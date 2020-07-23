@@ -44,7 +44,7 @@ struct WeeklyAlbumChartView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 case let .loaded(sections):
                     List {
-                        ForEach(sections, id: \.id) { section in
+                        ForEach(sections) { section in
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
@@ -139,7 +139,7 @@ extension WeeklyAlbumChartState {
     private func cellModel(_ chart: LastFM.WeeklyAlbumChartStub) -> WeeklyAlbumChartCell.Model {
         let image: UIImage?
         // TODO: is it possible to use CasePaths?
-        let albumState: AlbumState? = albums[chart]
+        let albumState: AlbumState? = albums[chart.id]
         if case let .loaded(album) = albumState,
             let imageState = albumImageThumbnails[album],
             case let .loaded(loadedImage) = imageState {
@@ -148,7 +148,7 @@ extension WeeklyAlbumChartState {
             image = nil
         }
         return WeeklyAlbumChartCell.Model(
-            id: chart,
+            id: chart.id,
             image: image,
             artist: chart.artist.name,
             album: chart.album.name,
@@ -178,7 +178,7 @@ struct WeeklyAlbumChartHeaderView_Previews: PreviewProvider {
 
 struct WeeklyAlbumChartCell: View {
     struct Model: Equatable, Identifiable {
-        let id: LastFM.WeeklyAlbumChartStub
+        let id: LastFM.WeeklyAlbumChartStub.ID
         let image: UIImage?
         let artist: String
         let album: String

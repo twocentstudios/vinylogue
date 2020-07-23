@@ -317,7 +317,8 @@ extension LastFM {
         }
     }
 
-    struct WeeklyAlbumChartStub: Equatable, Hashable, Decodable {
+    struct WeeklyAlbumChartStub: Equatable, Identifiable, Decodable {
+        var id: String { "\(artist.name):\(album.name)" }
         let album: AlbumStub
         let artist: ArtistStub
         let playCount: Int

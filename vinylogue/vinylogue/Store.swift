@@ -439,7 +439,7 @@ struct WeeklyAlbumChartState: Equatable {
 
     var weeklyChartListState: WeeklyChartListState
     var albumCharts: [LastFM.WeeklyChartRange.ID: AlbumChartsState]
-    var albums: [LastFM.WeeklyAlbumChartStub: AlbumState]
+    var albums: [LastFM.WeeklyAlbumChartStub.ID: AlbumState]
     var albumImageThumbnails: [LastFM.Album: ImageState]
 
     // derived
@@ -448,6 +448,16 @@ struct WeeklyAlbumChartState: Equatable {
     var chartRanges: [LastFM.WeeklyChartRange.ID: LastFM.WeeklyChartRange]
     var displayingChartRanges: [LastFM.WeeklyChartRange]
     var titlesForChartRanges: [LastFM.WeeklyChartRange.ID: String]
+
+    func albumChart(for id: LastFM.WeeklyAlbumChartStub.ID) -> LastFM.WeeklyAlbumChartStub? {
+        // TODO: not sure how heavy this is
+        albumCharts.values
+            .compactMap { value in
+                guard case let .loaded(charts) = value else { return nil }
+                return charts.charts.first(where: { $0.id == id })
+            }
+            .first
+    }
 }
 
 extension WeeklyAlbumChartState {
@@ -495,9 +505,9 @@ enum WeeklyAlbumChartAction: Equatable {
     case fetchWeeklyChartListResponse(Result<LastFM.WeeklyChartList, LastFMClient.Error>)
     case fetchWeeklyAlbumChart(LastFM.WeeklyChartRange.ID)
     case fetchWeeklyAlbumChartResponse(LastFM.WeeklyChartRange.ID, Result<LastFM.WeeklyAlbumCharts, LastFMClient.Error>)
-    case fetchImageThumbnailForChart(LastFM.WeeklyAlbumChartStub)
-    case fetchAlbum(LastFM.WeeklyAlbumChartStub)
-    case fetchAlbumResponse(LastFM.WeeklyAlbumChartStub, Result<LastFM.Album, LastFMClient.Error>)
+    case fetchImageThumbnailForChart(LastFM.WeeklyAlbumChartStub.ID)
+    case fetchAlbum(LastFM.WeeklyAlbumChartStub.ID)
+    case fetchAlbumResponse(LastFM.WeeklyAlbumChartStub.ID, Result<LastFM.Album, LastFMClient.Error>)
     case fetchImageThumbnail(LastFM.Album)
     case fetchImageThumbnailResponse(LastFM.Album, Result<UIImage, ImageClient.Error>)
     case setAlbumDetailView(isActive: Bool, LastFM.WeeklyAlbumChartStub)
@@ -554,9 +564,9 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             }
             return .none // TODO: consider prefetching logic for albums and thumbnails
 
-        case let .fetchImageThumbnailForChart(albumChartStub):
-            switch state.albums[albumChartStub] {
-            case .none, .initialized: return Effect(value: .fetchAlbum(albumChartStub))
+        case let .fetchImageThumbnailForChart(albumChartStubID):
+            switch state.albums[albumChartStubID] {
+            case .none, .initialized: return Effect(value: .fetchAlbum(albumChartStubID))
             case .loading, .failed: return .none // Don't retry failed albums (they probably don't exist)
             case let .loaded(album):
                 switch state.albumImageThumbnails[album] {
@@ -565,28 +575,29 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
                 }
             }
 
-        case let .fetchAlbum(albumChartStub):
-            switch state.albums[albumChartStub] {
+        case let .fetchAlbum(albumChartStubID):
+            guard let albumChartStub = state.albumChart(for: albumChartStubID) else { assertionFailure("id not found"); return .none }
+            switch state.albums[albumChartStubID] {
             case .none, .initialized, .failed: break
             case .loading, .loaded: assertionFailure("Unexpected state"); return .none
             }
-            state.albums[albumChartStub] = .loading
+            state.albums[albumChartStubID] = .loading
             return environment.lastFMClient.album(state.username, albumChartStub.artist, albumChartStub.album)
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
-                .map { WeeklyAlbumChartAction.fetchAlbumResponse(albumChartStub, $0) }
+                .map { WeeklyAlbumChartAction.fetchAlbumResponse(albumChartStubID, $0) }
 
-        case let .fetchAlbumResponse(albumChartStub, result):
-            guard case .loading = state.albums[albumChartStub] else { assertionFailure("Unexpected state"); return .none }
+        case let .fetchAlbumResponse(albumChartStubID, result):
+            guard case .loading = state.albums[albumChartStubID] else { assertionFailure("Unexpected state"); return .none }
             switch result {
             case let .success(value):
-                state.albums[albumChartStub] = .loaded(value)
+                state.albums[albumChartStubID] = .loaded(value)
                 switch state.albumImageThumbnails[value] {
                 case .none, .initialized, .failed: return Effect(value: .fetchImageThumbnail(value))
                 case .loading, .loaded: return .none
                 }
             case let .failure(error):
-                state.albums[albumChartStub] = .failed(error)
+                state.albums[albumChartStubID] = .failed(error)
                 return .none
             }
 
