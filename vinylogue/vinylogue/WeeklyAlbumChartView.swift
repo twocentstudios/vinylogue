@@ -141,7 +141,7 @@ extension WeeklyAlbumChartState {
         // TODO: is it possible to use CasePaths?
         let albumState: AlbumState? = albums[chart.id]
         if case let .loaded(album) = albumState,
-            let imageState = albumImageThumbnails[album],
+            let imageState = albumImageThumbnails[album.id],
             case let .loaded(loadedImage) = imageState {
             image = loadedImage
         } else {

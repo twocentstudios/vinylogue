@@ -344,7 +344,7 @@ extension LastFM {
         }
     }
 
-    struct ArtistStub: Equatable, Hashable, Decodable {
+    struct ArtistStub: Equatable, Decodable {
         let mbid: String?
         let name: String
 
@@ -354,12 +354,13 @@ extension LastFM {
         }
     }
 
-    struct AlbumStub: Equatable, Hashable {
+    struct AlbumStub: Equatable {
         let mbid: String? // mbid is often incorrect in the AlbumStub context
         let name: String
     }
 
-    struct Album: Equatable, Hashable, Decodable {
+    struct Album: Equatable, Identifiable, Decodable {
+        var id: String { "\(artist):\(name)" }
         let mbid: String?
         let name: String
         // let releaseDate: Date
@@ -410,7 +411,7 @@ extension LastFM {
         }
     }
 
-    struct Track: Equatable, Hashable, Decodable {
+    struct Track: Equatable, Decodable {
         let name: String
         let seconds: Int?
 
@@ -427,7 +428,7 @@ extension LastFM {
         }
     }
 
-    struct ImageSet: Equatable, Hashable, Decodable {
+    struct ImageSet: Equatable, Decodable {
         let images: [Image]
 
         enum CodingKeys: String, CodingKey {
@@ -452,7 +453,7 @@ extension LastFM {
         }
     }
 
-    struct Image: Equatable, Hashable, Decodable {
+    struct Image: Equatable, Decodable {
         let url: URL
         let size: String?
 
