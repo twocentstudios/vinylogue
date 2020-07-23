@@ -74,7 +74,7 @@ struct WeeklyAlbumChartView: View {
                     .listStyle(GroupedListStyle())
                 }
             }
-            .navigationTitle(viewStore.title)
+            .navigationTitle(viewStore.title) // TODO: split this up (it's too long)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
