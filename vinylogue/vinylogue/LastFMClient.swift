@@ -403,8 +403,7 @@ extension LastFM {
             let tracksValues = try values.nestedContainer(keyedBy: TracksKeys.self, forKey: .tracks)
             tracks = try tracksValues.decodeIfPresent([Track].self, forKey: .track)
 
-            let imageValues = try values.decodeIfPresent([Image].self, forKey: .image)
-            imageSet = imageValues.map { ImageSet(images: $0) }
+            imageSet = try values.decodeIfPresent(ImageSet.self, forKey: .image)
         }
     }
 
@@ -427,6 +426,27 @@ extension LastFM {
 
     struct ImageSet: Equatable, Hashable, Decodable {
         let images: [Image]
+
+        enum CodingKeys: String, CodingKey {
+            case images
+        }
+
+        init(from decoder: Decoder) throws {
+            var values = try decoder.unkeyedContainer()
+            var imageValues = [Image]()
+            while !values.isAtEnd {
+                // Ignore decoding errors for images (it's expected that some URLs are empty/invalid)
+                if let maybeImage = try? values.decode(Image.self) {
+                    imageValues.append(maybeImage)
+                } else {
+                    // The only way to advance the decoder's current index is to "successfully" decode a bogus struct
+                    // https://github.com/apple/swift-evolution/pull/1012
+                    struct InvalidImage: Decodable {}
+                    _ = try values.decode(InvalidImage.self)
+                }
+            }
+            images = imageValues
+        }
     }
 
     struct Image: Equatable, Hashable, Decodable {
@@ -436,6 +456,16 @@ extension LastFM {
         enum CodingKeys: String, CodingKey {
             case url = "#text"
             case size
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            let urlString = try values.decode(String.self, forKey: .url)
+            guard let urlValue = URL(string: urlString) else {
+                throw DecodingError.dataCorruptedError(forKey: .url, in: values, debugDescription: "String could not be converted to URL")
+            }
+            url = urlValue
+            size = try values.decodeIfPresent(String.self, forKey: .size)
         }
     }
 
