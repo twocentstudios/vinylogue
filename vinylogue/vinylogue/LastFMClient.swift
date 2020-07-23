@@ -282,7 +282,10 @@ extension LastFM {
         }
     }
 
-    struct WeeklyChartRange: Equatable, Hashable, Decodable {
+    struct WeeklyChartRange: Equatable, Identifiable, Decodable {
+        // Assume ranges have unique `from` dates.
+        var id: Date { from }
+
         let from: Date // unix timestamp
         let to: Date
 

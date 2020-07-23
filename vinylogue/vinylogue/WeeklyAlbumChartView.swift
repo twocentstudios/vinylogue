@@ -19,7 +19,7 @@ struct WeeklyAlbumChartView: View {
                 case failed
             }
 
-            let id: LastFM.WeeklyChartRange
+            let id: LastFM.WeeklyChartRange.ID
             let label: String
             let status: Status
         }
@@ -116,9 +116,9 @@ extension WeeklyAlbumChartState {
     }
 
     private func section(_ range: LastFM.WeeklyChartRange) -> WeeklyAlbumChartView.Model.Section {
-        let title = titlesForChartRanges[range] ?? ""
+        let title = titlesForChartRanges[range.id] ?? ""
         let status: WeeklyAlbumChartView.Model.Section.Status
-        switch albumCharts[range] {
+        switch albumCharts[range.id] {
         case .none, .initialized:
             status = .initialized
         case .loading:
@@ -130,7 +130,7 @@ extension WeeklyAlbumChartState {
             status = .failed
         }
         return WeeklyAlbumChartView.Model.Section(
-            id: range,
+            id: range.id,
             label: title,
             status: status
         )

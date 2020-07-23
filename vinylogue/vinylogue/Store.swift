@@ -438,15 +438,16 @@ struct WeeklyAlbumChartState: Equatable {
     let playCountFilter: Settings.PlayCountFilter
 
     var weeklyChartListState: WeeklyChartListState
-    var albumCharts: [LastFM.WeeklyChartRange: AlbumChartsState]
+    var albumCharts: [LastFM.WeeklyChartRange.ID: AlbumChartsState]
     var albums: [LastFM.WeeklyAlbumChartStub: AlbumState]
     var albumImageThumbnails: [LastFM.Album: ImageState]
 
     // derived
     let weekOfYear: Int // for `now`
     let datesForYearsWithCurrentWeek: [Date]
+    var chartRanges: [LastFM.WeeklyChartRange.ID: LastFM.WeeklyChartRange]
     var displayingChartRanges: [LastFM.WeeklyChartRange]
-    var titlesForChartRanges: [LastFM.WeeklyChartRange: String]
+    var titlesForChartRanges: [LastFM.WeeklyChartRange.ID: String]
 }
 
 extension WeeklyAlbumChartState {
@@ -468,6 +469,7 @@ extension WeeklyAlbumChartState {
             .map { var d = DateComponents(); d.yearForWeekOfYear = $0; return d }
             .map { calendar.date(byAdding: $0, to: now)! } // TODO: ensure this never returns nil
 
+        chartRanges = [:]
         displayingChartRanges = []
         titlesForChartRanges = [:]
     }
@@ -480,9 +482,10 @@ extension WeeklyAlbumChartState {
                 datesForYearsWithCurrentWeek.map { (range.from ... range.to).contains($0) }.contains(true) ? range : nil
             }
             .compactMap { $0 }
+        chartRanges = displayingChartRanges.reduce(into: [:]) { $0[$1.id] = $1 }
         titlesForChartRanges = displayingChartRanges.reduce(into: [:]) { result, range in
             let yearForWeekOfYear = calendar.component(.yearForWeekOfYear, from: range.from)
-            result[range] = String(yearForWeekOfYear)
+            result[range.id] = String(yearForWeekOfYear)
         }
     }
 }
@@ -490,8 +493,8 @@ extension WeeklyAlbumChartState {
 enum WeeklyAlbumChartAction: Equatable {
     case fetchWeeklyChartList
     case fetchWeeklyChartListResponse(Result<LastFM.WeeklyChartList, LastFMClient.Error>)
-    case fetchWeeklyAlbumChart(LastFM.WeeklyChartRange)
-    case fetchWeeklyAlbumChartResponse(LastFM.WeeklyChartRange, Result<LastFM.WeeklyAlbumCharts, LastFMClient.Error>)
+    case fetchWeeklyAlbumChart(LastFM.WeeklyChartRange.ID)
+    case fetchWeeklyAlbumChartResponse(LastFM.WeeklyChartRange.ID, Result<LastFM.WeeklyAlbumCharts, LastFMClient.Error>)
     case fetchImageThumbnailForChart(LastFM.WeeklyAlbumChartStub)
     case fetchAlbum(LastFM.WeeklyAlbumChartStub)
     case fetchAlbumResponse(LastFM.WeeklyAlbumChartStub, Result<LastFM.Album, LastFMClient.Error>)
@@ -528,25 +531,26 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             state.updateDerivedChartRanges(environment.dateClient.calendar)
             return .none
 
-        case let .fetchWeeklyAlbumChart(chartRange):
-            switch state.albumCharts[chartRange] {
+        case let .fetchWeeklyAlbumChart(chartRangeID):
+            guard let chartRange = state.chartRanges[chartRangeID] else { assertionFailure("id not found"); return .none }
+            switch state.albumCharts[chartRangeID] {
             case .none, .initialized, .failed: break
-            /// TODO: This gets erroneously called by SwiftUI even after the chartRange has changed to `.loading`
-            /// This shouldn't be possible. For now, we'll just silently ignore it.
+            // TODO: This gets erroneously called by SwiftUI even after the chartRange has changed to `.loading`
+            // This shouldn't be possible. For now, we'll just silently ignore it.
             // case .loading, .loaded: assertionFailure("Unexpected state"); return .none
             case .loading, .loaded: return .none
             }
-            state.albumCharts[chartRange] = .loading
+            state.albumCharts[chartRangeID] = .loading
             return environment.lastFMClient.weeklyAlbumChart(state.username, chartRange)
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
-                .map { WeeklyAlbumChartAction.fetchWeeklyAlbumChartResponse(chartRange, $0) }
+                .map { WeeklyAlbumChartAction.fetchWeeklyAlbumChartResponse(chartRange.id, $0) }
 
-        case let .fetchWeeklyAlbumChartResponse(chartRange, result):
-            guard case .loading = state.albumCharts[chartRange] else { assertionFailure("Unexpected state"); return .none }
+        case let .fetchWeeklyAlbumChartResponse(chartRangeID, result):
+            guard case .loading = state.albumCharts[chartRangeID] else { assertionFailure("Unexpected state"); return .none }
             switch result {
-            case let .success(value): state.albumCharts[chartRange] = .loaded(value)
-            case let .failure(error): state.albumCharts[chartRange] = .failed(error)
+            case let .success(value): state.albumCharts[chartRangeID] = .loaded(value)
+            case let .failure(error): state.albumCharts[chartRangeID] = .failed(error)
             }
             return .none // TODO: consider prefetching logic for albums and thumbnails
 
