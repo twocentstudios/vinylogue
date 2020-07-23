@@ -205,7 +205,7 @@ extension LastFM {
             } else {
                 items.append(contentsOf: [
                     URLQueryItem(name: "artist", value: artist.name),
-                    URLQueryItem(name: "artist", value: album.name),
+                    URLQueryItem(name: "album", value: album.name),
                 ])
             }
 
