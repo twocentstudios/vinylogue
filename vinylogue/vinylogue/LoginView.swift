@@ -34,6 +34,8 @@ struct LoginView: View {
                             .padding(.all, 4)
                     }
                     TextField("username", text: viewStore.binding(get: { $0.userName }, send: { .textFieldChanged($0) }))
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
                         .textFieldStyle(CustomTextFieldStyle())
                         .disabled(viewStore.isLoading)
                 }
