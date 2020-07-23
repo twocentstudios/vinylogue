@@ -200,14 +200,13 @@ extension LastFM {
                 URLQueryItem(name: "username", value: username),
             ]
 
-            if let mbid = album.mbid {
-                items.append(URLQueryItem(name: "mbid", value: mbid))
-            } else {
-                items.append(contentsOf: [
-                    URLQueryItem(name: "artist", value: artist.name),
-                    URLQueryItem(name: "album", value: album.name),
-                ])
-            }
+            // Don't use mbid here because it's often incorrect.
+            // When sending mbid, album, and artist, the API will not use album and artist,
+            // even if it can't find the mbid.
+            items.append(contentsOf: [
+                URLQueryItem(name: "artist", value: artist.name),
+                URLQueryItem(name: "album", value: album.name),
+            ])
 
             return items
         }
@@ -352,7 +351,7 @@ extension LastFM {
     }
 
     struct AlbumStub: Equatable, Hashable {
-        let mbid: String?
+        let mbid: String? // mbid is often incorrect in the AlbumStub context
         let name: String
     }
 
