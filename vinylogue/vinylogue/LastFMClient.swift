@@ -416,6 +416,13 @@ extension LastFM {
             case name
             case seconds = "duration"
         }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            name = try values.decode(String.self, forKey: .name)
+            let secondsString = try values.decodeIfPresent(String.self, forKey: .seconds)
+            seconds = secondsString.flatMap(Int.init)
+        }
     }
 
     struct ImageSet: Equatable, Hashable, Decodable {
