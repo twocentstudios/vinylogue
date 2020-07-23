@@ -393,8 +393,12 @@ extension LastFM {
             totalPlayCount = totalPlayCountString.flatMap(Int.init)
 
             // TODO: clean up content HTML
-            let wikiValues = try values.nestedContainer(keyedBy: WikiKeys.self, forKey: .wiki)
-            about = try wikiValues.decodeIfPresent(String.self, forKey: .content)
+            if values.contains(.wiki) {
+                let wikiValues = try values.nestedContainer(keyedBy: WikiKeys.self, forKey: .wiki)
+                about = try wikiValues.decodeIfPresent(String.self, forKey: .content)
+            } else {
+                about = nil
+            }
 
             let tracksValues = try values.nestedContainer(keyedBy: TracksKeys.self, forKey: .tracks)
             tracks = try tracksValues.decodeIfPresent([Track].self, forKey: .track)
