@@ -10,7 +10,7 @@ struct WeeklyAlbumChartView: View {
             case failed(ErrorRetryView.Model)
         }
 
-        struct Section: Equatable {
+        struct Section: Equatable, Identifiable {
             enum Status: Equatable {
                 case initialized
                 case loading
@@ -44,7 +44,6 @@ struct WeeklyAlbumChartView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 case let .loaded(sections):
                     List {
-                        // TODO: real ids are required
                         ForEach(sections, id: \.id) { section in
                             Section(
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
@@ -63,6 +62,7 @@ struct WeeklyAlbumChartView: View {
                                         )
                                         {
                                             WeeklyAlbumChartCell(album)
+                                                .onAppear { viewStore.send(.fetchImageThumbnailForChart(album.id)) }
                                         }
                                     }
                                 case .failed:
@@ -148,6 +148,7 @@ extension WeeklyAlbumChartState {
             image = nil
         }
         return WeeklyAlbumChartCell.Model(
+            id: chart,
             image: image,
             artist: chart.artist.name,
             album: chart.album.name,
@@ -176,7 +177,8 @@ struct WeeklyAlbumChartHeaderView_Previews: PreviewProvider {
 }
 
 struct WeeklyAlbumChartCell: View {
-    struct Model: Equatable {
+    struct Model: Equatable, Identifiable {
+        let id: LastFM.WeeklyAlbumChartStub
         let image: UIImage?
         let artist: String
         let album: String
@@ -238,11 +240,11 @@ struct WeeklyAlbumChartCell: View {
 struct WeeklyAlbumChartCell_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
-                .previewLayout(.sizeThatFits)
-            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
-                .previewLayout(.sizeThatFits)
-                .preferredColorScheme(.dark)
+//            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
+//                .previewLayout(.sizeThatFits)
+//            WeeklyAlbumChartCell(.init(image: nil, artist: "Weezer", album: "Maladroit", plays: "25"))
+//                .previewLayout(.sizeThatFits)
+//                .preferredColorScheme(.dark)
         }
     }
 }
@@ -389,9 +391,9 @@ struct ErrorRetryView_Previews: PreviewProvider {
 
 let mockAlbums: [WeeklyAlbumChartCell.Model] =
     [
-        .init(image: nil, artist: "Weezer", album: "Maladroit", plays: "20"),
-        .init(image: nil, artist: "Rufio", album: "The Comfort of Home", plays: "17"),
-        .init(image: nil, artist: "Saves The Day", album: "Sound The Alarm", plays: "2"),
+//        .init(image: nil, artist: "Weezer", album: "Maladroit", plays: "20"),
+//        .init(image: nil, artist: "Rufio", album: "The Comfort of Home", plays: "17"),
+//        .init(image: nil, artist: "Saves The Day", album: "Sound The Alarm", plays: "2"),
     ]
 
 let mockSections: [WeeklyAlbumChartView.Model.Section] =
