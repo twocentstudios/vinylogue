@@ -263,7 +263,7 @@ struct FavoriteUsersState: Equatable {
         }
         set {
             guard case .weeklyAlbumChart = viewState,
-                  let state = newValue else { return }
+                let state = newValue else { return }
             viewState = .weeklyAlbumChart(state)
         }
     }
@@ -531,7 +531,10 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
         case let .fetchWeeklyAlbumChart(chartRange):
             switch state.albumCharts[chartRange] {
             case .none, .initialized, .failed: break
-            case .loading, .loaded: assertionFailure("Unexpected state"); return .none
+            /// TODO: This gets erroneously called by SwiftUI even after the chartRange has changed to `.loading`
+            /// This shouldn't be possible. For now, we'll just silently ignore it.
+            // case .loading, .loaded: assertionFailure("Unexpected state"); return .none
+            case .loading, .loaded: return .none
             }
             state.albumCharts[chartRange] = .loading
             return environment.lastFMClient.weeklyAlbumChart(state.username, chartRange)
