@@ -593,6 +593,7 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             }
 
             guard let thumbnailURL = album.imageSet?.thumbnailURL else { return .none }
+            state.albumImageThumbnails[album] = .loading
             return environment.imageClient.fetchImage(thumbnailURL)
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
