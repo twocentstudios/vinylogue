@@ -107,7 +107,30 @@ extension WeeklyAlbumChartState {
         case .loading:
             status = .loading
         case .loaded:
-            status = .loaded(displayingChartRanges.map(section))
+            let sections = displayingChartRanges.map(section)
+            var hasInitialized = false
+            var hasLoading = false
+            let filtered = sections.filter { value in
+                switch value.status {
+                case .initialized:
+                    if hasInitialized {
+                        return false
+                    } else {
+                        hasInitialized = true
+                        return true
+                    }
+                case .loading:
+                    if hasLoading {
+                        return false
+                    } else {
+                        hasLoading = true
+                        return true
+                    }
+                case .loaded, .empty, .failed:
+                    return true
+                }
+            }
+            status = .loaded(filtered)
         case let .failed(error):
             _ = error // TODO: format error
             status = .failed(ErrorRetryView.Model(title: "An error occurred", subtitle: "Please try again"))
