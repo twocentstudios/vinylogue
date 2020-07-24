@@ -35,7 +35,9 @@ struct WeeklyAlbumChartView: View {
             ZStack {
                 switch viewStore.status {
                 case .initialized:
-                    Rectangle().onAppear { viewStore.send(.fetchWeeklyChartList) }
+                    Rectangle()
+                        .foregroundColor(Color.clear)
+                        .onAppear { viewStore.send(.fetchWeeklyChartList) }
                 case .loading:
                     OffsetRecordLoadingView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -49,10 +51,9 @@ struct WeeklyAlbumChartView: View {
                                 header: WeeklyAlbumChartHeaderView(label: section.label)
                             ) {
                                 switch section.status {
-                                case .initialized:
-                                    Rectangle().onAppear { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
-                                case .loading:
+                                case .initialized, .loading:
                                     WeeklyAlbumChartLoadingCell()
+                                        .onAppear { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
                                 case .empty:
                                     WeeklyAlbumChartEmptyCell()
                                 case let .loaded(albums):
