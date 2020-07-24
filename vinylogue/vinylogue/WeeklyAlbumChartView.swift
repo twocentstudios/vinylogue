@@ -107,29 +107,10 @@ extension WeeklyAlbumChartState {
         case .loading:
             status = .loading
         case .loaded:
+            // Only show one loading cell at a time to prevent load thrashing
             let sections = displayingChartRanges.map(section)
-            var hasInitialized = false
-            var hasLoading = false
-            let filtered = sections.filter { value in
-                switch value.status {
-                case .initialized:
-                    if hasInitialized {
-                        return false
-                    } else {
-                        hasInitialized = true
-                        return true
-                    }
-                case .loading:
-                    if hasLoading {
-                        return false
-                    } else {
-                        hasLoading = true
-                        return true
-                    }
-                case .loaded, .empty, .failed:
-                    return true
-                }
-            }
+            let firstLoadingIndex = sections.firstIndex(where: { $0.status == .initialized || $0.status == .loading })
+            let filtered = firstLoadingIndex.flatMap { Array(sections.prefix(through: $0)) } ?? sections
             status = .loaded(filtered)
         case let .failed(error):
             _ = error // TODO: format error
