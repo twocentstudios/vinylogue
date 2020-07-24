@@ -40,7 +40,7 @@ struct LoginView: View {
                         .disabled(viewStore.isLoading)
                 }
                 .padding(.horizontal, 10)
-                .background(Color(.secondarySystemBackgroundColor))
+                .background(Color(.secondarySystemBackground))
                 Text(!viewStore.isLoading ? "enter your last.fm username (ex. ybsc)" : "validating username...")
                     .font(.avnUltraLight(17))
                     .multilineTextAlignment(.center)
