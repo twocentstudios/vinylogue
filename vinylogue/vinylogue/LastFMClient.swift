@@ -318,7 +318,7 @@ extension LastFM {
     }
 
     struct WeeklyAlbumChartStub: Equatable, Identifiable, Decodable {
-        var id: String { "\(artist.name):\(album.name)" }
+        let id: String
         let album: AlbumStub
         let artist: ArtistStub
         let playCount: Int
@@ -341,6 +341,7 @@ extension LastFM {
                 throw DecodingError.dataCorruptedError(forKey: .playCount, in: values, debugDescription: "String could not be converted to Int")
             }
             playCount = playCountInt
+            id = "\(artist.name):\(album.name)"
         }
     }
 
@@ -360,7 +361,7 @@ extension LastFM {
     }
 
     struct Album: Equatable, Identifiable, Decodable {
-        var id: String { "\(artist):\(name)" }
+        let id: String
         let mbid: String?
         let name: String
         // let releaseDate: Date
@@ -408,6 +409,7 @@ extension LastFM {
             tracks = try tracksValues.decodeIfPresent([Track].self, forKey: .track)
 
             imageSet = try values.decodeIfPresent(ImageSet.self, forKey: .image)
+            id = "\(artist):\(name)"
         }
     }
 
