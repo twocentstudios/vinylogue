@@ -622,3 +622,50 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
         }
     }
 )
+
+struct AlbumDetailState: Equatable {
+    enum AlbumState: Equatable {
+        case initialized
+        case loading
+        case loaded(LastFM.Album)
+        case failed(LastFM.Error) // TODO: failed view state
+    }
+
+    enum ImageState: Equatable {
+        case initialized
+        case loading
+        case loaded(UIImage)
+        case failed
+    }
+
+    struct ImageColors: Equatable {
+        let primaryColor: UIColor
+        let secondaryColor: UIColor
+        let averageColor: UIColor
+        let textColor: UIColor
+        let textShadowColor: UIColor
+    }
+
+    enum ImageColorsState: Equatable {
+        case initialized
+        case loading
+        case loaded(ImageColors)
+        case failed
+    }
+
+    let albumChartStub: LastFM.WeeklyAlbumChartStub?
+    let albumState: AlbumState
+    let imageState: ImageState
+    let imageColorsState: ImageColors
+}
+
+enum AlbumDetailAction: Equatable {
+    case fetchInitial
+    case fetchAlbum
+    case fetchImage
+    case fetchImageColors
+}
+
+let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnvironment> { state, action, environment in
+    return .none
+}
