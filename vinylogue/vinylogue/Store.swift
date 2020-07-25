@@ -638,25 +638,17 @@ struct AlbumDetailState: Equatable {
         case failed
     }
 
-    struct ImageColors: Equatable {
-        let primaryColor: UIColor
-        let secondaryColor: UIColor
-        let averageColor: UIColor
-        let textColor: UIColor
-        let textShadowColor: UIColor
-    }
-
     enum ImageColorsState: Equatable {
         case initialized
         case loading
-        case loaded(ImageColors)
+        case loaded(ImageClient.ImageColors)
         case failed
     }
 
     let albumChartStub: LastFM.WeeklyAlbumChartStub?
     let albumState: AlbumState
     let imageState: ImageState
-    let imageColorsState: ImageColors
+    let imageColorsState: ImageColorsState
 }
 
 enum AlbumDetailAction: Equatable {
