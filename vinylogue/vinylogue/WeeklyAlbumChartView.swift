@@ -61,8 +61,7 @@ struct WeeklyAlbumChartView: View {
                                         )
                                         {
                                             WeeklyAlbumChartCell(album)
-                                                .onAppear {
-                                                    if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
+                                                .onAppear { if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
                                         }
                                     }
                                 case .failed:
