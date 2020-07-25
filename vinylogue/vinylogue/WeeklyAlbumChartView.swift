@@ -144,9 +144,9 @@ extension WeeklyAlbumChartState {
     private func cellModel(_ chart: LastFM.WeeklyAlbumChartStub) -> WeeklyAlbumChartCell.Model {
         let image: UIImage?
         // TODO: is it possible to use CasePaths?
-        let albumState: AlbumState? = albums[chart.id]
-        if case let .loaded(album) = albumState,
-            let imageState = albumImageThumbnails[album.id],
+        let albumImagesState: AlbumImagesState? = albumImageStubs[chart.id]
+        if case .loaded = albumImagesState,
+            let imageState = albumImageThumbnails[chart.id],
             case let .loaded(loadedImage) = imageState {
             image = loadedImage
         } else {

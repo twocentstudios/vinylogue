@@ -8,6 +8,7 @@ struct LastFMClient {
     let weeklyChartList: (Username) -> Effect<LastFM.WeeklyChartList, Error>
     let weeklyAlbumChart: (Username, LastFM.WeeklyChartRange) -> Effect<LastFM.WeeklyAlbumCharts, Error>
     let album: (Username, LastFM.ArtistStub, LastFM.AlbumStub) -> Effect<LastFM.Album, Error>
+    let albumImages: (LastFM.ArtistStub, LastFM.AlbumStub) -> Effect<LastFM.AlbumImagesStub, Error>
 }
 
 extension LastFMClient {
@@ -43,6 +44,10 @@ extension LastFMClient {
         album: { (username: Username, artist: LastFM.ArtistStub, album: LastFM.AlbumStub) -> Effect<LastFM.Album, Error> in
             let request = LastFM.GetAlbumRequest(username: username, artist: artist, album: album)
             return fetch(request).map(\.album)
+        },
+        albumImages: { (artist: LastFM.ArtistStub, album: LastFM.AlbumStub) -> Effect<LastFM.AlbumImagesStub, Error> in
+            let request = LastFM.GetAlbumImagesRequest(artist: artist, album: album)
+            return fetch(request).map(\.albumImagesStub)
         }
     )
 
@@ -103,6 +108,7 @@ extension LastFM.GetFriendsRequest: LastFMRequest {}
 extension LastFM.GetWeeklyChartListRequest: LastFMRequest {}
 extension LastFM.GetWeeklyAlbumChartRequest: LastFMRequest {}
 extension LastFM.GetAlbumRequest: LastFMRequest {}
+extension LastFM.GetAlbumImagesRequest: LastFMRequest {}
 
 extension LastFM {
     struct Request: Equatable {
@@ -211,6 +217,29 @@ extension LastFM {
             return items
         }
     }
+
+    struct GetAlbumImagesRequest {
+        typealias Response = GetAlbumImagesResponse
+        let method = "album.getinfo"
+        let artist: ArtistStub
+        let album: AlbumStub
+
+        var queryItems: [URLQueryItem] {
+            var items = [
+                URLQueryItem(name: "method", value: method),
+            ]
+
+            // Don't use mbid here because it's often incorrect.
+            // When sending mbid, album, and artist, the API will not use album and artist,
+            // even if it can't find the mbid.
+            items.append(contentsOf: [
+                URLQueryItem(name: "artist", value: artist.name),
+                URLQueryItem(name: "album", value: album.name),
+            ])
+
+            return items
+        }
+    }
 }
 
 extension LastFM {
@@ -254,6 +283,14 @@ extension LastFM {
 
     struct GetAlbumResponse: Equatable, Decodable {
         let album: Album
+    }
+
+    struct GetAlbumImagesResponse: Equatable, Decodable {
+        let albumImagesStub: AlbumImagesStub
+
+        enum CodingKeys: String, CodingKey {
+            case albumImagesStub = "album"
+        }
     }
 }
 
@@ -360,8 +397,15 @@ extension LastFM {
         let name: String
     }
 
-    struct Album: Equatable, Identifiable, Decodable {
-        let id: String
+    struct AlbumImagesStub: Equatable, Decodable {
+        let imageSet: ImageSet?
+
+        enum CodingKeys: String, CodingKey {
+            case imageSet = "image"
+        }
+    }
+
+    struct Album: Equatable, Decodable {
         let mbid: String?
         let name: String
         // let releaseDate: Date
@@ -409,7 +453,6 @@ extension LastFM {
             tracks = try tracksValues.decodeIfPresent([Track].self, forKey: .track)
 
             imageSet = try values.decodeIfPresent(ImageSet.self, forKey: .image)
-            id = "\(artist):\(name)"
         }
     }
 
@@ -583,6 +626,10 @@ extension LastFMClient {
         album: { (username: Username, artist: LastFM.ArtistStub, album: LastFM.AlbumStub) -> Effect<LastFM.Album, Error> in
             let response: Effect<LastFM.GetAlbumResponse, Error> = mockJsonFetch(LastFM.album_getInfo_json)
             return response.map(\.album)
+        },
+        albumImages: { (artist: LastFM.ArtistStub, album: LastFM.AlbumStub) -> Effect<LastFM.AlbumImagesStub, Error> in
+            let response: Effect<LastFM.GetAlbumImagesResponse, Error> = mockJsonFetch(LastFM.album_getInfo_json)
+            return response.map(\.albumImagesStub)
         }
     )
 
