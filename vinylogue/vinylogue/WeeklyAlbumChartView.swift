@@ -22,10 +22,12 @@ struct WeeklyAlbumChartView: View {
             let id: LastFM.WeeklyChartRange.ID
             let label: String
             let status: Status
+            var needsData: Bool { status == .initialized }
         }
 
         let title: String
         let status: Status
+        var needsData: Bool { status == .initialized }
     }
 
     let store: Store<WeeklyAlbumChartState, WeeklyAlbumChartAction>
@@ -34,11 +36,7 @@ struct WeeklyAlbumChartView: View {
         WithViewStore(self.store.scope(state: \.view)) { viewStore in
             ZStack {
                 switch viewStore.status {
-                case .initialized:
-                    Rectangle()
-                        .foregroundColor(Color.clear)
-                        .onAppear { viewStore.send(.fetchWeeklyChartList) }
-                case .loading:
+                case .initialized, .loading:
                     OffsetRecordLoadingView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 case let .failed(error):
@@ -53,7 +51,7 @@ struct WeeklyAlbumChartView: View {
                                 switch section.status {
                                 case .initialized, .loading:
                                     WeeklyAlbumChartLoadingCell()
-                                        .onAppear { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
+                                        .onAppear { if section.needsData { viewStore.send(.fetchWeeklyAlbumChart(section.id)) } }
                                 case .empty:
                                     WeeklyAlbumChartEmptyCell()
                                 case let .loaded(albums):
@@ -63,7 +61,8 @@ struct WeeklyAlbumChartView: View {
                                         )
                                         {
                                             WeeklyAlbumChartCell(album)
-                                                .onAppear { viewStore.send(.fetchImageThumbnailForChart(album.id)) }
+                                                .onAppear {
+                                                    if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
                                         }
                                     }
                                 case .failed:
@@ -75,6 +74,7 @@ struct WeeklyAlbumChartView: View {
                     .listStyle(GroupedListStyle())
                 }
             }
+            .onAppear { if viewStore.needsData { viewStore.send(.fetchWeeklyChartList) } }
             .navigationTitle(viewStore.title) // TODO: split this up (it's too long)
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -188,6 +188,7 @@ struct WeeklyAlbumChartCell: View {
         let artist: String
         let album: String
         let plays: String
+        var needsData: Bool { image == nil }
     }
 
     let model: Model
