@@ -628,7 +628,7 @@ struct AlbumDetailState: Equatable {
         case initialized
         case loading
         case loaded(LastFM.Album)
-        case failed(LastFM.Error) // TODO: failed view state
+        case failed(LastFMClient.Error) // TODO: failed view state
     }
 
     enum ImageState: Equatable {
@@ -645,19 +645,89 @@ struct AlbumDetailState: Equatable {
         case failed
     }
 
-    let albumChartStub: LastFM.WeeklyAlbumChartStub?
-    let albumState: AlbumState
-    let imageState: ImageState
-    let imageColorsState: ImageColorsState
+    let username: Username
+    let albumChartStub: LastFM.WeeklyAlbumChartStub
+    var albumState: AlbumState
+    var imageState: ImageState
+    var imageColorsState: ImageColorsState
 }
 
 enum AlbumDetailAction: Equatable {
     case fetchInitial
     case fetchAlbum
+    case fetchAlbumResponse(Result<LastFM.Album, LastFMClient.Error>)
     case fetchImage
+    case fetchImageResponse(Result<UIImage, ImageClient.Error>)
     case fetchImageColors
+    case fetchImageColorsResponse(Result<ImageClient.ImageColors, ImageClient.Error>)
 }
 
 let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnvironment> { state, action, environment in
+    switch action {
+    case .fetchInitial:
+        switch state.albumState {
+        case .initialized: return Effect(value: .fetchAlbum)
+        case .loaded: return Effect(value: .fetchImage)
+        case .loading, .failed: assertionFailure("Unexpected state")
+        }
+
+    case .fetchAlbum:
+        switch state.albumState {
+        case .initialized, .failed:
+            state.albumState = .loading
+            return environment.lastFMClient.album(state.username, state.albumChartStub.artist, state.albumChartStub.album)
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map(AlbumDetailAction.fetchAlbumResponse)
+        case .loading, .loaded: assertionFailure("Unexpected state")
+        }
+
+    case let .fetchAlbumResponse(result):
+        guard case .loading = state.albumState else { assertionFailure("Unexpected state"); break }
+        switch result {
+        case let .success(value): state.albumState = .loaded(value)
+        case let .failure(error): state.albumState = .failed(error)
+        }
+
+    case .fetchImage:
+        guard case let .loaded(album) = state.albumState,
+            let imageURL = album.imageSet?.url else { assertionFailure("Unexpected state"); break }
+        switch state.imageState {
+        case .initialized, .failed:
+            state.imageState = .loading
+            return environment.imageClient.fetchImage(imageURL)
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map(AlbumDetailAction.fetchImageResponse)
+        case .loading, .loaded: assertionFailure("Unexpected state"); break
+        }
+
+    case let .fetchImageResponse(result):
+        guard case .loading = state.imageState else { assertionFailure("Unexpected state"); break }
+        switch result {
+        case let .success(value): state.imageState = .loaded(value)
+        case .failure: state.imageState = .failed
+        }
+
+    case .fetchImageColors:
+        guard case let .loaded(image) = state.imageState else { assertionFailure("Unexpected state"); break }
+        switch state.imageColorsState {
+        case .initialized, .failed:
+            state.imageColorsState = .loading
+            return environment.imageClient.fetchImageColors(image)
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map(AlbumDetailAction.fetchImageColorsResponse)
+        case .loading, .loaded: assertionFailure("Unexpected state"); break
+        }
+
+    case let .fetchImageColorsResponse(result):
+        guard case .loading = state.imageColorsState else { assertionFailure("Unexpected state"); break }
+        switch result {
+        case let .success(value): state.imageColorsState = .loaded(value)
+        case .failure: state.imageColorsState = .failed
+        }
+    }
+    
     return .none
 }
