@@ -647,6 +647,7 @@ struct AlbumDetailState: Equatable {
 
     let username: Username
     let albumChartStub: LastFM.WeeklyAlbumChartStub
+    let weeklyChartRange: LastFM.WeeklyChartRange
     var albumState: AlbumState
     var imageState: ImageState
     var imageColorsState: ImageColorsState

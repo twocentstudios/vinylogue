@@ -1,3 +1,4 @@
+import ComposableArchitecture
 import SwiftUI
 
 struct AlbumDetailView: View {
@@ -12,15 +13,15 @@ struct AlbumDetailView: View {
 
         let albumAboutText: String?
 
-        let backgroundColor: Color?
-        let textColor: Color?
-        let shadowColor: Color?
+        let backgroundColor: UIColor?
+        let textColor: UIColor?
+        let shadowColor: UIColor?
 
         let isLoading: Bool
 
-        var derivedBackgroundColor: Color { backgroundColor ?? Color(.tertiarySystemBackground) }
-        var derivedTextColor: Color { textColor ?? Color(.label) }
-        var derivedShadowColor: Color { shadowColor ?? Color.highlighta(1.0) }
+        var derivedBackgroundColor: Color { backgroundColor.flatMap(Color.init) ?? Color(.tertiarySystemBackground) }
+        var derivedTextColor: Color { textColor.flatMap(Color.init) ?? Color(.label) }
+        var derivedShadowColor: Color { shadowColor.flatMap(Color.init) ?? Color.highlighta(1.0) }
 
         var headerModel: AlbumDetailHeaderView.Model {
             .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedShadowColor, isLoading: isLoading)
@@ -50,6 +51,38 @@ struct AlbumDetailView: View {
     }
 }
 
+extension AlbumDetailState {
+    var view: AlbumDetailView.Model {
+        let image = (/ImageState.loaded).extract(from: imageState)
+        let artistName = albumChartStub.artist.name
+        let albumName = albumChartStub.album.name
+        let album = (/AlbumState.loaded).extract(from: albumState)
+        let weekPlayCount = String(albumChartStub.playCount)
+        let allTimePlayCount = album?.totalPlayCount.flatMap(String.init) ?? "-"
+        let weekLabel = "week 30 2019" // TODO: use SwiftUI date formatting or do it in State?
+        let albumAboutText = album?.about
+        let imageColors = (/ImageColorsState.loaded).extract(from: imageColorsState)
+        let backgroundColor = imageColors?.primaryColor
+        let textColor = imageColors?.textColor
+        let shadowColor = imageColors?.textShadowColor
+        let isLoading = albumState == .loading || imageState == .loading
+
+        return .init(
+            image: image,
+            artist: artistName,
+            album: albumName,
+            weekPlayCount: weekPlayCount,
+            allTimePlayCount: allTimePlayCount,
+            weekLabel: weekLabel,
+            albumAboutText: albumAboutText,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+            shadowColor: shadowColor,
+            isLoading: isLoading
+        )
+    }
+}
+
 struct AlbumDetailView_Previews: PreviewProvider {
     static let mock: AlbumDetailView.Model = .init(
         image: AlbumDetailHeaderView_Previews.mock.image,
@@ -59,7 +92,7 @@ struct AlbumDetailView_Previews: PreviewProvider {
         allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
         weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
         albumAboutText: AlbumDetailAboutView_Previews.mock.text,
-        backgroundColor: .init(red: 218.0 / 255.0, green: 38.0 / 255.0, blue: 15.0 / 255.0),
+        backgroundColor: .init(red: 218.0 / 255.0, green: 38.0 / 255.0, blue: 15.0 / 255.0, alpha: 1.0),
         textColor: .white,
         shadowColor: .black,
         isLoading: false
