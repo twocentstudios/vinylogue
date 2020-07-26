@@ -15,6 +15,8 @@ extension ImageClient {
 }
 
 extension ImageClient {
+    private static let imageColorsQueue = DispatchQueue(label: "ImageClient.fetchColors", qos: .userInitiated, attributes: [.concurrent])
+
     static let live = Self(
         fetchImage: { url -> Effect<UIImage, Error> in
             ImagePipeline.shared.imagePublisher(with: url)
@@ -31,6 +33,7 @@ extension ImageClient {
                     promise(.failure(Error()))
                 }
             }
+            .subscribe(on: imageColorsQueue)
             .eraseToEffect()
         }
     )
