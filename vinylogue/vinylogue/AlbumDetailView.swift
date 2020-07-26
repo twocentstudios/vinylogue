@@ -1,4 +1,3 @@
-import Combine
 import SwiftUI
 
 struct AlbumDetailView: View {
@@ -92,37 +91,6 @@ struct AlbumDetailView_Previews: PreviewProvider {
                 AlbumDetailView(model: mockLoading)
             }
             .preferredColorScheme(.dark)
-        }
-    }
-}
-
-struct ColorPreview: PreviewProvider {
-    static var previews: some View {
-        ColorView()
-            .previewLayout(.sizeThatFits)
-    }
-}
-
-struct ColorView: View {
-    @State var imageColors: ImageClient.ImageColors? = nil
-    @State var cancellable: Cancellable? = nil
-
-    var body: some View {
-        VStack {
-            Rectangle()
-                .foregroundColor(Color(imageColors?.averageColor ?? .white))
-            Rectangle()
-                .foregroundColor(Color(imageColors?.primaryColor ?? .white))
-                .frame(width: 400, height: 400, alignment: .center)
-                .overlay(Image("album").resizable().padding(50))
-            Rectangle()
-                .foregroundColor(Color(imageColors?.secondaryColor ?? .white))
-        }
-        .onAppear {
-            cancellable = ImageClient.live.fetchImageColors(UIImage(named: "album")!)
-                .sink(receiveCompletion: { _ in }, receiveValue: { result in
-                    imageColors = result
-                })
         }
     }
 }
