@@ -49,6 +49,7 @@ struct AlbumDetailView: View {
             }
 //            .navigationBarHidden(true)
             .background(viewStore.derivedBackgroundColor.edgesIgnoringSafeArea(.all))
+            .onAppear { viewStore.send(.fetchInitial) } // TODO: this also seems to get called on each view refresh
         }
     }
 }

@@ -725,10 +725,10 @@ enum AlbumDetailAction: Equatable {
 let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnvironment> { state, action, environment in
     switch action {
     case .fetchInitial:
-        var effects: [Effect<AlbumDetailAction, Never>] = [.init(value: .fetchAlbum)]
+        let effect: Effect<AlbumDetailAction, Never> = .init(value: .fetchAlbum)
         switch state.imageState {
-        case .initialized: effects.append(.init(value: .fetchImage))
-        case .loaded: effects.append(.init(value: .fetchImageColors))
+        case .initialized: return effect.append(Effect(value: .fetchImage)).eraseToEffect()
+        case .loaded: return effect.append(Effect(value: .fetchImageColors)).eraseToEffect()
         case .loading, .failed: assertionFailure("Unexpected state")
         }
 
@@ -740,7 +740,7 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(AlbumDetailAction.fetchAlbumResponse)
-        case .loading, .loaded: assertionFailure("Unexpected state")
+        case .loading, .loaded: break // assertionFailure("Unexpected state")  TODO: ignoring this for now because of the onAppear multiple calls issue
         }
 
     case let .fetchAlbumResponse(result):
@@ -763,7 +763,7 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(AlbumDetailAction.fetchImageResponse)
-        case .loading, .loaded: assertionFailure("Unexpected state")
+        case .loading, .loaded: break
         }
 
     case let .fetchImageResponse(result):
@@ -785,7 +785,7 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(AlbumDetailAction.fetchImageColorsResponse)
-        case .loading, .loaded: assertionFailure("Unexpected state")
+        case .loading, .loaded: break // assertionFailure("Unexpected state") TODO: eventually clean this up
         }
 
     case let .fetchImageColorsResponse(result):
