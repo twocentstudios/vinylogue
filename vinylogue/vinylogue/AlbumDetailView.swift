@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AlbumDetailView: View {
-    struct Model {
+    struct Model: Equatable {
         let image: UIImage?
         let artist: String
         let album: String
@@ -36,18 +36,20 @@ struct AlbumDetailView: View {
         }
     }
 
-    let model: Model
+    let store: Store<AlbumDetailState, AlbumDetailAction>
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                AlbumDetailHeaderView(model: model.headerModel)
-                AlbumDetailPlayCountsView(model: model.playCountsModel)
-                AlbumDetailAboutView(model: model.aboutModel)
+        WithViewStore(store.scope(state: \.view)) { viewStore in
+            ScrollView {
+                VStack(spacing: 0) {
+                    AlbumDetailHeaderView(model: viewStore.headerModel)
+                    AlbumDetailPlayCountsView(model: viewStore.playCountsModel)
+                    AlbumDetailAboutView(model: viewStore.aboutModel)
+                }
             }
+            .navigationBarHidden(true)
+            .background(viewStore.derivedBackgroundColor.edgesIgnoringSafeArea(.all))
         }
-        .navigationBarHidden(true)
-        .background(model.derivedBackgroundColor.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -83,50 +85,50 @@ extension AlbumDetailState {
     }
 }
 
-struct AlbumDetailView_Previews: PreviewProvider {
-    static let mock: AlbumDetailView.Model = .init(
-        image: AlbumDetailHeaderView_Previews.mock.image,
-        artist: AlbumDetailHeaderView_Previews.mock.artist,
-        album: AlbumDetailHeaderView_Previews.mock.album,
-        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
-        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
-        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
-        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
-        backgroundColor: .init(red: 218.0 / 255.0, green: 38.0 / 255.0, blue: 15.0 / 255.0, alpha: 1.0),
-        textColor: .white,
-        shadowColor: .black,
-        isLoading: false
-    )
-
-    static let mockLoading: AlbumDetailView.Model = .init(
-        image: nil,
-        artist: AlbumDetailHeaderView_Previews.mock.artist,
-        album: AlbumDetailHeaderView_Previews.mock.album,
-        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
-        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
-        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
-        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
-        backgroundColor: nil,
-        textColor: nil,
-        shadowColor: nil,
-        isLoading: true
-    )
-
-    static var previews: some View {
-        Group {
-            NavigationView {
-                AlbumDetailView(model: mock)
-            }
-            NavigationView {
-                AlbumDetailView(model: mockLoading)
-            }
-            NavigationView {
-                AlbumDetailView(model: mockLoading)
-            }
-            .preferredColorScheme(.dark)
-        }
-    }
-}
+//struct AlbumDetailView_Previews: PreviewProvider {
+//    static let mock: AlbumDetailView.Model = .init(
+//        image: AlbumDetailHeaderView_Previews.mock.image,
+//        artist: AlbumDetailHeaderView_Previews.mock.artist,
+//        album: AlbumDetailHeaderView_Previews.mock.album,
+//        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
+//        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
+//        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
+//        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
+//        backgroundColor: .init(red: 218.0 / 255.0, green: 38.0 / 255.0, blue: 15.0 / 255.0, alpha: 1.0),
+//        textColor: .white,
+//        shadowColor: .black,
+//        isLoading: false
+//    )
+//
+//    static let mockLoading: AlbumDetailView.Model = .init(
+//        image: nil,
+//        artist: AlbumDetailHeaderView_Previews.mock.artist,
+//        album: AlbumDetailHeaderView_Previews.mock.album,
+//        weekPlayCount: AlbumDetailPlayCountsView_Previews.mock.weekPlayCount,
+//        allTimePlayCount: AlbumDetailPlayCountsView_Previews.mock.allTimePlayCount,
+//        weekLabel: AlbumDetailPlayCountsView_Previews.mock.weekLabel,
+//        albumAboutText: AlbumDetailAboutView_Previews.mock.text,
+//        backgroundColor: nil,
+//        textColor: nil,
+//        shadowColor: nil,
+//        isLoading: true
+//    )
+//
+//    static var previews: some View {
+//        Group {
+//            NavigationView {
+//                AlbumDetailView(model: mock)
+//            }
+//            NavigationView {
+//                AlbumDetailView(model: mockLoading)
+//            }
+//            NavigationView {
+//                AlbumDetailView(model: mockLoading)
+//            }
+//            .preferredColorScheme(.dark)
+//        }
+//    }
+//}
 
 struct AlbumDetailHeaderView: View {
     struct Model {
