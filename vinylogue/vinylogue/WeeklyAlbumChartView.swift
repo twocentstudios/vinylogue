@@ -28,6 +28,7 @@ struct WeeklyAlbumChartView: View {
         let title: String
         let status: Status
         var needsData: Bool { status == .initialized }
+        var activeAlbumChartStubID: LastFM.WeeklyAlbumChartStub.ID?
     }
 
     let store: Store<WeeklyAlbumChartState, WeeklyAlbumChartAction>
@@ -57,7 +58,17 @@ struct WeeklyAlbumChartView: View {
                                 case let .loaded(albums):
                                     ForEach(albums, id: \.album) { album in
                                         NavigationLink(
-                                            destination: Text("Destination")
+                                            destination: IfLetStore(
+                                                self.store.scope(
+                                                    state: \.albumDetailState,
+                                                    action: WeeklyAlbumChartAction.albumDetail
+                                                ),
+                                                then: AlbumDetailView.init(store:)
+                                            ),
+                                            isActive: viewStore.binding(
+                                                get: { $0.activeAlbumChartStubID == album.id },
+                                                send: { WeeklyAlbumChartAction.setAlbumDetailView(isActive: $0, album.id) }
+                                            )
                                         )
                                         {
                                             WeeklyAlbumChartCell(album)
@@ -101,6 +112,7 @@ extension WeeklyAlbumChartState {
     var view: WeeklyAlbumChartView.Model {
         let title = "\(username)'s week \(weekOfYear) charts"
         let status: WeeklyAlbumChartView.Model.Status
+        let activeAlbumChartStubID = (/ViewState.albumDetail).extract(from: viewState)?.albumChartStub.id
         switch weeklyChartListState {
         case .initialized:
             status = .initialized
@@ -116,7 +128,7 @@ extension WeeklyAlbumChartState {
             _ = error // TODO: format error
             status = .failed(ErrorRetryView.Model(title: "An error occurred", subtitle: "Please try again"))
         }
-        return WeeklyAlbumChartView.Model(title: title, status: status)
+        return WeeklyAlbumChartView.Model(title: title, status: status, activeAlbumChartStubID: activeAlbumChartStubID)
     }
 
     private func section(_ range: LastFM.WeeklyChartRange) -> WeeklyAlbumChartView.Model.Section {

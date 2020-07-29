@@ -405,6 +405,10 @@ let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { s
 }
 
 struct WeeklyAlbumChartState: Equatable {
+    enum ViewState: Equatable {
+        case albumDetail(AlbumDetailState)
+    }
+
     enum WeeklyChartListState: Equatable {
         case initialized
         case loading
@@ -432,6 +436,8 @@ struct WeeklyAlbumChartState: Equatable {
         case loaded(UIImage)
         case failed
     }
+
+    var viewState: ViewState?
 
     let username: Username
     let now: Date
@@ -474,6 +480,7 @@ extension WeeklyAlbumChartState {
         displayingChartRanges = []
         titlesForChartRanges = [:]
         albumChartCache = [:]
+        viewState = nil
     }
 
     mutating func updateDerivedChartRanges(_ calendar: Calendar) {
@@ -490,6 +497,29 @@ extension WeeklyAlbumChartState {
             result[range.id] = String(yearForWeekOfYear)
         }
     }
+
+    func weeklyChartRange(for albumChartStub: LastFM.WeeklyAlbumChartStub) -> LastFM.WeeklyChartRange? {
+        albumCharts
+            .first { key, value -> Bool in
+                guard case let .loaded(charts) = value else { return false }
+                return charts.charts.contains(albumChartStub)
+            }
+            .flatMap { chartRanges[$0.key] }
+    }
+}
+
+extension WeeklyAlbumChartState {
+    var albumDetailState: AlbumDetailState? {
+        get {
+            guard case let .albumDetail(state) = viewState else { return nil }
+            return state
+        }
+        set {
+            guard case .albumDetail = viewState,
+                let state = newValue else { return }
+            viewState = .albumDetail(state)
+        }
+    }
 }
 
 enum WeeklyAlbumChartAction: Equatable {
@@ -502,15 +532,16 @@ enum WeeklyAlbumChartAction: Equatable {
     case fetchAlbumImagesResponse(LastFM.WeeklyAlbumChartStub.ID, Result<LastFM.AlbumImagesStub, LastFMClient.Error>)
     case fetchImageThumbnail(LastFM.WeeklyAlbumChartStub.ID)
     case fetchImageThumbnailResponse(LastFM.WeeklyAlbumChartStub.ID, Result<UIImage, ImageClient.Error>)
-    case setAlbumDetailView(isActive: Bool, LastFM.WeeklyAlbumChartStub)
+    case setAlbumDetailView(isActive: Bool, LastFM.WeeklyAlbumChartStub.ID)
+    case albumDetail(AlbumDetailAction)
 }
 
 let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAction, AppEnvironment>.combine(
-//    settingsReducer.optional.pullback(
-//        state: \.settingsState,
-//        action: /FavoriteUsersAction.settings,
-//        environment: { $0 }
-//    ),
+    albumDetailReducer.optional.pullback(
+        state: \.albumDetailState,
+        action: /WeeklyAlbumChartAction.albumDetail,
+        environment: { $0 }
+    ),
     Reducer { state, action, environment in
         switch action {
         case .fetchWeeklyChartList:
@@ -617,7 +648,24 @@ let weeklyAlbumChartReducer = Reducer<WeeklyAlbumChartState, WeeklyAlbumChartAct
             }
             return .none
 
-        case let .setAlbumDetailView(isActive, albumChartStub):
+        case let .setAlbumDetailView(isActive: true, albumChartStubID):
+            guard let albumChartStub = state.albumChartCache[albumChartStubID] else { assertionFailure("Unexpected state"); return .none }
+            guard let weeklyChartRange = state.weeklyChartRange(for: albumChartStub) else { assertionFailure("Unexpected state"); return .none }
+            let image = (/WeeklyAlbumChartState.ImageState.loaded).extract(from: state.albumImageThumbnails[albumChartStub.id])
+            let albumDetailState = AlbumDetailState(
+                username: state.username,
+                albumChartStub: albumChartStub,
+                weeklyChartRange: weeklyChartRange,
+                image: image
+            )
+            state.viewState = .albumDetail(albumDetailState)
+            return .none
+
+        case .setAlbumDetailView(isActive: false, _):
+            state.viewState = nil
+            return .none
+
+        case .albumDetail:
             return .none
         }
     }
@@ -653,6 +701,17 @@ struct AlbumDetailState: Equatable {
     var imageColorsState: ImageColorsState
 }
 
+extension AlbumDetailState {
+    init(username: Username, albumChartStub: LastFM.WeeklyAlbumChartStub, weeklyChartRange: LastFM.WeeklyChartRange, image: UIImage?) {
+        self.username = username
+        self.albumChartStub = albumChartStub
+        self.weeklyChartRange = weeklyChartRange
+        albumState = .initialized
+        imageState = image.flatMap(ImageState.loaded) ?? .initialized
+        imageColorsState = .initialized
+    }
+}
+
 enum AlbumDetailAction: Equatable {
     case fetchInitial
     case fetchAlbum
@@ -666,9 +725,10 @@ enum AlbumDetailAction: Equatable {
 let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnvironment> { state, action, environment in
     switch action {
     case .fetchInitial:
-        switch state.albumState {
-        case .initialized: return Effect(value: .fetchAlbum)
-        case .loaded: return Effect(value: .fetchImage)
+        var effects: [Effect<AlbumDetailAction, Never>] = [.init(value: .fetchAlbum)]
+        switch state.imageState {
+        case .initialized: effects.append(.init(value: .fetchImage))
+        case .loaded: effects.append(.init(value: .fetchImageColors))
         case .loading, .failed: assertionFailure("Unexpected state")
         }
 
@@ -686,8 +746,11 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
     case let .fetchAlbumResponse(result):
         guard case .loading = state.albumState else { assertionFailure("Unexpected state"); break }
         switch result {
-        case let .success(value): state.albumState = .loaded(value)
-        case let .failure(error): state.albumState = .failed(error)
+        case let .success(value):
+            state.albumState = .loaded(value)
+            return Effect(value: .fetchImage)
+        case let .failure(error):
+            state.albumState = .failed(error)
         }
 
     case .fetchImage:
@@ -700,14 +763,17 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(AlbumDetailAction.fetchImageResponse)
-        case .loading, .loaded: assertionFailure("Unexpected state"); break
+        case .loading, .loaded: assertionFailure("Unexpected state")
         }
 
     case let .fetchImageResponse(result):
         guard case .loading = state.imageState else { assertionFailure("Unexpected state"); break }
         switch result {
-        case let .success(value): state.imageState = .loaded(value)
-        case .failure: state.imageState = .failed
+        case let .success(value):
+            state.imageState = .loaded(value)
+            return Effect(value: .fetchImageColors)
+        case .failure:
+            state.imageState = .failed
         }
 
     case .fetchImageColors:
@@ -719,7 +785,7 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
                 .receive(on: environment.mainQueue)
                 .catchToEffect()
                 .map(AlbumDetailAction.fetchImageColorsResponse)
-        case .loading, .loaded: assertionFailure("Unexpected state"); break
+        case .loading, .loaded: assertionFailure("Unexpected state")
         }
 
     case let .fetchImageColorsResponse(result):
@@ -729,6 +795,6 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
         case .failure: state.imageColorsState = .failed
         }
     }
-    
+
     return .none
 }

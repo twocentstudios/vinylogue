@@ -47,7 +47,7 @@ struct AlbumDetailView: View {
                     AlbumDetailAboutView(model: viewStore.aboutModel)
                 }
             }
-            .navigationBarHidden(true)
+//            .navigationBarHidden(true)
             .background(viewStore.derivedBackgroundColor.edgesIgnoringSafeArea(.all))
         }
     }
