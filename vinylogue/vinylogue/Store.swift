@@ -755,7 +755,7 @@ let albumDetailReducer = Reducer<AlbumDetailState, AlbumDetailAction, AppEnviron
 
     case .fetchImage:
         guard case let .loaded(album) = state.albumState,
-            let imageURL = album.imageSet?.url else { assertionFailure("Unexpected state"); break }
+            let imageURL = album.imageSet?.url else { break }
         switch state.imageState {
         case .initialized, .failed:
             state.imageState = .loading
