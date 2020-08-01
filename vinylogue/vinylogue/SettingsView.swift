@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import MessageUI
 import SwiftUI
 
 struct SettingsView: View {
@@ -7,6 +8,8 @@ struct SettingsView: View {
     }
 
     let store: Store<SettingsState, SettingsAction>
+
+    @SwiftUI.State private var isShowingMailView = false
 
     var body: some View {
         WithViewStore(store.scope { $0.view }) { viewStore in
@@ -21,7 +24,11 @@ struct SettingsView: View {
                 Section(header:
                     SimpleHeader("support")
                 ) {
-                    SimpleCell("report an issue")
+                    if MFMailComposeViewController.canSendMail() {
+                        Button(action: { isShowingMailView = true }) {
+                            SimpleCell("report an issue")
+                        }
+                    }
                     SimpleCell("rate on appstore")
                     SimpleCell("licenses")
                 }
@@ -39,6 +46,10 @@ struct SettingsView: View {
             }
             .listStyle(GroupedListStyle())
             .navigationTitle("settings")
+            .sheet(isPresented: $isShowingMailView) {
+                // TODO: test mail on a real device
+                MailView(result: Binding.constant(nil))
+            }
         }
     }
 }
