@@ -11,6 +11,7 @@
 		0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */; };
 		0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */; };
 		097377A224C4457A001DD6E1 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097377A124C4457A001DD6E1 /* LastFMClient.swift */; };
+		0986FEB324CBE94400AFAFE8 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0986FEB224CBE94400AFAFE8 /* Debug.swift */; };
 		09B7EA2A24BB185D00E8328B /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 09B7EA2924BB185D00E8328B /* ComposableArchitecture */; };
 		09D1B91924C86E6100CC42CD /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 09D1B91824C86E6100CC42CD /* Nuke */; };
 		09D1B91B24C86FB400CC42CD /* ImageClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D1B91A24C86FB400CC42CD /* ImageClient.swift */; };
@@ -52,6 +53,7 @@
 		0956AC5A24B0FF4300AB9E3F /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 		0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonViews.swift; sourceTree = "<group>"; };
 		097377A124C4457A001DD6E1 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
+		0986FEB224CBE94400AFAFE8 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		09D1B91A24C86FB400CC42CD /* ImageClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageClient.swift; sourceTree = "<group>"; };
 		09D1B91F24C8A0E500CC42CD /* DateClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateClient.swift; sourceTree = "<group>"; };
 		09F1733D24ACC72A000E2B6B /* vinylogue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +141,7 @@
 				097377A124C4457A001DD6E1 /* LastFMClient.swift */,
 				09D1B91A24C86FB400CC42CD /* ImageClient.swift */,
 				09D1B91F24C8A0E500CC42CD /* DateClient.swift */,
+				0986FEB224CBE94400AFAFE8 /* Debug.swift */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
 				09F1734624ACC72B000E2B6B /* Preview Content */,
@@ -312,6 +315,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09F1737024ACDB75000E2B6B /* FavoriteUsersView.swift in Sources */,
+				0986FEB324CBE94400AFAFE8 /* Debug.swift in Sources */,
 				0956AC5D24B10FFC00AB9E3F /* CommonViews.swift in Sources */,
 				09D1B92024C8A0E500CC42CD /* DateClient.swift in Sources */,
 				09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */,
