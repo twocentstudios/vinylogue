@@ -10,7 +10,6 @@ extension PersistenceClient {
 
     private static let v1_friendsKey = "lastFMFriendsList"
     private static let v1_userNameKey = "lastFMUserName"
-    private static let v1_playCountFilterKey = "playCountFilter"
 
     static let live = Self(
         loadUser: {
@@ -20,19 +19,15 @@ extension PersistenceClient {
             }
 
             // Try to migrate data from V1
+            NSKeyedUnarchiver.setClass(UserV1.self, forClassName: "User")
             if let userData = UserDefaults.standard.data(forKey: v1_userNameKey),
-               let friendsData = UserDefaults.standard.data(forKey: v1_friendsKey),
-               let playCountFilterData = UserDefaults.standard.data(forKey: v1_playCountFilterKey),
-               let user = NSKeyedUnarchiver.unarchiveObject(with: userData) as? UserV1,
-               let friends = NSKeyedUnarchiver.unarchiveObject(with: friendsData) as? [UserV1] {
-               let playCountFilterInt = UserDefaults.standard.integer(forKey: v1_playCountFilterKey)
-                let playCountFilterString = String(playCountFilterInt)
-                let playCountFilter = Settings.PlayCountFilter(rawValue: playCountFilterString) ?? .off
-
+                let friendsData = UserDefaults.standard.data(forKey: v1_friendsKey),
+                let user = try? NSKeyedUnarchiver.unarchivedObject(ofClass: UserV1.self, from: userData),
+                let friends = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(friendsData) as? [UserV1] {
                 let migratedUser = User(
                     me: user.userName,
                     friends: friends.map(\.userName),
-                    settings: .init(playCountFilter: playCountFilter)
+                    settings: .init(playCountFilter: .off)
                 )
                 return migratedUser
             }
@@ -46,7 +41,9 @@ extension PersistenceClient {
     )
 }
 
-@objc(UserV1) private final class UserV1: NSObject, NSCoding {
+@objc(UserV1) private final class UserV1: NSObject, NSSecureCoding {
+    static var supportsSecureCoding: Bool = true
+
     let userName: String
 
     init(userName: String) {
