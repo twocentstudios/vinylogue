@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     struct State: Equatable {
         let playCountFilter: String
+        let supportEmailInput: MailView.Input
     }
 
     let store: Store<SettingsState, SettingsAction>
@@ -48,7 +49,7 @@ struct SettingsView: View {
             .navigationTitle("settings")
             .sheet(isPresented: $isShowingMailView) {
                 // TODO: test mail on a real device
-                MailView(result: Binding.constant(nil))
+                MailView(input: viewStore.supportEmailInput, result: Binding.constant(nil))
             }
         }
     }
@@ -70,7 +71,14 @@ struct SettingsView: View {
 
 extension SettingsState {
     var view: SettingsView.State {
-        .init(playCountFilter: playCountString)
+        .init(
+            playCountFilter: playCountString,
+            supportEmailInput: .init(
+                toRecipients: ["support@twocentstudios.com"],
+                subject: "vinylogue: Support Request",
+                messageBody: "\n\n\n\n-------------------\nDEBUG INFO:\nApp Version: \(systemInformation.appVersion)\nApp Build: \(systemInformation.appBuild)\nDevice: \(systemInformation.device)\nOS Version: \(systemInformation.systemVersion)"
+            )
+        )
     }
 
     private var playCountString: String {

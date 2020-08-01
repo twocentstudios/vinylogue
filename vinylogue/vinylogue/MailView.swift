@@ -3,8 +3,15 @@ import SwiftUI
 import UIKit
 
 struct MailView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentation
+    struct Input: Equatable {
+        let toRecipients: [String]
+        let subject: String
+        let messageBody: String
+    }
+
+    let input: Input
     @Binding var result: Result<MFMailComposeResult, Error>?
+    @Environment(\.presentationMode) var presentation
 
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         @Binding var presentation: PresentationMode
@@ -33,6 +40,9 @@ struct MailView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<MailView>) -> MFMailComposeViewController {
         let viewController = MFMailComposeViewController()
+        viewController.setToRecipients(input.toRecipients)
+        viewController.setSubject(input.subject)
+        viewController.setMessageBody(input.messageBody, isHTML: false)
         viewController.mailComposeDelegate = context.coordinator
         return viewController
     }

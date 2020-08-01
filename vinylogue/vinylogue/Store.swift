@@ -250,8 +250,9 @@ struct FavoriteUsersState: Equatable {
 
     var settingsState: SettingsState? {
         get {
-            guard case .settings = viewState else { return nil }
-            return .init(user: user)
+            guard case let .settings(value) = viewState else { return nil }
+            print(value.systemInformation)
+            return .init(user: user, systemInformation: value.systemInformation)
         }
         set {
             guard case .settings = viewState,
@@ -375,7 +376,7 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 
         case .setSettingsView(isActive: true):
             guard !state.isLoadingFriends else { assertionFailure("Unexpected state"); return .none }
-            state.viewState = .settings(SettingsState(user: state.user))
+            state.viewState = .settings(SettingsState(user: state.user, systemInformation: environment.appClient.systemInformation()))
             return .none
 
         case .setSettingsView(isActive: false):
@@ -395,6 +396,7 @@ let favoriteUsersReducer = Reducer<FavoriteUsersState, FavoriteUsersAction, AppE
 
 struct SettingsState: Equatable {
     var user: User
+    var systemInformation: SystemInformation
 }
 enum SettingsAction: Equatable {
     case updatePlayCountFilter
