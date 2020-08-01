@@ -95,8 +95,7 @@ struct AppEnvironment {
     var dateClient: DateClient
     var lastFMClient: LastFMClient
     var imageClient: ImageClient
-    var loadUserFromDisk: () -> User?
-    var saveUserToDisk: (User?) -> ()
+    var persistenceClient: PersistenceClient
 }
 
 extension AppEnvironment {
@@ -105,8 +104,7 @@ extension AppEnvironment {
         dateClient: .live,
         lastFMClient: .live,
         imageClient: .live,
-        loadUserFromDisk: { nil },
-        saveUserToDisk: { _ in }
+        persistenceClient: .live
     )
 
     static let mockUser = AppEnvironment(
@@ -114,8 +112,7 @@ extension AppEnvironment {
         dateClient: .mock,
         lastFMClient: .mock,
         imageClient: .mock,
-        loadUserFromDisk: { User.mock },
-        saveUserToDisk: { _ in }
+        persistenceClient: .live
     )
 
     static let mockFirstTime = AppEnvironment(
@@ -123,8 +120,7 @@ extension AppEnvironment {
         dateClient: .mock,
         lastFMClient: .mock,
         imageClient: .mock,
-        loadUserFromDisk: { nil },
-        saveUserToDisk: { _ in }
+        persistenceClient: .live
     )
 }
 
@@ -142,7 +138,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     Reducer { state, action, environment in
         switch action {
         case .loadUserFromDisk:
-            if let user = environment.loadUserFromDisk() {
+            if let user = environment.persistenceClient.loadUser() {
                 state.userState = .loggedIn(user)
                 state.viewState = .favoriteUsers(.init(user: user))
             } else {
@@ -155,14 +151,14 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             state.userState = .loggedOut
             state.viewState = .login(.empty)
             return Effect.fireAndForget {
-                environment.saveUserToDisk(nil)
+                environment.persistenceClient.saveUser(nil)
             }
 
         case let .login(.logIn(user)):
             state.userState = .loggedIn(user)
             state.viewState = .favoriteUsers(.init(user: user))
             return Effect.fireAndForget {
-                environment.saveUserToDisk(user)
+                environment.persistenceClient.saveUser(user)
             }
 
         case .login:

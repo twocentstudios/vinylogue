@@ -1,19 +1,19 @@
 import Foundation
 
 struct PersistenceClient {
-    var loadUserFromDisk: () -> User?
-    var saveUserToDisk: (User?) -> ()
+    var loadUser: () -> User?
+    var saveUser: (User?) -> ()
 }
 
 extension PersistenceClient {
     private static let userKey = "com.twocentstudios.userKey"
-    
+
     private static let v1_friendsKey = "lastFMFriendsList"
     private static let v1_userNameKey = "lastFMUserName"
     private static let v1_playCountFilterKey = "playCountFilter"
 
     static let live = Self(
-        loadUserFromDisk: {
+        loadUser: {
             if let data = UserDefaults.standard.data(forKey: userKey),
                 let user = try? JSONDecoder().decode(User.self, from: data) {
                 return user
@@ -39,7 +39,7 @@ extension PersistenceClient {
 
             return nil
         },
-        saveUserToDisk: { user in
+        saveUser: { user in
             let data = try? JSONEncoder().encode(user)
             UserDefaults.standard.set(data, forKey: userKey)
         }
