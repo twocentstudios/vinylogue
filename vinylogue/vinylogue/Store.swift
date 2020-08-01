@@ -85,6 +85,7 @@ enum UserState: Equatable {
 
 enum AppAction: Equatable {
     case loadUserFromDisk
+    case saveUserToDisk
     case logOut
     case login(LoginAction)
     case favoriteUsers(FavoriteUsersAction)
@@ -92,6 +93,7 @@ enum AppAction: Equatable {
 
 struct AppEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var appClient: AppClient
     var dateClient: DateClient
     var lastFMClient: LastFMClient
     var imageClient: ImageClient
@@ -101,6 +103,7 @@ struct AppEnvironment {
 extension AppEnvironment {
     static let live = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        appClient: .live,
         dateClient: .live,
         lastFMClient: .live,
         imageClient: .live,
@@ -109,6 +112,7 @@ extension AppEnvironment {
 
     static let mockUser = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        appClient: .live,
         dateClient: .mock,
         lastFMClient: .mock,
         imageClient: .mock,
@@ -117,6 +121,7 @@ extension AppEnvironment {
 
     static let mockFirstTime = AppEnvironment(
         mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+        appClient: .live,
         dateClient: .mock,
         lastFMClient: .mock,
         imageClient: .mock,
@@ -145,6 +150,12 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 state.userState = .loggedOut
                 state.viewState = .login(.empty)
             }
+            return environment.appClient.applicationDidEnterBackground()
+                .map { _ in AppAction.saveUserToDisk }
+
+        case .saveUserToDisk:
+            let saveableUser = (/UserState.loggedIn).extract(from: state.userState)
+            environment.persistenceClient.saveUser(saveableUser)
             return .none
 
         case .logOut:

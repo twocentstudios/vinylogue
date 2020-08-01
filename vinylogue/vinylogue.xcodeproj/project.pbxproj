@@ -29,6 +29,7 @@
 		09F1737224ACEAF4000E2B6B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1737124ACEAF4000E2B6B /* SettingsView.swift */; };
 		09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F1737324ACF176000E2B6B /* SimpleCell.swift */; };
 		09F4689824D544BA00655170 /* PersistenceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4689724D544BA00655170 /* PersistenceClient.swift */; };
+		09F4689B24D560CC00655170 /* AppClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4689A24D560CC00655170 /* AppClient.swift */; };
 		09F93D4A24AE39E900CD98C8 /* WeeklyAlbumChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F93D4924AE39E900CD98C8 /* WeeklyAlbumChartView.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,6 +76,7 @@
 		09F1737124ACEAF4000E2B6B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		09F1737324ACF176000E2B6B /* SimpleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCell.swift; sourceTree = "<group>"; };
 		09F4689724D544BA00655170 /* PersistenceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceClient.swift; sourceTree = "<group>"; };
+		09F4689A24D560CC00655170 /* AppClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClient.swift; sourceTree = "<group>"; };
 		09F93D4924AE39E900CD98C8 /* WeeklyAlbumChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumChartView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +142,7 @@
 				09F1737324ACF176000E2B6B /* SimpleCell.swift */,
 				0956AC5C24B10FFC00AB9E3F /* CommonViews.swift */,
 				09F1736B24ACDA79000E2B6B /* Style.swift */,
+				09F4689A24D560CC00655170 /* AppClient.swift */,
 				09F4689724D544BA00655170 /* PersistenceClient.swift */,
 				097377A124C4457A001DD6E1 /* LastFMClient.swift */,
 				09D1B91A24C86FB400CC42CD /* ImageClient.swift */,
@@ -324,6 +327,7 @@
 				09F1737424ACF176000E2B6B /* SimpleCell.swift in Sources */,
 				097377A224C4457A001DD6E1 /* LastFMClient.swift in Sources */,
 				09F4689824D544BA00655170 /* PersistenceClient.swift in Sources */,
+				09F4689B24D560CC00655170 /* AppClient.swift in Sources */,
 				09F1734324ACC72A000E2B6B /* RootView.swift in Sources */,
 				09F1736C24ACDA79000E2B6B /* Style.swift in Sources */,
 				0956AC5B24B0FF4300AB9E3F /* AlbumDetailView.swift in Sources */,
