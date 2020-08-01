@@ -1,0 +1,1 @@
+Add this file to the simluator's Library/Preferences folder to test migration from V1 preferences.
