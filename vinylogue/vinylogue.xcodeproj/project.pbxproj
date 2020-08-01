@@ -31,6 +31,7 @@
 		09F4689824D544BA00655170 /* PersistenceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4689724D544BA00655170 /* PersistenceClient.swift */; };
 		09F4689B24D560CC00655170 /* AppClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4689A24D560CC00655170 /* AppClient.swift */; };
 		09F4689D24D5674000655170 /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4689C24D5674000655170 /* MailView.swift */; };
+		09F468A124D577F800655170 /* LICENSES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 09F468A024D577F800655170 /* LICENSES.txt */; };
 		09F93D4A24AE39E900CD98C8 /* WeeklyAlbumChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F93D4924AE39E900CD98C8 /* WeeklyAlbumChartView.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		09F4689724D544BA00655170 /* PersistenceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceClient.swift; sourceTree = "<group>"; };
 		09F4689A24D560CC00655170 /* AppClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClient.swift; sourceTree = "<group>"; };
 		09F4689C24D5674000655170 /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
+		09F468A024D577F800655170 /* LICENSES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSES.txt; sourceTree = "<group>"; };
 		09F93D4924AE39E900CD98C8 /* WeeklyAlbumChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumChartView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -151,6 +153,7 @@
 				09D1B91A24C86FB400CC42CD /* ImageClient.swift */,
 				09D1B91F24C8A0E500CC42CD /* DateClient.swift */,
 				0986FEB224CBE94400AFAFE8 /* Debug.swift */,
+				09F468A024D577F800655170 /* LICENSES.txt */,
 				09F1734424ACC72B000E2B6B /* Assets.xcassets */,
 				09F1734924ACC72B000E2B6B /* Info.plist */,
 				09F1734624ACC72B000E2B6B /* Preview Content */,
@@ -299,6 +302,7 @@
 			files = (
 				09F1734824ACC72B000E2B6B /* Preview Assets.xcassets in Resources */,
 				09F1734524ACC72B000E2B6B /* Assets.xcassets in Resources */,
+				09F468A124D577F800655170 /* LICENSES.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

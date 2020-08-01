@@ -33,9 +33,9 @@ struct SettingsView: View {
                     Button(action: { viewStore.send(.rateApp) }) {
                         SimpleCell("rate on appstore")
                     }
-                    Button(action: {}) {
+                    NavigationLink(destination: LicensesView(), label: {
                         SimpleCell("licenses")
-                    }
+                    })
                 }
                 Section(header:
                     SimpleHeader("about")
@@ -102,3 +102,20 @@ extension SettingsState {
         }
     }
 }
+
+struct LicensesView: View {
+    private var text: String {
+        let filepath = Bundle.main.path(forResource: "LICENSES", ofType: "txt")!
+        let contents = try! String(contentsOfFile: filepath)
+        return contents
+    }
+
+    var body: some View {
+        ScrollView {
+            Text(text)
+                .padding()
+        }
+        .navigationTitle("Licenses")
+    }
+}
+
