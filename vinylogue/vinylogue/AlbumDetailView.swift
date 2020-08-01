@@ -4,7 +4,6 @@ import SwiftUI
 struct AlbumDetailView: View {
     struct Model: Equatable {
         let image: UIImage?
-        let imageID: String
         let artist: String
         let album: String
 
@@ -25,7 +24,7 @@ struct AlbumDetailView: View {
         var derivedShadowColor: Color { shadowColor.flatMap(Color.init) ?? Color.highlighta(1.0) }
 
         var headerModel: AlbumDetailHeaderView.Model {
-            .init(image: image, imageID: imageID, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedShadowColor, isLoading: isLoading)
+            .init(image: image, artist: artist, album: album, textColor: derivedTextColor, shadowColor: derivedShadowColor, isLoading: isLoading)
         }
 
         var playCountsModel: AlbumDetailPlayCountsView.Model {
@@ -38,13 +37,12 @@ struct AlbumDetailView: View {
     }
 
     let store: Store<AlbumDetailState, AlbumDetailAction>
-    let albumImageNamespace: Namespace.ID
 
     var body: some View {
         WithViewStore(store.scope(state: \.view)) { viewStore in
             ScrollView {
                 VStack(spacing: 0) {
-                    AlbumDetailHeaderView(model: viewStore.headerModel, albumImageNamespace: albumImageNamespace)
+                    AlbumDetailHeaderView(model: viewStore.headerModel)
                     AlbumDetailPlayCountsView(model: viewStore.playCountsModel)
                     AlbumDetailAboutView(model: viewStore.aboutModel)
                 }
@@ -59,7 +57,6 @@ struct AlbumDetailView: View {
 extension AlbumDetailState {
     var view: AlbumDetailView.Model {
         let image = (/ImageState.loaded).extract(from: imageState)
-        let imageID = albumChartStub.id
         let artistName = albumChartStub.artist.name
         let albumName = albumChartStub.album.name
         let album = (/AlbumState.loaded).extract(from: albumState)
@@ -75,7 +72,6 @@ extension AlbumDetailState {
 
         return .init(
             image: image,
-            imageID: imageID,
             artist: artistName,
             album: albumName,
             weekPlayCount: weekPlayCount,
@@ -138,7 +134,6 @@ extension AlbumDetailState {
 struct AlbumDetailHeaderView: View {
     struct Model {
         let image: UIImage?
-        let imageID: String
         let artist: String
         let album: String
         let textColor: Color
@@ -147,7 +142,6 @@ struct AlbumDetailHeaderView: View {
     }
 
     let model: Model
-    let albumImageNamespace: Namespace.ID
 
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -161,7 +155,6 @@ struct AlbumDetailHeaderView: View {
                     .border(Color.blacka(0.2), width: 1)
                     .shadow(color: .blacka(0.2), radius: 3, x: 0, y: 1)
                     .padding(.bottom, 14)
-                    .matchedGeometryEffect(id: model.imageID, in: albumImageNamespace)
                 Text(model.artist.uppercased())
                     .font(.avnRegular(15))
                     .foregroundColor(model.textColor)
@@ -196,17 +189,17 @@ struct AlbumDetailHeaderView: View {
     }
 }
 
-//struct AlbumDetailHeaderView_Previews: PreviewProvider {
-//    static let mock = AlbumDetailHeaderView.Model(image: UIImage(named: "album"), artist: "Saves The Day", album: "Sound The Alarm", textColor: .black, shadowColor: .white, isLoading: false)
-//    static let mockLoading = AlbumDetailHeaderView.Model(image: nil, artist: "Saves The Day", album: "Sound The Alarm", textColor: .black, shadowColor: .white, isLoading: true)
-//    static var previews: some View {
-//        Group {
-//            AlbumDetailHeaderView(model: mock)
-//            AlbumDetailHeaderView(model: mockLoading)
-//        }
-//        .previewLayout(.sizeThatFits)
-//    }
-//}
+struct AlbumDetailHeaderView_Previews: PreviewProvider {
+    static let mock = AlbumDetailHeaderView.Model(image: UIImage(named: "album"), artist: "Saves The Day", album: "Sound The Alarm", textColor: .black, shadowColor: .white, isLoading: false)
+    static let mockLoading = AlbumDetailHeaderView.Model(image: nil, artist: "Saves The Day", album: "Sound The Alarm", textColor: .black, shadowColor: .white, isLoading: true)
+    static var previews: some View {
+        Group {
+            AlbumDetailHeaderView(model: mock)
+            AlbumDetailHeaderView(model: mockLoading)
+        }
+        .previewLayout(.sizeThatFits)
+    }
+}
 
 private struct BackgroundImageView: View {
     let uiImage: UIImage?

@@ -33,8 +33,6 @@ struct WeeklyAlbumChartView: View {
 
     let store: Store<WeeklyAlbumChartState, WeeklyAlbumChartAction>
 
-    @Namespace private var albumImageNamespace
-
     var body: some View {
         WithViewStore(self.store.scope(state: \.view)) { viewStore in
             ZStack {
@@ -59,45 +57,23 @@ struct WeeklyAlbumChartView: View {
                                     WeeklyAlbumChartEmptyCell()
                                 case let .loaded(albums):
                                     ForEach(albums, id: \.album) { album in
-//                                        NavigationLink(
-//                                            destination: IfLetStore(
-//                                                self.store.scope(
-//                                                    state: \.albumDetailState,
-//                                                    action: WeeklyAlbumChartAction.albumDetail
-//                                                ),
-//                                                then: { AlbumDetailView(store: $0, albumImageNamespace: albumImageNamespace) }
-//                                            ),
-//                                            isActive: viewStore.binding(
-//                                                get: { $0.activeAlbumChartStubID == album.id },
-//                                                send: { WeeklyAlbumChartAction.setAlbumDetailView(isActive: $0, album.id) }
-//                                            )
-//                                        )
-//                                        {
-//                                            WeeklyAlbumChartCell(album, albumImageNamespace: albumImageNamespace)
-//                                                .onAppear { if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
-//                                        }
-
-                                        Button(action: {
-                                            withAnimation(.easeInOut(duration: 0.25)) {
-                                                viewStore.send(WeeklyAlbumChartAction.setAlbumDetailView(isActive: true, album.id))
-                                            }
-                                        }) {
-                                            WeeklyAlbumChartCell(album, albumImageNamespace: albumImageNamespace)
+                                        NavigationLink(
+                                            destination: IfLetStore(
+                                                self.store.scope(
+                                                    state: \.albumDetailState,
+                                                    action: WeeklyAlbumChartAction.albumDetail
+                                                ),
+                                                then: AlbumDetailView.init(store:)
+                                            ),
+                                            isActive: viewStore.binding(
+                                                get: { $0.activeAlbumChartStubID == album.id },
+                                                send: { WeeklyAlbumChartAction.setAlbumDetailView(isActive: $0, album.id) }
+                                            )
+                                        )
+                                        {
+                                            WeeklyAlbumChartCell(album)
+                                                .onAppear { if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
                                         }
-                                        .onAppear { if album.needsData { viewStore.send(.fetchImageThumbnailForChart(album.id)) } }
-//                                        .sheet(isPresented: viewStore.binding(
-//                                            get: { $0.activeAlbumChartStubID != nil },
-//                                            send: { WeeklyAlbumChartAction.setAlbumDetailView(isActive: $0, album.id) }
-//                                        )
-//                                        ) {
-//                                            IfLetStore(
-//                                                self.store.scope(
-//                                                    state: \.albumDetailState,
-//                                                    action: WeeklyAlbumChartAction.albumDetail
-//                                                ),
-//                                                then: { AlbumDetailView(store: $0, albumImageNamespace: albumImageNamespace) }
-//                                            )
-//                                        }
                                     }
                                 case .failed:
                                     WeeklyAlbumChartErrorCell { viewStore.send(.fetchWeeklyAlbumChart(section.id)) }
@@ -106,24 +82,6 @@ struct WeeklyAlbumChartView: View {
                         }
                     }
                     .listStyle(GroupedListStyle())
-                }
-                if let activeAlbumChartStubID = viewStore.activeAlbumChartStubID {
-                    IfLetStore(
-                        self.store.scope(
-                            state: \.albumDetailState,
-                            action: WeeklyAlbumChartAction.albumDetail
-                        ),
-                        then: {
-                            AlbumDetailView(store: $0, albumImageNamespace: albumImageNamespace)
-                                .onTapGesture(count: 2) {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        viewStore.send(WeeklyAlbumChartAction.setAlbumDetailView(isActive: false, activeAlbumChartStubID))
-                                    }
-                                }
-                                .zIndex(1)
-                                .transition(.move(edge: .bottom))
-                        }
-                    )
                 }
             }
             .onAppear { if viewStore.needsData { viewStore.send(.fetchWeeklyChartList) } }
@@ -245,11 +203,9 @@ struct WeeklyAlbumChartCell: View {
     }
 
     let model: Model
-    let albumImageNamespace: Namespace.ID
 
-    init(_ model: Model, albumImageNamespace: Namespace.ID) {
+    init(_ model: Model) {
         self.model = model
-        self.albumImageNamespace = albumImageNamespace
     }
 
     var body: some View {
@@ -265,7 +221,6 @@ struct WeeklyAlbumChartCell: View {
                             .strokeBorder(Color.blacka(0.2), lineWidth: 1.0, antialiased: true)
                     )
                     .cornerRadius(2.0)
-                    .matchedGeometryEffect(id: model.id, in: albumImageNamespace)
                 VStack {
                     Text(model.artist.uppercased())
                         .font(.avnUltraLight(12))
