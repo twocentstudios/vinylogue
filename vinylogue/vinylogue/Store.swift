@@ -400,6 +400,10 @@ struct SettingsState: Equatable {
 }
 enum SettingsAction: Equatable {
     case updatePlayCountFilter
+    case rateApp
+    case openDeveloperWebsite
+    case openDeveloperTwitter
+    case openLastFMWebsite
 }
 
 let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { state, action, environment in
@@ -409,8 +413,21 @@ let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment> { s
         let nextIndex = cases.firstIndex(of: state.user.settings.playCountFilter)! + 1
         let newCase = cases[nextIndex]
         state.user.settings.playCountFilter = newCase
-        return .none
+    case .rateApp:
+        // TODO: Test on a real device
+        let url = URL(string: "http://appstore.com/vinylogue-for-last.fm?action=write-review")!
+        environment.appClient.openExternalURL(url)
+    case .openDeveloperWebsite:
+        let url = URL(string: "http://twocentstudios.com")!
+        environment.appClient.openExternalURL(url)
+    case .openDeveloperTwitter:
+        let url = URL(string: "https://twitter.com/twocentstudios")!
+        environment.appClient.openExternalURL(url)
+    case .openLastFMWebsite:
+        let url = URL(string: "https://last.fm")!
+        environment.appClient.openExternalURL(url)
     }
+    return .none
 }
 
 struct WeeklyAlbumChartState: Equatable {

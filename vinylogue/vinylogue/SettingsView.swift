@@ -30,19 +30,29 @@ struct SettingsView: View {
                             SimpleCell("report an issue")
                         }
                     }
-                    SimpleCell("rate on appstore")
-                    SimpleCell("licenses")
+                    Button(action: { viewStore.send(.rateApp) }) {
+                        SimpleCell("rate on appstore")
+                    }
+                    Button(action: {}) {
+                        SimpleCell("licenses")
+                    }
                 }
                 Section(header:
                     SimpleHeader("about")
                 ) {
-                    SimpleCell("twocentstudios.com")
-                    SimpleCell("@twocentstudios")
+                    Button(action: { viewStore.send(.openDeveloperWebsite) }) {
+                        SimpleCell("twocentstudios.com")
+                    }
+                    Button(action: { viewStore.send(.openDeveloperTwitter) }) {
+                        SimpleCell("@twocentstudios")
+                    }
                 }
                 Section(header:
                     SimpleHeader("artist & album data")
                 ) {
-                    SimpleCell("last.fm")
+                    Button(action: { viewStore.send(.openLastFMWebsite) }) {
+                        SimpleCell("last.fm")
+                    }
                 }
             }
             .listStyle(GroupedListStyle())

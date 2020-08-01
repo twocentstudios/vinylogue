@@ -5,6 +5,7 @@ import UIKit
 struct AppClient {
     var applicationDidEnterBackground: () -> Effect<Void, Never>
     var systemInformation: () -> SystemInformation
+    var openExternalURL: (URL) -> Void
 }
 
 struct SystemInformation: Equatable {
@@ -28,6 +29,11 @@ extension AppClient {
                 device: UIDevice.current.model,
                 systemVersion: UIDevice.current.systemVersion
             )
+        },
+        openExternalURL: { url in
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:]) { _ in }
+            }
         }
     )
 }
