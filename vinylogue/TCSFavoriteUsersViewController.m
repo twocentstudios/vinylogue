@@ -91,6 +91,7 @@
   }] subscribeNext:^(id x) {
     @strongify(self);
     TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
+    userNameController.modalPresentationStyle = UIModalPresentationFullScreen;
     [userNameController.userSignal subscribeNext:^(User *user) {
       @strongify(self);
       [self.userStore setUser:user];
