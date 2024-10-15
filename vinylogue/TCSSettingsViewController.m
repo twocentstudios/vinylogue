@@ -172,7 +172,7 @@
     [self presentViewController:storeVC animated:YES completion:NULL];
     storeVC.delegate = self;
   }else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
   }else{
     DLog(@"Error opening url");
   }
@@ -188,23 +188,23 @@
 }
 
 - (void)doDeveloperWebsite{
-  NSString *urlString = @"http://twocentstudios.com";
+  NSString *urlString = @"https://twocentstudios.com";
   if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
   }
 }
 
 - (void)doDeveloperTwitter{
   NSString *urlString = @"http://twitter.com/twocentstudios";
   if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
   }
 }
 
 - (void)doLastFMWebsite{
   NSString *urlString = @"https://last.fm";
   if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]){
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
   }
 }
 

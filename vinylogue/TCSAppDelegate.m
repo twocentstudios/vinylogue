@@ -39,9 +39,15 @@
 
   NSDictionary *navBarTextAttributes = @{ NSFontAttributeName: FONT_AVN_REGULAR(20),
                                           NSForegroundColorAttributeName: BLUE_DARK, };
-  [[UINavigationBar appearance] setTitleTextAttributes:navBarTextAttributes];
+  UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+  [appearance configureWithOpaqueBackground];
+  [appearance setTitleTextAttributes:navBarTextAttributes];
+  [appearance setBackgroundColor:WHITE_SUBTLE];
   
-  [[UINavigationBar appearance] setBarTintColor:WHITE_SUBTLE];
+  UINavigationBar *navigationBarAppearance = [UINavigationBar appearance];
+  navigationBarAppearance.standardAppearance = appearance;
+  navigationBarAppearance.scrollEdgeAppearance = appearance;
+  navigationBarAppearance.compactAppearance = appearance;
 }
 
 # pragma mark - App Delegate

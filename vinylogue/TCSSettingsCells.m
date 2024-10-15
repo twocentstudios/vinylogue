@@ -24,7 +24,6 @@
     self.textLabel.textColor = BLUE_DARK;
     self.textLabel.highlightedTextColor = WHITE_SUBTLE;
     self.indentationLevel = 1;
-    
   }
   return self;
 }
@@ -35,14 +34,17 @@
   self.textLabel.text = nil;
 }
 
-// Inelegantly fixes an iOS7 bug where the cell's background is above the
-// delete button in the view hierarchy
--(void)didTransitionToState:(UITableViewCellStateMask)state {
-  if (state & UITableViewCellStateShowingDeleteConfirmationMask ) {
-    [self sendSubviewToBack:self.backgroundView];
-  }
+- (void)layoutSubviews {
+  [super layoutSubviews];
   
-  [super didTransitionToState:state];
+  // Change reorder control color so it's visible on the off-white background
+  for (UIView *subview in self.subviews) {
+    if ([NSStringFromClass([subview class]) containsString:@"UITableViewCellReorderControl"]) {
+      UIImageView *imageView = subview.subviews.firstObject;
+      imageView.image = [[UIImage systemImageNamed:@"line.3.horizontal"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+      imageView.tintColor = BLUE_DARK;
+    }
+  }
 }
 
 # pragma mark - TCSimpleCell

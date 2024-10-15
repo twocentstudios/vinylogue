@@ -91,6 +91,7 @@
   }] subscribeNext:^(id x) {
     @strongify(self);
     TCSUserNameViewController *userNameController = [[TCSUserNameViewController alloc] initWithHeaderShowing:YES];
+    userNameController.modalPresentationStyle = UIModalPresentationFullScreen;
     [userNameController.userSignal subscribeNext:^(User *user) {
       @strongify(self);
       [self.userStore setUser:user];
@@ -329,14 +330,14 @@
   }
   
   NSString *CellIdentifier = NSStringFromClass(cellClass);
-  TCSSettingsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+  UITableViewCell<TCSSimpleCell> *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (!cell) {
     cell = [[cellClass alloc] init];
   }
   
   NSString *userName = [self userNameForIndexPath:indexPath];
   [cell setTitleText:userName];
-  
+
   return cell;
 }
 
