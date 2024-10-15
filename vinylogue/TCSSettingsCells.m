@@ -47,16 +47,6 @@
   }
 }
 
-//// Inelegantly fixes an iOS7 bug where the cell's background is above the
-//// delete button in the view hierarchy
--(void)didTransitionToState:(UITableViewCellStateMask)state {
-  if (state & UITableViewCellStateShowingDeleteConfirmationMask ) {
-    [self sendSubviewToBack:self.backgroundView];
-  }
-  
-  [super didTransitionToState:state];
-}
-
 # pragma mark - TCSimpleCell
 
 + (UIFont *)font{
