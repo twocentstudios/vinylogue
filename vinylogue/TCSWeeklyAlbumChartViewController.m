@@ -93,11 +93,6 @@
   UIBarButtonItem *loadingItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingImageView];
   self.loadingImageView.hidden = YES;
   self.navigationItem.rightBarButtonItem = loadingItem;
-  
-  // double tap on the slide view to hide the nav bar and status bar
-  UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doDoubleTap:)];
-  doubleTap.numberOfTapsRequired = 2;
-  [self.slideSelectView.frontView addGestureRecognizer:doubleTap];
 }
 
 - (void)viewDidLoad{
@@ -412,20 +407,6 @@
 
 - (BOOL)prefersStatusBarHidden {
   return [self.navigationController isNavigationBarHidden];
-}
-
-#pragma mark - Private
-
-// Hide nav bar and status bar on double tap
-- (void)doDoubleTap:(UITapGestureRecognizer *)tap{
-  if ([tap state] == UIGestureRecognizerStateEnded){
-    if ([self.navigationController isNavigationBarHidden] == NO){
-      [self.navigationController setNavigationBarHidden:YES animated:YES];
-    }else{
-      [self.navigationController setNavigationBarHidden:NO animated:YES];
-    }
-    [self setNeedsStatusBarAppearanceUpdate];
-  }
 }
 
 #pragma mark - Table view data source
