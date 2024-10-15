@@ -330,14 +330,14 @@
   }
   
   NSString *CellIdentifier = NSStringFromClass(cellClass);
-  TCSSettingsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+  UITableViewCell<TCSSimpleCell> *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
   if (!cell) {
     cell = [[cellClass alloc] init];
   }
   
   NSString *userName = [self userNameForIndexPath:indexPath];
   [cell setTitleText:userName];
-  
+
   return cell;
 }
 
