@@ -1,5 +1,5 @@
-import SwiftUI
 import Nuke
+import SwiftUI
 
 // MARK: - Environment Keys
 
@@ -26,17 +26,17 @@ extension EnvironmentValues {
         get { self[LastFMClientKey.self] }
         set { self[LastFMClientKey.self] = newValue }
     }
-    
+
     var imagePipeline: ImagePipeline {
         get { self[ImagePipelineKey.self] }
         set { self[ImagePipelineKey.self] = newValue }
     }
-    
+
     var playCountFilter: Int {
         get { self[PlayCountFilterKey.self] }
         set { self[PlayCountFilterKey.self] = newValue }
     }
-    
+
     var currentUser: User? {
         get { self[CurrentUserKey.self] }
         set { self[CurrentUserKey.self] = newValue }

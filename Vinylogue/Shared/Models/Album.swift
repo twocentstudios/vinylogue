@@ -9,13 +9,13 @@ struct Album: Codable, Identifiable, Hashable {
     let rank: Int?
     let url: String?
     let mbid: String?
-    
+
     // Detail view properties (loaded separately)
     var description: String?
     var totalPlayCount: Int?
     var userPlayCount: Int?
     var isDetailLoaded: Bool = false
-    
+
     init(name: String, artist: String, imageURL: String? = nil, playCount: Int, rank: Int? = nil, url: String? = nil, mbid: String? = nil) {
         self.name = name
         self.artist = artist

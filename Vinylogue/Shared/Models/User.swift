@@ -7,10 +7,10 @@ struct User: Codable, Identifiable, Hashable {
     let imageURL: String?
     let url: String?
     let playCount: Int?
-    
+
     // Legacy migration keys
     static let legacyUserDefaultsKey = "kTCSUserDefaultsLastFMUserName"
-    
+
     init(username: String, realName: String? = nil, imageURL: String? = nil, url: String? = nil, playCount: Int? = nil) {
         self.username = username
         self.realName = realName
