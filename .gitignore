@@ -1,6 +1,22 @@
+# Xcode
+*.xcuserstate
+*.xcuserdatad/
+DerivedData/
+*.xccheckout
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
 # Exclude the build directory
 build/*
-  
+Build/
+
 # Exclude temp nibs and swap files
 *~.nib
 *.swp
@@ -8,18 +24,23 @@ build/*
 # Exclude OS X folder attributes
 .DS_Store
   
-# Exclude user-specific XCode 3 and 4 files
-*.mode1
-*.mode1v3
-*.mode2v3
-*.perspective
-*.perspectivev3
-*.pbxuser
-*.xcworkspace
-xcuserdata
+# Secrets
+Secrets.swift
 
-# CocoaPods
+# Package Manager
+.swiftpm/
+Package.resolved
 
+# CocoaPods (legacy)
 /Pods
+*.podspec
+
+# Design assets (legacy)
 /Design/screenshots
 /vinylogue/TCSVinylogueSecret.h
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
