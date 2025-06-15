@@ -1,8 +1,6 @@
 import Foundation
-// import Nuke // TODO: Add Nuke package dependency
+import Nuke
 
-// TODO: Implement ImagePipeline extension once Nuke is added
-/*
 extension ImagePipeline {
     static func withTemporaryDiskCache() -> ImagePipeline {
         let temporaryDirectory = FileManager.default.temporaryDirectory
@@ -14,12 +12,12 @@ extension ImagePipeline {
             withIntermediateDirectories: true
         )
         
-        let dataCache = try? DataCache(name: "VinylogueImages", url: temporaryDirectory)
+        // Create data cache in temporary directory
+        let dataCache = try? DataCache(name: "VinylogueImages")
         
-        let configuration = ImagePipeline.Configuration()
+        var configuration = ImagePipeline.Configuration()
         configuration.dataCache = dataCache
         
         return ImagePipeline(configuration: configuration)
     }
 }
-*/

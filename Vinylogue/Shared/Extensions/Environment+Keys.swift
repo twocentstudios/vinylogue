@@ -1,5 +1,5 @@
 import SwiftUI
-// import Nuke // TODO: Add Nuke package dependency
+import Nuke
 
 // MARK: - Environment Keys
 
@@ -8,7 +8,7 @@ private struct LastFMClientKey: EnvironmentKey {
 }
 
 private struct ImagePipelineKey: EnvironmentKey {
-    static let defaultValue: String = "placeholder" // TODO: Replace with ImagePipeline.shared
+    static let defaultValue = ImagePipeline.shared
 }
 
 private struct PlayCountFilterKey: EnvironmentKey {
@@ -27,7 +27,7 @@ extension EnvironmentValues {
         set { self[LastFMClientKey.self] = newValue }
     }
     
-    var imagePipeline: String {
+    var imagePipeline: ImagePipeline {
         get { self[ImagePipelineKey.self] }
         set { self[ImagePipelineKey.self] = newValue }
     }
