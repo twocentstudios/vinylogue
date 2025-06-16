@@ -555,9 +555,11 @@ enum LoadingState<T> {
 ### 9.1 Unit Tests
 - [✅] LastFMClient API endpoint coverage
 - [✅] Data model serialization/deserialization  
-- [ ] Migration logic with various legacy data scenarios
+- [✅] Migration logic with various legacy data scenarios
 - [✅] Cache management and eviction policies
 - [✅] Error handling for all network failure modes
+- [✅] FriendsImporter service with comprehensive test coverage
+- [✅] WeeklyAlbumLoader with loading state management
 
 ### 9.2 Integration Tests  
 - [ ] End-to-end user flows (onboarding → browsing → details)
@@ -597,48 +599,48 @@ enum LoadingState<T> {
 ### Sprint 2: Data Migration (Files 16-20)
 **Dependencies**: Sprint 1  
 **Validation**: Legacy data successfully migrated
-- [ ] MigrationManager with NSUserDefaults parsing
-- [ ] Legacy data model bridging (NSCoding compatibility)
-- [ ] Migration validation and rollback logic
-- [ ] OnboardingView for new users
-- [ ] Migration integration tests
+- [✅] MigrationManager with NSUserDefaults parsing
+- [✅] Legacy data model bridging (NSCoding compatibility)
+- [✅] Migration validation and rollback logic
+- [✅] OnboardingView for new users
+- [✅] Migration integration tests
 
 ### Sprint 3: Users Interface (Files 21-25)
 **Dependencies**: Sprint 2  
 **Validation**: User list displays and navigation works
-- [ ] UsersListView with current user + friends
-- [ ] User selection and navigation flow
-- [ ] Friend curation (add/remove/reorder)
-- [ ] Friends list persistence
-- [ ] UI tests for user interactions
+- [✅] UsersListView with current user + friends
+- [✅] User selection and navigation flow
+- [✅] Friend curation (add/remove/reorder)
+- [✅] Friends list persistence
+- [✅] UI tests for user interactions
 
 ### Sprint 4: Weekly Charts (Files 26-35)
 **Dependencies**: Sprint 3  
 **Validation**: Album charts load and display correctly
-- [ ] WeeklyAlbumsView with album grid
-- [ ] Year navigation with boundary handling
-- [ ] Album artwork loading with Nuke
-- [ ] Play count filtering
-- [ ] Loading and error states
-- [ ] Performance testing with large datasets
+- [✅] WeeklyAlbumsView with album grid
+- [✅] Year navigation with boundary handling
+- [✅] Album artwork loading with Nuke
+- [✅] Play count filtering
+- [✅] Loading and error states
+- [✅] Performance testing with large datasets
 
 ### Sprint 5: Album Details (Files 36-42)
 **Dependencies**: Sprint 4  
 **Validation**: Detail view animates and displays metadata
-- [ ] AlbumDetailView with full-screen layout
-- [ ] Dominant color extraction from artwork
-- [ ] Animated transitions and entrance effects
-- [ ] Album metadata display (description, play counts)
-- [ ] Accessibility labels and VoiceOver support
+- [✅] AlbumDetailView with full-screen layout
+- [✅] Dominant color extraction from artwork
+- [✅] Animated transitions and entrance effects
+- [✅] Album metadata display (description, play counts)
+- [✅] Accessibility labels and VoiceOver support
 
 ### Sprint 6: Settings & Polish (Files 43-48)
 **Dependencies**: Sprint 5  
 **Validation**: All settings persist and UI is polished
-- [ ] SettingsSheet with modal presentation
-- [ ] Username change functionality
-- [ ] Play count filter with validation
-- [ ] Support links and app information
-- [ ] Final UI polish and accessibility testing
+- [✅] SettingsSheet with modal presentation
+- [✅] Username change functionality
+- [✅] Play count filter with validation
+- [✅] Support links and app information
+- [✅] Final UI polish and accessibility testing
 
 ### Sprint 7: Testing & Release (Files 49-55)
 **Dependencies**: Sprint 6  
