@@ -9,12 +9,17 @@
 /* Begin PBXBuildFile section */
 		00B39DBA804826E5E9353332 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = EB3BBA0B2FD4CD346C4CC0A7 /* NukeUI */; };
 		05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */; };
+		0CD455DE58200990F340A629 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E56759C070D9789838E509 /* RootView.swift */; };
+		1237B5A3BDAFAF1FB0E21902 /* LegacyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE9DA06101640076F5973EA /* LegacyModels.swift */; };
 		1828F284CCFA8305FD52BCD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2459B22F6080B54FA09B5E5C /* Assets.xcassets */; };
 		1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69DA986080E9218D89262C1 /* VinylogueApp.swift */; };
 		239735FA5611B57BA112AAEF /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */; };
+		2779D4B3C8725F5B776FE101 /* LegacyMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */; };
 		30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A736EE668C40676A2896B69 /* LastFMClient.swift */; };
+		3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */; };
 		46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918077500BAC67836FBF270A /* LastFMResponses.swift */; };
 		5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5587926756100F8666AAA8 /* CacheManager.swift */; };
+		64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95D8560225422135D2FE41 /* OnboardingView.swift */; };
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
@@ -36,10 +41,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		14E56759C070D9789838E509 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		1A736EE668C40676A2896B69 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
 		229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
 		667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigrator.swift; sourceTree = "<group>"; };
+		6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigratorTests.swift; sourceTree = "<group>"; };
 		705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
 		74CD2D864124E180A45B91E3 /* Vinylogue.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClientTests.swift; sourceTree = "<group>"; };
@@ -51,6 +60,7 @@
 		D179D6B028859C27F293B752 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		D69DA986080E9218D89262C1 /* VinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylogueApp.swift; sourceTree = "<group>"; };
 		DE558E9128DB9A867018AA1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EA95D8560225422135D2FE41 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,9 +91,19 @@
 			children = (
 				CC5587926756100F8666AAA8 /* CacheManager.swift */,
 				1A736EE668C40676A2896B69 /* LastFMClient.swift */,
+				6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */,
 				FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		8B086034E09A923B47C71F3A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EA95D8560225422135D2FE41 /* OnboardingView.swift */,
+				14E56759C070D9789838E509 /* RootView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A93FA7E77CC864639358B6C5 /* Models */ = {
@@ -91,6 +111,7 @@
 			children = (
 				D179D6B028859C27F293B752 /* Album.swift */,
 				918077500BAC67836FBF270A /* LastFMResponses.swift */,
+				3EE9DA06101640076F5973EA /* LegacyModels.swift */,
 				8C2C4039B041882C67613842 /* User.swift */,
 				9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */,
 			);
@@ -109,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */,
+				6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */,
 			);
 			path = VinylogueTests;
 			sourceTree = "<group>";
@@ -140,6 +162,7 @@
 				D69DA986080E9218D89262C1 /* VinylogueApp.swift */,
 				B003EF4BF97ADE725E29DC02 /* Preview Content */,
 				B2A1D12DE6D877B8EC65A040 /* Shared */,
+				8B086034E09A923B47C71F3A /* Views */,
 			);
 			path = Vinylogue;
 			sourceTree = "<group>";
@@ -153,7 +176,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_C5684B3B-3780-467F-810B-00C08F647585" /* Features */ = {
+		"TEMP_88545874-4F43-4138-98B2-0BA3165717C4" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -263,6 +286,10 @@
 				8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */,
 				30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */,
 				46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */,
+				2779D4B3C8725F5B776FE101 /* LegacyMigrator.swift in Sources */,
+				1237B5A3BDAFAF1FB0E21902 /* LegacyModels.swift in Sources */,
+				64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */,
+				0CD455DE58200990F340A629 /* RootView.swift in Sources */,
 				239735FA5611B57BA112AAEF /* Secrets.swift in Sources */,
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
@@ -275,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */,
+				3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
