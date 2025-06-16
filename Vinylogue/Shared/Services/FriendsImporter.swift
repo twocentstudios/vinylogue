@@ -5,7 +5,7 @@ import OSLog
 @MainActor
 final class FriendsImporter: ObservableObject {
     private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "FriendsImporter")
-    private let lastFMClient: LastFMClient
+    private let lastFMClient: LastFMClientProtocol
     
     /// Current friends list loaded from Last.fm
     @Published var friends: [User] = []
@@ -16,7 +16,7 @@ final class FriendsImporter: ObservableObject {
     /// Any import error that occurred
     @Published var importError: Error?
     
-    init(lastFMClient: LastFMClient) {
+    init(lastFMClient: LastFMClientProtocol) {
         self.lastFMClient = lastFMClient
     }
     

@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - Environment Keys
 
 private struct LastFMClientKey: EnvironmentKey {
-    static let defaultValue = LastFMClient()
+    static let defaultValue: LastFMClientProtocol = LastFMClient()
 }
 
 private struct ImagePipelineKey: EnvironmentKey {
@@ -26,7 +26,7 @@ private struct CuratedFriendsKey: EnvironmentKey {
 // MARK: - Environment Values Extension
 
 extension EnvironmentValues {
-    var lastFMClient: LastFMClient {
+    var lastFMClient: LastFMClientProtocol {
         get { self[LastFMClientKey.self] }
         set { self[LastFMClientKey.self] = newValue }
     }

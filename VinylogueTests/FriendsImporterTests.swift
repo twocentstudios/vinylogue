@@ -200,11 +200,11 @@ final class FriendsImporterTests: XCTestCase {
 
 // MARK: - Mock LastFM Client
 
-class MockLastFMClient: LastFMClient {
+class MockLastFMClient: LastFMClientProtocol {
     var mockResponse: Any?
     var mockError: Error?
     
-    override func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
+    func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
         if let error = mockError {
             throw error
         }
@@ -214,5 +214,18 @@ class MockLastFMClient: LastFMClient {
         }
         
         return response
+    }
+    
+    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album {
+        // Simple mock implementation for testing
+        return Album(
+            name: album ?? "Mock Album",
+            artist: artist ?? "Mock Artist",
+            imageURL: "https://example.com/mock.jpg",
+            playCount: 0,
+            rank: nil,
+            url: nil,
+            mbid: mbid
+        )
     }
 }

@@ -140,38 +140,6 @@ private struct UserRowView: View {
     }
 }
 
-// MARK: - Weekly Albums Placeholder
-
-private struct WeeklyAlbumsView: View {
-    let user: User
-    
-    var body: some View {
-        VStack(spacing: 32) {
-            Image(systemName: "music.note.list")
-                .font(.system(size: 80))
-                .foregroundColor(.accent)
-            
-            VStack(spacing: 16) {
-                Text("Weekly Charts")
-                    .font(.navigationTitle)
-                    .foregroundColor(.primaryText)
-                
-                Text("Charts for \(user.username)")
-                    .font(.body)
-                    .foregroundColor(.secondaryText)
-                
-                Text("Coming in Sprint 4!")
-                    .font(.secondaryInfo)
-                    .foregroundColor(.tertiaryText)
-                    .padding(.top, 8)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.primaryBackground)
-        .navigationTitle("Charts")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
 // MARK: - Previews
 

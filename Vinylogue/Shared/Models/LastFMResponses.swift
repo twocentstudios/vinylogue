@@ -7,7 +7,7 @@ struct UserWeeklyChartListResponse: Codable {
 }
 
 struct WeeklyChartList: Codable {
-    let chart: [ChartPeriod]
+    let chart: [ChartPeriod]?
     let attr: WeeklyChartListAttributes
 
     enum CodingKeys: String, CodingKey {
@@ -40,7 +40,7 @@ struct UserWeeklyAlbumChartResponse: Codable {
 }
 
 struct WeeklyAlbumChart: Codable {
-    let album: [LastFMAlbumEntry]
+    let album: [LastFMAlbumEntry]?
     let attr: WeeklyAlbumChartAttributes
 
     enum CodingKeys: String, CodingKey {
@@ -54,8 +54,17 @@ struct LastFMAlbumEntry: Codable {
     let mbid: String?
     let name: String
     let playcount: String
-    let rank: String
     let url: String?
+    let attr: LastFMAlbumAttr
+
+    enum CodingKeys: String, CodingKey {
+        case artist, mbid, name, playcount, url
+        case attr = "@attr"
+    }
+
+    struct LastFMAlbumAttr: Codable {
+        let rank: String
+    }
 
     struct LastFMArtist: Codable {
         let mbid: String?
@@ -63,8 +72,8 @@ struct LastFMAlbumEntry: Codable {
         let url: String?
 
         enum CodingKeys: String, CodingKey {
-            case mbid = "#text"
-            case name
+            case mbid
+            case name = "#text"
             case url
         }
     }
@@ -74,7 +83,7 @@ struct LastFMAlbumEntry: Codable {
     }
 
     var rankNumber: Int? {
-        Int(rank)
+        Int(attr.rank)
     }
 }
 

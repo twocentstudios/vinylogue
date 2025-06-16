@@ -17,14 +17,19 @@
 		257C55D32BCB823030662851 /* FriendsImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2103491B1B740C03DDE8E /* FriendsImporter.swift */; };
 		2779D4B3C8725F5B776FE101 /* LegacyMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */; };
 		30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A736EE668C40676A2896B69 /* LastFMClient.swift */; };
+		3696F3C7897F6282FE680D3C /* AlbumRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93EBBF8305D3E51421F7E7F4 /* AlbumRowView.swift */; };
+		384B05213BDBA789F84FDF15 /* WeeklyAlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */; };
 		3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */; };
 		46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918077500BAC67836FBF270A /* LastFMResponses.swift */; };
 		5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5587926756100F8666AAA8 /* CacheManager.swift */; };
+		63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */; };
 		64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95D8560225422135D2FE41 /* OnboardingView.swift */; };
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
+		785D22E4EFCB74F4E524964B /* WeeklyAlbumLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35D4733F51B3CACC6A679C1 /* WeeklyAlbumLoader.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
 		8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
+		939ADAE53F231DFD5366FCD0 /* Calendar+WeekCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */; };
 		A1797BB9D2468DA37A5625AF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C4039B041882C67613842 /* User.swift */; };
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
 		A9062E48AA5E776B8C70ACD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */; };
@@ -50,6 +55,7 @@
 		1A736EE668C40676A2896B69 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
 		229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumsView.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
 		61A2103491B1B740C03DDE8E /* FriendsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporter.swift; sourceTree = "<group>"; };
@@ -59,11 +65,15 @@
 		705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
 		74CD2D864124E180A45B91E3 /* Vinylogue.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClientTests.swift; sourceTree = "<group>"; };
+		7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporterTests.swift; sourceTree = "<group>"; };
 		7F035580BEB530F91763B554 /* UsersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListView.swift; sourceTree = "<group>"; };
 		8C2C4039B041882C67613842 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		918077500BAC67836FBF270A /* LastFMResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMResponses.swift; sourceTree = "<group>"; };
+		93EBBF8305D3E51421F7E7F4 /* AlbumRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumRowView.swift; sourceTree = "<group>"; };
+		941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+WeekCalculations.swift"; sourceTree = "<group>"; };
 		9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyChart.swift; sourceTree = "<group>"; };
 		B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C35D4733F51B3CACC6A679C1 /* WeeklyAlbumLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumLoader.swift; sourceTree = "<group>"; };
 		CC5587926756100F8666AAA8 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		D179D6B028859C27F293B752 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		D69DA986080E9218D89262C1 /* VinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylogueApp.swift; sourceTree = "<group>"; };
@@ -102,6 +112,7 @@
 				1A736EE668C40676A2896B69 /* LastFMClient.swift */,
 				6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */,
 				FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */,
+				C35D4733F51B3CACC6A679C1 /* WeeklyAlbumLoader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -109,10 +120,12 @@
 		8B086034E09A923B47C71F3A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				93EBBF8305D3E51421F7E7F4 /* AlbumRowView.swift */,
 				18724C512AAB5F959701021B /* EditFriendsView.swift */,
 				EA95D8560225422135D2FE41 /* OnboardingView.swift */,
 				14E56759C070D9789838E509 /* RootView.swift */,
 				7F035580BEB530F91763B554 /* UsersListView.swift */,
+				27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -140,6 +153,7 @@
 		B1826081BBBD3E82AD791792 /* VinylogueTests */ = {
 			isa = PBXGroup;
 			children = (
+				7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */,
 				78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */,
 				6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */,
 			);
@@ -181,6 +195,7 @@
 		F4E6BFC6D9A73CF70DE2B01C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */,
 				3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */,
 				705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */,
 				229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */,
@@ -188,7 +203,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_287E1E7C-C31E-4E5C-8621-F79A81E6BA0A" /* Features */ = {
+		"TEMP_A648B58E-04A2-482C-921D-12D05C8C0167" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -292,7 +307,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				808B7C443A13B242F689460A /* Album.swift in Sources */,
+				3696F3C7897F6282FE680D3C /* AlbumRowView.swift in Sources */,
 				5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */,
+				939ADAE53F231DFD5366FCD0 /* Calendar+WeekCalculations.swift in Sources */,
 				8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */,
 				BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */,
 				CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */,
@@ -309,6 +326,8 @@
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
 				C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
+				785D22E4EFCB74F4E524964B /* WeeklyAlbumLoader.swift in Sources */,
+				384B05213BDBA789F84FDF15 /* WeeklyAlbumsView.swift in Sources */,
 				BDCC721C37900C6313FBBC6E /* WeeklyChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -317,6 +336,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */,
 				6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */,
 				3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */,
 			);

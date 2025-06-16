@@ -1,7 +1,14 @@
 import Foundation
 import Network
 
-struct LastFMClient {
+// MARK: - Protocol
+
+protocol LastFMClientProtocol {
+    func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T
+    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album
+}
+
+struct LastFMClient: LastFMClientProtocol {
     private let baseURL = URL(string: "https://ws.audioscrobbler.com/2.0/")!
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
@@ -153,7 +160,7 @@ extension LastFMClient {
     func fetchWeeklyChartList(for username: String) async throws -> [WeeklyChart] {
         let response: UserWeeklyChartListResponse = try await request(.userWeeklyChartList(username: username))
 
-        return response.weeklychartlist.chart.map { period in
+        return (response.weeklychartlist.chart ?? []).map { period in
             WeeklyChart(
                 from: period.fromDate,
                 to: period.toDate,
@@ -166,7 +173,7 @@ extension LastFMClient {
     func fetchWeeklyAlbumChart(for username: String, from: Date, to: Date) async throws -> [Album] {
         let response: UserWeeklyAlbumChartResponse = try await request(.userWeeklyAlbumChart(username: username, from: from, to: to))
 
-        return response.weeklyalbumchart.album.map { entry in
+        return (response.weeklyalbumchart.album ?? []).map { entry in
             Album(
                 name: entry.name,
                 artist: entry.artist.name,
@@ -299,6 +306,7 @@ enum LastFMError: Error, LocalizedError {
     case serviceUnavailable
     case decodingError(Error)
     case apiError(code: Int, message: String)
+    case noDataAvailable
 
     var errorDescription: String? {
         switch self {
@@ -316,6 +324,8 @@ enum LastFMError: Error, LocalizedError {
             "Data parsing error: \(error.localizedDescription)"
         case let .apiError(code, message):
             "API Error \(code): \(message)"
+        case .noDataAvailable:
+            "No chart data available for this time period."
         }
     }
 }

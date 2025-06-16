@@ -101,10 +101,10 @@ final class LastFMClientTests: XCTestCase {
         let data = json.data(using: .utf8)!
         let response = try JSONDecoder().decode(UserWeeklyChartListResponse.self, from: data)
 
-        XCTAssertEqual(response.weeklychartlist.chart.count, 2)
+        XCTAssertEqual(response.weeklychartlist.chart?.count, 2)
         XCTAssertEqual(response.weeklychartlist.attr.user, "testuser")
-        XCTAssertEqual(response.weeklychartlist.chart[0].from, "1640995200")
-        XCTAssertEqual(response.weeklychartlist.chart[0].to, "1641600000")
+        XCTAssertEqual(response.weeklychartlist.chart?[0].from, "1640995200")
+        XCTAssertEqual(response.weeklychartlist.chart?[0].to, "1641600000")
     }
 
     func testUserWeeklyAlbumChartResponseParsing() throws {
@@ -114,14 +114,16 @@ final class LastFMClientTests: XCTestCase {
                 "album": [
                     {
                         "artist": {
-                            "name": "Test Artist",
+                            "#text": "Test Artist",
                             "mbid": "",
                             "url": "https://www.last.fm/music/Test+Artist"
                         },
                         "name": "Test Album",
                         "mbid": "test-mbid",
                         "playcount": "42",
-                        "rank": "1",
+                        "@attr": {
+                            "rank": "1"
+                        },
                         "url": "https://www.last.fm/music/Test+Artist/Test+Album"
                     }
                 ],
@@ -137,12 +139,12 @@ final class LastFMClientTests: XCTestCase {
         let data = json.data(using: .utf8)!
         let response = try JSONDecoder().decode(UserWeeklyAlbumChartResponse.self, from: data)
 
-        XCTAssertEqual(response.weeklyalbumchart.album.count, 1)
-        let album = response.weeklyalbumchart.album[0]
-        XCTAssertEqual(album.name, "Test Album")
-        XCTAssertEqual(album.artist.name, "Test Artist")
-        XCTAssertEqual(album.playCount, 42)
-        XCTAssertEqual(album.rankNumber, 1)
+        XCTAssertEqual(response.weeklyalbumchart.album?.count, 1)
+        let album = response.weeklyalbumchart.album?[0]
+        XCTAssertEqual(album?.name, "Test Album")
+        XCTAssertEqual(album?.artist.name, "Test Artist")
+        XCTAssertEqual(album?.playCount, 42)
+        XCTAssertEqual(album?.rankNumber, 1)
     }
 
     func testAlbumInfoResponseParsing() throws {
@@ -323,7 +325,8 @@ extension LastFMError: Equatable {
              (.userNotFound, .userNotFound),
              (.networkUnavailable, .networkUnavailable),
              (.invalidResponse, .invalidResponse),
-             (.serviceUnavailable, .serviceUnavailable):
+             (.serviceUnavailable, .serviceUnavailable),
+             (.noDataAvailable, .noDataAvailable):
             true
         case let (.apiError(lhsCode, lhsMessage), .apiError(rhsCode, rhsMessage)):
             lhsCode == rhsCode && lhsMessage == rhsMessage
