@@ -7,6 +7,7 @@ struct UsersListView: View {
 
     @State private var showingEditSheet = false
     @State private var showingImportAlert = false
+    @State private var showingSettingsSheet = false
     @State private var importedFriendsCount = 0
 
     private var currentUsername: String? {
@@ -73,6 +74,16 @@ struct UsersListView: View {
             .navigationTitle(currentUsername ?? "Vinylogue")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        showingSettingsSheet = true
+                    }) {
+                        Image(systemName: "gearshape.fill")
+                            .font(.body)
+                            .foregroundColor(.accent)
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Edit") {
                         showingEditSheet = true
@@ -83,6 +94,9 @@ struct UsersListView: View {
             }
             .sheet(isPresented: $showingEditSheet) {
                 EditFriendsView(friendsImporter: friendsImporter)
+            }
+            .sheet(isPresented: $showingSettingsSheet) {
+                SettingsSheet()
             }
             .alert("Friends Imported", isPresented: $showingImportAlert) {
                 Button("OK") {}

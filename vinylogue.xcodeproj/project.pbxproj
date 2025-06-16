@@ -40,6 +40,7 @@
 		BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE558E9128DB9A867018AA1F /* ContentView.swift */; };
 		C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F035580BEB530F91763B554 /* UsersListView.swift */; };
 		CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18724C512AAB5F959701021B /* EditFriendsView.swift */; };
+		F51E1C28395A5C5CA223C7A8 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74186B195551DD3AD1407172 /* SettingsSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigrator.swift; sourceTree = "<group>"; };
 		6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigratorTests.swift; sourceTree = "<group>"; };
 		705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
+		74186B195551DD3AD1407172 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		74CD2D864124E180A45B91E3 /* Vinylogue.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClientTests.swift; sourceTree = "<group>"; };
 		7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporterTests.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				18724C512AAB5F959701021B /* EditFriendsView.swift */,
 				EA95D8560225422135D2FE41 /* OnboardingView.swift */,
 				14E56759C070D9789838E509 /* RootView.swift */,
+				74186B195551DD3AD1407172 /* SettingsSheet.swift */,
 				7F035580BEB530F91763B554 /* UsersListView.swift */,
 				27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */,
 			);
@@ -220,7 +223,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_A6064346-65C1-46DF-9935-5273EAA04EF8" /* Features */ = {
+		"TEMP_A25C423B-B529-4FC3-95A3-8E9315938596" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -342,6 +345,7 @@
 				64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */,
 				0CD455DE58200990F340A629 /* RootView.swift in Sources */,
 				239735FA5611B57BA112AAEF /* Secrets.swift in Sources */,
+				F51E1C28395A5C5CA223C7A8 /* SettingsSheet.swift in Sources */,
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
 				C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
