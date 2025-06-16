@@ -1,67 +1,112 @@
 import SwiftUI
 
 extension Color {
-    // MARK: - Vinylogue Color Palette
+    // MARK: - Vinylogue Color Palette (Legacy Design - No Dark Mode Support)
 
-    /// Primary text color - dark for light mode, light for dark mode
-    static let primaryText = Color.primary
+    /// Primary text color - always black (legacy design doesn't support dark mode)
+    static let primaryText = Color.black
 
     /// Secondary text color for less important information
-    static let secondaryText = Color.secondary
+    static let secondaryText = Color.gray
 
     /// Tertiary text color for very subtle information
-    static let tertiaryText = Color.gray
+    static let tertiaryText = Color.gray.opacity(0.6)
 
-    /// Background colors
-    static let primaryBackground = Color(.systemBackground)
-    static let secondaryBackground = Color(.secondarySystemBackground)
-    static let tertiaryBackground = Color(.tertiarySystemBackground)
+    /// Background colors - always light (legacy design doesn't support dark mode)
+    static let primaryBackground = Color.white
+    static let secondaryBackground = Color.vinylogueWhiteSubtle
+    static let tertiaryBackground = Color.vinylogueWhiteSubtle
 
     /// Interactive elements
-    static let accent = Color.accentColor
+    static let accent = Color.vinylogue_blueBold
     static let destructive = Color.red
 
-    /// Custom Vinylogue colors matching legacy design
-    static let vinylogueBlue = Color(red: 0.0, green: 0.478, blue: 1.0) // iOS blue
-    static let vinylrogueGray = Color(.systemGray4)
+    // MARK: - Legacy Vinylogue Colors (from TCSVinylogueDesign.h)
+
+    /// WHITE_SUBTLE - RGB(240, 240, 240)
+    static let vinylogueWhiteSubtle = Color(red: 240 / 255, green: 240 / 255, blue: 240 / 255)
+
+    /// BLUE_DARK - RGB(15, 24, 46)
+    static let vinylogue_blueDark = Color(red: 15 / 255, green: 24 / 255, blue: 46 / 255)
+
+    /// BLUE_BOLD - RGB(67, 85, 129)
+    static let vinylogue_blueBold = Color(red: 67 / 255, green: 85 / 255, blue: 129 / 255)
+
+    /// BLUE_PERI - RGB(220, 220, 220)
+    static let vinylogue_bluePeri = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
+
+    /// BLUE_PERI_SHADOW - RGB(195, 195, 195)
+    static let vinylogue_bluePerShadow = Color(red: 195 / 255, green: 195 / 255, blue: 195 / 255)
+
+    /// BAR_BUTTON_TINT - RGB(220, 220, 220)
+    static let vinylogueButtonTint = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
+
+    /// Legacy gray for disabled states
+    static let vinylrogueGray = Color.vinylogue_bluePeri
 }
 
 extension Font {
-    // MARK: - Vinylogue Typography with Dynamic Type Support
+    // MARK: - Vinylogue Typography (Legacy AvenirNext with Dynamic Type Support)
 
-    /// Large username text in users list - scales with Dynamic Type
-    static let usernameLarge = Font.title2.weight(.medium)
+    /// Legacy AvenirNext fonts with Dynamic Type scaling
+    static func vinylogueUltraLight(_ size: CGFloat) -> Font {
+        .custom("AvenirNext-UltraLight", size: size)
+    }
 
-    /// Regular username text - scales with Dynamic Type
-    static let usernameRegular = Font.headline.weight(.medium)
+    static func vinylrogeDemiBold(_ size: CGFloat) -> Font {
+        .custom("AvenirNext-DemiBold", size: size)
+    }
 
-    /// Section headers like "me" and "friends" - scales with Dynamic Type
-    static let sectionHeader = Font.subheadline.weight(.medium)
+    static func vinylrogueMedium(_ size: CGFloat) -> Font {
+        .custom("AvenirNext-Medium", size: size)
+    }
 
-    /// Secondary information like play counts - scales with Dynamic Type
-    static let secondaryInfo = Font.caption.weight(.regular)
+    static func vinylogueRegular(_ size: CGFloat) -> Font {
+        .custom("AvenirNext-Regular", size: size)
+    }
 
-    /// Album/artist names in charts - scales with Dynamic Type
-    static let albumTitle = Font.body.weight(.medium)
-    static let artistName = Font.caption.weight(.regular)
+    // MARK: - Semantic Font Roles with Dynamic Type Support
 
-    /// Navigation titles - scales with Dynamic Type
-    static let navigationTitle = Font.headline.weight(.semibold)
+    /// Large username text in users list - AvenirNext-DemiBold scaled
+    static let usernameLarge = Font.custom("AvenirNext-DemiBold",
+                                           size: UIFont.preferredFont(forTextStyle: .title2).pointSize)
+
+    /// Regular username text - AvenirNext-Medium scaled
+    static let usernameRegular = Font.custom("AvenirNext-Medium",
+                                             size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
+
+    /// Section headers like "me" and "friends" - AvenirNext-Medium scaled
+    static let sectionHeader = Font.custom("AvenirNext-Medium",
+                                           size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize)
+
+    /// Secondary information like play counts - AvenirNext-Regular scaled
+    static let secondaryInfo = Font.custom("AvenirNext-Regular",
+                                           size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
+
+    /// Album/artist names in charts - AvenirNext-Medium scaled
+    static let albumTitle = Font.custom("AvenirNext-Medium",
+                                        size: UIFont.preferredFont(forTextStyle: .body).pointSize)
+    static let artistName = Font.custom("AvenirNext-Regular",
+                                        size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
+
+    /// Navigation titles - AvenirNext-DemiBold scaled
+    static let navigationTitle = Font.custom("AvenirNext-DemiBold",
+                                             size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
 
     // MARK: - Dynamic Type Scaling Methods
 
     /// Creates a font that scales with Dynamic Type, using title3 as the base
     static func scaledTitle3() -> Font {
-        Font.title3
+        Font.custom("AvenirNext-DemiBold", size: UIFont.preferredFont(forTextStyle: .title3).pointSize)
     }
 
     /// Creates a font that scales with Dynamic Type for body text
     static func scaledBody() -> Font {
-        Font.body
+        Font.custom("AvenirNext-Medium", size: UIFont.preferredFont(forTextStyle: .body).pointSize)
     }
 
     /// Creates a font that scales with Dynamic Type for captions
     static func scaledCaption() -> Font {
-        Font.caption
+        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
     }
 }

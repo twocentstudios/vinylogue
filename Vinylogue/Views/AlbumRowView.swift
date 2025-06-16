@@ -42,7 +42,7 @@ struct AlbumRowView: View {
             VStack(alignment: .trailing, spacing: 0) {
                 Text("\(album.playCount)")
                     .font(.title2.weight(.bold))
-                    .foregroundColor(.vinylogueBlue)
+                    .foregroundColor(.vinylogue_blueBold)
 
                 Text("plays")
                     .font(.scaledCaption())

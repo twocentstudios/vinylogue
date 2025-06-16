@@ -121,11 +121,11 @@ private struct YearNavigationButtons: View {
                         HStack(spacing: 8) {
                             Text("\(loader.getYear(for: currentYearOffset - 1))")
                                 .font(.title2.weight(.medium))
-                                .foregroundColor(.vinylogueBlue)
+                                .foregroundColor(.vinylogue_blueBold)
 
                             Image(systemName: "arrow.right")
                                 .font(.title3.weight(.medium))
-                                .foregroundColor(.vinylogueBlue)
+                                .foregroundColor(.vinylogue_blueBold)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
@@ -153,11 +153,11 @@ private struct YearNavigationButtons: View {
                         HStack(spacing: 8) {
                             Image(systemName: "arrow.left")
                                 .font(.title3.weight(.medium))
-                                .foregroundColor(.vinylogueBlue)
+                                .foregroundColor(.vinylogue_blueBold)
 
                             Text("\(loader.getYear(for: currentYearOffset + 1))")
                                 .font(.title2.weight(.medium))
-                                .foregroundColor(.vinylogueBlue)
+                                .foregroundColor(.vinylogue_blueBold)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
@@ -185,7 +185,7 @@ private struct LoadingIndicatorView: View {
     var body: some View {
         Image(systemName: "record.circle")
             .font(.title2)
-            .foregroundColor(.vinylogueBlue)
+            .foregroundColor(.vinylogue_blueBold)
             .rotationEffect(.degrees(rotation))
             .onAppear {
                 withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
@@ -204,7 +204,7 @@ private struct EmptyStateView: View {
         VStack(spacing: 32) {
             Image(systemName: "music.note")
                 .font(.system(size: 80))
-                .foregroundColor(.vinylogueBlue)
+                .foregroundColor(.vinylogue_blueBold)
 
             VStack(spacing: 16) {
                 Text("No charts!")
