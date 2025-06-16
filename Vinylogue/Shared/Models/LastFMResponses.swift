@@ -167,7 +167,7 @@ struct LastFMUserInfo: Codable {
 
 struct LastFMRegistered: Codable {
     let unixtime: String
-    let text: String
+    let text: Int
 
     enum CodingKeys: String, CodingKey {
         case unixtime
