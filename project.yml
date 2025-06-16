@@ -47,15 +47,26 @@ targets:
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
+  VinylogueTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - VinylogueTests
+    dependencies:
+      - target: Vinylogue
+
 schemes:
   Vinylogue:
     build:
       targets:
         Vinylogue: all
+        VinylogueTests: [test]
     run:
       config: Debug
     test:
       config: Debug
+      targets:
+        - VinylogueTests
     profile:
       config: Release
     analyze:

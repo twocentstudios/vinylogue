@@ -1,48 +1,137 @@
 import Foundation
+import Network
 
 struct LastFMClient {
     private let baseURL = URL(string: "https://ws.audioscrobbler.com/2.0/")!
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
+    private let networkMonitor = NWPathMonitor()
 
-    init() {}
+    @MainActor
+    static let shared = LastFMClient()
+
+    init() {
+        setupNetworkMonitoring()
+    }
+
+    private func setupNetworkMonitoring() {
+        networkMonitor.start(queue: DispatchQueue.global())
+    }
+
+    private var isNetworkAvailable: Bool {
+        networkMonitor.currentPath.status == .satisfied
+    }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
+        // Check network availability
+        guard isNetworkAvailable else {
+            throw LastFMError.networkUnavailable
+        }
+
+        // Validate API key
+        guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
+            throw LastFMError.invalidAPIKey
+        }
+
         let url = buildURL(for: endpoint)
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              200 ... 299 ~= httpResponse.statusCode
-        else {
-            throw LastFMError.invalidResponse
-        }
-
-        // Check for Last.fm API errors
-        if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
-            throw LastFMError.apiError(code: errorResponse.error, message: errorResponse.message)
-        }
 
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            let (data, response) = try await session.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw LastFMError.invalidResponse
+            }
+
+            // Handle different HTTP status codes
+            switch httpResponse.statusCode {
+            case 200 ... 299:
+                break
+            case 400 ... 499:
+                // Check for specific Last.fm API errors
+                if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
+                    throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
+                }
+                throw LastFMError.invalidResponse
+            case 500 ... 599:
+                throw LastFMError.serviceUnavailable
+            default:
+                throw LastFMError.invalidResponse
+            }
+
+            // Check for Last.fm API errors in successful responses
+            if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
+                throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
+            }
+
+            do {
+                return try JSONDecoder().decode(T.self, from: data)
+            } catch {
+                throw LastFMError.decodingError(error)
+            }
+
+        } catch let error as LastFMError {
+            throw error
         } catch {
-            throw LastFMError.decodingError(error)
+            // Network or other system errors
+            throw LastFMError.networkUnavailable
+        }
+    }
+
+    func mapLastFMError(code: Int, message: String) -> LastFMError {
+        switch code {
+        case 6:
+            .userNotFound
+        case 10:
+            .invalidAPIKey
+        case 11, 16:
+            .serviceUnavailable
+        default:
+            .apiError(code: code, message: message)
         }
     }
 
     func requestData(_ endpoint: LastFMEndpoint) async throws -> Data {
-        let url = buildURL(for: endpoint)
-        let (data, response) = try await session.data(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              200 ... 299 ~= httpResponse.statusCode
-        else {
-            throw LastFMError.invalidResponse
+        // Check network availability
+        guard isNetworkAvailable else {
+            throw LastFMError.networkUnavailable
         }
 
-        return data
+        // Validate API key
+        guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
+            throw LastFMError.invalidAPIKey
+        }
+
+        let url = buildURL(for: endpoint)
+
+        do {
+            let (data, response) = try await session.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw LastFMError.invalidResponse
+            }
+
+            switch httpResponse.statusCode {
+            case 200 ... 299:
+                return data
+            case 400 ... 499:
+                if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
+                    throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
+                }
+                throw LastFMError.invalidResponse
+            case 500 ... 599:
+                throw LastFMError.serviceUnavailable
+            default:
+                throw LastFMError.invalidResponse
+            }
+
+        } catch let error as LastFMError {
+            throw error
+        } catch {
+            throw LastFMError.networkUnavailable
+        }
     }
 
-    private func buildURL(for endpoint: LastFMEndpoint) -> URL {
+    func buildURL(for endpoint: LastFMEndpoint) -> URL {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
 
         var queryItems = [
@@ -54,6 +143,92 @@ struct LastFMClient {
         components.queryItems = queryItems
 
         return components.url!
+    }
+}
+
+// MARK: - Convenience Methods
+
+extension LastFMClient {
+    /// Fetch user's weekly chart periods
+    func fetchWeeklyChartList(for username: String) async throws -> [WeeklyChart] {
+        let response: UserWeeklyChartListResponse = try await request(.userWeeklyChartList(username: username))
+
+        return response.weeklychartlist.chart.map { period in
+            WeeklyChart(
+                from: period.fromDate,
+                to: period.toDate,
+                albums: []
+            )
+        }
+    }
+
+    /// Fetch weekly album chart for specific period
+    func fetchWeeklyAlbumChart(for username: String, from: Date, to: Date) async throws -> [Album] {
+        let response: UserWeeklyAlbumChartResponse = try await request(.userWeeklyAlbumChart(username: username, from: from, to: to))
+
+        return response.weeklyalbumchart.album.map { entry in
+            Album(
+                name: entry.name,
+                artist: entry.artist.name,
+                imageURL: nil, // Will be loaded separately via album.getinfo
+                playCount: entry.playCount,
+                rank: entry.rankNumber,
+                url: entry.url,
+                mbid: entry.mbid
+            )
+        }
+    }
+
+    /// Fetch detailed album information
+    func fetchAlbumInfo(artist: String? = nil, album: String? = nil, mbid: String? = nil, username: String? = nil) async throws -> Album {
+        let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
+        let info = response.album
+
+        var album = Album(
+            name: info.name,
+            artist: info.artist,
+            imageURL: info.imageURL,
+            playCount: 0, // This will be set from weekly chart data
+            rank: nil,
+            url: info.url,
+            mbid: info.mbid
+        )
+
+        album.description = info.description
+        album.totalPlayCount = info.totalPlayCount
+        album.userPlayCount = info.userPlayCount
+        album.isDetailLoaded = true
+
+        return album
+    }
+
+    /// Fetch user information
+    func fetchUserInfo(for username: String) async throws -> User {
+        let response: UserInfoResponse = try await request(.userInfo(username: username))
+        let info = response.user
+
+        return User(
+            username: info.name,
+            realName: info.realname,
+            imageURL: info.imageURL,
+            url: info.url,
+            playCount: info.totalPlayCount
+        )
+    }
+
+    /// Fetch user's friends
+    func fetchUserFriends(for username: String, limit: Int = 500) async throws -> [User] {
+        let response: UserFriendsResponse = try await request(.userFriends(username: username, limit: limit))
+
+        return response.friends.user.map { friend in
+            User(
+                username: friend.name,
+                realName: friend.realname,
+                imageURL: friend.imageURL,
+                url: friend.url,
+                playCount: friend.totalPlayCount
+            )
+        }
     }
 }
 

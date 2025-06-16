@@ -13,7 +13,9 @@
 		1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69DA986080E9218D89262C1 /* VinylogueApp.swift */; };
 		239735FA5611B57BA112AAEF /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */; };
 		30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A736EE668C40676A2896B69 /* LastFMClient.swift */; };
+		46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918077500BAC67836FBF270A /* LastFMResponses.swift */; };
 		5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5587926756100F8666AAA8 /* CacheManager.swift */; };
+		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
 		A1797BB9D2468DA37A5625AF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C4039B041882C67613842 /* User.swift */; };
@@ -23,13 +25,26 @@
 		BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE558E9128DB9A867018AA1F /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED341E05211FAFE0EC43AE1B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 130E284405C187DF086D20A1;
+			remoteInfo = Vinylogue;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1A736EE668C40676A2896B69 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
 		229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
 		74CD2D864124E180A45B91E3 /* Vinylogue.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Vinylogue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClientTests.swift; sourceTree = "<group>"; };
 		8C2C4039B041882C67613842 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		918077500BAC67836FBF270A /* LastFMResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMResponses.swift; sourceTree = "<group>"; };
 		9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyChart.swift; sourceTree = "<group>"; };
 		B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CC5587926756100F8666AAA8 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
@@ -56,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				74CD2D864124E180A45B91E3 /* Vinylogue.app */,
+				667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				D179D6B028859C27F293B752 /* Album.swift */,
+				918077500BAC67836FBF270A /* LastFMResponses.swift */,
 				8C2C4039B041882C67613842 /* User.swift */,
 				9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */,
 			);
@@ -86,6 +103,14 @@
 				B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B1826081BBBD3E82AD791792 /* VinylogueTests */ = {
+			isa = PBXGroup;
+			children = (
+				78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */,
+			);
+			path = VinylogueTests;
 			sourceTree = "<group>";
 		};
 		B2A1D12DE6D877B8EC65A040 /* Shared */ = {
@@ -102,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				E75DC78AECDC4C93130E52A1 /* Vinylogue */,
+				B1826081BBBD3E82AD791792 /* VinylogueTests */,
 				1C9984247BA068703842241F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,7 +153,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_A963C4A2-5B43-4A48-BD97-F00EA6BBD69F" /* Features */ = {
+		"TEMP_C5684B3B-3780-467F-810B-00C08F647585" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -157,6 +183,24 @@
 			productName = Vinylogue;
 			productReference = 74CD2D864124E180A45B91E3 /* Vinylogue.app */;
 			productType = "com.apple.product-type.application";
+		};
+		1745DB35E0B0F59AF57E4FEC /* VinylogueTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFC0BD19CB30E328D21F9852 /* Build configuration list for PBXNativeTarget "VinylogueTests" */;
+			buildPhases = (
+				B8A0E3F8CC372E2358F86FD2 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B291B26FC46D0016599F0DE3 /* PBXTargetDependency */,
+			);
+			name = VinylogueTests;
+			packageProductDependencies = (
+			);
+			productName = VinylogueTests;
+			productReference = 667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -190,6 +234,7 @@
 			projectRoot = "";
 			targets = (
 				130E284405C187DF086D20A1 /* Vinylogue */,
+				1745DB35E0B0F59AF57E4FEC /* VinylogueTests */,
 			);
 		};
 /* End PBXProject section */
@@ -217,6 +262,7 @@
 				05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */,
 				8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */,
 				30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */,
+				46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */,
 				239735FA5611B57BA112AAEF /* Secrets.swift in Sources */,
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
@@ -224,7 +270,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B8A0E3F8CC372E2358F86FD2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B291B26FC46D0016599F0DE3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 130E284405C187DF086D20A1 /* Vinylogue */;
+			targetProxy = 5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2F0380C708B4384A3455980C /* Debug */ = {
@@ -244,6 +306,22 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		48A633AE0A4654F4ECCA24B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vinylogue.app/Vinylogue";
+			};
+			name = Release;
 		};
 		572DEAAA5B492E4CA02EA83E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -314,6 +392,22 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		666EDB8CD91D7D3BC80A3E16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Vinylogue.app/Vinylogue";
 			};
 			name = Debug;
 		};
@@ -417,6 +511,15 @@
 			buildConfigurations = (
 				572DEAAA5B492E4CA02EA83E /* Debug */,
 				8B7520F40D86A7BC12202100 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CFC0BD19CB30E328D21F9852 /* Build configuration list for PBXNativeTarget "VinylogueTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				666EDB8CD91D7D3BC80A3E16 /* Debug */,
+				48A633AE0A4654F4ECCA24B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
