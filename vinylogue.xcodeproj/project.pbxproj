@@ -25,12 +25,15 @@
 		63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */; };
 		64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95D8560225422135D2FE41 /* OnboardingView.swift */; };
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
+		6E603D081E6C7BA6D141092E /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F525C206B45976A213075204 /* AlbumDetailView.swift */; };
+		736CF7D501FC7A910EC4D3E4 /* ColorExtraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */; };
 		785D22E4EFCB74F4E524964B /* WeeklyAlbumLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C35D4733F51B3CACC6A679C1 /* WeeklyAlbumLoader.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
 		8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
 		939ADAE53F231DFD5366FCD0 /* Calendar+WeekCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */; };
 		A1797BB9D2468DA37A5625AF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C4039B041882C67613842 /* User.swift */; };
+		A1BE3087E8DB6768FF2CD935 /* WeeklyAlbumLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AC920B7F52AF9107BBF620 /* WeeklyAlbumLoaderTests.swift */; };
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
 		A9062E48AA5E776B8C70ACD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */; };
 		BDCC721C37900C6313FBBC6E /* WeeklyChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */; };
@@ -77,8 +80,11 @@
 		CC5587926756100F8666AAA8 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		D179D6B028859C27F293B752 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
 		D69DA986080E9218D89262C1 /* VinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylogueApp.swift; sourceTree = "<group>"; };
+		D6AC920B7F52AF9107BBF620 /* WeeklyAlbumLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumLoaderTests.swift; sourceTree = "<group>"; };
+		DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtraction.swift; sourceTree = "<group>"; };
 		DE558E9128DB9A867018AA1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EA95D8560225422135D2FE41 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		F525C206B45976A213075204 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
 		FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,9 +123,18 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		6D9AF07980CD95BCE201BFBD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		8B086034E09A923B47C71F3A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F525C206B45976A213075204 /* AlbumDetailView.swift */,
 				93EBBF8305D3E51421F7E7F4 /* AlbumRowView.swift */,
 				18724C512AAB5F959701021B /* EditFriendsView.swift */,
 				EA95D8560225422135D2FE41 /* OnboardingView.swift */,
@@ -156,6 +171,7 @@
 				7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */,
 				78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */,
 				6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */,
+				D6AC920B7F52AF9107BBF620 /* WeeklyAlbumLoaderTests.swift */,
 			);
 			path = VinylogueTests;
 			sourceTree = "<group>";
@@ -166,6 +182,7 @@
 				F4E6BFC6D9A73CF70DE2B01C /* Extensions */,
 				A93FA7E77CC864639358B6C5 /* Models */,
 				47D5D771173F9355E1AF6F00 /* Services */,
+				6D9AF07980CD95BCE201BFBD /* Utilities */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -203,7 +220,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_A648B58E-04A2-482C-921D-12D05C8C0167" /* Features */ = {
+		"TEMP_A6064346-65C1-46DF-9935-5273EAA04EF8" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -307,10 +324,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				808B7C443A13B242F689460A /* Album.swift in Sources */,
+				6E603D081E6C7BA6D141092E /* AlbumDetailView.swift in Sources */,
 				3696F3C7897F6282FE680D3C /* AlbumRowView.swift in Sources */,
 				5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */,
 				939ADAE53F231DFD5366FCD0 /* Calendar+WeekCalculations.swift in Sources */,
 				8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */,
+				736CF7D501FC7A910EC4D3E4 /* ColorExtraction.swift in Sources */,
 				BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */,
 				CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */,
 				05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */,
@@ -339,6 +358,7 @@
 				63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */,
 				6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */,
 				3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */,
+				A1BE3087E8DB6768FF2CD935 /* WeeklyAlbumLoaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

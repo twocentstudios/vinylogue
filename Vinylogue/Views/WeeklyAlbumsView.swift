@@ -6,6 +6,7 @@ struct WeeklyAlbumsView: View {
     @StateObject private var loader = WeeklyAlbumLoader()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Environment(\.playCountFilter) private var playCountFilter
+    @Namespace private var albumNamespace
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,7 +26,7 @@ struct WeeklyAlbumsView: View {
                         } else {
                             ForEach(loader.albums) { album in
                                 VStack(spacing: 0) {
-                                    AlbumRowView(album: album)
+                                    AlbumRowView(album: album, namespace: albumNamespace)
                                     
                                     if album.id != loader.albums.last?.id {
                                         Divider()

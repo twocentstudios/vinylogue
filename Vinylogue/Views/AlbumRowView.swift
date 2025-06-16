@@ -4,14 +4,19 @@ import NukeUI
 
 struct AlbumRowView: View {
     let album: Album
+    let namespace: Namespace.ID
     @State private var albumImageURL: String?
     @Environment(\.lastFMClient) private var lastFMClient
     
     var body: some View {
         HStack(spacing: 12) {
-            // Album artwork
-            AlbumArtworkView(imageURL: albumImageURL)
-                .frame(width: 80, height: 80)
+            // Album artwork with matched geometry effect
+            NavigationLink(destination: AlbumDetailView(album: album, namespace: namespace)) {
+                AlbumArtworkView(imageURL: albumImageURL)
+                    .frame(width: 80, height: 80)
+                    .matchedGeometryEffect(id: "album-\(album.id)", in: namespace)
+            }
+            .buttonStyle(PlainButtonStyle())
             
             // Album and artist info
             VStack(alignment: .leading, spacing: 2) {
@@ -117,14 +122,16 @@ private struct AlbumArtworkView: View {
 // MARK: - Preview
 
 #Preview("Album Row") {
-    VStack(spacing: 0) {
+    @Previewable @Namespace var namespace
+    
+    return VStack(spacing: 0) {
         AlbumRowView(album: Album(
             name: "The Sea of Tragic Beasts",
             artist: "Fit For An Autopsy", 
             imageURL: nil,
             playCount: 20,
             rank: 1
-        ))
+        ), namespace: namespace)
         
         Divider()
         
@@ -134,7 +141,7 @@ private struct AlbumArtworkView: View {
             imageURL: nil,
             playCount: 25,
             rank: 2
-        ))
+        ), namespace: namespace)
         
         Divider()
         
@@ -144,7 +151,7 @@ private struct AlbumArtworkView: View {
             imageURL: nil,
             playCount: 5,
             rank: 3
-        ))
+        ), namespace: namespace)
     }
     .background(Color.primaryBackground)
     .environment(\.lastFMClient, LastFMClient.shared)
