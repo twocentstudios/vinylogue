@@ -5,7 +5,7 @@ import SwiftUI
 struct AlbumDetailView: View {
     @Binding var album: Album
     @State private var artworkImage: UIImage?
-    @State private var dominantColor: Color = .gray
+    @State private var representativeColors: ColorExtraction.RepresentativeColors?
     @State private var isLoadingDetails = false
     @Environment(\.lastFMClient) private var lastFMClient
 
@@ -13,30 +13,38 @@ struct AlbumDetailView: View {
 
     var body: some View {
         ZStack {
-            // Dynamic gradient background
-            ColorExtraction.createBackgroundGradient(from: dominantColor)
-                .ignoresSafeArea()
-                .animation(.easeInOut(duration: 0.6), value: dominantColor)
+            // Full screen dominant color background
+            (representativeColors?.primary ?? Color.gray)
+                .ignoresSafeArea(.all)
 
             ScrollView {
                 VStack(spacing: 24) {
-                    // Album artwork
-                    artworkSection
+                    // Album artwork section with blurred background
+                    ZStack {
+                        // Blurred background album art - only behind artwork and title
+                        backgroundArtworkSection
 
-                    // Album information
-                    albumInfoSection
+                        VStack(spacing: 20) {
+                            // Album artwork
+                            artworkSection
 
-                    // Description section
+                            // Album information
+                            albumInfoSection
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.top, 30)
+                        .padding(.bottom, 40)
+                    }
+
+                    // Description section (no blurred background)
                     descriptionSection
+                        .padding(.horizontal, 30)
 
                     Spacer(minLength: 100) // Extra space at bottom
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark) // Force dark mode for better contrast
         .task {
             await loadAlbumDetails()
         }
@@ -44,38 +52,61 @@ struct AlbumDetailView: View {
 
     // MARK: - View Components
 
-    private var artworkSection: some View {
-        VStack(spacing: 16) {
-            // Album artwork with matched geometry effect
-            Group {
-                if let imageURL = album.imageURL, let url = URL(string: imageURL) {
-                    LazyImage(url: url) { state in
-                        if let image = state.image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .onAppear {
-                                    // Extract dominant color from loaded image
-                                    extractDominantColor(from: state.imageContainer?.image)
-                                }
-                        } else if state.error != nil {
-                            albumPlaceholder
-                        } else {
-                            albumPlaceholder
-                        }
+    private var backgroundArtworkSection: some View {
+        Group {
+            if let imageURL = album.imageURL, let url = URL(string: imageURL) {
+                LazyImage(url: url) { state in
+                    if let image = state.image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .blur(radius: 15)
+                            .opacity(0.3)
+                            .clipped()
+                            .onAppear {
+                                // Extract representative colors from loaded image
+                                extractRepresentativeColors(from: state.imageContainer?.image)
+                            }
+                    } else {
+                        // Background for placeholder
+                        Color.vinylrogueGray.opacity(0.2)
                     }
-                } else {
-                    albumPlaceholder
                 }
+            } else {
+                Color.vinylrogueGray.opacity(0.2)
             }
-            .frame(width: 240, height: 240)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
         }
     }
 
+    private var artworkSection: some View {
+        Group {
+            if let imageURL = album.imageURL, let url = URL(string: imageURL) {
+                LazyImage(url: url) { state in
+                    if let image = state.image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } else if state.error != nil {
+                        albumPlaceholder
+                    } else {
+                        albumPlaceholder
+                    }
+                }
+            } else {
+                albumPlaceholder
+            }
+        }
+        .frame(width: 280, height: 280)
+        .clipShape(Rectangle())
+        .overlay(
+            Rectangle()
+                .stroke(Color.black.opacity(0.2), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 1)
+    }
+
     private var albumPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 12)
+        Rectangle()
             .fill(Color.vinylrogueGray)
             .overlay {
                 Circle()
@@ -90,40 +121,63 @@ struct AlbumDetailView: View {
     }
 
     private var albumInfoSection: some View {
-        VStack(spacing: 12) {
-            // Album title
+        VStack(spacing: 8) {
+            // Artist name (small, uppercase)
+            Text(album.artist.uppercased())
+                .font(.scaledCaption())
+                .foregroundColor(textColor.opacity(0.85))
+                .multilineTextAlignment(.center)
+
+            // Album title (large, bold)
             Text(album.name)
                 .font(.title.weight(.bold))
-                .foregroundColor(.white)
+                .foregroundColor(textColor)
                 .multilineTextAlignment(.center)
-                .lineLimit(3)
+                .lineLimit(nil)
 
-            // Artist name
-            Text(album.artist.uppercased())
-                .font(.headline)
-                .foregroundColor(.white.opacity(0.8))
-                .multilineTextAlignment(.center)
+            // Play count and week info
+            VStack(spacing: 16) {
+                HStack(spacing: 40) {
+                    VStack(spacing: 2) {
+                        Text("\(album.playCount)")
+                            .font(.largeTitle.weight(.bold))
+                            .foregroundColor(textColor)
 
-            // Play count
-            HStack(spacing: 4) {
-                Text("\(album.playCount)")
-                    .font(.title2.weight(.semibold))
-                    .foregroundColor(.white)
+                        Text("week 25 2015") // TODO: Get from WeeklyAlbumLoader
+                            .font(.caption)
+                            .foregroundColor(textColor.opacity(0.7))
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.black.opacity(0.05))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
+                            )
+                    )
 
-                Text("plays")
-                    .font(.body)
-                    .foregroundColor(.white.opacity(0.7))
-            }
+                    VStack(spacing: 2) {
+                        Text("\(album.totalPlayCount ?? 0)")
+                            .font(.largeTitle.weight(.bold))
+                            .foregroundColor(textColor)
 
-            // Rank if available
-            if let rank = album.rank {
-                Text("Ranked #\(rank)")
-                    .font(.caption.weight(.medium))
-                    .foregroundColor(.white.opacity(0.6))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(Color.white.opacity(0.1))
-                    .clipShape(Capsule())
+                        Text("all-time")
+                            .font(.caption)
+                            .foregroundColor(textColor.opacity(0.7))
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.black.opacity(0.05))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
+                            )
+                    )
+                }
             }
         }
     }
@@ -133,43 +187,49 @@ struct AlbumDetailView: View {
             if isLoadingDetails {
                 HStack {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(CircularProgressViewStyle(tint: textColor))
                         .scaleEffect(0.8)
 
                     Text("Loading album details...")
                         .font(.body)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(textColor.opacity(0.7))
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
             } else if let description = album.description, !description.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("About")
+                    Text("about this album")
                         .font(.headline.weight(.semibold))
-                        .foregroundColor(.white)
+                        .foregroundColor(textColor)
 
                     Text(description)
                         .font(.body)
-                        .foregroundColor(.white.opacity(0.9))
+                        .foregroundColor(.primary)
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.white.opacity(0.9))
+                        )
                 }
             } else if album.isDetailLoaded {
-                // No description available
-                Text("No description available for this album.")
-                    .font(.body)
-                    .foregroundColor(.white.opacity(0.6))
-                    .italic()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 20)
+                // No description available - don't show anything like legacy
+                EmptyView()
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    // Computed text color based on representative colors
+    private var textColor: Color {
+        representativeColors?.text ?? .primary
+    }
+
     // MARK: - Helper Methods
 
-    private func extractDominantColor(from platformImage: PlatformImage?) {
+    private func extractRepresentativeColors(from platformImage: PlatformImage?) {
         guard let platformImage else { return }
 
         #if os(iOS)
@@ -182,12 +242,8 @@ struct AlbumDetailView: View {
         // Store the image for future reference
         artworkImage = uiImage
 
-        // Extract dominant color
-        if let extractedColor = album.dominantColor(from: uiImage) {
-            withAnimation(.easeInOut(duration: 0.6)) {
-                dominantColor = extractedColor
-            }
-        }
+        // Extract representative colors using legacy algorithm
+        representativeColors = ColorExtraction.extractRepresentativeColors(from: uiImage)
     }
 
     @MainActor
