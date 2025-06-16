@@ -1,0 +1,11 @@
+- ALWAYS reference ./Planning/PRD.md when planning new tasks.
+- ALWAYS reference ./Planning/screenshots/*.png when creating Views and working on UI.
+- ALWAYS reference ./vinylogue-legacy/TCSVinylogueDesign.h when implementing colors and fonts.
+- ALWAYS consider visual appearance should match the legacy application; dark mode is NOT supported. 
+- ALWAYS reference the legacy code in ./vinylogue-legacy when determining UX and styling for a feature.
+- ALWAYS run xcodegen after adding/removing files.
+- ALWAYS build with xcodebuild when a feature is complete and ensure the project builds with no errors.
+- ALWAYS run tests when a feature is complete and ensure there are no failures.
+- NEVER look in ./DerivedData unless absolutely necessary to determine the cause of a build error. If so, be very very careful about how many tokens you look at.
+- NEVER write UI tests until you have confirmed with me that the UI is 100% correct.
+- ALWAYS use the iPhone 16 Pro simulator (if it is unavailable, then alert me).
