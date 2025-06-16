@@ -22,6 +22,7 @@
 		64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95D8560225422135D2FE41 /* OnboardingView.swift */; };
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
+		8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
 		A1797BB9D2468DA37A5625AF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C4039B041882C67613842 /* User.swift */; };
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
@@ -45,6 +46,7 @@
 		1A736EE668C40676A2896B69 /* LastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMClient.swift; sourceTree = "<group>"; };
 		229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
 		667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigrator.swift; sourceTree = "<group>"; };
@@ -170,13 +172,14 @@
 		F4E6BFC6D9A73CF70DE2B01C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */,
 				705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */,
 				229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_88545874-4F43-4138-98B2-0BA3165717C4" /* Features */ = {
+		"TEMP_C09D6C60-10FD-4138-BFB7-B601F32DB8FF" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -281,6 +284,7 @@
 			files = (
 				808B7C443A13B242F689460A /* Album.swift in Sources */,
 				5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */,
+				8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */,
 				BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */,
 				05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */,
 				8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */,

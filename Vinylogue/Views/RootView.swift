@@ -70,7 +70,7 @@ private struct MigrationLoadingView: View {
         VStack(spacing: 24) {
             Image(systemName: "music.note")
                 .font(.system(size: 60))
-                .foregroundColor(.accentColor)
+                .foregroundColor(.accent)
                 .rotationEffect(.degrees(rotationAngle))
                 .onAppear {
                     withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
@@ -80,19 +80,19 @@ private struct MigrationLoadingView: View {
             
             VStack(spacing: 8) {
                 Text("Setting up Vinylogue")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                    .font(.navigationTitle)
+                    .foregroundColor(.primaryText)
                 
                 Text("Migrating your data...")
                     .font(.body)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.secondaryText)
             }
             
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .accentColor))
+                .progressViewStyle(CircularProgressViewStyle(tint: .accent))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(Color.primaryBackground)
     }
 }
 
@@ -102,42 +102,94 @@ private struct UsersListView: View {
     @Environment(\.currentUser) private var currentUser
     @State private var showLogoutAlert = false
     
+    // Placeholder friends data matching the screenshot
+    private let placeholderFriends = [
+        "BobbyStompy",
+        "slippydrums", 
+        "sammeadley",
+        "esheikh",
+        "itschinatown",
+        "HelsMeaty",
+        "heyimtaka0121",
+        "voxmjw",
+        "shortcake986"
+    ]
+    
+    private var currentUsername: String? {
+        if let user = currentUser {
+            return user.username
+        } else if let username = UserDefaults.standard.string(forKey: "currentUser") {
+            return username
+        }
+        return nil
+    }
+    
     var body: some View {
         NavigationView {
-            VStack(spacing: 32) {
-                Image(systemName: "person.2.fill")
-                    .font(.system(size: 80))
-                    .foregroundColor(.accentColor)
-                
-                VStack(spacing: 16) {
-                    Text("Welcome back!")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    
-                    if let user = currentUser {
-                        Text("Logged in as \(user.username)")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
-                    } else if let username = UserDefaults.standard.string(forKey: "currentUser") {
-                        Text("Logged in as \(username)")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 0) {
+                // Current user section
+                if let username = currentUsername {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("me")
+                                .font(.sectionHeader)
+                                .foregroundColor(.tertiaryText)
+                                .textCase(.lowercase)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 20)
+                        
+                        HStack {
+                            Text(username)
+                                .font(.usernameLarge)
+                                .foregroundColor(.primaryText)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 30)
                     }
-                    
-                    Text("Users list and weekly charts coming in Sprint 3!")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
                 }
                 
-                Button("Sign Out") {
-                    showLogoutAlert = true
+                // Friends section placeholder
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("friends")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    // Placeholder friends list matching screenshot design
+                    VStack(alignment: .leading, spacing: 16) {
+                        ForEach(placeholderFriends, id: \.self) { friendName in
+                            HStack {
+                                Text(friendName)
+                                    .font(.usernameRegular)
+                                    .foregroundColor(.primaryText)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                        }
+                    }
                 }
-                .foregroundColor(.red)
+                
+                Spacer()
             }
-            .navigationTitle("Vinylogue")
-            .navigationBarTitleDisplayMode(.large)
+            .background(Color.primaryBackground)
+            .navigationTitle(currentUsername ?? "Vinylogue")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Edit") {
+                        showLogoutAlert = true
+                    }
+                    .font(.body)
+                    .foregroundColor(.accent)
+                }
+            }
         }
         .alert("Sign Out", isPresented: $showLogoutAlert) {
             Button("Cancel", role: .cancel) { }
