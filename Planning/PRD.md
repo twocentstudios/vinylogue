@@ -228,7 +228,7 @@ Common error codes:
 |  F5  | **Weekly albums display**   | Display albums for same calendar week N years ago, showing artwork (150x150), title, artist, play count. Sort by play count descending. Cache JSON responses. | Week 25 of 2020 for user "ybsc" → Show 4 albums → Verify sorting by play count |
 |  F6  | **Year navigation**         | Safe area buttons: "← Previous Year" (bottom), "Next Year →" (top). Hide if no data available for that year. | 2024 data → Show previous button → 2015 (oldest) → Hide previous button |
 |  F7  | **Album detail view**       | Full-screen with dominant color background extracted from artwork. Shows large artwork, title, artist, play counts, description. Animate fade/scale entrance (0.3s ease-out). | Tap album → Extract dominant color → Animate entrance → Display all metadata |
-|  F8  | **Settings sheet**          | Modal presentation with SF Symbols "gearshape.fill" trigger. Options: change username, refresh friends, adjust play count filter (1-100 range), support links. | Tap settings → Modal appears → Change filter to 10 → Save → Verify persistence |
+|  F8  | **Settings sheet**          | Modal presentation with SF Symbols "gearshape.fill" trigger. Options: change username, refresh friends, adjust play count filter (off/1/2/4/8/16/32), support links. | Tap settings → Modal appears → Change filter to 10 → Verify persistence |
 |  F9  | **API response caching**    | Write raw JSON responses to `FileManager.temporaryDirectory/VinylogueCache/{username}/{from}-{to}.json`. Return cached data if network unavailable. | Network request → Cache response → Disable network → Verify cached data loads |
 |  F10 | **Image caching**           | Use Nuke framework with custom disk cache at `FileManager.temporaryDirectory/VinylogueImages/{url_hash}`. Implement LRU eviction. | Load 20 album covers → Verify disk cache → Restart app → Verify images load from cache |
 |  F11 | **Dynamic Type support**    | Scale text using `Font.custom("AvenirNext-Medium", size: UIFont.preferredFont(forTextStyle: .body).pointSize)` pattern. Support sizes from XS to XXXL. | Set Dynamic Type to XXXL → Verify all text scales appropriately |
@@ -295,7 +295,7 @@ Sources/
     └── Colors.xcassets
 ```
 
-### 5.2 Core Data Models
+### 5.2 Data Models
 ```swift
 // User.swift
 struct User: Codable, Identifiable, Hashable {
