@@ -20,11 +20,11 @@ struct VinylogueApp: App {
                 playCount: nil
             ))
         }
-        
+
         // Initialize play count filter
         let savedFilter = UserDefaults.standard.object(forKey: "currentPlayCountFilter") as? Int
         _playCountFilter = State(initialValue: savedFilter ?? 1)
-        
+
         // Initialize curated friends from UserDefaults
         if let friendsData = UserDefaults.standard.data(forKey: "curatedFriends") {
             do {

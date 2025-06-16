@@ -3,48 +3,48 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(\.lastFMClient) private var lastFMClient
     @Environment(\.currentUser) private var currentUser
-    
+
     @State private var username = ""
     @State private var isValidating = false
     @State private var errorMessage: String?
     @State private var showError = false
-    
+
     @FocusState private var isTextFieldFocused: Bool
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 32) {
                 Spacer()
-                
+
                 // App branding
                 VStack(spacing: 16) {
                     Image(systemName: "music.note.list")
                         .font(.system(size: 60))
                         .foregroundColor(.accent)
                         .accessibilityHidden(true)
-                    
+
                     Text("Welcome to Vinylogue")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
-                    
+
                     Text("Discover your weekly music listening habits")
                         .font(.title3)
                         .foregroundColor(.secondaryText)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
-                
+
                 Spacer()
-                
+
                 // Username input section
                 VStack(spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Enter your Last.fm username")
                             .font(.sectionHeader)
                             .foregroundColor(.primaryText)
-                        
+
                         TextField("username", text: $username)
                             .textFieldStyle(.roundedBorder)
                             .textInputAutocapitalization(.never)
@@ -55,14 +55,14 @@ struct OnboardingView: View {
                             }
                             .accessibilityLabel("Last.fm username")
                             .accessibilityHint("Enter your Last.fm username to get started")
-                        
-                        if let errorMessage = errorMessage, showError {
+
+                        if let errorMessage, showError {
                             Label(errorMessage, systemImage: "exclamationmark.triangle")
                                 .foregroundColor(.destructive)
                                 .font(.secondaryInfo)
                         }
                     }
-                    
+
                     Button(action: validateAndSubmit) {
                         HStack {
                             if isValidating {
@@ -70,7 +70,7 @@ struct OnboardingView: View {
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                     .scaleEffect(0.8)
                             }
-                            
+
                             Text(isValidating ? "Validating..." : "Get Started")
                                 .font(.body)
                                 .fontWeight(.semibold)
@@ -86,15 +86,15 @@ struct OnboardingView: View {
                     .accessibilityHint("Validates your username and sets up the app")
                 }
                 .padding(.horizontal, 24)
-                
+
                 Spacer()
-                
+
                 // Help text
                 VStack(spacing: 8) {
                     Text("Don't have a Last.fm account?")
                         .font(.secondaryInfo)
                         .foregroundColor(.secondaryText)
-                    
+
                     Link("Sign up at Last.fm", destination: URL(string: "https://www.last.fm/join")!)
                         .font(.secondaryInfo)
                         .foregroundColor(.accent)
@@ -117,57 +117,57 @@ struct OnboardingView: View {
                 isTextFieldFocused = true
             }
         } message: {
-            if let errorMessage = errorMessage {
+            if let errorMessage {
                 Text(errorMessage)
             }
         }
     }
-    
+
     private var submitButtonBackground: Color {
         if username.isEmpty || isValidating {
-            return .vinylrogueGray
+            .vinylrogueGray
         } else {
-            return .accent
+            .accent
         }
     }
-    
+
     private func validateAndSubmit() {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             setError("Please enter a username")
             return
         }
-        
+
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         Task {
             await validateUsername(cleanUsername)
         }
     }
-    
+
     @MainActor
     private func validateUsername(_ username: String) async {
         isValidating = true
         errorMessage = nil
         showError = false
-        
+
         do {
             // Validate by attempting to fetch user info
             let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
-            
+
             // If successful, save the user and proceed
-            
+
             // Update the current user in the environment
             // Note: This would typically be done through a proper state management system
             UserDefaults.standard.set(username, forKey: "currentUser")
-            
+
             isValidating = false
-            
+
             // The app should now navigate to the main interface
             // This will be handled by RootView observing the user state
-            
+
         } catch {
             isValidating = false
-            
+
             switch error {
             case LastFMError.userNotFound:
                 setError("Username not found. Please check your spelling or create a Last.fm account.")
@@ -182,11 +182,11 @@ struct OnboardingView: View {
             }
         }
     }
-    
+
     private func setError(_ message: String) {
         errorMessage = message
         showError = true
-        
+
         // Provide haptic feedback for errors
         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
         impactFeedback.impactOccurred()

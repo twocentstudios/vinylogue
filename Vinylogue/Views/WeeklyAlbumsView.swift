@@ -2,22 +2,22 @@ import SwiftUI
 
 struct WeeklyAlbumsView: View {
     let user: User
-    
+
     @StateObject private var loader = WeeklyAlbumLoader()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Environment(\.playCountFilter) private var playCountFilter
     @Namespace private var albumNamespace
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 Color.primaryBackground
                     .ignoresSafeArea()
-                
+
                 // Main content
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        if loader.albums.isEmpty && !loader.isLoading {
+                        if loader.albums.isEmpty, !loader.isLoading {
                             if loader.error != nil {
                                 ErrorStateView(error: loader.error!)
                             } else {
@@ -25,10 +25,11 @@ struct WeeklyAlbumsView: View {
                             }
                         } else {
                             ForEach(loader.albums) { album in
+                                let index = loader.albums.firstIndex(where: { $0.id == album.id })!
                                 VStack(spacing: 0) {
-                                    AlbumRowView(album: album, namespace: albumNamespace)
-                                    
-                                    if album.id != loader.albums.last?.id {
+                                    AlbumRowView(album: $loader.albums[index], namespace: albumNamespace)
+
+                                    if index != loader.albums.indices.last {
                                         Divider()
                                             .padding(.leading, 108) // Align with text, not image
                                     }
@@ -39,7 +40,7 @@ struct WeeklyAlbumsView: View {
                     .padding(.top, yearNavigationTopPadding(in: geometry))
                     .padding(.bottom, yearNavigationBottomPadding(in: geometry))
                 }
-                
+
                 // Year navigation buttons overlaid on safe areas
                 YearNavigationButtons(
                     currentYearOffset: $currentYearOffset,
@@ -56,7 +57,7 @@ struct WeeklyAlbumsView: View {
                     Text("charts")
                         .font(.headline.weight(.semibold))
                         .foregroundColor(.primaryText)
-                    
+
                     if let weekInfo = loader.currentWeekInfo {
                         Text(weekInfo.displayText)
                             .font(.caption)
@@ -64,7 +65,7 @@ struct WeeklyAlbumsView: View {
                     }
                 }
             }
-            
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 if loader.isLoading {
                     LoadingIndicatorView()
@@ -74,7 +75,10 @@ struct WeeklyAlbumsView: View {
             }
         }
         .task {
-            await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
+            // Only load if data isn't already loaded for this user and year offset
+            if !loader.isDataLoaded(for: user, yearOffset: currentYearOffset) {
+                await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
+            }
         }
         .onChange(of: currentYearOffset) { _, newOffset in
             Task {
@@ -82,13 +86,13 @@ struct WeeklyAlbumsView: View {
             }
         }
     }
-    
+
     // Calculate padding for year navigation buttons
     private func yearNavigationTopPadding(in geometry: GeometryProxy) -> CGFloat {
         let topSafeArea = geometry.safeAreaInsets.top
         return loader.canNavigate(to: currentYearOffset - 1) ? max(topSafeArea + 60, 80) : 20
     }
-    
+
     private func yearNavigationBottomPadding(in geometry: GeometryProxy) -> CGFloat {
         let bottomSafeArea = geometry.safeAreaInsets.bottom
         return loader.canNavigate(to: currentYearOffset + 1) ? max(bottomSafeArea + 60, 80) : 20
@@ -101,14 +105,14 @@ private struct YearNavigationButtons: View {
     @Binding var currentYearOffset: Int
     let loader: WeeklyAlbumLoader
     let geometry: GeometryProxy
-    
+
     var body: some View {
         VStack {
             // Next year button (top safe area)
             if loader.canNavigate(to: currentYearOffset - 1) {
                 HStack {
                     Spacer()
-                    
+
                     Button(action: {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             currentYearOffset -= 1
@@ -118,7 +122,7 @@ private struct YearNavigationButtons: View {
                             Text("\(loader.getYear(for: currentYearOffset - 1))")
                                 .font(.title2.weight(.medium))
                                 .foregroundColor(.vinylogueBlue)
-                            
+
                             Image(systemName: "arrow.right")
                                 .font(.title3.weight(.medium))
                                 .foregroundColor(.vinylogueBlue)
@@ -135,9 +139,9 @@ private struct YearNavigationButtons: View {
                 }
                 .padding(.top, geometry.safeAreaInsets.top + 10)
             }
-            
+
             Spacer()
-            
+
             // Previous year button (bottom safe area)
             if loader.canNavigate(to: currentYearOffset + 1) {
                 HStack {
@@ -150,7 +154,7 @@ private struct YearNavigationButtons: View {
                             Image(systemName: "arrow.left")
                                 .font(.title3.weight(.medium))
                                 .foregroundColor(.vinylogueBlue)
-                            
+
                             Text("\(loader.getYear(for: currentYearOffset + 1))")
                                 .font(.title2.weight(.medium))
                                 .foregroundColor(.vinylogueBlue)
@@ -164,7 +168,7 @@ private struct YearNavigationButtons: View {
                         )
                     }
                     .padding(.leading, 20)
-                    
+
                     Spacer()
                 }
                 .padding(.bottom, geometry.safeAreaInsets.bottom + 10)
@@ -177,7 +181,7 @@ private struct YearNavigationButtons: View {
 
 private struct LoadingIndicatorView: View {
     @State private var rotation = 0.0
-    
+
     var body: some View {
         Image(systemName: "record.circle")
             .font(.title2)
@@ -195,18 +199,18 @@ private struct LoadingIndicatorView: View {
 
 private struct EmptyStateView: View {
     let username: String
-    
+
     var body: some View {
         VStack(spacing: 32) {
             Image(systemName: "music.note")
                 .font(.system(size: 80))
                 .foregroundColor(.vinylogueBlue)
-            
+
             VStack(spacing: 16) {
                 Text("No charts!")
                     .font(.title.weight(.semibold))
                     .foregroundColor(.primaryText)
-                
+
                 Text("Looks like \(username) didn't listen to\nmuch music this week.")
                     .font(.body)
                     .foregroundColor(.secondaryText)
@@ -222,18 +226,18 @@ private struct EmptyStateView: View {
 
 private struct ErrorStateView: View {
     let error: LastFMError
-    
+
     var body: some View {
         VStack(spacing: 32) {
             Image(systemName: "xmark")
                 .font(.system(size: 80))
                 .foregroundColor(.destructive)
-            
+
             VStack(spacing: 16) {
                 Text("Error")
                     .font(.title.weight(.semibold))
                     .foregroundColor(.primaryText)
-                
+
                 Text(error.localizedDescription)
                     .font(.body)
                     .foregroundColor(.secondaryText)

@@ -1,23 +1,25 @@
-import SwiftUI
 import Nuke
 import NukeUI
+import SwiftUI
 
 struct AlbumRowView: View {
-    let album: Album
+    @Binding var album: Album
     let namespace: Namespace.ID
-    @State private var albumImageURL: String?
     @Environment(\.lastFMClient) private var lastFMClient
-    
+
+    private var albumImageURL: String? {
+        album.imageURL
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             // Album artwork with matched geometry effect
-            NavigationLink(destination: AlbumDetailView(album: album, namespace: namespace)) {
+            NavigationLink(destination: AlbumDetailView(album: $album, namespace: namespace)) {
                 AlbumArtworkView(imageURL: albumImageURL)
                     .frame(width: 80, height: 80)
-                    .matchedGeometryEffect(id: "album-\(album.id)", in: namespace)
             }
             .buttonStyle(PlainButtonStyle())
-            
+
             // Album and artist info
             VStack(alignment: .leading, spacing: 2) {
                 // Artist name (small, gray, uppercase)
@@ -25,7 +27,7 @@ struct AlbumRowView: View {
                     .font(.scaledCaption())
                     .foregroundColor(.tertiaryText)
                     .lineLimit(1)
-                
+
                 // Album name (medium, black)
                 Text(album.name)
                     .font(.scaledBody())
@@ -33,15 +35,15 @@ struct AlbumRowView: View {
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
             }
-            
+
             Spacer()
-            
+
             // Play count
             VStack(alignment: .trailing, spacing: 0) {
                 Text("\(album.playCount)")
                     .font(.title2.weight(.bold))
                     .foregroundColor(.vinylogueBlue)
-                
+
                 Text("plays")
                     .font(.scaledCaption())
                     .foregroundColor(.tertiaryText)
@@ -50,14 +52,14 @@ struct AlbumRowView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(Color.primaryBackground)
-        .task {
-            // TODO: Load album artwork URL - deferred for Sprint 5
-            // if albumImageURL == nil && !album.isDetailLoaded {
-            //     await loadAlbumArtwork()
-            // }
+        .task(id: album.id) {
+            // Load album artwork URL if not already available
+            if album.imageURL == nil {
+                await loadAlbumArtwork()
+            }
         }
     }
-    
+
     @MainActor
     private func loadAlbumArtwork() async {
         do {
@@ -67,10 +69,10 @@ struct AlbumRowView: View {
                 mbid: album.mbid,
                 username: nil as String?
             )
-            albumImageURL = detailedAlbum.imageURL
+            album.imageURL = detailedAlbum.imageURL
         } catch {
             // If we can't load the details, we'll show the placeholder
-            albumImageURL = nil
+            album.imageURL = nil
         }
     }
 }
@@ -79,7 +81,7 @@ struct AlbumRowView: View {
 
 private struct AlbumArtworkView: View {
     let imageURL: String?
-    
+
     var body: some View {
         Group {
             if let imageURL, let url = URL(string: imageURL) {
@@ -101,7 +103,7 @@ private struct AlbumArtworkView: View {
         .frame(width: 80, height: 80)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
-    
+
     private var placeholderView: some View {
         RoundedRectangle(cornerRadius: 8)
             .fill(Color.vinylrogueGray)
@@ -118,40 +120,42 @@ private struct AlbumArtworkView: View {
     }
 }
 
-
 // MARK: - Preview
 
 #Preview("Album Row") {
     @Previewable @Namespace var namespace
-    
+    @Previewable @State var album1 = Album(
+        name: "The Sea of Tragic Beasts",
+        artist: "Fit For An Autopsy",
+        imageURL: nil,
+        playCount: 20,
+        rank: 1
+    )
+    @Previewable @State var album2 = Album(
+        name: "Is This Thing Cursed?",
+        artist: "Alkaline Trio",
+        imageURL: nil,
+        playCount: 25,
+        rank: 2
+    )
+    @Previewable @State var album3 = Album(
+        name: "A Very Long Album Title That Should Be Truncated Properly",
+        artist: "An Artist With A Long Name",
+        imageURL: nil,
+        playCount: 5,
+        rank: 3
+    )
+
     return VStack(spacing: 0) {
-        AlbumRowView(album: Album(
-            name: "The Sea of Tragic Beasts",
-            artist: "Fit For An Autopsy", 
-            imageURL: nil,
-            playCount: 20,
-            rank: 1
-        ), namespace: namespace)
-        
+        AlbumRowView(album: $album1, namespace: namespace)
+
         Divider()
-        
-        AlbumRowView(album: Album(
-            name: "Is This Thing Cursed?",
-            artist: "Alkaline Trio",
-            imageURL: nil,
-            playCount: 25,
-            rank: 2
-        ), namespace: namespace)
-        
+
+        AlbumRowView(album: $album2, namespace: namespace)
+
         Divider()
-        
-        AlbumRowView(album: Album(
-            name: "A Very Long Album Title That Should Be Truncated Properly",
-            artist: "An Artist With A Long Name",
-            imageURL: nil,
-            playCount: 5,
-            rank: 3
-        ), namespace: namespace)
+
+        AlbumRowView(album: $album3, namespace: namespace)
     }
     .background(Color.primaryBackground)
     .environment(\.lastFMClient, LastFMClient.shared)

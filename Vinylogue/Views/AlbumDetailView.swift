@@ -1,39 +1,34 @@
-import SwiftUI
 import Nuke
 import NukeUI
+import SwiftUI
 
 struct AlbumDetailView: View {
-    @State private var album: Album
+    @Binding var album: Album
     @State private var artworkImage: UIImage?
     @State private var dominantColor: Color = .gray
     @State private var isLoadingDetails = false
     @Environment(\.lastFMClient) private var lastFMClient
-    
+
     let namespace: Namespace.ID
-    
-    init(album: Album, namespace: Namespace.ID) {
-        self._album = State(initialValue: album)
-        self.namespace = namespace
-    }
-    
+
     var body: some View {
         ZStack {
             // Dynamic gradient background
             ColorExtraction.createBackgroundGradient(from: dominantColor)
                 .ignoresSafeArea()
                 .animation(.easeInOut(duration: 0.6), value: dominantColor)
-            
+
             ScrollView {
                 VStack(spacing: 24) {
                     // Album artwork
                     artworkSection
-                    
+
                     // Album information
                     albumInfoSection
-                    
+
                     // Description section
                     descriptionSection
-                    
+
                     Spacer(minLength: 100) // Extra space at bottom
                 }
                 .padding(.horizontal, 20)
@@ -46,9 +41,9 @@ struct AlbumDetailView: View {
             await loadAlbumDetails()
         }
     }
-    
+
     // MARK: - View Components
-    
+
     private var artworkSection: some View {
         VStack(spacing: 16) {
             // Album artwork with matched geometry effect
@@ -76,10 +71,9 @@ struct AlbumDetailView: View {
             .frame(width: 240, height: 240)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
-            .matchedGeometryEffect(id: "album-\(album.id)", in: namespace)
         }
     }
-    
+
     private var albumPlaceholder: some View {
         RoundedRectangle(cornerRadius: 12)
             .fill(Color.vinylrogueGray)
@@ -94,7 +88,7 @@ struct AlbumDetailView: View {
                     }
             }
     }
-    
+
     private var albumInfoSection: some View {
         VStack(spacing: 12) {
             // Album title
@@ -103,24 +97,24 @@ struct AlbumDetailView: View {
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
                 .lineLimit(3)
-            
+
             // Artist name
             Text(album.artist.uppercased())
                 .font(.headline)
                 .foregroundColor(.white.opacity(0.8))
                 .multilineTextAlignment(.center)
-            
+
             // Play count
             HStack(spacing: 4) {
                 Text("\(album.playCount)")
                     .font(.title2.weight(.semibold))
                     .foregroundColor(.white)
-                
+
                 Text("plays")
                     .font(.body)
                     .foregroundColor(.white.opacity(0.7))
             }
-            
+
             // Rank if available
             if let rank = album.rank {
                 Text("Ranked #\(rank)")
@@ -133,7 +127,7 @@ struct AlbumDetailView: View {
             }
         }
     }
-    
+
     private var descriptionSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             if isLoadingDetails {
@@ -141,7 +135,7 @@ struct AlbumDetailView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
                         .scaleEffect(0.8)
-                    
+
                     Text("Loading album details...")
                         .font(.body)
                         .foregroundColor(.white.opacity(0.7))
@@ -153,7 +147,7 @@ struct AlbumDetailView: View {
                     Text("About")
                         .font(.headline.weight(.semibold))
                         .foregroundColor(.white)
-                    
+
                     Text(description)
                         .font(.body)
                         .foregroundColor(.white.opacity(0.9))
@@ -172,22 +166,22 @@ struct AlbumDetailView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func extractDominantColor(from platformImage: PlatformImage?) {
-        guard let platformImage = platformImage else { return }
-        
+        guard let platformImage else { return }
+
         #if os(iOS)
-        let uiImage = platformImage
+            let uiImage = platformImage
         #else
-        // Convert NSImage to UIImage if needed for macOS
-        let uiImage = UIImage(data: platformImage.tiffRepresentation!)!
+            // Convert NSImage to UIImage if needed for macOS
+            let uiImage = UIImage(data: platformImage.tiffRepresentation!)!
         #endif
-        
+
         // Store the image for future reference
         artworkImage = uiImage
-        
+
         // Extract dominant color
         if let extractedColor = album.dominantColor(from: uiImage) {
             withAnimation(.easeInOut(duration: 0.6)) {
@@ -195,14 +189,14 @@ struct AlbumDetailView: View {
             }
         }
     }
-    
+
     @MainActor
     private func loadAlbumDetails() async {
         // Skip if already loaded
         guard !album.isDetailLoaded else { return }
-        
+
         isLoadingDetails = true
-        
+
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                 artist: album.artist,
@@ -210,18 +204,18 @@ struct AlbumDetailView: View {
                 mbid: album.mbid,
                 username: nil
             )
-            
+
             // Update album with detailed information
             album.description = detailedAlbum.description
             album.totalPlayCount = detailedAlbum.totalPlayCount
             album.userPlayCount = detailedAlbum.userPlayCount
             album.isDetailLoaded = true
-            
+
         } catch {
             // Failed to load details - mark as loaded to prevent retries
             album.isDetailLoaded = true
         }
-        
+
         isLoadingDetails = false
     }
 }
@@ -230,18 +224,16 @@ struct AlbumDetailView: View {
 
 #Preview("Album Detail") {
     @Previewable @Namespace var namespace
-    
+    @Previewable @State var album = Album(
+        name: "The Sea of Tragic Beasts",
+        artist: "Fit For An Autopsy",
+        imageURL: "https://lastfm.freetls.fastly.net/i/u/300x300/example.jpg",
+        playCount: 42,
+        rank: 1
+    )
+
     return NavigationStack {
-        AlbumDetailView(
-            album: Album(
-                name: "The Sea of Tragic Beasts",
-                artist: "Fit For An Autopsy",
-                imageURL: "https://lastfm.freetls.fastly.net/i/u/300x300/example.jpg",
-                playCount: 42,
-                rank: 1
-            ),
-            namespace: namespace
-        )
+        AlbumDetailView(album: $album, namespace: namespace)
     }
     .environment(\.lastFMClient, LastFMClient.shared)
 }

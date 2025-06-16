@@ -5,7 +5,7 @@ import Foundation
 /// Represents legacy user data stored in UserDefaults
 struct LegacyUser: Codable {
     let username: String
-    
+
     /// The legacy UserDefaults key used to store the username
     static let userDefaultsKey = "kTCSUserDefaultsLastFMUserName"
 }
@@ -14,7 +14,7 @@ struct LegacyUser: Codable {
 struct LegacySettings: Codable {
     let playCountFilter: Int?
     let lastOpenedDate: Date?
-    
+
     /// Legacy UserDefaults keys for settings
     enum Keys {
         static let playCountFilter = "kTCSPlayCountFilter"
@@ -28,7 +28,7 @@ struct LegacyFriend: Codable {
     let realName: String?
     let playCount: Int?
     let imageURL: String?
-    
+
     /// Legacy cache file name
     static let cacheFileName = "friends_cache.json"
 }
@@ -39,12 +39,12 @@ struct LegacyData: Codable {
     let settings: LegacySettings?
     let friends: [LegacyFriend]?
     let migrationDate: Date
-    
+
     init(user: LegacyUser? = nil, settings: LegacySettings? = nil, friends: [LegacyFriend]? = nil) {
         self.user = user
         self.settings = settings
         self.friends = friends
-        self.migrationDate = Date()
+        migrationDate = Date()
     }
 }
 
@@ -53,7 +53,7 @@ struct LegacyData: Codable {
 extension LegacyUser {
     /// Converts legacy user to new User model
     func toUser() -> User {
-        return User(
+        User(
             username: username,
             realName: nil,
             imageURL: nil,
@@ -66,7 +66,7 @@ extension LegacyUser {
 extension LegacyFriend {
     /// Converts legacy friend to new User model
     func toUser() -> User {
-        return User(
+        User(
             username: username,
             realName: realName,
             imageURL: imageURL,

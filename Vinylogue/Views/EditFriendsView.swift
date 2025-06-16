@@ -5,19 +5,19 @@ struct EditFriendsView: View {
     @Environment(\.currentUser) private var currentUser
     @Environment(\.curatedFriends) private var curatedFriends
     @Environment(\.lastFMClient) private var lastFMClient
-    
+
     @ObservedObject var friendsImporter: FriendsImporter
-    
+
     @State private var editableFriends: [User] = []
     @State private var selectedFriends: Set<String> = []
     @State private var showingAddFriend = false
     @State private var showingImportConfirmation = false
     @State private var newFriendsToAdd: [User] = []
-    
+
     private var currentUsername: String? {
         currentUser?.username ?? UserDefaults.standard.string(forKey: "currentUser")
     }
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -33,7 +33,7 @@ struct EditFriendsView: View {
                                 } else {
                                     Image(systemName: "square.and.arrow.down")
                                 }
-                                
+
                                 Text(friendsImporter.isLoading ? "Importing..." : "Import friends from Last.fm")
                                     .fontWeight(.medium)
                             }
@@ -44,7 +44,7 @@ struct EditFriendsView: View {
                             .cornerRadius(8)
                         }
                         .disabled(friendsImporter.isLoading)
-                        
+
                         Button(action: { showingAddFriend = true }) {
                             HStack {
                                 Image(systemName: "person.badge.plus")
@@ -61,9 +61,9 @@ struct EditFriendsView: View {
                     .padding()
                     .background(Color.primaryBackground)
                 }
-                
+
                 Divider()
-                
+
                 // Friends list
                 List {
                     if !editableFriends.isEmpty {
@@ -99,7 +99,7 @@ struct EditFriendsView: View {
                                 Image(systemName: "person.2")
                                     .font(.system(size: 40))
                                     .foregroundColor(.accent.opacity(0.6))
-                                
+
                                 Text("No friends in your curated list")
                                     .font(.body)
                                     .foregroundColor(.secondaryText)
@@ -120,7 +120,7 @@ struct EditFriendsView: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         saveFriends()
@@ -136,7 +136,7 @@ struct EditFriendsView: View {
                 }
             }
             .alert("Import Friends", isPresented: $showingImportConfirmation) {
-                Button("Cancel", role: .cancel) { }
+                Button("Cancel", role: .cancel) {}
                 Button("Add \(newFriendsToAdd.count) friends") {
                     editableFriends.append(contentsOf: newFriendsToAdd)
                     newFriendsToAdd.removeAll()
@@ -147,7 +147,7 @@ struct EditFriendsView: View {
         }
         .onAppear {
             editableFriends = curatedFriends
-            selectedFriends = Set(curatedFriends.map { $0.username })
+            selectedFriends = Set(curatedFriends.map(\.username))
         }
         .onReceive(friendsImporter.$friends) { importedFriends in
             if !importedFriends.isEmpty {
@@ -155,39 +155,39 @@ struct EditFriendsView: View {
             }
         }
     }
-    
+
     private func importFriends() {
         guard let username = currentUsername else { return }
-        
+
         Task {
             await friendsImporter.importFriends(for: username)
         }
     }
-    
+
     private func handleImportedFriends(_ importedFriends: [User]) {
         let newFriends = friendsImporter.getNewFriends(excluding: editableFriends)
-        
+
         if !newFriends.isEmpty {
             newFriendsToAdd = newFriends
             showingImportConfirmation = true
         }
     }
-    
+
     private func moveFriends(from source: IndexSet, to destination: Int) {
         editableFriends.move(fromOffsets: source, toOffset: destination)
     }
-    
+
     private func deleteFriends(at offsets: IndexSet) {
         editableFriends.remove(atOffsets: offsets)
     }
-    
+
     private func saveFriends() {
         // TODO: Persist to @Shared storage
         // For now, we'll update UserDefaults
         saveFriendsToUserDefaults()
         dismiss()
     }
-    
+
     private func saveFriendsToUserDefaults() {
         do {
             let data = try JSONEncoder().encode(editableFriends)
@@ -204,7 +204,7 @@ private struct FriendEditRowView: View {
     let friend: User
     let isSelected: Bool
     let onSelectionChanged: (Bool) -> Void
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // Selection indicator
@@ -214,29 +214,29 @@ private struct FriendEditRowView: View {
                     .font(.system(size: 20))
             }
             .buttonStyle(PlainButtonStyle())
-            
+
             // User info
             VStack(alignment: .leading, spacing: 2) {
                 Text(friend.username)
                     .font(.usernameRegular)
                     .foregroundColor(.primaryText)
-                
+
                 if let realName = friend.realName, !realName.isEmpty {
                     Text(realName)
                         .font(.secondaryInfo)
                         .foregroundColor(.secondaryText)
                 }
             }
-            
+
             Spacer()
-            
+
             // Play count
             if let playCount = friend.playCount {
                 Text("\(playCount)")
                     .font(.secondaryInfo)
                     .foregroundColor(.tertiaryText)
             }
-            
+
             // Drag handle
             Image(systemName: "line.3.horizontal")
                 .foregroundColor(.gray)
@@ -255,14 +255,14 @@ private struct FriendEditRowView: View {
 private struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.lastFMClient) private var lastFMClient
-    
+
     let onFriendAdded: (User) -> Void
-    
+
     @State private var username = ""
     @State private var isValidating = false
     @State private var errorMessage: String?
     @FocusState private var isTextFieldFocused: Bool
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
@@ -270,21 +270,21 @@ private struct AddFriendView: View {
                     Text("Enter Last.fm username")
                         .font(.sectionHeader)
                         .foregroundColor(.primaryText)
-                    
+
                     TextField("username", text: $username)
                         .textFieldStyle(.roundedBorder)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .focused($isTextFieldFocused)
                         .onSubmit(validateAndAdd)
-                    
-                    if let errorMessage = errorMessage {
+
+                    if let errorMessage {
                         Text(errorMessage)
                             .font(.secondaryInfo)
                             .foregroundColor(.destructive)
                     }
                 }
-                
+
                 Button(action: validateAndAdd) {
                     HStack {
                         if isValidating {
@@ -292,7 +292,7 @@ private struct AddFriendView: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                 .scaleEffect(0.8)
                         }
-                        
+
                         Text(isValidating ? "Validating..." : "Add Friend")
                             .fontWeight(.semibold)
                     }
@@ -303,7 +303,7 @@ private struct AddFriendView: View {
                     .cornerRadius(8)
                 }
                 .disabled(username.isEmpty || isValidating)
-                
+
                 Spacer()
             }
             .padding()
@@ -321,28 +321,28 @@ private struct AddFriendView: View {
             isTextFieldFocused = true
         }
     }
-    
+
     private func validateAndAdd() {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             errorMessage = "Please enter a username"
             return
         }
-        
+
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         Task {
             await validateUsername(cleanUsername)
         }
     }
-    
+
     @MainActor
     private func validateUsername(_ username: String) async {
         isValidating = true
         errorMessage = nil
-        
+
         do {
             let response: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
-            
+
             let newFriend = User(
                 username: username,
                 realName: response.user.realname?.isEmpty == false ? response.user.realname : nil,
@@ -350,10 +350,10 @@ private struct AddFriendView: View {
                 url: response.user.url,
                 playCount: response.user.playcount != nil ? Int(response.user.playcount!) : nil
             )
-            
+
             onFriendAdded(newFriend)
             dismiss()
-            
+
         } catch {
             switch error {
             case LastFMError.userNotFound:
@@ -364,7 +364,7 @@ private struct AddFriendView: View {
                 errorMessage = "Unable to validate username. Please try again."
             }
         }
-        
+
         isValidating = false
     }
 }
@@ -375,6 +375,6 @@ private struct AddFriendView: View {
     EditFriendsView(friendsImporter: FriendsImporter(lastFMClient: LastFMClient()))
         .environment(\.curatedFriends, [
             User(username: "BobbyStompy", realName: "Bobby", imageURL: nil, url: nil, playCount: 2000),
-            User(username: "slippydrums", realName: nil, imageURL: nil, url: nil, playCount: 1200)
+            User(username: "slippydrums", realName: nil, imageURL: nil, url: nil, playCount: 1200),
         ])
 }

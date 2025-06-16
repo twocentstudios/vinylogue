@@ -7,16 +7,16 @@ extension Calendar {
         components.year = -yearsAgo
         return self.date(byAdding: components, to: date)
     }
-    
+
     /// Get the week number and year for week-of-year calculations
     func weekComponents(from date: Date) -> (weekOfYear: Int, yearForWeekOfYear: Int) {
-        let components = self.dateComponents([.weekOfYear, .yearForWeekOfYear], from: date)
+        let components = dateComponents([.weekOfYear, .yearForWeekOfYear], from: date)
         return (
             weekOfYear: components.weekOfYear ?? 1,
-            yearForWeekOfYear: components.yearForWeekOfYear ?? self.component(.year, from: date)
+            yearForWeekOfYear: components.yearForWeekOfYear ?? component(.year, from: date)
         )
     }
-    
+
     /// Check if two dates are in the same week
     func isDate(_ date1: Date, inSameWeekAs date2: Date) -> Bool {
         let week1 = weekComponents(from: date1)
@@ -28,11 +28,11 @@ extension Calendar {
 extension Date {
     /// Get a date representing the same week N years ago
     func shiftedByYears(_ years: Int, calendar: Calendar = .current) -> Date {
-        return calendar.sameWeekInPreviousYear(self, yearsAgo: years) ?? self
+        calendar.sameWeekInPreviousYear(self, yearsAgo: years) ?? self
     }
-    
+
     /// Get week number and year components
     var weekComponents: (weekOfYear: Int, yearForWeekOfYear: Int) {
-        return Calendar.current.weekComponents(from: self)
+        Calendar.current.weekComponents(from: self)
     }
 }

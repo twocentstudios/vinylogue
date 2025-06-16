@@ -45,7 +45,7 @@ extension EnvironmentValues {
         get { self[CurrentUserKey.self] }
         set { self[CurrentUserKey.self] = newValue }
     }
-    
+
     var curatedFriends: [User] {
         get { self[CuratedFriendsKey.self] }
         set { self[CuratedFriendsKey.self] = newValue }

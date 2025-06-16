@@ -6,7 +6,7 @@ struct Album: Codable, Identifiable, Hashable {
     let id = UUID()
     let name: String
     let artist: String
-    let imageURL: String?
+    var imageURL: String?
     let playCount: Int
     let rank: Int?
     let url: String?
@@ -17,13 +17,13 @@ struct Album: Codable, Identifiable, Hashable {
     var totalPlayCount: Int?
     var userPlayCount: Int?
     var isDetailLoaded: Bool = false
-    
+
     // Color extraction cache (not encoded/decoded)
     private var _dominantColor: Color?
     private var _colorExtractionAttempted: Bool = false
-    
+
     // MARK: - Codable
-    
+
     enum CodingKeys: String, CodingKey {
         case name, artist, imageURL, playCount, rank, url, mbid
         case description, totalPlayCount, userPlayCount, isDetailLoaded
@@ -52,22 +52,22 @@ extension Album {
         if _colorExtractionAttempted {
             return _dominantColor
         }
-        
+
         // Mark as attempted to avoid repeated processing
         _colorExtractionAttempted = true
-        
+
         // Extract color from provided image
-        guard let image = image else { return nil }
-        
+        guard let image else { return nil }
+
         _dominantColor = ColorExtraction.dominantColor(from: image)
         return _dominantColor
     }
-    
+
     /// Returns the cached dominant color without triggering extraction
     var cachedDominantColor: Color? {
-        return _dominantColor
+        _dominantColor
     }
-    
+
     /// Clears the cached color (useful when image changes)
     mutating func clearColorCache() {
         _dominantColor = nil
