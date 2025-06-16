@@ -182,8 +182,7 @@ struct EditFriendsView: View {
     }
 
     private func saveFriends() {
-        // TODO: Persist to @Shared storage
-        // For now, we'll update UserDefaults
+        // Persist curated friends to UserDefaults (which syncs with @Shared storage)
         saveFriendsToUserDefaults()
         dismiss()
     }

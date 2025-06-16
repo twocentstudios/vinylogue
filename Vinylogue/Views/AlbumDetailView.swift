@@ -143,7 +143,7 @@ struct AlbumDetailView: View {
                             .font(.largeTitle.weight(.bold))
                             .foregroundColor(textColor)
 
-                        Text("week 25 2015") // TODO: Get from WeeklyAlbumLoader
+                        Text("plays")
                             .font(.caption)
                             .foregroundColor(textColor.opacity(0.7))
                     }
