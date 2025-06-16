@@ -19,6 +19,10 @@ private struct CurrentUserKey: EnvironmentKey {
     static let defaultValue: User? = nil
 }
 
+private struct CuratedFriendsKey: EnvironmentKey {
+    static let defaultValue: [User] = []
+}
+
 // MARK: - Environment Values Extension
 
 extension EnvironmentValues {
@@ -40,5 +44,10 @@ extension EnvironmentValues {
     var currentUser: User? {
         get { self[CurrentUserKey.self] }
         set { self[CurrentUserKey.self] = newValue }
+    }
+    
+    var curatedFriends: [User] {
+        get { self[CuratedFriendsKey.self] }
+        set { self[CuratedFriendsKey.self] = newValue }
     }
 }

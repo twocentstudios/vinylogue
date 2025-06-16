@@ -27,24 +27,41 @@ extension Color {
 }
 
 extension Font {
-    // MARK: - Vinylogue Typography
+    // MARK: - Vinylogue Typography with Dynamic Type Support
     
-    /// Large username text in users list
+    /// Large username text in users list - scales with Dynamic Type
     static let usernameLarge = Font.title2.weight(.medium)
     
-    /// Regular username text
+    /// Regular username text - scales with Dynamic Type  
     static let usernameRegular = Font.headline.weight(.medium)
     
-    /// Section headers like "me" and "friends"
+    /// Section headers like "me" and "friends" - scales with Dynamic Type
     static let sectionHeader = Font.subheadline.weight(.medium)
     
-    /// Secondary information like play counts
+    /// Secondary information like play counts - scales with Dynamic Type
     static let secondaryInfo = Font.caption.weight(.regular)
     
-    /// Album/artist names in charts
+    /// Album/artist names in charts - scales with Dynamic Type
     static let albumTitle = Font.body.weight(.medium)
     static let artistName = Font.caption.weight(.regular)
     
-    /// Navigation titles
+    /// Navigation titles - scales with Dynamic Type
     static let navigationTitle = Font.headline.weight(.semibold)
+    
+    // MARK: - Dynamic Type Scaling Methods
+    
+    /// Creates a font that scales with Dynamic Type, using title3 as the base
+    static func scaledTitle3() -> Font {
+        return Font.title3
+    }
+    
+    /// Creates a font that scales with Dynamic Type for body text
+    static func scaledBody() -> Font {
+        return Font.body
+    }
+    
+    /// Creates a font that scales with Dynamic Type for captions
+    static func scaledCaption() -> Font {
+        return Font.caption
+    }
 }

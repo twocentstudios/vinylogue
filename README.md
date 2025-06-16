@@ -13,8 +13,9 @@ Vinylogue is a SwiftUI-based Last.fm client for iOS that shows you and your frie
 - **iOS 18.0+ SwiftUI** - Modern, native iOS interface
 - **Automatic Data Migration** - Seamlessly migrate from legacy Objective-C version
 - **User Onboarding** - Clean setup flow with Last.fm username validation
-- **Weekly Charts** - Browse your and your friends' music history (coming in Sprint 3)
-- **Album Details** - Rich album information and statistics (coming in Sprint 4)
+- **Friend Curation** - Import friends from Last.fm and curate your personal list
+- **Weekly Charts** - Browse your and your friends' music history (coming in Sprint 4)
+- **Album Details** - Rich album information and statistics (coming in Sprint 5)
 
 ## Getting Started
 
@@ -102,6 +103,45 @@ if !isMigrationComplete {
 }
 ```
 
+## Friend Management
+
+### Friend Curation Interface
+
+The app provides a comprehensive friend management system for curating your personal list of Last.fm friends:
+
+**Friend Curation Features:**
+- **Import from Last.fm** - Automatically fetch your complete friends list from Last.fm API
+- **Manual Friend Addition** - Add friends by username with real-time validation
+- **Drag-to-Reorder** - Rearrange friends list using intuitive drag gestures
+- **Persistent Storage** - Friend list automatically saved to device storage
+- **Smart Filtering** - Only show friends not already in your curated list
+
+**Usage:**
+1. **Access Friend Curation** - Tap "Edit" button in the top-right of the users list
+2. **Import Friends** - Use "Import from Last.fm" to fetch your complete friends list
+3. **Add Friends Manually** - Use "Add Friend" to manually enter usernames
+4. **Curate Your List** - Select/deselect friends and drag to reorder
+5. **Save Changes** - Tap "Done" to persist your curated friends list
+
+**Implementation Details:**
+- `FriendsImporter.swift` - Service for fetching friends from Last.fm API
+- `EditFriendsView.swift` - SwiftUI interface for friend curation
+- `Environment+Keys.swift` - Environment injection for curated friends state
+- Comprehensive unit tests in `FriendsImporterTests.swift`
+
+**Friend Data Structure:**
+```swift
+struct User: Codable, Identifiable, Hashable {
+    let username: String
+    let realName: String?
+    let imageURL: String?
+    let url: String?
+    let playCount: Int?
+}
+```
+
+The curated friends list is automatically synchronized across the app using SwiftUI's Environment system, ensuring consistent state management throughout the user interface.
+
 ## Architecture
 
 ### SwiftUI + Modern iOS Development
@@ -155,6 +195,7 @@ xcodebuild test -project Vinylogue.xcodeproj -scheme Vinylogue -only-testing:Vin
 **Test Coverage:**
 - **LegacyMigratorTests** - Migration scenarios with temporary directories
 - **LastFMClientTests** - API integration and JSON parsing
+- **FriendsImporterTests** - Friend import and curation functionality
 - **Model Tests** - Data transformation and validation
 
 **Testing Patterns:**
