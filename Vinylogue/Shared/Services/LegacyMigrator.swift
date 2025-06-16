@@ -138,14 +138,14 @@ final class LegacyMigrator: ObservableObject {
         await saveMigrationRecord(legacyData)
     }
 
-    /// Migrates friends to the new cache format
+    /// Migrates friends to UserDefaults for the new format
     private func migrateFriendsToNewCache(_ friends: [User]) async {
         do {
-            let cacheManager = CacheManager()
-            try await cacheManager.store(friends, key: "migratedFriends")
-            logger.info("Migrated \(friends.count) friends to new cache format")
+            let data = try JSONEncoder().encode(friends)
+            userDefaults.set(data, forKey: "curatedFriends")
+            logger.info("Migrated \(friends.count) friends to UserDefaults")
         } catch {
-            logger.error("Failed to migrate friends cache: \(error.localizedDescription)")
+            logger.error("Failed to migrate friends to UserDefaults: \(error.localizedDescription)")
         }
     }
 

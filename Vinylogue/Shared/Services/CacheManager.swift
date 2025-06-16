@@ -95,6 +95,9 @@ struct ChartCache {
 
         do {
             let albums: [Album]? = try await cacheManager.retrieve([Album].self, key: key)
+            guard let albums else {
+                return nil
+            }
             return try JSONEncoder().encode(albums)
         } catch {
             return nil

@@ -12,12 +12,6 @@ final class CacheManagerTests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        // Clean up any test cache files
-        Task {
-            try? await cacheManager.remove(key: "test_key")
-            try? await cacheManager.remove(key: "user_test")
-            try? await cacheManager.remove(key: "album_test")
-        }
         cacheManager = nil
     }
 
@@ -34,6 +28,9 @@ final class CacheManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(retrieved, testString)
+
+        // Cleanup
+        try await cacheManager.remove(key: key)
     }
 
     func testStoreAndRetrieveUser() async throws {
@@ -51,6 +48,9 @@ final class CacheManagerTests: XCTestCase {
         XCTAssertEqual(retrieved?.imageURL, testUser.imageURL)
         XCTAssertEqual(retrieved?.url, testUser.url)
         XCTAssertEqual(retrieved?.playCount, testUser.playCount)
+
+        // Cleanup
+        try await cacheManager.remove(key: key)
     }
 
     func testStoreAndRetrieveAlbum() async throws {
@@ -70,6 +70,9 @@ final class CacheManagerTests: XCTestCase {
         XCTAssertEqual(retrieved?.rank, testAlbum.rank)
         XCTAssertEqual(retrieved?.url, testAlbum.url)
         XCTAssertEqual(retrieved?.mbid, testAlbum.mbid)
+
+        // Cleanup
+        try await cacheManager.remove(key: key)
     }
 
     // MARK: - Edge Cases
@@ -85,7 +88,7 @@ final class CacheManagerTests: XCTestCase {
     func testRemoveExistingKey() async throws {
         // Given
         let testData = "Test Data"
-        let key = "test_key"
+        let key = "test_remove_key"
         try await cacheManager.store(testData, key: key)
 
         // When

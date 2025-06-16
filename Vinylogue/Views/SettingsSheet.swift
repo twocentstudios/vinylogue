@@ -14,7 +14,7 @@ struct SettingsSheet: View {
 
     init() {
         // Initialize with current filter value from UserDefaults
-        let filter = UserDefaults.standard.object(forKey: "playCountFilter") as? Int ?? 1
+        let filter = UserDefaults.standard.object(forKey: "currentPlayCountFilter") as? Int ?? 1
         _currentPlayCountFilter = State(initialValue: filter)
     }
 
@@ -62,6 +62,7 @@ struct SettingsSheet: View {
                                 .font(.scaledBody())
                                 .foregroundColor(.accent)
                         }
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(PlainButtonStyle())
                 } header: {
@@ -174,7 +175,7 @@ struct SettingsSheet: View {
         }
 
         // Save to UserDefaults
-        UserDefaults.standard.set(currentPlayCountFilter, forKey: "playCountFilter")
+        UserDefaults.standard.set(currentPlayCountFilter, forKey: "currentPlayCountFilter")
     }
 
     private func reportIssue() {

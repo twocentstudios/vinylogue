@@ -55,6 +55,23 @@ struct VinylogueApp: App {
                             print("Failed to reload curated friends: \(error)")
                         }
                     }
+
+                    // Update play count filter when UserDefaults changes
+                    let savedFilter = UserDefaults.standard.object(forKey: "currentPlayCountFilter") as? Int ?? 1
+                    playCountFilter = savedFilter
+
+                    // Update current user when UserDefaults changes
+                    if let username = UserDefaults.standard.string(forKey: "currentUser") {
+                        currentUser = User(
+                            username: username,
+                            realName: nil,
+                            imageURL: nil,
+                            url: nil,
+                            playCount: nil
+                        )
+                    } else {
+                        currentUser = nil
+                    }
                 }
         }
     }
