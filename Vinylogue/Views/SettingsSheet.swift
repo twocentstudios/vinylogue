@@ -101,8 +101,8 @@ struct SettingsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Back") {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("done") {
                         dismiss()
                     }
                     .font(.f(.medium, .body))
