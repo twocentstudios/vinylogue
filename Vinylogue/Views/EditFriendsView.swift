@@ -1,10 +1,13 @@
+import Sharing
 import SwiftUI
 
 struct EditFriendsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.currentUser) private var currentUser
-    @Environment(\.curatedFriends) private var curatedFriends
     @Environment(\.lastFMClient) private var lastFMClient
+
+    // Use @Shared directly
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     @ObservedObject var friendsImporter: FriendsImporter
 
@@ -14,15 +17,23 @@ struct EditFriendsView: View {
     @State private var showingImportConfirmation = false
     @State private var newFriendsToAdd: [User] = []
 
-    private var currentUsername: String? {
-        currentUser?.username ?? UserDefaults.standard.string(forKey: "currentUser")
+    // Computed property for User object (for backward compatibility)
+    private var currentUser: User? {
+        guard let username = currentUsername else { return nil }
+        return User(
+            username: username,
+            realName: nil,
+            imageURL: nil,
+            url: nil,
+            playCount: nil
+        )
     }
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 // Import section
-                if let username = currentUsername {
+                if currentUsername != nil {
                     VStack(spacing: 16) {
                         Button(action: importFriends) {
                             HStack {
@@ -182,18 +193,9 @@ struct EditFriendsView: View {
     }
 
     private func saveFriends() {
-        // Persist curated friends to UserDefaults (which syncs with @Shared storage)
-        saveFriendsToUserDefaults()
+        // Persist curated friends using @Shared - automatic persistence
+        $curatedFriends.withLock { $0 = editableFriends }
         dismiss()
-    }
-
-    private func saveFriendsToUserDefaults() {
-        do {
-            let data = try JSONEncoder().encode(editableFriends)
-            UserDefaults.standard.set(data, forKey: "curatedFriends")
-        } catch {
-            print("Failed to save curated friends: \(error)")
-        }
     }
 }
 
@@ -372,8 +374,4 @@ private struct AddFriendView: View {
 
 #Preview {
     EditFriendsView(friendsImporter: FriendsImporter(lastFMClient: LastFMClient()))
-        .environment(\.curatedFriends, [
-            User(username: "BobbyStompy", realName: "Bobby", imageURL: nil, url: nil, playCount: 2000),
-            User(username: "slippydrums", realName: nil, imageURL: nil, url: nil, playCount: 1200),
-        ])
 }

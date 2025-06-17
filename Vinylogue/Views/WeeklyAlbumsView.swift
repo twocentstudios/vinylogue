@@ -1,3 +1,4 @@
+import Sharing
 import SwiftUI
 
 struct WeeklyAlbumsView: View {
@@ -5,7 +6,7 @@ struct WeeklyAlbumsView: View {
 
     @StateObject private var loader: WeeklyAlbumLoader
     @State private var currentYearOffset = 1 // Start with 1 year ago
-    @Environment(\.playCountFilter) private var playCountFilter
+    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
     @Namespace private var albumNamespace
 
     init(user: User) {
@@ -275,7 +276,6 @@ private struct ErrorStateView: View {
         ))
     }
     .environment(\.lastFMClient, LastFMClient.shared)
-    .environment(\.playCountFilter, 1)
 }
 
 #Preview("Empty State") {

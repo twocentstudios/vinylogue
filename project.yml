@@ -23,6 +23,9 @@ packages:
   Nuke:
     url: https://github.com/kean/Nuke
     majorVersion: 12.8.0
+  Sharing:
+    url: https://github.com/pointfreeco/swift-sharing
+    majorVersion: 1.0.0
 
 targets:
   Vinylogue:
@@ -40,6 +43,8 @@ targets:
         product: Nuke
       - package: Nuke
         product: NukeUI
+      - package: Sharing
+        product: Sharing
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.twocentstudios.vinylogue
       DEVELOPMENT_ASSET_PATHS: "\"Vinylogue/Preview Content\""

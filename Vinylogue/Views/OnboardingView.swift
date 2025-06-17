@@ -1,8 +1,11 @@
+import Sharing
 import SwiftUI
 
 struct OnboardingView: View {
     @Environment(\.lastFMClient) private var lastFMClient
-    @Environment(\.currentUser) private var currentUser
+
+    // Use @Shared directly
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
 
     @State private var username = ""
     @State private var isValidating = false
@@ -156,9 +159,8 @@ struct OnboardingView: View {
 
             // If successful, save the user and proceed
 
-            // Update the current user in the environment
-            // Note: This would typically be done through a proper state management system
-            UserDefaults.standard.set(username, forKey: "currentUser")
+            // Update the current user using @Shared - automatic persistence
+            $currentUsername.withLock { $0 = username }
 
             isValidating = false
 

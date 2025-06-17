@@ -1,10 +1,25 @@
+import Sharing
 import SwiftUI
 
 struct RootView: View {
-    @Environment(\.currentUser) private var currentUser
+    // Use @Shared directly
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+
     @StateObject private var migrator = LegacyMigrator()
     @State private var isMigrationComplete = false
     @State private var showMigrationError = false
+
+    // Computed property for User object (for backward compatibility)
+    private var currentUser: User? {
+        guard let username = currentUsername else { return nil }
+        return User(
+            username: username,
+            realName: nil,
+            imageURL: nil,
+            url: nil,
+            playCount: nil
+        )
+    }
 
     var body: some View {
         Group {
@@ -39,14 +54,7 @@ struct RootView: View {
     }
 
     private var hasCurrentUser: Bool {
-        // Check both environment and UserDefaults for current user
-        if currentUser != nil {
-            return true
-        }
-
-        // Fallback to UserDefaults check
-        let username = UserDefaults.standard.string(forKey: "currentUser")
-        return username != nil && !username!.isEmpty
+        currentUsername != nil && !currentUsername!.isEmpty
     }
 
     @MainActor
@@ -108,10 +116,11 @@ private struct MigrationLoadingView: View {
 }
 
 #Preview("Root - With User") {
-    RootView()
+    let rootView = RootView()
+    return rootView
         .environment(\.lastFMClient, LastFMClient())
         .onAppear {
-            UserDefaults.standard.set("testuser", forKey: "currentUser")
+            rootView.$currentUsername.withLock { $0 = "testuser" }
         }
 }
 
@@ -121,5 +130,4 @@ private struct MigrationLoadingView: View {
 
 #Preview("Users List") {
     UsersListView()
-        .environment(\.currentUser, User(username: "testuser", realName: "Test User", imageURL: nil, url: nil, playCount: 1000))
 }

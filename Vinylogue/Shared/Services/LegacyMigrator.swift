@@ -1,5 +1,6 @@
 import Foundation
 import OSLog
+import Sharing
 
 /// Service responsible for migrating legacy data to the new format
 @MainActor
@@ -14,6 +15,11 @@ final class LegacyMigrator: ObservableObject {
 
     /// Any migration error that occurred
     @Published var migrationError: Error?
+
+    // @Shared properties for data persistence
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     init(userDefaults: UserDefaults = .standard, fileManager: FileManager = .default, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults
@@ -109,44 +115,32 @@ final class LegacyMigrator: ObservableObject {
         }
     }
 
-    /// Migrates legacy data to new format using environment keys
+    /// Migrates legacy data to new format using @Shared properties
     private func migrateLegacyData(_ legacyData: LegacyData) async {
         // Migrate user data
         if let legacyUser = legacyData.user {
             let newUser = legacyUser.toUser()
-            // Note: In a real implementation, you would update the environment here
-            // For now, we'll log the migration
-            logger.info("Migrating user: \(newUser.username)")
+            $currentUsername.withLock { $0 = newUser.username }
+            logger.info("Migrated user: \(newUser.username)")
         }
 
         // Migrate settings
         if let legacySettings = legacyData.settings {
-            if let playCountFilter = legacySettings.playCountFilter {
-                // Store in new format - could be UserDefaults or other persistence
-                userDefaults.set(playCountFilter, forKey: "currentPlayCountFilter")
-                logger.info("Migrated playCountFilter: \(playCountFilter)")
+            if let legacyPlayCountFilter = legacySettings.playCountFilter {
+                $playCountFilter.withLock { $0 = legacyPlayCountFilter }
+                logger.info("Migrated playCountFilter: \(legacyPlayCountFilter)")
             }
         }
 
-        // Migrate friends data to new cache format
+        // Migrate friends data using @Shared
         if let legacyFriends = legacyData.friends {
             let newUsers = legacyFriends.map { $0.toUser() }
-            await migrateFriendsToNewCache(newUsers)
+            $curatedFriends.withLock { $0 = newUsers }
+            logger.info("Migrated \(newUsers.count) friends using @Shared")
         }
 
         // Save migration record
         await saveMigrationRecord(legacyData)
-    }
-
-    /// Migrates friends to UserDefaults for the new format
-    private func migrateFriendsToNewCache(_ friends: [User]) async {
-        do {
-            let data = try JSONEncoder().encode(friends)
-            userDefaults.set(data, forKey: "curatedFriends")
-            logger.info("Migrated \(friends.count) friends to UserDefaults")
-        } catch {
-            logger.error("Failed to migrate friends to UserDefaults: \(error.localizedDescription)")
-        }
     }
 
     /// Saves a record of the migration for debugging purposes

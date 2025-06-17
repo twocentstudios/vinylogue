@@ -1,21 +1,29 @@
 import MessageUI
+import Sharing
 import SwiftUI
 
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.playCountFilter) private var playCountFilter
-    @Environment(\.currentUser) private var currentUser
 
-    @State private var currentPlayCountFilter: Int
+    // Use @Shared directly instead of environment
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+
     @State private var showingMailComposer = false
     @State private var showingUsernamePicker = false
     @State private var showingUsernameChangeSheet = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
 
-    init() {
-        // Initialize with current filter value from UserDefaults
-        let filter = UserDefaults.standard.object(forKey: "currentPlayCountFilter") as? Int ?? 1
-        _currentPlayCountFilter = State(initialValue: filter)
+    // Computed property for User object (for backward compatibility)
+    private var currentUser: User? {
+        guard let username = currentUsername else { return nil }
+        return User(
+            username: username,
+            realName: nil,
+            imageURL: nil,
+            url: nil,
+            playCount: nil
+        )
     }
 
     var body: some View {
@@ -146,36 +154,32 @@ struct SettingsSheet: View {
         .sheet(isPresented: $showingUsernameChangeSheet) {
             UsernameChangeSheet()
         }
-        .onAppear {
-            // Sync with current environment value
-            currentPlayCountFilter = playCountFilter
-        }
     }
 
     // MARK: - Private Methods
 
     private var playCountFilterString: String {
-        switch currentPlayCountFilter {
+        switch playCountFilter {
         case 0:
             "off"
         case 1:
             "1 play"
         default:
-            "\(currentPlayCountFilter) plays"
+            "\(playCountFilter) plays"
         }
     }
 
     private func cyclePlayCountFilter() {
-        if currentPlayCountFilter > 31 {
-            currentPlayCountFilter = 0
-        } else if currentPlayCountFilter == 0 {
-            currentPlayCountFilter = 1
-        } else {
-            currentPlayCountFilter *= 2
+        $playCountFilter.withLock { filter in
+            if filter > 31 {
+                filter = 0
+            } else if filter == 0 {
+                filter = 1
+            } else {
+                filter *= 2
+            }
         }
-
-        // Save to UserDefaults
-        UserDefaults.standard.set(currentPlayCountFilter, forKey: "currentPlayCountFilter")
+        // Automatic persistence via @Shared
     }
 
     private func reportIssue() {
@@ -281,12 +285,27 @@ struct MailComposerView: UIViewControllerRepresentable {
 struct UsernameChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.lastFMClient) private var lastFMClient
-    @Environment(\.currentUser) private var currentUser
+
+    // Use @Shared directly
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     @State private var newUsername = ""
     @State private var isValidating = false
     @State private var validationError: String?
     @State private var isValid = false
+
+    // Computed property for User object (for backward compatibility)
+    private var currentUser: User? {
+        guard let username = currentUsername else { return nil }
+        return User(
+            username: username,
+            realName: nil,
+            imageURL: nil,
+            url: nil,
+            playCount: nil
+        )
+    }
 
     var body: some View {
         NavigationView {
@@ -404,11 +423,11 @@ struct UsernameChangeSheet: View {
     private func saveUsername() {
         guard isValid else { return }
 
-        // Save to UserDefaults
-        UserDefaults.standard.set(newUsername, forKey: "currentUser")
+        // Save using @Shared - automatic persistence
+        $currentUsername.withLock { $0 = newUsername }
 
         // Clear friends list since we're changing users
-        UserDefaults.standard.removeObject(forKey: "curatedFriends")
+        $curatedFriends.withLock { $0 = [] }
 
         dismiss()
     }
@@ -418,6 +437,4 @@ struct UsernameChangeSheet: View {
 
 #Preview {
     SettingsSheet()
-        .environment(\.playCountFilter, 4)
-        .environment(\.currentUser, User(username: "ybsc", realName: "Christopher", imageURL: nil, url: nil, playCount: 1500))
 }

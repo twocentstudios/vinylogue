@@ -1,8 +1,11 @@
+import Sharing
 import SwiftUI
 
 struct UsersListView: View {
-    @Environment(\.currentUser) private var currentUser
-    @Environment(\.curatedFriends) private var curatedFriends
+    // Use @Shared directly
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+
     @StateObject private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient())
 
     @State private var showingEditSheet = false
@@ -10,8 +13,16 @@ struct UsersListView: View {
     @State private var showingSettingsSheet = false
     @State private var importedFriendsCount = 0
 
-    private var currentUsername: String? {
-        currentUser?.username ?? UserDefaults.standard.string(forKey: "currentUser")
+    // Computed property for User object (for backward compatibility)
+    private var currentUser: User? {
+        guard let username = currentUsername else { return nil }
+        return User(
+            username: username,
+            realName: nil,
+            imageURL: nil,
+            url: nil,
+            playCount: nil
+        )
     }
 
     var body: some View {
@@ -158,16 +169,8 @@ private struct UserRowView: View {
 
 #Preview("With Friends") {
     UsersListView()
-        .environment(\.currentUser, User(username: "ybsc", realName: "Christopher", imageURL: nil, url: nil, playCount: 1500))
-        .environment(\.curatedFriends, [
-            User(username: "BobbyStompy", realName: "Bobby", imageURL: nil, url: nil, playCount: 2000),
-            User(username: "slippydrums", realName: nil, imageURL: nil, url: nil, playCount: 1200),
-            User(username: "esheikh", realName: "Emil", imageURL: nil, url: nil, playCount: 800),
-        ])
 }
 
 #Preview("Empty State") {
     UsersListView()
-        .environment(\.currentUser, User(username: "ybsc", realName: "Christopher", imageURL: nil, url: nil, playCount: 1500))
-        .environment(\.curatedFriends, [])
 }
