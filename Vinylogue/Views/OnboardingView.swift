@@ -69,9 +69,7 @@ struct OnboardingView: View {
                     Button(action: validateAndSubmit) {
                         HStack {
                             if isValidating {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .scaleEffect(0.8)
+                                AnimatedLoadingIndicator(size: 20)
                             }
 
                             Text(isValidating ? "Validating..." : "Get Started")

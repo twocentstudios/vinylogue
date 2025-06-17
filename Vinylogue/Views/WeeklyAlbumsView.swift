@@ -194,18 +194,8 @@ private struct YearNavigationButtons: View {
 // MARK: - Loading Indicator
 
 private struct LoadingIndicatorView: View {
-    @State private var rotation = 0.0
-
     var body: some View {
-        Image(systemName: "record.circle")
-            .font(.title2)
-            .foregroundColor(.vinylogue_blueBold)
-            .rotationEffect(.degrees(rotation))
-            .onAppear {
-                withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-                    rotation = 360
-                }
-            }
+        AnimatedLoadingIndicator(size: 24)
     }
 }
 

@@ -186,9 +186,7 @@ struct AlbumDetailView: View {
         VStack(alignment: .leading, spacing: 16) {
             if isLoadingDetails {
                 HStack {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: textColor))
-                        .scaleEffect(0.8)
+                    AnimatedLoadingIndicator(size: 32)
 
                     Text("Loading album details...")
                         .font(.body)

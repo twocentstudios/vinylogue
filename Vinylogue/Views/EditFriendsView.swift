@@ -38,9 +38,7 @@ struct EditFriendsView: View {
                         Button(action: importFriends) {
                             HStack {
                                 if friendsImporter.isLoading {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                        .scaleEffect(0.8)
+                                    AnimatedLoadingIndicator(size: 20)
                                 } else {
                                     Image(systemName: "square.and.arrow.down")
                                 }
@@ -289,9 +287,7 @@ private struct AddFriendView: View {
                 Button(action: validateAndAdd) {
                     HStack {
                         if isValidating {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(0.8)
+                            AnimatedLoadingIndicator(size: 20)
                         }
 
                         Text(isValidating ? "Validating..." : "Add Friend")

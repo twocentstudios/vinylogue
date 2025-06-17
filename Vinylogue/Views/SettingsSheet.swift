@@ -341,9 +341,12 @@ struct UsernameChangeSheet: View {
                 .padding(.horizontal, 24)
 
                 if isValidating {
-                    ProgressView("Validating...")
-                        .font(.scaledBody())
-                        .foregroundColor(.secondaryText)
+                    HStack {
+                        AnimatedLoadingIndicator(size: 24)
+                        Text("Validating...")
+                            .font(.scaledBody())
+                    }
+                    .foregroundColor(.secondaryText)
                 }
 
                 Spacer()

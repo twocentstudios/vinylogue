@@ -72,19 +72,9 @@ struct RootView: View {
 // MARK: - Migration Loading View
 
 private struct MigrationLoadingView: View {
-    @State private var rotationAngle: Double = 0
-
     var body: some View {
         VStack(spacing: 24) {
-            Image(systemName: "music.note")
-                .font(.system(size: 60))
-                .foregroundColor(.accent)
-                .rotationEffect(.degrees(rotationAngle))
-                .onAppear {
-                    withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
-                        rotationAngle = 360
-                    }
-                }
+            AnimatedLoadingIndicator(size: 60)
 
             VStack(spacing: 8) {
                 Text("Setting up Vinylogue")
@@ -95,9 +85,6 @@ private struct MigrationLoadingView: View {
                     .font(.body)
                     .foregroundColor(.secondaryText)
             }
-
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .accent))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.primaryBackground)
