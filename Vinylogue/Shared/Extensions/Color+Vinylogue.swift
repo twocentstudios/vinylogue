@@ -4,16 +4,16 @@ extension Color {
     // MARK: - Vinylogue Color Palette (Legacy Design - No Dark Mode Support)
 
     /// Primary text color - always black (legacy design doesn't support dark mode)
-    static let primaryText = Color.black
+    static let primaryText = Color.vinylogueBlueDark
 
     /// Secondary text color for less important information
-    static let secondaryText = Color.gray
+    static let secondaryText = Color.vinylogueBlueDark
 
     /// Tertiary text color for very subtle information
-    static let tertiaryText = Color.gray.opacity(0.6)
+    static let tertiaryText = Color.vinylogueBlueDark
 
     /// Background colors - always light (legacy design doesn't support dark mode)
-    static let primaryBackground = Color.white
+    static let primaryBackground = Color.vinylogueWhiteSubtle
     static let secondaryBackground = Color.vinylogueWhiteSubtle
     static let tertiaryBackground = Color.vinylogueWhiteSubtle
 
@@ -76,8 +76,8 @@ extension Font {
                                              size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
 
     /// Section headers like "me" and "friends" - AvenirNext-Medium scaled
-    static let sectionHeader = Font.custom("AvenirNext-Medium",
-                                           size: UIFont.preferredFont(forTextStyle: .subheadline).pointSize)
+    static let sectionHeader = Font.custom("AvenirNext-Ultralight",
+                                           size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
 
     /// Secondary information like play counts - AvenirNext-Regular scaled
     static let secondaryInfo = Font.custom("AvenirNext-Regular",
@@ -96,8 +96,12 @@ extension Font {
     // MARK: - Dynamic Type Scaling Methods
 
     /// Creates a font that scales with Dynamic Type, using title3 as the base
-    static func scaledTitle3() -> Font {
-        Font.custom("AvenirNext-DemiBold", size: UIFont.preferredFont(forTextStyle: .title3).pointSize)
+    static func scaledLargeTitle() -> Font {
+        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
+    }
+
+    static func scaledTitle2() -> Font {
+        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .title2).pointSize)
     }
 
     /// Creates a font that scales with Dynamic Type for body text

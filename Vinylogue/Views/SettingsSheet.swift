@@ -312,7 +312,7 @@ struct UsernameChangeSheet: View {
             VStack(spacing: 24) {
                 VStack(spacing: 16) {
                     Text("Change Username")
-                        .font(.scaledTitle3())
+                        .font(.scaledTitle2())
                         .foregroundColor(.primaryText)
 
                     Text("Enter your Last.fm username to continue")

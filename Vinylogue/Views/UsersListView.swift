@@ -27,62 +27,71 @@ struct UsersListView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                // Current user section
-                if let username = currentUsername {
-                    Section {
-                        UserRowView(
-                            user: currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
-                            isCurrentUser: true
-                        )
-                    } header: {
-                        Text("me")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                    }
-                }
-
-                // Friends section
-                if !curatedFriends.isEmpty {
-                    Section {
-                        ForEach(curatedFriends, id: \.username) { friend in
-                            UserRowView(user: friend, isCurrentUser: false)
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    // Current user section
+                    if let username = currentUsername {
+                        Section {
+                            UserRowView(
+                                user: currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
+                                isCurrentUser: true
+                            )
+                        } header: {
+                            Text("me")
+                                .font(.sectionHeader)
+                                .foregroundColor(.tertiaryText)
+                                .textCase(.lowercase)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 40)
+                                .padding(.bottom, 0)
+                                .padding(.horizontal, 24)
                         }
-                    } header: {
-                        Text("friends")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
                     }
-                }
 
-                // Empty state for friends
-                if curatedFriends.isEmpty {
-                    Section {
-                        VStack(spacing: 16) {
-                            Image(systemName: "person.2.badge.plus")
-                                .font(.system(size: 40))
-                                .foregroundColor(.accent)
-
-                            VStack(spacing: 8) {
-                                Text("No friends added yet")
-                                    .font(.usernameRegular)
-                                    .foregroundColor(.primaryText)
-
-                                Text("Import friends from Last.fm or add them manually")
-                                    .font(.secondaryInfo)
-                                    .foregroundColor(.secondaryText)
-                                    .multilineTextAlignment(.center)
+                    // Friends section
+                    if !curatedFriends.isEmpty {
+                        Section {
+                            ForEach(curatedFriends, id: \.username) { friend in
+                                UserRowView(user: friend, isCurrentUser: false)
                             }
+                        } header: {
+                            Text("friends")
+                                .font(.sectionHeader)
+                                .foregroundColor(.tertiaryText)
+                                .textCase(.lowercase)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 40)
+                                .padding(.bottom, 0)
+                                .padding(.horizontal, 24)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 32)
+                    }
+
+                    // Empty state for friends
+                    if curatedFriends.isEmpty {
+                        Section {
+                            VStack(spacing: 16) {
+                                Image(systemName: "person.2.badge.plus")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.accent)
+
+                                VStack(spacing: 8) {
+                                    Text("No friends added yet")
+                                        .font(.usernameRegular)
+                                        .foregroundColor(.primaryText)
+
+                                    Text("Import friends from Last.fm or add them manually")
+                                        .font(.secondaryInfo)
+                                        .foregroundColor(.secondaryText)
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 32)
+                        }
                     }
                 }
             }
-            .background(Color.primaryBackground)
-            .navigationTitle(currentUsername ?? "Vinylogue")
+            .navigationTitle("scrobblers")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -93,6 +102,10 @@ struct UsersListView: View {
                             .font(.body)
                             .foregroundColor(.accent)
                     }
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("scrobblers")
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -114,6 +127,7 @@ struct UsersListView: View {
             } message: {
                 Text("Added \(importedFriendsCount) new friends to your list")
             }
+            .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
         }
         .onReceive(friendsImporter.$friends) { importedFriends in
             // This will be handled by the EditFriendsView
@@ -129,39 +143,14 @@ private struct UserRowView: View {
 
     var body: some View {
         NavigationLink(destination: WeeklyAlbumsView(user: user)) {
-            HStack(spacing: 12) {
-                // User avatar placeholder
-                Circle()
-                    .fill(Color.accent.opacity(0.2))
-                    .frame(width: 40, height: 40)
-                    .overlay {
-                        Image(systemName: isCurrentUser ? "person.fill" : "person")
-                            .font(.system(size: 18))
-                            .foregroundColor(.accent)
-                    }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(user.username)
-                        .font(.scaledTitle3())
-                        .foregroundColor(.primaryText)
-
-                    if let realName = user.realName, !realName.isEmpty {
-                        Text(realName)
-                            .font(.scaledCaption())
-                            .foregroundColor(.secondaryText)
-                    }
-                }
-
-                Spacer()
-
-                if let playCount = user.playCount {
-                    Text("\(playCount) plays")
-                        .font(.secondaryInfo)
-                        .foregroundColor(.tertiaryText)
-                }
-            }
-            .padding(.vertical, 4)
+            Text(user.username)
+                .padding(.horizontal, 24)
+                .font(isCurrentUser ? Font.scaledLargeTitle() : Font.scaledTitle2())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, isCurrentUser ? 3 : 7)
+                .contentShape(Rectangle())
         }
+        .buttonStyle(UserRowButtonStyle())
     }
 }
 
@@ -173,4 +162,14 @@ private struct UserRowView: View {
 
 #Preview("Empty State") {
     UsersListView()
+}
+
+struct UserRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? .white : .primaryText)
+            .background {
+                Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 1.0 : 0.0))
+            }
+    }
 }
