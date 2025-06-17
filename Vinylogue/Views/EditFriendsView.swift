@@ -1,3 +1,4 @@
+import Combine
 import Sharing
 import SwiftUI
 
@@ -9,13 +10,11 @@ struct EditFriendsView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
-    @ObservedObject var friendsImporter: FriendsImporter
+    @State private var friendsImporter: FriendsImporter?
 
     @State private var editableFriends: [User] = []
     @State private var selectedFriends: Set<String> = []
     @State private var showingAddFriend = false
-    @State private var showingImportConfirmation = false
-    @State private var newFriendsToAdd: [User] = []
 
     // Computed property for User object (for backward compatibility)
     private var currentUser: User? {
@@ -37,13 +36,13 @@ struct EditFriendsView: View {
                     VStack(spacing: 16) {
                         Button(action: importFriends) {
                             HStack {
-                                if friendsImporter.isLoading {
+                                if friendsImporter?.isLoading == true {
                                     AnimatedLoadingIndicator(size: 20)
                                 } else {
                                     Image(systemName: "square.and.arrow.down")
                                 }
 
-                                Text(friendsImporter.isLoading ? "Importing..." : "Import friends from Last.fm")
+                                Text(friendsImporter?.isLoading == true ? "Importing..." : "Import friends from Last.fm")
                                     .fontWeight(.medium)
                             }
                             .frame(maxWidth: .infinity)
@@ -52,7 +51,7 @@ struct EditFriendsView: View {
                             .foregroundColor(.white)
                             .cornerRadius(8)
                         }
-                        .disabled(friendsImporter.isLoading)
+                        .disabled(friendsImporter?.isLoading == true)
 
                         Button(action: { showingAddFriend = true }) {
                             HStack {
@@ -91,16 +90,6 @@ struct EditFriendsView: View {
                             }
                             .onMove(perform: moveFriends)
                             .onDelete(perform: deleteFriends)
-                        } header: {
-                            Text("Curated Friends")
-                                .font(.sectionHeader)
-                                .foregroundColor(.tertiaryText)
-                        } footer: {
-                            if !editableFriends.isEmpty {
-                                Text("Drag to reorder • Swipe to delete • Tap to select/deselect")
-                                    .font(.secondaryInfo)
-                                    .foregroundColor(.tertiaryText)
-                            }
                         }
                     } else {
                         Section {
@@ -136,6 +125,21 @@ struct EditFriendsView: View {
                     }
                     .fontWeight(.semibold)
                 }
+
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(selectedFriends.count == editableFriends.count ? "Select None" : "Select All") {
+                        toggleSelectAll()
+                    }
+                    .disabled(editableFriends.isEmpty)
+
+                    Spacer()
+
+                    Button("Delete Selected (\(selectedFriends.count))") {
+                        deleteSelectedFriends()
+                    }
+                    .disabled(selectedFriends.isEmpty)
+                    .foregroundColor(.red)
+                }
             }
             .sheet(isPresented: $showingAddFriend) {
                 AddFriendView { newFriend in
@@ -144,41 +148,39 @@ struct EditFriendsView: View {
                     }
                 }
             }
-            .alert("Import Friends", isPresented: $showingImportConfirmation) {
-                Button("Cancel", role: .cancel) {}
-                Button("Add \(newFriendsToAdd.count) friends") {
-                    editableFriends.append(contentsOf: newFriendsToAdd)
-                    newFriendsToAdd.removeAll()
-                }
-            } message: {
-                Text("Found \(newFriendsToAdd.count) new friends to add to your curated list.")
-            }
         }
         .onAppear {
             editableFriends = curatedFriends
             selectedFriends = Set(curatedFriends.map(\.username))
+
+            // Initialize friendsImporter with the environment client
+            if friendsImporter == nil {
+                friendsImporter = FriendsImporter(lastFMClient: lastFMClient)
+            }
         }
-        .onReceive(friendsImporter.$friends) { importedFriends in
-            if !importedFriends.isEmpty {
+        .onChange(of: friendsImporter?.friends) { _, importedFriends in
+            if let importedFriends, !importedFriends.isEmpty {
                 handleImportedFriends(importedFriends)
             }
         }
     }
 
     private func importFriends() {
-        guard let username = currentUsername else { return }
+        guard let username = currentUsername,
+              let importer = friendsImporter else { return }
 
         Task {
-            await friendsImporter.importFriends(for: username)
+            await importer.importFriends(for: username)
         }
     }
 
     private func handleImportedFriends(_ importedFriends: [User]) {
-        let newFriends = friendsImporter.getNewFriends(excluding: editableFriends)
+        guard let importer = friendsImporter else { return }
+        let newFriends = importer.getNewFriends(excluding: editableFriends)
 
         if !newFriends.isEmpty {
-            newFriendsToAdd = newFriends
-            showingImportConfirmation = true
+            // Automatically add new friends without confirmation
+            editableFriends.append(contentsOf: newFriends)
         }
     }
 
@@ -188,6 +190,23 @@ struct EditFriendsView: View {
 
     private func deleteFriends(at offsets: IndexSet) {
         editableFriends.remove(atOffsets: offsets)
+    }
+
+    private func toggleSelectAll() {
+        if selectedFriends.count == editableFriends.count {
+            // Deselect all
+            selectedFriends.removeAll()
+        } else {
+            // Select all
+            selectedFriends = Set(editableFriends.map(\.username))
+        }
+    }
+
+    private func deleteSelectedFriends() {
+        editableFriends.removeAll { friend in
+            selectedFriends.contains(friend.username)
+        }
+        selectedFriends.removeAll()
     }
 
     private func saveFriends() {
@@ -215,26 +234,11 @@ private struct FriendEditRowView: View {
             .buttonStyle(PlainButtonStyle())
 
             // User info
-            VStack(alignment: .leading, spacing: 2) {
-                Text(friend.username)
-                    .font(.usernameRegular)
-                    .foregroundColor(.primaryText)
-
-                if let realName = friend.realName, !realName.isEmpty {
-                    Text(realName)
-                        .font(.secondaryInfo)
-                        .foregroundColor(.secondaryText)
-                }
-            }
+            Text(friend.username)
+                .font(.usernameRegular)
+                .foregroundColor(.primaryText)
 
             Spacer()
-
-            // Play count
-            if let playCount = friend.playCount {
-                Text("\(playCount)")
-                    .font(.secondaryInfo)
-                    .foregroundColor(.tertiaryText)
-            }
 
             // Drag handle
             Image(systemName: "line.3.horizontal")
@@ -254,6 +258,9 @@ private struct FriendEditRowView: View {
 private struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.lastFMClient) private var lastFMClient
+
+    // Access current user to prevent self-adding
+    @Shared(.appStorage("currentUser")) var currentUsername: String?
 
     let onFriendAdded: (User) -> Void
 
@@ -327,6 +334,12 @@ private struct AddFriendView: View {
 
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
 
+        // Prevent user from adding themselves
+        if cleanUsername.lowercased() == currentUsername?.lowercased() {
+            errorMessage = "You cannot add yourself as a friend"
+            return
+        }
+
         Task {
             await validateUsername(cleanUsername)
         }
@@ -369,5 +382,5 @@ private struct AddFriendView: View {
 // MARK: - Previews
 
 #Preview {
-    EditFriendsView(friendsImporter: FriendsImporter(lastFMClient: LastFMClient()))
+    EditFriendsView()
 }

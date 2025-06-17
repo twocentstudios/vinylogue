@@ -133,7 +133,7 @@ private struct YearNavigationButtons: View {
                         }
                     }) {
                         HStack(spacing: 8) {
-                            Text("\(loader.getYear(for: currentYearOffset - 1))")
+                            Text(String(loader.getYear(for: currentYearOffset - 1)))
                                 .font(.title2.weight(.medium))
                                 .foregroundColor(.vinylogueBlueBold)
 
@@ -169,7 +169,7 @@ private struct YearNavigationButtons: View {
                                 .font(.title3.weight(.medium))
                                 .foregroundColor(.vinylogueBlueBold)
 
-                            Text("\(loader.getYear(for: currentYearOffset + 1))")
+                            Text(String(loader.getYear(for: currentYearOffset + 1)))
                                 .font(.title2.weight(.medium))
                                 .foregroundColor(.vinylogueBlueBold)
                         }

@@ -115,7 +115,7 @@ final class WeeklyAlbumLoader: ObservableObject {
 
             // Convert to Album objects and filter by play count
             let filteredAlbums = (finalResponse.weeklyalbumchart.album ?? [])
-                .filter { $0.playCount >= playCountFilter }
+                .filter { $0.playCount > playCountFilter }
                 .map { albumEntry in
                     Album(
                         name: albumEntry.name,
@@ -230,6 +230,10 @@ final class WeeklyAlbumLoader: ObservableObject {
     /// Check if navigation to a specific year offset is available
     func canNavigate(to yearOffset: Int) -> Bool {
         guard let yearRange = availableYearRange else { return false }
+        
+        // Prevent navigation to current year (offset 0) as there are no charts
+        if yearOffset == 0 { return false }
+        
         let targetYear = getYear(for: yearOffset)
         return yearRange.contains(targetYear)
     }

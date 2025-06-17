@@ -6,12 +6,8 @@ struct UsersListView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
-    @StateObject private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient())
-
     @State private var showingEditSheet = false
-    @State private var showingImportAlert = false
     @State private var showingSettingsSheet = false
-    @State private var importedFriendsCount = 0
 
     // Computed property for User object (for backward compatibility)
     private var currentUser: User? {
@@ -118,20 +114,12 @@ struct UsersListView: View {
                 }
             }
             .sheet(isPresented: $showingEditSheet) {
-                EditFriendsView(friendsImporter: friendsImporter)
+                EditFriendsView()
             }
             .sheet(isPresented: $showingSettingsSheet) {
                 SettingsSheet()
             }
-            .alert("Friends Imported", isPresented: $showingImportAlert) {
-                Button("OK") {}
-            } message: {
-                Text("Added \(importedFriendsCount) new friends to your list")
-            }
             .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
-        }
-        .onReceive(friendsImporter.$friends) { importedFriends in
-            // This will be handled by the EditFriendsView
         }
     }
 }

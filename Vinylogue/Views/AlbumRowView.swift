@@ -12,46 +12,47 @@ struct AlbumRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Album artwork with matched geometry effect
-            NavigationLink(destination: AlbumDetailView(album: $album, namespace: namespace)) {
+        NavigationLink(destination: AlbumDetailView(album: $album, namespace: namespace)) {
+            HStack(spacing: 12) {
+                // Album artwork with matched geometry effect
                 AlbumArtworkView(imageURL: albumImageURL)
                     .frame(width: 80, height: 80)
+
+                // Album and artist info
+                VStack(alignment: .leading, spacing: 2) {
+                    // Artist name (small, gray, uppercase)
+                    Text(album.artist.uppercased())
+                        .font(.scaledCaption())
+                        .foregroundColor(.tertiaryText)
+                        .lineLimit(1)
+
+                    // Album name (medium, black)
+                    Text(album.name)
+                        .font(.scaledBody())
+                        .foregroundColor(.primaryText)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                }
+
+                Spacer()
+
+                // Play count
+                VStack(alignment: .trailing, spacing: 0) {
+                    Text("\(album.playCount)")
+                        .font(.title2.weight(.bold))
+                        .foregroundColor(.vinylogueBlueBold)
+
+                    Text("plays")
+                        .font(.scaledCaption())
+                        .foregroundColor(.tertiaryText)
+                }
             }
-            .buttonStyle(PlainButtonStyle())
-
-            // Album and artist info
-            VStack(alignment: .leading, spacing: 2) {
-                // Artist name (small, gray, uppercase)
-                Text(album.artist.uppercased())
-                    .font(.scaledCaption())
-                    .foregroundColor(.tertiaryText)
-                    .lineLimit(1)
-
-                // Album name (medium, black)
-                Text(album.name)
-                    .font(.scaledBody())
-                    .foregroundColor(.primaryText)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-            }
-
-            Spacer()
-
-            // Play count
-            VStack(alignment: .trailing, spacing: 0) {
-                Text("\(album.playCount)")
-                    .font(.title2.weight(.bold))
-                    .foregroundColor(.vinylogueBlueBold)
-
-                Text("plays")
-                    .font(.scaledCaption())
-                    .foregroundColor(.tertiaryText)
-            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Color.primaryBackground)
+            .contentShape(Rectangle())
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color.primaryBackground)
+        .buttonStyle(PlainButtonStyle())
         .task(id: album.id) {
             // Load album artwork URL if not already available
             if album.imageURL == nil {

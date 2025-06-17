@@ -6,7 +6,7 @@ struct RootView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
 
     @StateObject private var migrator = LegacyMigrator()
-    @State private var isMigrationComplete = false
+    @State private var isMigrationComplete: Bool?
     @State private var showMigrationError = false
 
     // Computed property for User object (for backward compatibility)
@@ -23,15 +23,29 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if !isMigrationComplete {
-                // Show loading during migration
-                MigrationLoadingView()
-            } else if hasCurrentUser {
-                // User is logged in, show main app
-                UsersListView()
+            if let migrationComplete = isMigrationComplete {
+                if migrationComplete {
+                    // Migration complete, show appropriate view
+                    if hasCurrentUser {
+                        // User is logged in, show main app
+                        UsersListView()
+                    } else {
+                        // No user, show onboarding
+                        OnboardingView()
+                    }
+                } else {
+                    // Show loading during migration
+                    MigrationLoadingView()
+                }
             } else {
-                // No user, show onboarding
-                OnboardingView()
+                // Initial state - determine what to show without flickering
+                if hasCurrentUser {
+                    // User exists, show main app immediately
+                    UsersListView()
+                } else {
+                    // No user, show onboarding immediately
+                    OnboardingView()
+                }
             }
         }
         .task {
@@ -59,11 +73,21 @@ struct RootView: View {
 
     @MainActor
     private func performMigration() async {
-        await migrator.migrateIfNeeded()
-
-        if migrator.migrationError != nil {
-            showMigrationError = true
+        // Check if migration is actually needed first
+        let needsMigration = UserDefaults.standard.bool(forKey: "VinylogueMigrationCompleted") == false
+        
+        if needsMigration {
+            // Only show migration screen if we actually need to migrate
+            isMigrationComplete = false
+            await migrator.migrateIfNeeded()
+            
+            if migrator.migrationError != nil {
+                showMigrationError = true
+            } else {
+                isMigrationComplete = true
+            }
         } else {
+            // No migration needed, mark as complete immediately
             isMigrationComplete = true
         }
     }

@@ -18,7 +18,7 @@ extension Color {
     static let tertiaryBackground = Color.vinylogueWhiteSubtle
 
     /// Interactive elements
-    static let accent = Color.vinylogueBlueBold
+    static let accent = Color.accentColor
     static let destructive = Color.red
 
     // MARK: - Legacy Vinylogue Colors (from TCSVinylogueDesign.h)

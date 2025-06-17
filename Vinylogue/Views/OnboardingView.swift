@@ -14,6 +14,8 @@ struct OnboardingView: View {
 
     @FocusState private var isTextFieldFocused: Bool
 
+    @State private var friendsImporter: FriendsImporter?
+
     var body: some View {
         NavigationView {
             VStack(spacing: 32) {
@@ -159,6 +161,15 @@ struct OnboardingView: View {
 
             // Update the current user using @Shared - automatic persistence
             $currentUsername.withLock { $0 = username }
+
+            // Automatically import friends on first startup
+            if friendsImporter == nil {
+                friendsImporter = FriendsImporter(lastFMClient: lastFMClient)
+            }
+
+            if let importer = friendsImporter {
+                await importer.importFriends(for: username)
+            }
 
             isValidating = false
 
