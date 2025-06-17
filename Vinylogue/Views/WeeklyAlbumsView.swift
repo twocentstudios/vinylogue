@@ -33,7 +33,7 @@ struct WeeklyAlbumsView: View {
                                     NavigationLink(destination: AlbumDetailView(album: $album)) {
                                         AlbumRowView(album: $album)
                                     }
-                                    .buttonStyle(.plain)
+                                    .buttonStyle(AlbumRowButtonStyle())
                                 }
                             }
                         }

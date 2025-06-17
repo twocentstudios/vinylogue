@@ -20,14 +20,12 @@ struct AlbumRowView: View {
                 // Artist name (small, gray, uppercase)
                 Text(album.artist.uppercased())
                     .font(.f(.ultralight, .caption1))
-                    .foregroundColor(.vinylogueBlueDark)
                     .lineLimit(1)
                     .padding(.vertical, -1)
 
                 // Album name (medium, black)
                 Text(album.name)
                     .font(.f(.regular, .body))
-                    .foregroundColor(.vinylogueBlueDark)
                     .shadow(color: .black.opacity(0.25), radius: 0, x: 0, y: 1)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
@@ -40,12 +38,10 @@ struct AlbumRowView: View {
             VStack(alignment: .center, spacing: 0) {
                 Text("\(album.playCount)")
                     .font(.f(.regular, .title2))
-                    .foregroundColor(.vinylogueBlueDark)
                     .padding(.vertical, -3)
 
                 Text("plays")
                     .font(.f(.ultralight, .caption1))
-                    .foregroundColor(.vinylogueBlueDark)
                     .padding(.vertical, -3)
             }
         }
@@ -58,7 +54,6 @@ struct AlbumRowView: View {
         .background(alignment: .bottom) {
             Rectangle().fill(Color.black.opacity(0.1)).frame(height: 1)
         }
-        .background(Color.primaryBackground)
         .contentShape(Rectangle())
         .task(id: album.id) {
             // Load album artwork URL if not already available
@@ -82,6 +77,14 @@ struct AlbumRowView: View {
             // If we can't load the details, we'll show the placeholder
             album.imageURL = nil
         }
+    }
+}
+
+struct AlbumRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? .vinylogueWhiteSubtle : .vinylogueBlueDark)
+            .background(configuration.isPressed ? Color.vinylogueBlueDark : Color.vinylogueWhiteSubtle)
     }
 }
 
