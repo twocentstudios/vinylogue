@@ -42,7 +42,7 @@ struct AlbumRowView: View {
             VStack(alignment: .trailing, spacing: 0) {
                 Text("\(album.playCount)")
                     .font(.title2.weight(.bold))
-                    .foregroundColor(.vinylogue_blueBold)
+                    .foregroundColor(.vinylogueBlueBold)
 
                 Text("plays")
                     .font(.scaledCaption())
@@ -106,14 +106,14 @@ private struct AlbumArtworkView: View {
 
     private var placeholderView: some View {
         RoundedRectangle(cornerRadius: 8)
-            .fill(Color.vinylrogueGray)
+            .fill(Color.vinylogueGray)
             .overlay {
                 Circle()
                     .fill(Color.white.opacity(0.8))
                     .frame(width: 40, height: 40)
                     .overlay {
                         Circle()
-                            .fill(Color.vinylrogueGray)
+                            .fill(Color.vinylogueGray)
                             .frame(width: 8, height: 8)
                     }
             }

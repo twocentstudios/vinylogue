@@ -18,7 +18,7 @@ extension Color {
     static let tertiaryBackground = Color.vinylogueWhiteSubtle
 
     /// Interactive elements
-    static let accent = Color.vinylogue_blueBold
+    static let accent = Color.vinylogueBlueBold
     static let destructive = Color.red
 
     // MARK: - Legacy Vinylogue Colors (from TCSVinylogueDesign.h)
@@ -27,22 +27,22 @@ extension Color {
     static let vinylogueWhiteSubtle = Color(red: 240 / 255, green: 240 / 255, blue: 240 / 255)
 
     /// BLUE_DARK - RGB(15, 24, 46)
-    static let vinylogue_blueDark = Color(red: 15 / 255, green: 24 / 255, blue: 46 / 255)
+    static let vinylogueBlueDark = Color(red: 15 / 255, green: 24 / 255, blue: 46 / 255)
 
     /// BLUE_BOLD - RGB(67, 85, 129)
-    static let vinylogue_blueBold = Color(red: 67 / 255, green: 85 / 255, blue: 129 / 255)
+    static let vinylogueBlueBold = Color(red: 67 / 255, green: 85 / 255, blue: 129 / 255)
 
     /// BLUE_PERI - RGB(220, 220, 220)
-    static let vinylogue_bluePeri = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
+    static let vinylogueBluePeri = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
 
     /// BLUE_PERI_SHADOW - RGB(195, 195, 195)
-    static let vinylogue_bluePerShadow = Color(red: 195 / 255, green: 195 / 255, blue: 195 / 255)
+    static let vinylogueBluePeriShadow = Color(red: 195 / 255, green: 195 / 255, blue: 195 / 255)
 
     /// BAR_BUTTON_TINT - RGB(220, 220, 220)
     static let vinylogueButtonTint = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
 
     /// Legacy gray for disabled states
-    static let vinylrogueGray = Color.vinylogue_bluePeri
+    static let vinylogueGray = Color.vinylogueBluePeri
 }
 
 extension Font {

@@ -126,7 +126,7 @@ struct OnboardingView: View {
 
     private var submitButtonBackground: Color {
         if username.isEmpty || isValidating {
-            .vinylrogueGray
+            .vinylogueGray
         } else {
             .accent
         }

@@ -69,11 +69,11 @@ struct AlbumDetailView: View {
                             }
                     } else {
                         // Background for placeholder
-                        Color.vinylrogueGray.opacity(0.2)
+                        Color.vinylogueGray.opacity(0.2)
                     }
                 }
             } else {
-                Color.vinylrogueGray.opacity(0.2)
+                Color.vinylogueGray.opacity(0.2)
             }
         }
     }
@@ -107,14 +107,14 @@ struct AlbumDetailView: View {
 
     private var albumPlaceholder: some View {
         Rectangle()
-            .fill(Color.vinylrogueGray)
+            .fill(Color.vinylogueGray)
             .overlay {
                 Circle()
                     .fill(Color.white.opacity(0.8))
                     .frame(width: 120, height: 120)
                     .overlay {
                         Circle()
-                            .fill(Color.vinylrogueGray)
+                            .fill(Color.vinylogueGray)
                             .frame(width: 24, height: 24)
                     }
             }
