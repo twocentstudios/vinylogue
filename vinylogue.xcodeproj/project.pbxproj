@@ -24,6 +24,7 @@
 		46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918077500BAC67836FBF270A /* LastFMResponses.swift */; };
 		5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5587926756100F8666AAA8 /* CacheManager.swift */; };
 		63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */; };
+		64953255D6E3917D09643F11 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E116C6835654F9B2520C2A /* EmptyStateView.swift */; };
 		64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95D8560225422135D2FE41 /* OnboardingView.swift */; };
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
 		6E603D081E6C7BA6D141092E /* AlbumDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F525C206B45976A213075204 /* AlbumDetailView.swift */; };
@@ -39,6 +40,7 @@
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
 		A9062E48AA5E776B8C70ACD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */; };
 		B6F4C8EF591F01AC10A2E2C3 /* ColorExtractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CEB50014FEA3665EB062F5 /* ColorExtractionTests.swift */; };
+		BB331787659199DD4C834776 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEEE4964731E948A556161 /* ErrorStateView.swift */; };
 		BDCC721C37900C6313FBBC6E /* WeeklyChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */; };
 		BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE558E9128DB9A867018AA1F /* ContentView.swift */; };
 		C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F035580BEB530F91763B554 /* UsersListView.swift */; };
@@ -67,6 +69,7 @@
 		229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumsView.swift; sourceTree = "<group>"; };
+		3ADEEE4964731E948A556161 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
 		61A2103491B1B740C03DDE8E /* FriendsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporter.swift; sourceTree = "<group>"; };
@@ -95,6 +98,7 @@
 		D6AC920B7F52AF9107BBF620 /* WeeklyAlbumLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumLoaderTests.swift; sourceTree = "<group>"; };
 		DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtraction.swift; sourceTree = "<group>"; };
 		DE558E9128DB9A867018AA1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E3E116C6835654F9B2520C2A /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		EA95D8560225422135D2FE41 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F0B88E9576F5D832F788592A /* SharedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedKeys.swift; sourceTree = "<group>"; };
 		F525C206B45976A213075204 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 				74186B195551DD3AD1407172 /* SettingsSheet.swift */,
 				7F035580BEB530F91763B554 /* UsersListView.swift */,
 				27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */,
+				A9ADDE0052BD7562BFA53067 /* Helpers */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -171,6 +176,15 @@
 				9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		A9ADDE0052BD7562BFA53067 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E3E116C6835654F9B2520C2A /* EmptyStateView.swift */,
+				3ADEEE4964731E948A556161 /* ErrorStateView.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		B003EF4BF97ADE725E29DC02 /* Preview Content */ = {
@@ -256,7 +270,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_0FD40C9D-AED4-4E83-BA58-C84E296B1074" /* Features */ = {
+		"TEMP_80BB3246-9101-4665-9B4B-A881EE89DC7F" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -371,7 +385,9 @@
 				736CF7D501FC7A910EC4D3E4 /* ColorExtraction.swift in Sources */,
 				BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */,
 				CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */,
+				64953255D6E3917D09643F11 /* EmptyStateView.swift in Sources */,
 				05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */,
+				BB331787659199DD4C834776 /* ErrorStateView.swift in Sources */,
 				257C55D32BCB823030662851 /* FriendsImporter.swift in Sources */,
 				8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */,
 				30EB596AB2DF86962C194119 /* LastFMClient.swift in Sources */,

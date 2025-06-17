@@ -155,60 +155,6 @@ private struct LoadingIndicatorView: View {
     }
 }
 
-// MARK: - Empty State
-
-private struct EmptyStateView: View {
-    let username: String
-
-    var body: some View {
-        VStack(spacing: 32) {
-            Image(systemName: "music.note")
-                .font(.system(size: 80))
-                .foregroundColor(.vinylogueBlueBold)
-
-            VStack(spacing: 16) {
-                Text("No charts!")
-                    .font(.title.weight(.semibold))
-                    .foregroundColor(.primaryText)
-
-                Text("Looks like \(username) didn't listen to\nmuch music this week.")
-                    .font(.body)
-                    .foregroundColor(.secondaryText)
-                    .multilineTextAlignment(.center)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.top, 100)
-    }
-}
-
-// MARK: - Error State
-
-private struct ErrorStateView: View {
-    let error: LastFMError
-
-    var body: some View {
-        VStack(spacing: 32) {
-            Image(systemName: "xmark")
-                .font(.system(size: 80))
-                .foregroundColor(.destructive)
-
-            VStack(spacing: 16) {
-                Text("Error")
-                    .font(.title.weight(.semibold))
-                    .foregroundColor(.primaryText)
-
-                Text(error.localizedDescription)
-                    .font(.body)
-                    .foregroundColor(.secondaryText)
-                    .multilineTextAlignment(.center)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.top, 100)
-    }
-}
-
 // MARK: - Preview
 
 #Preview("With Albums") {
@@ -225,13 +171,11 @@ private struct ErrorStateView: View {
 }
 
 #Preview("Empty State") {
-    NavigationView {
-        EmptyStateView(username: "ybsc")
-    }
+    EmptyStateView(username: "ybsc")
+        .background(Color.primaryBackground)
 }
 
 #Preview("Error State") {
-    NavigationView {
-        ErrorStateView(error: .networkUnavailable)
-    }
+    ErrorStateView(error: .networkUnavailable)
+        .background(Color.primaryBackground)
 }
