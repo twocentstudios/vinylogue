@@ -90,66 +90,57 @@ private struct YearNavigationButtons: ViewModifier {
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .top) {
-                // Next year button (top safe area)
-                if loader.canNavigate(to: currentYearOffset - 1) {
-                    HStack {
-                        Spacer()
-
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                currentYearOffset -= 1
-                            }
-                        }) {
-                            HStack(spacing: 8) {
-                                Text(String(loader.getYear(for: currentYearOffset - 1)))
-                                    .font(.title2.weight(.medium))
-                                    .foregroundColor(.vinylogueBlueBold)
-
-                                Image(systemName: "arrow.right")
-                                    .font(.title3.weight(.medium))
-                                    .foregroundColor(.vinylogueBlueBold)
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 25)
-                                    .fill(Color.primaryBackground)
-                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                            )
+                let prevOffset = currentYearOffset - 1
+                if loader.canNavigate(to: prevOffset) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            currentYearOffset = prevOffset
                         }
-                        .padding(.trailing, 20)
+                    }) {
+                        VStack(spacing: -2) {
+                            Image(systemName: "arrow.up")
+                                .font(.f(.regular, .caption1))
+                                .foregroundColor(.vinylogueBlueBold)
+                            Text(String(loader.getYear(for: prevOffset)))
+                                .font(.f(.regular, .title2))
+                                .foregroundColor(.vinylogueBlueBold)
+                                .contentTransition(.numericText(value: Double(prevOffset)))
+                        }
+                        .padding(.horizontal, 26)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Material.thin)
+                                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                        )
+                        .padding(.top, 10)
                     }
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                // Previous year button (bottom safe area)
-                if loader.canNavigate(to: currentYearOffset + 1) {
-                    HStack {
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                currentYearOffset += 1
-                            }
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "arrow.left")
-                                    .font(.title3.weight(.medium))
-                                    .foregroundColor(.vinylogueBlueBold)
-
-                                Text(String(loader.getYear(for: currentYearOffset + 1)))
-                                    .font(.title2.weight(.medium))
-                                    .foregroundColor(.vinylogueBlueBold)
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 25)
-                                    .fill(Color.primaryBackground)
-                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                            )
+                let nextOffset = currentYearOffset + 1
+                if loader.canNavigate(to: nextOffset) {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            currentYearOffset = nextOffset
                         }
-                        .padding(.leading, 20)
-
-                        Spacer()
+                    }) {
+                        VStack(spacing: -2) {
+                            Text(String(loader.getYear(for: nextOffset)))
+                                .font(.f(.regular, .title2))
+                                .foregroundColor(.vinylogueBlueBold)
+                                .contentTransition(.numericText(value: Double(nextOffset)))
+                            Image(systemName: "arrow.down")
+                                .font(.f(.regular, .caption1))
+                                .foregroundColor(.vinylogueBlueBold)
+                        }
+                        .padding(.horizontal, 26)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Material.thin)
+                                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                        )
                     }
                 }
             }
