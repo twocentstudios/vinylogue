@@ -12,7 +12,7 @@ struct SectionHeaderView: View {
 
     var body: some View {
         Text(title)
-            .font(.sectionHeader)
+            .font(.f(.ultralight, .headline))
             .foregroundColor(.tertiaryText)
             .textCase(.lowercase)
             .frame(maxWidth: .infinity, alignment: .leading)

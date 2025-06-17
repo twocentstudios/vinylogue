@@ -29,13 +29,13 @@ struct OnboardingView: View {
                         .accessibilityHidden(true)
 
                     Text("Welcome to Vinylogue")
-                        .font(.largeTitle)
+                        .font(.f(.regular, .largeTitle))
                         .fontWeight(.bold)
                         .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
 
                     Text("Discover your weekly music listening habits")
-                        .font(.title3)
+                        .font(.f(.medium, .title3))
                         .foregroundColor(.secondaryText)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -47,7 +47,7 @@ struct OnboardingView: View {
                 VStack(spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Enter your Last.fm username")
-                            .font(.sectionHeader)
+                            .font(.f(.ultralight, .headline))
                             .foregroundColor(.primaryText)
 
                         TextField("username", text: $username)
@@ -64,7 +64,7 @@ struct OnboardingView: View {
                         if let errorMessage, showError {
                             Label(errorMessage, systemImage: "exclamationmark.triangle")
                                 .foregroundColor(.destructive)
-                                .font(.secondaryInfo)
+                                .font(.f(.regular, .caption1))
                         }
                     }
 
@@ -75,7 +75,7 @@ struct OnboardingView: View {
                             }
 
                             Text(isValidating ? "Validating..." : "Get Started")
-                                .font(.body)
+                                .font(.f(.medium, .body))
                                 .fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
@@ -95,11 +95,11 @@ struct OnboardingView: View {
                 // Help text
                 VStack(spacing: 8) {
                     Text("Don't have a Last.fm account?")
-                        .font(.secondaryInfo)
+                        .font(.f(.regular, .caption1))
                         .foregroundColor(.secondaryText)
 
                     Link("Sign up at Last.fm", destination: URL(string: "https://www.last.fm/join")!)
-                        .font(.secondaryInfo)
+                        .font(.f(.regular, .caption1))
                         .foregroundColor(.accent)
                         .accessibilityHint("Opens Last.fm signup page in browser")
                 }

@@ -46,71 +46,18 @@ extension Color {
 }
 
 extension Font {
-    // MARK: - Vinylogue Typography (Legacy AvenirNext with Dynamic Type Support)
+    // MARK: - VinylogueFont System
 
-    /// Legacy AvenirNext fonts with Dynamic Type scaling
-    static func vinylogueUltraLight(_ size: CGFloat) -> Font {
-        .custom("AvenirNext-UltraLight", size: size)
+    static func f(_ fontVariant: VinylogueFont, _ textStyle: UIFont.TextStyle) -> Font {
+        Font.custom(fontVariant.rawValue, size: UIFont.preferredFont(forTextStyle: textStyle).pointSize)
     }
+}
 
-    static func vinylrogeDemiBold(_ size: CGFloat) -> Font {
-        .custom("AvenirNext-DemiBold", size: size)
-    }
-
-    static func vinylrogueMedium(_ size: CGFloat) -> Font {
-        .custom("AvenirNext-Medium", size: size)
-    }
-
-    static func vinylogueRegular(_ size: CGFloat) -> Font {
-        .custom("AvenirNext-Regular", size: size)
-    }
-
-    // MARK: - Semantic Font Roles with Dynamic Type Support
-
-    /// Large username text in users list - AvenirNext-DemiBold scaled
-    static let usernameLarge = Font.custom("AvenirNext-DemiBold",
-                                           size: UIFont.preferredFont(forTextStyle: .title2).pointSize)
-
-    /// Regular username text - AvenirNext-Medium scaled
-    static let usernameRegular = Font.custom("AvenirNext-Medium",
-                                             size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
-
-    /// Section headers like "me" and "friends" - AvenirNext-Medium scaled
-    static let sectionHeader = Font.custom("AvenirNext-Ultralight",
-                                           size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
-
-    /// Secondary information like play counts - AvenirNext-Regular scaled
-    static let secondaryInfo = Font.custom("AvenirNext-Regular",
-                                           size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
-
-    /// Album/artist names in charts - AvenirNext-Medium scaled
-    static let albumTitle = Font.custom("AvenirNext-Medium",
-                                        size: UIFont.preferredFont(forTextStyle: .body).pointSize)
-    static let artistName = Font.custom("AvenirNext-Regular",
-                                        size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
-
-    /// Navigation titles - AvenirNext-DemiBold scaled
-    static let navigationTitle = Font.custom("AvenirNext-DemiBold",
-                                             size: UIFont.preferredFont(forTextStyle: .headline).pointSize)
-
-    // MARK: - Dynamic Type Scaling Methods
-
-    /// Creates a font that scales with Dynamic Type, using title3 as the base
-    static func scaledLargeTitle() -> Font {
-        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize)
-    }
-
-    static func scaledTitle2() -> Font {
-        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .title2).pointSize)
-    }
-
-    /// Creates a font that scales with Dynamic Type for body text
-    static func scaledBody() -> Font {
-        Font.custom("AvenirNext-Medium", size: UIFont.preferredFont(forTextStyle: .body).pointSize)
-    }
-
-    /// Creates a font that scales with Dynamic Type for captions
-    static func scaledCaption() -> Font {
-        Font.custom("AvenirNext-Regular", size: UIFont.preferredFont(forTextStyle: .caption1).pointSize)
-    }
+enum VinylogueFont: String {
+    case ultralight = "AvenirNext-Ultralight"
+    case regular = "AvenirNext-Regular"
+    case medium = "AvenirNext-Medium"
+    case demiBold = "AvenirNext-Demibold"
+    case bold = "AvenirNext-Bold"
+    case heavy = "AvenirNext-Heavy"
 }

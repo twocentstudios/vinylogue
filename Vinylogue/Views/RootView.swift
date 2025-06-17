@@ -75,12 +75,12 @@ struct RootView: View {
     private func performMigration() async {
         // Check if migration is actually needed first
         let needsMigration = UserDefaults.standard.bool(forKey: "VinylogueMigrationCompleted") == false
-        
+
         if needsMigration {
             // Only show migration screen if we actually need to migrate
             isMigrationComplete = false
             await migrator.migrateIfNeeded()
-            
+
             if migrator.migrationError != nil {
                 showMigrationError = true
             } else {
@@ -102,11 +102,11 @@ private struct MigrationLoadingView: View {
 
             VStack(spacing: 8) {
                 Text("Setting up Vinylogue")
-                    .font(.navigationTitle)
+                    .font(.f(.demiBold, .headline))
                     .foregroundColor(.primaryText)
 
                 Text("Migrating your data...")
-                    .font(.body)
+                    .font(.f(.medium, .body))
                     .foregroundColor(.secondaryText)
             }
         }

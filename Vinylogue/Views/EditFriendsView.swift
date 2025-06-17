@@ -99,7 +99,7 @@ struct EditFriendsView: View {
                                     .foregroundColor(.accent.opacity(0.6))
 
                                 Text("No friends in your curated list")
-                                    .font(.body)
+                                    .font(.f(.medium, .body))
                                     .foregroundColor(.secondaryText)
                                     .multilineTextAlignment(.center)
                             }
@@ -235,7 +235,7 @@ private struct FriendEditRowView: View {
 
             // User info
             Text(friend.username)
-                .font(.usernameRegular)
+                .font(.f(.medium, .headline))
                 .foregroundColor(.primaryText)
 
             Spacer()
@@ -274,7 +274,7 @@ private struct AddFriendView: View {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Enter Last.fm username")
-                        .font(.sectionHeader)
+                        .font(.f(.ultralight, .headline))
                         .foregroundColor(.primaryText)
 
                     TextField("username", text: $username)
@@ -286,7 +286,7 @@ private struct AddFriendView: View {
 
                     if let errorMessage {
                         Text(errorMessage)
-                            .font(.secondaryInfo)
+                            .font(.f(.regular, .caption1))
                             .foregroundColor(.destructive)
                     }
                 }

@@ -124,7 +124,7 @@ struct AlbumDetailView: View {
         VStack(spacing: 8) {
             // Artist name (small, uppercase)
             Text(album.artist.uppercased())
-                .font(.scaledCaption())
+                .font(.f(.regular, .caption1))
                 .foregroundColor(textColor.opacity(0.85))
                 .multilineTextAlignment(.center)
 
@@ -272,21 +272,21 @@ struct AlbumDetailView: View {
 
         isLoadingDetails = false
     }
-    
+
     /// Clean up album description by removing Last.fm "Read more" links
     private func cleanupDescription(_ description: String?) -> String? {
-        guard let description = description else { return nil }
-        
+        guard let description else { return nil }
+
         // Regular expression to match the "Read more on Last.fm" link pattern
         // This matches: <a href="{any url}">Read more on Last.fm</a>.
         let pattern = #"<a href="[^"]*">Read more on Last\.fm</a>\."#
-        
+
         let cleanedDescription = description.replacingOccurrences(
             of: pattern,
             with: "",
             options: .regularExpression
         ).trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         return cleanedDescription.isEmpty ? nil : cleanedDescription
     }
 }

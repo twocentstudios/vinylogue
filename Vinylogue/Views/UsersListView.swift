@@ -58,11 +58,11 @@ struct UsersListView: View {
 
                                 VStack(spacing: 8) {
                                     Text("No friends added yet")
-                                        .font(.usernameRegular)
+                                        .font(.f(.medium, .headline))
                                         .foregroundColor(.primaryText)
 
                                     Text("Import friends from Last.fm or add them manually")
-                                        .font(.secondaryInfo)
+                                        .font(.f(.regular, .caption1))
                                         .foregroundColor(.secondaryText)
                                         .multilineTextAlignment(.center)
                                 }
@@ -81,7 +81,7 @@ struct UsersListView: View {
                         showingSettingsSheet = true
                     }) {
                         Image(systemName: "gearshape.fill")
-                            .font(.body)
+                            .font(.f(.medium, .body))
                             .foregroundColor(.accent)
                     }
                 }
@@ -95,7 +95,7 @@ struct UsersListView: View {
                     Button("Edit") {
                         showingEditSheet = true
                     }
-                    .font(.body)
+                    .font(.f(.medium, .body))
                     .foregroundColor(.accent)
                 }
             }
@@ -120,7 +120,7 @@ private struct UserRowView: View {
         NavigationLink(destination: WeeklyAlbumsView(user: user)) {
             Text(user.username)
                 .padding(.horizontal, 24)
-                .font(isCurrentUser ? Font.scaledLargeTitle() : Font.scaledTitle2())
+                .font(isCurrentUser ? .f(.regular, .largeTitle) : .f(.regular, .title2))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, isCurrentUser ? 3 : 7)
                 .contentShape(Rectangle())

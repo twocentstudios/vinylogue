@@ -105,7 +105,7 @@ struct SettingsSheet: View {
                     Button("Back") {
                         dismiss()
                     }
-                    .font(.body)
+                    .font(.f(.medium, .body))
                     .foregroundColor(.accent)
                 }
 
@@ -193,7 +193,7 @@ private struct SettingsRowView: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.scaledTitle2())
+                .font(.f(.regular, .title2))
                 .foregroundColor(.primaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 24)
@@ -308,11 +308,11 @@ struct UsernameChangeSheet: View {
             VStack(spacing: 24) {
                 VStack(spacing: 16) {
                     Text("Change Username")
-                        .font(.scaledTitle2())
+                        .font(.f(.regular, .title2))
                         .foregroundColor(.primaryText)
 
                     Text("Enter your Last.fm username to continue")
-                        .font(.scaledBody())
+                        .font(.f(.medium, .body))
                         .foregroundColor(.secondaryText)
                         .multilineTextAlignment(.center)
                 }
@@ -321,7 +321,7 @@ struct UsernameChangeSheet: View {
                 VStack(spacing: 8) {
                     TextField("Username", text: $newUsername)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .font(.scaledBody())
+                        .font(.f(.medium, .body))
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
                         .onSubmit {
@@ -330,7 +330,7 @@ struct UsernameChangeSheet: View {
 
                     if let error = validationError {
                         Text(error)
-                            .font(.scaledCaption())
+                            .font(.f(.regular, .caption1))
                             .foregroundColor(.red)
                     }
                 }
@@ -340,7 +340,7 @@ struct UsernameChangeSheet: View {
                     HStack {
                         AnimatedLoadingIndicator(size: 24)
                         Text("Validating...")
-                            .font(.scaledBody())
+                            .font(.f(.medium, .body))
                     }
                     .foregroundColor(.secondaryText)
                 }
@@ -352,7 +352,7 @@ struct UsernameChangeSheet: View {
                         saveUsername()
                     }) {
                         Text("Save Username")
-                            .font(.scaledBody())
+                            .font(.f(.medium, .body))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, minHeight: 44)
                             .background(isValid ? Color.accent : Color.gray)
@@ -364,7 +364,7 @@ struct UsernameChangeSheet: View {
                     Button("Cancel") {
                         dismiss()
                     }
-                    .font(.scaledBody())
+                    .font(.f(.medium, .body))
                     .foregroundColor(.accent)
                 }
                 .padding(.bottom, 32)

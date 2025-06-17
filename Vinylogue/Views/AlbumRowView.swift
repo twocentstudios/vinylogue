@@ -22,13 +22,13 @@ struct AlbumRowView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     // Artist name (small, gray, uppercase)
                     Text(album.artist.uppercased())
-                        .font(.scaledCaption())
+                        .font(.f(.regular, .caption1))
                         .foregroundColor(.tertiaryText)
                         .lineLimit(1)
 
                     // Album name (medium, black)
                     Text(album.name)
-                        .font(.scaledBody())
+                        .font(.f(.medium, .body))
                         .foregroundColor(.primaryText)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
@@ -43,7 +43,7 @@ struct AlbumRowView: View {
                         .foregroundColor(.vinylogueBlueBold)
 
                     Text("plays")
-                        .font(.scaledCaption())
+                        .font(.f(.regular, .caption1))
                         .foregroundColor(.tertiaryText)
                 }
             }
