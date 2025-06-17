@@ -43,6 +43,10 @@ struct UsersListView: View {
                             ForEach(curatedFriends, id: \.username) { friend in
                                 UserRowView(user: friend, isCurrentUser: false)
                             }
+
+                            EditFriendsButton {
+                                showingEditSheet = true
+                            }
                         } header: {
                             SectionHeaderView("friends")
                         }
@@ -69,6 +73,12 @@ struct UsersListView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 32)
+
+                            EditFriendsButton {
+                                showingEditSheet = true
+                            }
+                        } header: {
+                            SectionHeaderView("friends")
                         }
                     }
                 }
@@ -89,14 +99,6 @@ struct UsersListView: View {
                 ToolbarItem(placement: .principal) {
                     // TODO: font style
                     Text("scrobblers")
-                }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Edit") {
-                        showingEditSheet = true
-                    }
-                    .font(.f(.medium, .body))
-                    .foregroundColor(.accent)
                 }
             }
             .sheet(isPresented: $showingEditSheet) {
@@ -132,10 +134,22 @@ private struct UserRowView: View {
 // MARK: - Previews
 
 #Preview("With Friends") {
+    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "musiclover123"
+    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = [
+        User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
+        User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
+        User(username: "metalhead", realName: nil, playCount: 23456),
+        User(username: "popstar_fan", realName: "Emma Davis", playCount: 5678),
+        User(username: "classicalmusic", realName: "David Wilson", playCount: 12890),
+    ]
+
     UsersListView()
 }
 
 #Preview("Empty State") {
+    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "newuser"
+    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+
     UsersListView()
 }
 
@@ -146,5 +160,24 @@ struct UserRowButtonStyle: ButtonStyle {
             .background {
                 Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 1.0 : 0.0))
             }
+    }
+}
+
+// MARK: - Edit Friends Button
+
+private struct EditFriendsButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text("Edit Friends")
+                .font(.f(.regular, .title2))
+                .foregroundColor(.accent)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 7)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
