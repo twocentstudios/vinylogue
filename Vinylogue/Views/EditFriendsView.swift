@@ -226,11 +226,6 @@ private struct FriendEditRowView: View {
                     .font(.f(.regular, .title2))
                     .foregroundColor(.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
-                // Drag handle
-                Image(systemName: "line.3.horizontal")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 16))
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 7)
