@@ -9,8 +9,6 @@ struct AlbumDetailView: View {
     @State private var isLoadingDetails = false
     @Environment(\.lastFMClient) private var lastFMClient
 
-    let namespace: Namespace.ID
-
     var body: some View {
         ZStack {
             // Full screen dominant color background
@@ -304,7 +302,7 @@ struct AlbumDetailView: View {
     )
 
     return NavigationStack {
-        AlbumDetailView(album: $album, namespace: namespace)
+        AlbumDetailView(album: $album)
     }
     .environment(\.lastFMClient, LastFMClient.shared)
 }

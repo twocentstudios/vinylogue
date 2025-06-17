@@ -4,7 +4,6 @@ import SwiftUI
 
 struct AlbumRowView: View {
     @Binding var album: Album
-    let namespace: Namespace.ID
     @Environment(\.lastFMClient) private var lastFMClient
 
     private var albumImageURL: String? {
@@ -12,47 +11,55 @@ struct AlbumRowView: View {
     }
 
     var body: some View {
-        NavigationLink(destination: AlbumDetailView(album: $album, namespace: namespace)) {
-            HStack(spacing: 12) {
-                // Album artwork with matched geometry effect
-                AlbumArtworkView(imageURL: albumImageURL)
-                    .frame(width: 80, height: 80)
+        HStack(spacing: 12) {
+            AlbumArtworkView(imageURL: albumImageURL)
+                .frame(width: 80, height: 80)
 
-                // Album and artist info
-                VStack(alignment: .leading, spacing: 2) {
-                    // Artist name (small, gray, uppercase)
-                    Text(album.artist.uppercased())
-                        .font(.f(.regular, .caption1))
-                        .foregroundColor(.tertiaryText)
-                        .lineLimit(1)
+            // Album and artist info
+            VStack(alignment: .leading, spacing: 2) {
+                // Artist name (small, gray, uppercase)
+                Text(album.artist.uppercased())
+                    .font(.f(.ultralight, .caption1))
+                    .foregroundColor(.vinylogueBlueDark)
+                    .lineLimit(1)
+                    .padding(.vertical, -1)
 
-                    // Album name (medium, black)
-                    Text(album.name)
-                        .font(.f(.medium, .body))
-                        .foregroundColor(.primaryText)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                }
-
-                Spacer()
-
-                // Play count
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text("\(album.playCount)")
-                        .font(.title2.weight(.bold))
-                        .foregroundColor(.vinylogueBlueBold)
-
-                    Text("plays")
-                        .font(.f(.regular, .caption1))
-                        .foregroundColor(.tertiaryText)
-                }
+                // Album name (medium, black)
+                Text(album.name)
+                    .font(.f(.regular, .body))
+                    .foregroundColor(.vinylogueBlueDark)
+                    .shadow(color: .black.opacity(0.25), radius: 0, x: 0, y: 1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .padding(.vertical, -1)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(Color.primaryBackground)
-            .contentShape(Rectangle())
+
+            Spacer()
+
+            // Play count
+            VStack(alignment: .center, spacing: 0) {
+                Text("\(album.playCount)")
+                    .font(.f(.regular, .title2))
+                    .foregroundColor(.vinylogueBlueDark)
+                    .padding(.vertical, -3)
+
+                Text("plays")
+                    .font(.f(.ultralight, .caption1))
+                    .foregroundColor(.vinylogueBlueDark)
+                    .padding(.vertical, -3)
+            }
         }
-        .buttonStyle(PlainButtonStyle())
+        .padding(.leading, 10)
+        .padding(.trailing, 18)
+        .padding(.vertical, 10)
+        .background(alignment: .top) {
+            Rectangle().fill(Color.white.opacity(0.8)).frame(height: 1)
+        }
+        .background(alignment: .bottom) {
+            Rectangle().fill(Color.black.opacity(0.1)).frame(height: 1)
+        }
+        .background(Color.primaryBackground)
+        .contentShape(Rectangle())
         .task(id: album.id) {
             // Load album artwork URL if not already available
             if album.imageURL == nil {
@@ -102,7 +109,7 @@ private struct AlbumArtworkView: View {
             }
         }
         .frame(width: 80, height: 80)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 
     private var placeholderView: some View {
@@ -124,7 +131,6 @@ private struct AlbumArtworkView: View {
 // MARK: - Preview
 
 #Preview("Album Row") {
-    @Previewable @Namespace var namespace
     @Previewable @State var album1 = Album(
         name: "The Sea of Tragic Beasts",
         artist: "Fit For An Autopsy",
@@ -148,15 +154,15 @@ private struct AlbumArtworkView: View {
     )
 
     return VStack(spacing: 0) {
-        AlbumRowView(album: $album1, namespace: namespace)
+        AlbumRowView(album: $album1)
 
         Divider()
 
-        AlbumRowView(album: $album2, namespace: namespace)
+        AlbumRowView(album: $album2)
 
         Divider()
 
-        AlbumRowView(album: $album3, namespace: namespace)
+        AlbumRowView(album: $album3)
     }
     .background(Color.primaryBackground)
     .environment(\.lastFMClient, LastFMClient.shared)

@@ -4,15 +4,12 @@ import SwiftUI
 struct WeeklyAlbumsView: View {
     let user: User
 
-    @State private var loader: WeeklyAlbumLoader
+    @Bindable private var loader: WeeklyAlbumLoader = .init()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
-    @Namespace private var albumNamespace
 
     init(user: User) {
         self.user = user
-        // Initialize with current environment values - will be updated in onAppear
-        _loader = State(wrappedValue: WeeklyAlbumLoader())
     }
 
     var body: some View {
@@ -31,16 +28,12 @@ struct WeeklyAlbumsView: View {
                                 EmptyStateView(username: user.username)
                             }
                         } else {
-                            ForEach(loader.albums) { album in
-                                // TODO: fix this
-                                let index = loader.albums.firstIndex(where: { $0.id == album.id })!
+                            ForEach($loader.albums) { $album in
                                 VStack(spacing: 0) {
-                                    AlbumRowView(album: $loader.albums[index], namespace: albumNamespace)
-
-                                    if index != loader.albums.indices.last {
-                                        Divider()
-                                            .padding(.leading, 108) // Align with text, not image
+                                    NavigationLink(destination: AlbumDetailView(album: $album)) {
+                                        AlbumRowView(album: $album)
                                     }
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
