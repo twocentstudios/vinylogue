@@ -10,7 +10,7 @@ struct EditFriendsView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
-    @State private var friendsImporter: FriendsImporter?
+    @StateObject private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
 
     @State private var editableFriends: [User] = []
     @State private var selectedFriends: Set<String> = []
@@ -23,7 +23,7 @@ struct EditFriendsView: View {
                 if currentUsername != nil {
                     Section {
                         ImportFriendsButton(
-                            isLoading: friendsImporter?.isLoading == true,
+                            isLoading: friendsImporter.isLoading,
                             action: importFriends
                         )
                         .listRowBackground(Color.primaryBackground)
@@ -109,9 +109,10 @@ struct EditFriendsView: View {
                 }
 
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Button(selectedFriends.count == editableFriends.count ? "select none" : "select all") {
+                    Button("select \(selectedFriends.count == editableFriends.count ? "none" : "all")") {
                         toggleSelectAll()
                     }
+                    .contentTransition(.numericText())
                     .font(.f(.medium, .body))
                     .foregroundColor(.accent)
                     .disabled(editableFriends.isEmpty)
@@ -128,7 +129,8 @@ struct EditFriendsView: View {
             }
             .sheet(isPresented: $showingAddFriend) {
                 AddFriendView { newFriend in
-                    if !editableFriends.contains(where: { $0.username == newFriend.username }) {
+                    // Check for case-insensitive duplicates
+                    if !editableFriends.contains(where: { $0.username.lowercased() == newFriend.username.lowercased() }) {
                         editableFriends.append(newFriend)
                     }
                 }
@@ -138,30 +140,25 @@ struct EditFriendsView: View {
             editableFriends = curatedFriends
             selectedFriends = Set(curatedFriends.map(\.username))
 
-            // Initialize friendsImporter with the environment client
-            if friendsImporter == nil {
-                friendsImporter = FriendsImporter(lastFMClient: lastFMClient)
-            }
+            friendsImporter.updateClient(lastFMClient)
         }
-        .onChange(of: friendsImporter?.friends) { _, importedFriends in
-            if let importedFriends, !importedFriends.isEmpty {
+        .onChange(of: friendsImporter.friends) { _, importedFriends in
+            if !importedFriends.isEmpty {
                 handleImportedFriends(importedFriends)
             }
         }
     }
 
     private func importFriends() {
-        guard let username = currentUsername,
-              let importer = friendsImporter else { return }
+        guard let username = currentUsername else { return }
 
         Task {
-            await importer.importFriends(for: username)
+            await friendsImporter.importFriends(for: username)
         }
     }
 
     private func handleImportedFriends(_ importedFriends: [User]) {
-        guard let importer = friendsImporter else { return }
-        let newFriends = importer.getNewFriends(excluding: editableFriends)
+        let newFriends = friendsImporter.getNewFriends(excluding: editableFriends)
 
         if !newFriends.isEmpty {
             // Automatically add new friends without confirmation
@@ -174,6 +171,12 @@ struct EditFriendsView: View {
     }
 
     private func deleteFriends(at offsets: IndexSet) {
+        // Remove the deleted friends from selectedFriends
+        for offset in offsets {
+            let deletedFriend = editableFriends[offset]
+            selectedFriends.remove(deletedFriend.username)
+        }
+
         editableFriends.remove(atOffsets: offsets)
     }
 
@@ -231,16 +234,6 @@ private struct FriendEditRowView: View {
             .padding(.vertical, 7)
             .contentShape(Rectangle())
         }
-        .buttonStyle(FriendEditRowButtonStyle())
-    }
-}
-
-struct FriendEditRowButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background {
-                Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 0.1 : 0.0))
-            }
     }
 }
 
@@ -352,7 +345,7 @@ private struct AddFriendView: View {
             let response: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
 
             let newFriend = User(
-                username: username,
+                username: response.user.name, // Use Last.fm API capitalization
                 realName: response.user.realname?.isEmpty == false ? response.user.realname : nil,
                 imageURL: response.user.image?.last?.text,
                 url: response.user.url,

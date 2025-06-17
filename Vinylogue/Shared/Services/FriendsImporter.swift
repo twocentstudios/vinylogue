@@ -5,7 +5,7 @@ import OSLog
 @MainActor
 final class FriendsImporter: ObservableObject {
     private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "FriendsImporter")
-    private let lastFMClient: LastFMClientProtocol
+    private var lastFMClient: LastFMClientProtocol
 
     /// Current friends list loaded from Last.fm
     @Published var friends: [User] = []
@@ -18,6 +18,11 @@ final class FriendsImporter: ObservableObject {
 
     init(lastFMClient: LastFMClientProtocol) {
         self.lastFMClient = lastFMClient
+    }
+
+    /// Updates the Last.fm client (useful when injecting environment dependencies)
+    func updateClient(_ client: LastFMClientProtocol) {
+        lastFMClient = client
     }
 
     /// Fetches friends list from Last.fm for the current user
@@ -55,8 +60,8 @@ final class FriendsImporter: ObservableObject {
 
     /// Gets friends that aren't already in the curated list
     func getNewFriends(excluding curatedFriends: [User]) -> [User] {
-        let curatedUsernames = Set(curatedFriends.map(\.username))
-        return friends.filter { !curatedUsernames.contains($0.username) }
+        let curatedUsernames = Set(curatedFriends.map { $0.username.lowercased() })
+        return friends.filter { !curatedUsernames.contains($0.username.lowercased()) }
     }
 
     /// Clears the current friends list and any errors
