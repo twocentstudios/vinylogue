@@ -30,6 +30,23 @@ struct SettingsSheet: View {
         NavigationView {
             ScrollView {
                 LazyVStack(spacing: 0) {
+                    // User section
+                    Section {
+                        SettingsRowView(
+                            title: currentUser?.username ?? "Not set",
+                            action: { showingUsernameChangeSheet = true }
+                        )
+                    } header: {
+                        Text("user")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                            .padding(.bottom, 0)
+                            .padding(.horizontal, 24)
+                    }
+
                     // Play count filter section
                     Section {
                         SettingsRowView(
@@ -125,6 +142,10 @@ struct SettingsSheet: View {
                     }
                     .font(.body)
                     .foregroundColor(.accent)
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("settings")
                 }
             }
         }
