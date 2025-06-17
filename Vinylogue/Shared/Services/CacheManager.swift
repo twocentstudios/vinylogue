@@ -23,7 +23,7 @@ enum CacheError: Error, LocalizedError {
     }
 }
 
-struct CacheManager {
+struct CacheManager: Sendable {
     private let cacheDirectory: URL
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
@@ -85,7 +85,7 @@ struct CacheManager {
 }
 
 // Legacy ChartCache for backward compatibility
-struct ChartCache {
+struct ChartCache: Sendable {
     private let cacheManager = CacheManager()
 
     init() {}

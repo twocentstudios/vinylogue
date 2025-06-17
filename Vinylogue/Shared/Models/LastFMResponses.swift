@@ -2,11 +2,11 @@ import Foundation
 
 // MARK: - User Weekly Chart List Response
 
-struct UserWeeklyChartListResponse: Codable {
+struct UserWeeklyChartListResponse: Codable, Sendable {
     let weeklychartlist: WeeklyChartList
 }
 
-struct WeeklyChartList: Codable {
+struct WeeklyChartList: Codable, Sendable {
     let chart: [ChartPeriod]?
     let attr: WeeklyChartListAttributes
 
@@ -16,7 +16,7 @@ struct WeeklyChartList: Codable {
     }
 }
 
-struct ChartPeriod: Codable {
+struct ChartPeriod: Codable, Sendable {
     let from: String
     let to: String
 
@@ -29,17 +29,17 @@ struct ChartPeriod: Codable {
     }
 }
 
-struct WeeklyChartListAttributes: Codable {
+struct WeeklyChartListAttributes: Codable, Sendable {
     let user: String
 }
 
 // MARK: - User Weekly Album Chart Response
 
-struct UserWeeklyAlbumChartResponse: Codable {
+struct UserWeeklyAlbumChartResponse: Codable, Sendable {
     let weeklyalbumchart: WeeklyAlbumChart
 }
 
-struct WeeklyAlbumChart: Codable {
+struct WeeklyAlbumChart: Codable, Sendable {
     let album: [LastFMAlbumEntry]?
     let attr: WeeklyAlbumChartAttributes
 
@@ -49,7 +49,7 @@ struct WeeklyAlbumChart: Codable {
     }
 }
 
-struct LastFMAlbumEntry: Codable {
+struct LastFMAlbumEntry: Codable, Sendable {
     let artist: LastFMArtist
     let mbid: String?
     let name: String
@@ -62,11 +62,11 @@ struct LastFMAlbumEntry: Codable {
         case attr = "@attr"
     }
 
-    struct LastFMAlbumAttr: Codable {
+    struct LastFMAlbumAttr: Codable, Sendable {
         let rank: String
     }
 
-    struct LastFMArtist: Codable {
+    struct LastFMArtist: Codable, Sendable {
         let mbid: String?
         let name: String
         let url: String?
@@ -87,7 +87,7 @@ struct LastFMAlbumEntry: Codable {
     }
 }
 
-struct WeeklyAlbumChartAttributes: Codable {
+struct WeeklyAlbumChartAttributes: Codable, Sendable {
     let user: String
     let from: String
     let to: String
@@ -95,11 +95,11 @@ struct WeeklyAlbumChartAttributes: Codable {
 
 // MARK: - Album Info Response
 
-struct AlbumInfoResponse: Codable {
+struct AlbumInfoResponse: Codable, Sendable {
     let album: LastFMAlbumInfo
 }
 
-struct LastFMAlbumInfo: Codable {
+struct LastFMAlbumInfo: Codable, Sendable {
     let name: String
     let artist: String
     let mbid: String?
@@ -132,7 +132,7 @@ struct LastFMAlbumInfo: Codable {
     }
 }
 
-struct LastFMImage: Codable {
+struct LastFMImage: Codable, Sendable {
     let text: String
     let size: String
 
@@ -142,7 +142,7 @@ struct LastFMImage: Codable {
     }
 }
 
-struct LastFMWiki: Codable {
+struct LastFMWiki: Codable, Sendable {
     let published: String?
     let summary: String?
     let content: String?
@@ -150,11 +150,11 @@ struct LastFMWiki: Codable {
 
 // MARK: - User Info Response
 
-struct UserInfoResponse: Codable {
+struct UserInfoResponse: Codable, Sendable {
     let user: LastFMUserInfo
 }
 
-struct LastFMUserInfo: Codable {
+struct LastFMUserInfo: Codable, Sendable {
     let name: String
     let realname: String?
     let url: String?
@@ -174,7 +174,7 @@ struct LastFMUserInfo: Codable {
     }
 }
 
-struct LastFMRegistered: Codable {
+struct LastFMRegistered: Codable, Sendable {
     let unixtime: String
     let text: Int
 
@@ -186,11 +186,11 @@ struct LastFMRegistered: Codable {
 
 // MARK: - User Friends Response
 
-struct UserFriendsResponse: Codable {
+struct UserFriendsResponse: Codable, Sendable {
     let friends: LastFMFriends
 }
 
-struct LastFMFriends: Codable {
+struct LastFMFriends: Codable, Sendable {
     let user: [LastFMFriend]
     let attr: UserFriendsAttributes
 
@@ -200,7 +200,7 @@ struct LastFMFriends: Codable {
     }
 }
 
-struct LastFMFriend: Codable {
+struct LastFMFriend: Codable, Sendable {
     let name: String
     let realname: String?
     let url: String?
@@ -219,7 +219,7 @@ struct LastFMFriend: Codable {
     }
 }
 
-struct UserFriendsAttributes: Codable {
+struct UserFriendsAttributes: Codable, Sendable {
     let user: String
     let totalPages: String
     let page: String

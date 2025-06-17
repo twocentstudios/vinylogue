@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-struct Album: Codable, Identifiable, Hashable {
+struct Album: Codable, Identifiable, Hashable, Sendable {
     let id = UUID()
     let name: String
     let artist: String

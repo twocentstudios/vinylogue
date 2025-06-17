@@ -1,7 +1,6 @@
 @testable import Vinylogue
 import XCTest
 
-@MainActor
 final class CacheManagerTests: XCTestCase {
     private var cacheManager: CacheManager!
 
@@ -132,7 +131,6 @@ final class CacheManagerTests: XCTestCase {
 
 // MARK: - ChartCache Tests
 
-@MainActor
 final class ChartCacheTests: XCTestCase {
     private var chartCache: ChartCache!
 

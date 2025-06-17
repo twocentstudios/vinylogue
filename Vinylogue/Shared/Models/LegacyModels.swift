@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Legacy Data Models
 
 /// Represents legacy user data stored in UserDefaults
-struct LegacyUser: Codable {
+struct LegacyUser: Codable, Sendable {
     let username: String
 
     /// The legacy UserDefaults key used to store the username
@@ -11,7 +11,7 @@ struct LegacyUser: Codable {
 }
 
 /// Represents legacy settings and preferences
-struct LegacySettings: Codable {
+struct LegacySettings: Codable, Sendable {
     let playCountFilter: Int?
     let lastOpenedDate: Date?
 
@@ -23,7 +23,7 @@ struct LegacySettings: Codable {
 }
 
 /// Represents legacy friends data that might have been cached
-struct LegacyFriend: Codable {
+struct LegacyFriend: Codable, Sendable {
     let username: String
     let realName: String?
     let playCount: Int?
@@ -34,7 +34,7 @@ struct LegacyFriend: Codable {
 }
 
 /// Container for all legacy data that needs migration
-struct LegacyData: Codable {
+struct LegacyData: Codable, Sendable {
     let user: LegacyUser?
     let settings: LegacySettings?
     let friends: [LegacyFriend]?

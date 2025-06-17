@@ -4,12 +4,11 @@ import XCTest
 
 @MainActor
 final class FriendsImporterTests: XCTestCase {
-    var friendsImporter: FriendsImporter!
-    var mockLastFMClient: MockLastFMClient!
+    nonisolated var friendsImporter: FriendsImporter!
+    nonisolated var mockLastFMClient: MockLastFMClient!
 
     override func setUpWithError() throws {
-        mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        // Set up will be done in the test methods since we need MainActor
     }
 
     override func tearDownWithError() throws {
@@ -20,6 +19,9 @@ final class FriendsImporterTests: XCTestCase {
     // MARK: - Import Friends Tests
 
     func testImportFriendsSuccess() async {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Mock API response with friends
         let mockResponse = UserFriendsResponse(
             friends: LastFMFriends(
@@ -78,6 +80,9 @@ final class FriendsImporterTests: XCTestCase {
     }
 
     func testImportFriendsNetworkError() async {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Mock API error
         mockLastFMClient.mockError = LastFMError.networkUnavailable
 
@@ -97,6 +102,9 @@ final class FriendsImporterTests: XCTestCase {
     }
 
     func testImportFriendsUserNotFound() async {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Mock API user not found error
         mockLastFMClient.mockError = LastFMError.userNotFound
 
@@ -110,6 +118,9 @@ final class FriendsImporterTests: XCTestCase {
     }
 
     func testImportFriendsEmptyResponse() async {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Mock API response with no friends
         let mockResponse = UserFriendsResponse(
             friends: LastFMFriends(
@@ -138,6 +149,9 @@ final class FriendsImporterTests: XCTestCase {
     // MARK: - Friend Filtering Tests
 
     func testGetNewFriendsExcludingCurated() {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Imported friends and curated friends
         let importedFriends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
@@ -163,6 +177,9 @@ final class FriendsImporterTests: XCTestCase {
     }
 
     func testGetNewFriendsAllAlreadyCurated() {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: All imported friends are already curated
         let importedFriends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
@@ -183,6 +200,9 @@ final class FriendsImporterTests: XCTestCase {
     // MARK: - Clear Friends Test
 
     func testClearFriends() {
+        // Setup
+        mockLastFMClient = MockLastFMClient()
+        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
         // Given: Friends list with data and an error
         friendsImporter.friends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
@@ -200,9 +220,36 @@ final class FriendsImporterTests: XCTestCase {
 
 // MARK: - Mock LastFM Client
 
-class MockLastFMClient: LastFMClientProtocol {
-    var mockResponse: Any?
-    var mockError: Error?
+final class MockLastFMClient: LastFMClientProtocol, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _mockResponse: Any?
+    private var _mockError: Error?
+
+    var mockResponse: Any? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _mockResponse
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _mockResponse = newValue
+        }
+    }
+
+    var mockError: Error? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _mockError
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _mockError = newValue
+        }
+    }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
         if let error = mockError {

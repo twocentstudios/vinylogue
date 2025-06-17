@@ -258,13 +258,14 @@ struct MailComposerView: UIViewControllerRepresentable {
         Coordinator(self)
     }
 
-    class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+    class Coordinator: NSObject, @preconcurrency MFMailComposeViewControllerDelegate {
         let parent: MailComposerView
 
         init(_ parent: MailComposerView) {
             self.parent = parent
         }
 
+        @MainActor
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
             if let error {
                 parent.result = .failure(error)
@@ -375,7 +376,7 @@ struct UsernameChangeSheet: View {
         .onAppear {
             newUsername = currentUser?.username ?? ""
         }
-        .onChange(of: newUsername) { _ in
+        .onChange(of: newUsername) {
             if newUsername != currentUser?.username {
                 validateUsername()
             } else {

@@ -4,12 +4,11 @@ import XCTest
 
 @MainActor
 final class WeeklyAlbumLoaderTests: XCTestCase {
-    var loader: WeeklyAlbumLoader!
-    var mockClient: MockWeeklyAlbumClient!
+    nonisolated var loader: WeeklyAlbumLoader!
+    nonisolated var mockClient: MockWeeklyAlbumClient!
 
     override func setUpWithError() throws {
-        mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
+        // Set up will be done in the test methods since we need MainActor
     }
 
     override func tearDownWithError() throws {
@@ -18,6 +17,9 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
     }
 
     func testInitialState() {
+        // Setup
+        mockClient = MockWeeklyAlbumClient()
+        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
         XCTAssertTrue(loader.albums.isEmpty)
         XCTAssertFalse(loader.isLoading)
         XCTAssertNil(loader.error)
@@ -26,6 +28,9 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
     }
 
     func testYearCalculation() {
+        // Setup
+        mockClient = MockWeeklyAlbumClient()
+        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
         let currentYear = Calendar.current.component(.year, from: Date())
 
         XCTAssertEqual(loader.getYear(for: 0), currentYear)
@@ -34,12 +39,18 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
     }
 
     func testCanNavigateWithNoData() {
+        // Setup
+        mockClient = MockWeeklyAlbumClient()
+        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
         XCTAssertFalse(loader.canNavigate(to: 1))
         XCTAssertFalse(loader.canNavigate(to: 0))
         XCTAssertFalse(loader.canNavigate(to: -1))
     }
 
     func testClearFunctionality() {
+        // Setup
+        mockClient = MockWeeklyAlbumClient()
+        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
         // Set some test data
         loader.albums = [
             Album(name: "Test Album", artist: "Test Artist", playCount: 10),
@@ -63,10 +74,50 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
 
 // MARK: - Mock Client for Weekly Album Loader
 
-class MockWeeklyAlbumClient: LastFMClientProtocol {
-    var shouldReturnError = false
-    var mockCharts: [ChartPeriod] = []
-    var mockAlbums: [LastFMAlbumEntry] = []
+final class MockWeeklyAlbumClient: LastFMClientProtocol, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _shouldReturnError = false
+    private var _mockCharts: [ChartPeriod] = []
+    private var _mockAlbums: [LastFMAlbumEntry] = []
+
+    var shouldReturnError: Bool {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _shouldReturnError
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _shouldReturnError = newValue
+        }
+    }
+
+    var mockCharts: [ChartPeriod] {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _mockCharts
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _mockCharts = newValue
+        }
+    }
+
+    var mockAlbums: [LastFMAlbumEntry] {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _mockAlbums
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _mockAlbums = newValue
+        }
+    }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
         if shouldReturnError {

@@ -1,14 +1,14 @@
 import Foundation
-@testable import Vinylogue
 import Sharing
+@testable import Vinylogue
 import XCTest
 
 @MainActor
 final class LegacyMigratorTests: XCTestCase {
-    var migrator: LegacyMigrator!
-    var tempUserDefaults: UserDefaults!
-    var tempFileManager: FileManager!
-    var tempDirectory: URL!
+    nonisolated var migrator: LegacyMigrator!
+    nonisolated var tempUserDefaults: UserDefaults!
+    nonisolated var tempFileManager: FileManager!
+    nonisolated var tempDirectory: URL!
 
     override func setUpWithError() throws {
         // Create a temporary UserDefaults suite for testing
@@ -21,7 +21,7 @@ final class LegacyMigratorTests: XCTestCase {
         try FileManager.default.createDirectory(at: tempDirectory, withIntermediateDirectories: true)
 
         tempFileManager = FileManager.default
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
+        // migrator will be created in each test method
     }
 
     override func tearDownWithError() throws {
@@ -41,6 +41,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Migration Completion Tests
 
     func testMigrationSkippedWhenAlreadyCompleted() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration was already completed
         tempUserDefaults.set(true, forKey: "VinylogueMigrationCompleted")
 
@@ -53,6 +54,7 @@ final class LegacyMigratorTests: XCTestCase {
     }
 
     func testMigrationRunsWhenNotCompleted() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration has not been completed
         XCTAssertFalse(tempUserDefaults.bool(forKey: "VinylogueMigrationCompleted"))
 
@@ -68,6 +70,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Legacy User Migration Tests
 
     func testLegacyUserMigration() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Legacy user data exists
         let testUsername = "testuser123"
         tempUserDefaults.set(testUsername, forKey: LegacyUser.userDefaultsKey)
@@ -84,6 +87,7 @@ final class LegacyMigratorTests: XCTestCase {
     }
 
     func testNoLegacyUserMigration() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: No legacy user data exists
         // (no setup needed)
 
@@ -98,6 +102,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Legacy Settings Migration Tests
 
     func testLegacySettingsMigration() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Legacy settings exist
         let testPlayCountFilter = 5
         tempUserDefaults.set(testPlayCountFilter, forKey: LegacySettings.Keys.playCountFilter)
@@ -122,6 +127,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Legacy Friends Migration Tests
 
     func testLegacyFriendsMigration() async throws {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Legacy friends cache exists
         let legacyFriends = [
             LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil),
@@ -149,6 +155,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Full Migration Test
 
     func testFullMigrationWithAllLegacyData() async throws {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: All types of legacy data exist
         let testUsername = "fulluser"
         let testPlayCountFilter = 3
@@ -199,6 +206,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Reset Tests
 
     func testMigrationReset() async {
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration was completed
         await migrator.migrateIfNeeded()
         XCTAssertTrue(migrator.migrationCompleted)

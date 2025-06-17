@@ -3,12 +3,12 @@ import Network
 
 // MARK: - Protocol
 
-protocol LastFMClientProtocol {
+protocol LastFMClientProtocol: Sendable {
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T
     func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album
 }
 
-struct LastFMClient: LastFMClientProtocol {
+struct LastFMClient: LastFMClientProtocol, Sendable {
     private let baseURL = URL(string: "https://ws.audioscrobbler.com/2.0/")!
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
@@ -360,7 +360,7 @@ enum LastFMError: Error, LocalizedError {
 
 // MARK: - Response Types
 
-struct LastFMErrorResponse: Codable {
+struct LastFMErrorResponse: Codable, Sendable {
     let error: Int
     let message: String
 }

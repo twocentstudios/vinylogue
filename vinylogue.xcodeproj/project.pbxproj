@@ -256,7 +256,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_CE468D19-5408-4DDB-A8EF-25B5489D412B" /* Features */ = {
+		"TEMP_0FD40C9D-AED4-4E83-BA58-C84E296B1074" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -519,7 +519,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -600,7 +601,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};

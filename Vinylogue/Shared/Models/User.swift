@@ -1,6 +1,6 @@
 import Foundation
 
-struct User: Codable, Identifiable, Hashable {
+struct User: Codable, Identifiable, Hashable, Sendable {
     let id = UUID()
     let username: String
     let realName: String?
