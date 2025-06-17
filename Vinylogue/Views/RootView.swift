@@ -5,7 +5,7 @@ struct RootView: View {
     // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
 
-    @StateObject private var migrator = LegacyMigrator()
+    @State private var migrator = LegacyMigrator()
     @State private var isMigrationComplete: Bool?
     @State private var showMigrationError = false
 

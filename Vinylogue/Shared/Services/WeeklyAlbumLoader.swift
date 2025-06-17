@@ -1,23 +1,25 @@
 import Foundation
+import Observation
 import SwiftUI
 
+@Observable
 @MainActor
-final class WeeklyAlbumLoader: ObservableObject {
-    @Published var albums: [Album] = []
-    @Published var isLoading = false
-    @Published var error: LastFMError?
-    @Published var currentWeekInfo: WeekInfo?
-    @Published var availableYearRange: ClosedRange<Int>?
+final class WeeklyAlbumLoader {
+    var albums: [Album] = []
+    var isLoading = false
+    var error: LastFMError?
+    var currentWeekInfo: WeekInfo?
+    var availableYearRange: ClosedRange<Int>?
 
-    private let lastFMClient: LastFMClientProtocol
-    private let cacheManager = CacheManager()
-    private var playCountFilter: Int = 1
-    private var weeklyCharts: [ChartPeriod] = []
+    @ObservationIgnored private let lastFMClient: LastFMClientProtocol
+    @ObservationIgnored private let cacheManager = CacheManager()
+    @ObservationIgnored private var playCountFilter: Int = 1
+    @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
 
     // Track loaded state to prevent unnecessary reloads
-    private var loadedUsername: String?
-    private var loadedYearOffset: Int?
-    private var loadedPlayCountFilter: Int?
+    @ObservationIgnored private var loadedUsername: String?
+    @ObservationIgnored private var loadedYearOffset: Int?
+    @ObservationIgnored private var loadedPlayCountFilter: Int?
 
     struct WeekInfo {
         let weekNumber: Int
@@ -230,10 +232,10 @@ final class WeeklyAlbumLoader: ObservableObject {
     /// Check if navigation to a specific year offset is available
     func canNavigate(to yearOffset: Int) -> Bool {
         guard let yearRange = availableYearRange else { return false }
-        
+
         // Prevent navigation to current year (offset 0) as there are no charts
         if yearOffset == 0 { return false }
-        
+
         let targetYear = getYear(for: yearOffset)
         return yearRange.contains(targetYear)
     }

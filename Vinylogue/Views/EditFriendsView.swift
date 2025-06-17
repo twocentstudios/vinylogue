@@ -10,7 +10,7 @@ struct EditFriendsView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
-    @StateObject private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
+    @State private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
 
     @State private var editableFriends: [User] = []
     @State private var selectedFriends: Set<String> = []

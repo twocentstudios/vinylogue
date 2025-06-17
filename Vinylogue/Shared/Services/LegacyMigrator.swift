@@ -1,25 +1,27 @@
 import Foundation
+import Observation
 import OSLog
 import Sharing
 
 /// Service responsible for migrating legacy data to the new format
+@Observable
 @MainActor
-final class LegacyMigrator: ObservableObject {
-    private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "LegacyMigrator")
-    private let userDefaults: UserDefaults
-    private let fileManager: FileManager
-    private let cacheDirectory: URL?
+final class LegacyMigrator {
+    @ObservationIgnored private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "LegacyMigrator")
+    @ObservationIgnored private let userDefaults: UserDefaults
+    @ObservationIgnored private let fileManager: FileManager
+    @ObservationIgnored private let cacheDirectory: URL?
 
     /// Indicates if migration has been completed
-    @Published var migrationCompleted: Bool = false
+    var migrationCompleted: Bool = false
 
     /// Any migration error that occurred
-    @Published var migrationError: Error?
+    var migrationError: Error?
 
-    // @Shared properties for data persistence
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
-    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    // @Shared properties for data persistence (excluded from observation)
+    @ObservationIgnored @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @ObservationIgnored @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+    @ObservationIgnored @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     init(userDefaults: UserDefaults = .standard, fileManager: FileManager = .default, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults

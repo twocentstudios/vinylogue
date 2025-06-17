@@ -4,7 +4,7 @@ import SwiftUI
 struct WeeklyAlbumsView: View {
     let user: User
 
-    @StateObject private var loader: WeeklyAlbumLoader
+    @State private var loader: WeeklyAlbumLoader
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
     @Namespace private var albumNamespace
@@ -12,7 +12,7 @@ struct WeeklyAlbumsView: View {
     init(user: User) {
         self.user = user
         // Initialize with current environment values - will be updated in onAppear
-        _loader = StateObject(wrappedValue: WeeklyAlbumLoader())
+        _loader = State(wrappedValue: WeeklyAlbumLoader())
     }
 
     var body: some View {
@@ -32,6 +32,7 @@ struct WeeklyAlbumsView: View {
                             }
                         } else {
                             ForEach(loader.albums) { album in
+                                // TODO: fix this
                                 let index = loader.albums.firstIndex(where: { $0.id == album.id })!
                                 VStack(spacing: 0) {
                                     AlbumRowView(album: $loader.albums[index], namespace: albumNamespace)

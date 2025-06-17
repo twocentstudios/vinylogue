@@ -1,20 +1,22 @@
 import Foundation
+import Observation
 import OSLog
 
 /// Service responsible for importing and managing friends from Last.fm
+@Observable
 @MainActor
-final class FriendsImporter: ObservableObject {
-    private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "FriendsImporter")
-    private var lastFMClient: LastFMClientProtocol
+final class FriendsImporter {
+    @ObservationIgnored private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "FriendsImporter")
+    @ObservationIgnored private var lastFMClient: LastFMClientProtocol
 
     /// Current friends list loaded from Last.fm
-    @Published var friends: [User] = []
+    var friends: [User] = []
 
     /// Loading state for friends import
-    @Published var isLoading = false
+    var isLoading = false
 
     /// Any import error that occurred
-    @Published var importError: Error?
+    var importError: Error?
 
     init(lastFMClient: LastFMClientProtocol) {
         self.lastFMClient = lastFMClient
