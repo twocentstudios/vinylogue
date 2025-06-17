@@ -37,7 +37,8 @@ struct EditFriendsView: View {
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets())
                     } header: {
-                        SectionHeaderView("import", topPadding: 20)
+                        SectionHeaderView("add friends", topPadding: 20)
+                            .listRowInsets(EdgeInsets())
                     }
                 }
 
@@ -80,6 +81,7 @@ struct EditFriendsView: View {
                     }
                 } header: {
                     SectionHeaderView("friends", topPadding: 20)
+                        .listRowInsets(EdgeInsets())
                 }
             }
             .listStyle(.plain)
