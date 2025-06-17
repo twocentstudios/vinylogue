@@ -16,66 +16,13 @@ struct EditFriendsView: View {
     @State private var selectedFriends: Set<String> = []
     @State private var showingAddFriend = false
 
-    // Computed property for User object (for backward compatibility)
-    private var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
-
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                // Import section
-                if currentUsername != nil {
-                    VStack(spacing: 16) {
-                        Button(action: importFriends) {
-                            HStack {
-                                if friendsImporter?.isLoading == true {
-                                    AnimatedLoadingIndicator(size: 20)
-                                } else {
-                                    Image(systemName: "square.and.arrow.down")
-                                }
-
-                                Text(friendsImporter?.isLoading == true ? "Importing..." : "Import friends from Last.fm")
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 44)
-                            .background(Color.accent)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                        }
-                        .disabled(friendsImporter?.isLoading == true)
-
-                        Button(action: { showingAddFriend = true }) {
-                            HStack {
-                                Image(systemName: "person.badge.plus")
-                                Text("Add friend manually")
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 44)
-                            .background(Color.secondaryBackground)
-                            .foregroundColor(.accent)
-                            .cornerRadius(8)
-                        }
-                    }
-                    .padding()
-                    .background(Color.primaryBackground)
-                }
-
-                Divider()
-
-                // Friends list
-                List {
-                    if !editableFriends.isEmpty {
-                        Section {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    // Friends list section
+                    Section {
+                        if !editableFriends.isEmpty {
                             ForEach(editableFriends, id: \.username) { friend in
                                 FriendEditRowView(
                                     friend: friend,
@@ -88,57 +35,78 @@ struct EditFriendsView: View {
                                     }
                                 }
                             }
-                            .onMove(perform: moveFriends)
-                            .onDelete(perform: deleteFriends)
-                        }
-                    } else {
-                        Section {
+                        } else {
                             VStack(spacing: 16) {
                                 Image(systemName: "person.2")
                                     .font(.system(size: 40))
                                     .foregroundColor(.accent.opacity(0.6))
 
-                                Text("No friends in your curated list")
-                                    .font(.f(.medium, .body))
-                                    .foregroundColor(.secondaryText)
+                                Text("no friends in your curated list")
+                                    .font(.f(.medium, .headline))
+                                    .foregroundColor(.primaryText)
                                     .multilineTextAlignment(.center)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 32)
                         }
+
+                        // Import and Add Friend buttons
+                        if currentUsername != nil {
+                            ImportFriendsButton(
+                                isLoading: friendsImporter?.isLoading == true,
+                                action: importFriends
+                            )
+
+                            AddFriendButton {
+                                showingAddFriend = true
+                            }
+                        }
+                    } header: {
+                        SectionHeaderView("friends")
                     }
                 }
-                .listStyle(PlainListStyle())
             }
-            .navigationTitle("Edit Friends")
+            .background(Color.primaryBackground)
+            .navigationTitle("edit friends")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden()
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button("cancel") {
                         dismiss()
                     }
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.accent)
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("edit friends")
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button("save") {
                         saveFriends()
                     }
-                    .fontWeight(.semibold)
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.accent)
                 }
 
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Button(selectedFriends.count == editableFriends.count ? "Select None" : "Select All") {
+                    Button(selectedFriends.count == editableFriends.count ? "select none" : "select all") {
                         toggleSelectAll()
                     }
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.accent)
                     .disabled(editableFriends.isEmpty)
 
                     Spacer()
 
-                    Button("Delete Selected (\(selectedFriends.count))") {
+                    Button("delete selected (\(selectedFriends.count))") {
                         deleteSelectedFriends()
                     }
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.destructive)
                     .disabled(selectedFriends.isEmpty)
-                    .foregroundColor(.red)
                 }
             }
             .sheet(isPresented: $showingAddFriend) {
@@ -224,32 +192,38 @@ private struct FriendEditRowView: View {
     let onSelectionChanged: (Bool) -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Selection indicator
-            Button(action: { onSelectionChanged(!isSelected) }) {
+        Button(action: { onSelectionChanged(!isSelected) }) {
+            HStack(spacing: 12) {
+                // Selection indicator
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundColor(isSelected ? .accent : .gray)
                     .font(.system(size: 20))
+
+                // User info
+                Text(friend.username)
+                    .font(.f(.regular, .title2))
+                    .foregroundColor(.primaryText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                // Drag handle
+                Image(systemName: "line.3.horizontal")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 16))
             }
-            .buttonStyle(PlainButtonStyle())
-
-            // User info
-            Text(friend.username)
-                .font(.f(.medium, .headline))
-                .foregroundColor(.primaryText)
-
-            Spacer()
-
-            // Drag handle
-            Image(systemName: "line.3.horizontal")
-                .foregroundColor(.gray)
-                .font(.system(size: 16))
+            .padding(.horizontal, 24)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
         }
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            onSelectionChanged(!isSelected)
-        }
+        .buttonStyle(FriendEditRowButtonStyle())
+    }
+}
+
+struct FriendEditRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background {
+                Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 0.1 : 0.0))
+            }
     }
 }
 
@@ -273,7 +247,7 @@ private struct AddFriendView: View {
         NavigationView {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Enter Last.fm username")
+                    Text("enter last.fm username")
                         .font(.f(.ultralight, .headline))
                         .foregroundColor(.primaryText)
 
@@ -297,8 +271,8 @@ private struct AddFriendView: View {
                             AnimatedLoadingIndicator(size: 20)
                         }
 
-                        Text(isValidating ? "Validating..." : "Add Friend")
-                            .fontWeight(.semibold)
+                        Text(isValidating ? "validating..." : "add friend")
+                            .font(.f(.medium, .body))
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 44)
@@ -311,13 +285,20 @@ private struct AddFriendView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("Add Friend")
+            .navigationTitle("add friend")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden()
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button("cancel") {
                         dismiss()
                     }
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.accent)
+                }
+
+                ToolbarItem(placement: .principal) {
+                    Text("add friend")
                 }
             }
         }
@@ -328,7 +309,7 @@ private struct AddFriendView: View {
 
     private func validateAndAdd() {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            errorMessage = "Please enter a username"
+            errorMessage = "please enter a username"
             return
         }
 
@@ -336,7 +317,7 @@ private struct AddFriendView: View {
 
         // Prevent user from adding themselves
         if cleanUsername.lowercased() == currentUsername?.lowercased() {
-            errorMessage = "You cannot add yourself as a friend"
+            errorMessage = "you cannot add yourself as a friend"
             return
         }
 
@@ -367,15 +348,65 @@ private struct AddFriendView: View {
         } catch {
             switch error {
             case LastFMError.userNotFound:
-                errorMessage = "Username not found. Please check your spelling."
+                errorMessage = "username not found. please check your spelling."
             case LastFMError.networkUnavailable:
-                errorMessage = "No internet connection. Please try again."
+                errorMessage = "no internet connection. please try again."
             default:
-                errorMessage = "Unable to validate username. Please try again."
+                errorMessage = "unable to validate username. please try again."
             }
         }
 
         isValidating = false
+    }
+}
+
+// MARK: - Import and Add Friend Buttons
+
+private struct ImportFriendsButton: View {
+    let isLoading: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                if isLoading {
+                    AnimatedLoadingIndicator(size: 20)
+                } else {
+                    Image(systemName: "square.and.arrow.down")
+                }
+
+                Text(isLoading ? "importing..." : "import friends from last.fm")
+                    .font(.f(.regular, .title2))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+        }
+        .foregroundColor(.accent)
+        .disabled(isLoading)
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+private struct AddFriendButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: "person.badge.plus")
+
+                Text("add friend manually")
+                    .font(.f(.regular, .title2))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+        }
+        .foregroundColor(.accent)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
