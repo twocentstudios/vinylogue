@@ -49,21 +49,29 @@ struct EditFriendsView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 32)
                         }
-
-                        // Import and Add Friend buttons
-                        if currentUsername != nil {
-                            ImportFriendsButton(
-                                isLoading: friendsImporter?.isLoading == true,
-                                action: importFriends
-                            )
-
-                            AddFriendButton {
-                                showingAddFriend = true
-                            }
-                        }
                     } header: {
                         SectionHeaderView("friends")
                     }
+                }
+            }
+            .safeAreaInset(edge: .top) {
+                // Import and Add Friend buttons
+                if currentUsername != nil {
+                    VStack(spacing: 2) {
+                        ImportFriendsButton(
+                            isLoading: friendsImporter?.isLoading == true,
+                            action: importFriends
+                        )
+
+                        AddFriendButton {
+                            showingAddFriend = true
+                        }
+                    }
+                    .padding(.top, 10)
+                    .background {
+                        Rectangle().fill(Color.vinylogueWhiteSubtle)
+                    }
+                    .padding(.bottom, -20)
                 }
             }
             .background(Color.primaryBackground)
@@ -413,5 +421,12 @@ private struct AddFriendButton: View {
 // MARK: - Previews
 
 #Preview {
+    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "musiclover123"
+    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = [
+        User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
+        User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
+        User(username: "metalhead", realName: nil, playCount: 23456),
+    ]
+
     EditFriendsView()
 }
