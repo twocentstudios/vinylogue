@@ -13,6 +13,7 @@ struct LastFMClient: LastFMClientProtocol {
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
     private let networkMonitor = NWPathMonitor()
+    private let cacheManager = CacheManager()
 
     @MainActor
     static let shared = LastFMClient()
@@ -188,9 +189,36 @@ extension LastFMClient {
 
     /// Fetch detailed album information
     func fetchAlbumInfo(artist: String? = nil, album: String? = nil, mbid: String? = nil, username: String? = nil) async throws -> Album {
-        let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
-        let info = response.album
+        // Create cache key based on album identifiers
+        let cacheKey: String
+        if let mbid, !mbid.isEmpty {
+            cacheKey = "album_info_mbid_\(mbid)_\(username ?? "none")"
+        } else if let artist, let album {
+            let normalizedArtist = artist.lowercased().replacingOccurrences(of: " ", with: "_")
+            let normalizedAlbum = album.lowercased().replacingOccurrences(of: " ", with: "_")
+            cacheKey = "album_info_\(normalizedArtist)_\(normalizedAlbum)_\(username ?? "none")"
+        } else {
+            // Fallback to original API call without caching for invalid parameters
+            let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
+            return createAlbumFromResponse(response.album)
+        }
 
+        // Try to load from cache first
+        if let cachedAlbum: Album = try? await cacheManager.retrieve(Album.self, key: cacheKey) {
+            return cachedAlbum
+        }
+
+        // Fetch from API and cache the result
+        let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
+        let album = createAlbumFromResponse(response.album)
+
+        // Cache the album info
+        try await cacheManager.store(album, key: cacheKey)
+
+        return album
+    }
+
+    private func createAlbumFromResponse(_ info: LastFMAlbumInfo) -> Album {
         var album = Album(
             name: info.name,
             artist: info.artist,

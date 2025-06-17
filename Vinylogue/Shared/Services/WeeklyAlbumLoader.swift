@@ -10,12 +10,14 @@ final class WeeklyAlbumLoader: ObservableObject {
     @Published var availableYearRange: ClosedRange<Int>?
 
     private let lastFMClient: LastFMClientProtocol
-    private let playCountFilter: Int
+    private let cacheManager = CacheManager()
+    private var playCountFilter: Int = 1
     private var weeklyCharts: [ChartPeriod] = []
 
     // Track loaded state to prevent unnecessary reloads
     private var loadedUsername: String?
     private var loadedYearOffset: Int?
+    private var loadedPlayCountFilter: Int?
 
     struct WeekInfo {
         let weekNumber: Int
@@ -27,20 +29,32 @@ final class WeeklyAlbumLoader: ObservableObject {
         }
     }
 
-    init(lastFMClient: LastFMClientProtocol = LastFMClient.shared, playCountFilter: Int = 1) {
+    init(lastFMClient: LastFMClientProtocol = LastFMClient.shared) {
         self.lastFMClient = lastFMClient
-        self.playCountFilter = playCountFilter
+    }
+
+    /// Update the play count filter and reload if necessary
+    func updatePlayCountFilter(_ newFilter: Int, for user: User, yearOffset: Int) async {
+        guard newFilter != playCountFilter else { return }
+
+        playCountFilter = newFilter
+
+        // If we have data loaded for this user/year, refilter and update
+        if loadedUsername == user.username, loadedYearOffset == yearOffset {
+            await loadAlbums(for: user, yearOffset: yearOffset, forceReload: true)
+        }
     }
 
     /// Check if albums are already loaded for the given user and year offset
-    func isDataLoaded(for user: User, yearOffset: Int) -> Bool {
+    func isDataLoaded(for user: User, yearOffset: Int, playCountFilter: Int) -> Bool {
         loadedUsername == user.username &&
             loadedYearOffset == yearOffset &&
+            loadedPlayCountFilter == playCountFilter &&
             !albums.isEmpty
     }
 
     /// Load albums for a specific user and year offset
-    func loadAlbums(for user: User, yearOffset: Int = 0) async {
+    func loadAlbums(for user: User, yearOffset: Int = 0, forceReload: Bool = false) async {
         isLoading = true
         error = nil
 
@@ -60,6 +74,7 @@ final class WeeklyAlbumLoader: ObservableObject {
                 error = .noDataAvailable
                 loadedUsername = nil
                 loadedYearOffset = nil
+                loadedPlayCountFilter = nil
                 isLoading = false
                 return
             }
@@ -70,17 +85,36 @@ final class WeeklyAlbumLoader: ObservableObject {
             let year = calendar.component(.yearForWeekOfYear, from: chartPeriod.fromDate)
             currentWeekInfo = WeekInfo(weekNumber: weekNumber, year: year, username: user.username)
 
-            // Fetch the weekly album chart
-            let response: UserWeeklyAlbumChartResponse = try await lastFMClient.request(
-                .userWeeklyAlbumChart(
-                    username: user.username,
-                    from: chartPeriod.fromDate,
-                    to: chartPeriod.toDate
+            // Try to load from cache first (unless force reload)
+            let cacheKey = "weekly_chart_\(user.username)_\(Int(chartPeriod.fromDate.timeIntervalSince1970))_\(Int(chartPeriod.toDate.timeIntervalSince1970))"
+            var response: UserWeeklyAlbumChartResponse?
+
+            if !forceReload {
+                response = try? await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey)
+            }
+
+            if response == nil {
+                // Fetch from API and cache the result
+                response = try await lastFMClient.request(
+                    .userWeeklyAlbumChart(
+                        username: user.username,
+                        from: chartPeriod.fromDate,
+                        to: chartPeriod.toDate
+                    )
                 )
-            )
+
+                // Cache the response
+                if let validResponse = response {
+                    try await cacheManager.store(validResponse, key: cacheKey)
+                }
+            }
+
+            guard let finalResponse = response else {
+                throw LastFMError.invalidResponse
+            }
 
             // Convert to Album objects and filter by play count
-            let filteredAlbums = (response.weeklyalbumchart.album ?? [])
+            let filteredAlbums = (finalResponse.weeklyalbumchart.album ?? [])
                 .filter { $0.playCount >= playCountFilter }
                 .map { albumEntry in
                     Album(
@@ -100,6 +134,7 @@ final class WeeklyAlbumLoader: ObservableObject {
             // Update tracking state on successful load
             loadedUsername = user.username
             loadedYearOffset = yearOffset
+            loadedPlayCountFilter = playCountFilter
             isLoading = false
 
         } catch let lastFMError as LastFMError {
@@ -108,6 +143,7 @@ final class WeeklyAlbumLoader: ObservableObject {
             currentWeekInfo = nil
             loadedUsername = nil
             loadedYearOffset = nil
+            loadedPlayCountFilter = nil
             isLoading = false
         } catch {
             self.error = .invalidResponse
@@ -115,6 +151,7 @@ final class WeeklyAlbumLoader: ObservableObject {
             currentWeekInfo = nil
             loadedUsername = nil
             loadedYearOffset = nil
+            loadedPlayCountFilter = nil
             isLoading = false
         }
     }
@@ -122,11 +159,31 @@ final class WeeklyAlbumLoader: ObservableObject {
     /// Load the available weekly chart periods for a user
     private func loadWeeklyChartList(for username: String) async {
         do {
-            let response: UserWeeklyChartListResponse = try await lastFMClient.request(
-                .userWeeklyChartList(username: username)
-            )
+            let cacheKey = "weekly_chart_list_\(username)"
 
-            weeklyCharts = response.weeklychartlist.chart ?? []
+            // Try to load from cache first
+            var response: UserWeeklyChartListResponse?
+            response = try? await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey)
+
+            if response == nil {
+                // Fetch from API and cache the result
+                response = try await lastFMClient.request(
+                    .userWeeklyChartList(username: username)
+                )
+
+                // Cache the response
+                if let validResponse = response {
+                    try await cacheManager.store(validResponse, key: cacheKey)
+                }
+            }
+
+            guard let finalResponse = response else {
+                weeklyCharts = []
+                availableYearRange = nil
+                return
+            }
+
+            weeklyCharts = finalResponse.weeklychartlist.chart ?? []
 
             // Calculate available year range
             if let firstChart = weeklyCharts.first,
@@ -185,5 +242,6 @@ final class WeeklyAlbumLoader: ObservableObject {
         isLoading = false
         loadedUsername = nil
         loadedYearOffset = nil
+        loadedPlayCountFilter = nil
     }
 }

@@ -232,7 +232,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_2E12BA19-2E2B-470B-9F2C-3AF01156FF34" /* Features */ = {
+		"TEMP_62006E2F-9F43-43D4-A35B-0B492DD264B2" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);

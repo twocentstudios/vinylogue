@@ -3,10 +3,16 @@ import SwiftUI
 struct WeeklyAlbumsView: View {
     let user: User
 
-    @StateObject private var loader = WeeklyAlbumLoader()
+    @StateObject private var loader: WeeklyAlbumLoader
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Environment(\.playCountFilter) private var playCountFilter
     @Namespace private var albumNamespace
+
+    init(user: User) {
+        self.user = user
+        // Initialize with current environment values - will be updated in onAppear
+        _loader = StateObject(wrappedValue: WeeklyAlbumLoader())
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -75,14 +81,21 @@ struct WeeklyAlbumsView: View {
             }
         }
         .task {
-            // Only load if data isn't already loaded for this user and year offset
-            if !loader.isDataLoaded(for: user, yearOffset: currentYearOffset) {
+            // Only load if data isn't already loaded for this user, year offset, and play count filter
+            if !loader.isDataLoaded(for: user, yearOffset: currentYearOffset, playCountFilter: playCountFilter) {
+                await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
                 await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
             }
         }
         .onChange(of: currentYearOffset) { _, newOffset in
             Task {
+                await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: newOffset)
                 await loader.loadAlbums(for: user, yearOffset: newOffset)
+            }
+        }
+        .onChange(of: playCountFilter) { _, newFilter in
+            Task {
+                await loader.updatePlayCountFilter(newFilter, for: user, yearOffset: currentYearOffset)
             }
         }
     }

@@ -9,7 +9,7 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
 
     override func setUpWithError() throws {
         mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient, playCountFilter: 1)
+        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
     }
 
     override func tearDownWithError() throws {
