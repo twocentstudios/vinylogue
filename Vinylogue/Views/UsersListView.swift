@@ -105,6 +105,7 @@ struct UsersListView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
+                    // TODO: font style
                     Text("scrobblers")
                 }
 
