@@ -18,62 +18,71 @@ struct EditFriendsView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    // Friends list section
-                    Section {
-                        if !editableFriends.isEmpty {
-                            ForEach(editableFriends, id: \.username) { friend in
-                                FriendEditRowView(
-                                    friend: friend,
-                                    isSelected: selectedFriends.contains(friend.username)
-                                ) { isSelected in
-                                    if isSelected {
-                                        selectedFriends.insert(friend.username)
-                                    } else {
-                                        selectedFriends.remove(friend.username)
-                                    }
-                                }
-                            }
-                        } else {
-                            VStack(spacing: 16) {
-                                Image(systemName: "person.2")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.accent.opacity(0.6))
-
-                                Text("no friends in your curated list")
-                                    .font(.f(.medium, .headline))
-                                    .foregroundColor(.primaryText)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 32)
-                        }
-                    } header: {
-                        SectionHeaderView("friends")
-                    }
-                }
-            }
-            .safeAreaInset(edge: .top) {
-                // Import and Add Friend buttons
+            List {
+                // Import buttons section
                 if currentUsername != nil {
-                    VStack(spacing: 2) {
+                    Section {
                         ImportFriendsButton(
                             isLoading: friendsImporter?.isLoading == true,
                             action: importFriends
                         )
+                        .listRowBackground(Color.primaryBackground)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
 
                         AddFriendButton {
                             showingAddFriend = true
                         }
+                        .listRowBackground(Color.primaryBackground)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
+                    } header: {
+                        SectionHeaderView("import", topPadding: 20)
                     }
-                    .padding(.top, 10)
-                    .background {
-                        Rectangle().fill(Color.vinylogueWhiteSubtle)
+                }
+
+                // Friends list section
+                Section {
+                    if !editableFriends.isEmpty {
+                        ForEach(editableFriends, id: \.username) { friend in
+                            FriendEditRowView(
+                                friend: friend,
+                                isSelected: selectedFriends.contains(friend.username)
+                            ) { isSelected in
+                                if isSelected {
+                                    selectedFriends.insert(friend.username)
+                                } else {
+                                    selectedFriends.remove(friend.username)
+                                }
+                            }
+                            .listRowBackground(Color.primaryBackground)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                        }
+                        .onMove(perform: moveFriends)
+                        .onDelete(perform: deleteFriends)
+                    } else {
+                        VStack(spacing: 16) {
+                            Image(systemName: "person.2")
+                                .font(.system(size: 40))
+                                .foregroundColor(.accent.opacity(0.6))
+
+                            Text("no friends in your curated list")
+                                .font(.f(.medium, .headline))
+                                .foregroundColor(.primaryText)
+                                .multilineTextAlignment(.center)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 32)
+                        .listRowBackground(Color.primaryBackground)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
                     }
-                    .padding(.bottom, -20)
+                } header: {
+                    SectionHeaderView("friends", topPadding: 20)
                 }
             }
+            .listStyle(.plain)
             .background(Color.primaryBackground)
             .navigationTitle("edit friends")
             .navigationBarTitleDisplayMode(.inline)
