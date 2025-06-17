@@ -170,9 +170,9 @@ private struct EditFriendsButton: View {
 
     var body: some View {
         Button(action: action) {
-            Text("Edit Friends")
-                .font(.f(.regular, .title2))
-                .foregroundColor(.accent)
+            Text("edit friends")
+                .font(.f(.ultralight, .headline))
+                .foregroundColor(Color.accent)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 24)
                 .padding(.vertical, 7)
