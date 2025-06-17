@@ -6,6 +6,7 @@ struct OnboardingView: View {
 
     // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     @State private var username = ""
     @State private var isValidating = false
@@ -14,7 +15,7 @@ struct OnboardingView: View {
 
     @FocusState private var isTextFieldFocused: Bool
 
-    @State private var friendsImporter: FriendsImporter?
+    @State private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
 
     var body: some View {
         NavigationView {
@@ -163,12 +164,14 @@ struct OnboardingView: View {
             $currentUsername.withLock { $0 = username }
 
             // Automatically import friends on first startup
-            if friendsImporter == nil {
-                friendsImporter = FriendsImporter(lastFMClient: lastFMClient)
-            }
+            // Update the friendsImporter to use the environment client
+            friendsImporter.updateClient(lastFMClient)
 
-            if let importer = friendsImporter {
-                await importer.importFriends(for: username)
+            await friendsImporter.importFriends(for: username)
+
+            // Save imported friends to persistent storage
+            if !friendsImporter.friends.isEmpty {
+                $curatedFriends.withLock { $0 = friendsImporter.friends }
             }
 
             isValidating = false
