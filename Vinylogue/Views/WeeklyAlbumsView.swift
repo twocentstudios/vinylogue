@@ -13,43 +13,28 @@ struct WeeklyAlbumsView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color.primaryBackground
-                    .ignoresSafeArea()
-
-                // Main content
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        if loader.albums.isEmpty, !loader.isLoading {
-                            if loader.error != nil {
-                                ErrorStateView(error: loader.error!)
-                            } else {
-                                EmptyStateView(username: user.username)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                if loader.albums.isEmpty, !loader.isLoading {
+                    if loader.error != nil {
+                        ErrorStateView(error: loader.error!)
+                    } else {
+                        EmptyStateView(username: user.username)
+                    }
+                } else {
+                    ForEach($loader.albums) { $album in
+                        VStack(spacing: 0) {
+                            NavigationLink(destination: AlbumDetailView(album: $album)) {
+                                AlbumRowView(album: $album)
                             }
-                        } else {
-                            ForEach($loader.albums) { $album in
-                                VStack(spacing: 0) {
-                                    NavigationLink(destination: AlbumDetailView(album: $album)) {
-                                        AlbumRowView(album: $album)
-                                    }
-                                    .buttonStyle(AlbumRowButtonStyle())
-                                }
-                            }
+                            .buttonStyle(AlbumRowButtonStyle())
                         }
                     }
-                    .padding(.top, yearNavigationTopPadding(in: geometry))
-                    .padding(.bottom, yearNavigationBottomPadding(in: geometry))
                 }
-
-                // Year navigation buttons overlaid on safe areas
-                YearNavigationButtons(
-                    currentYearOffset: $currentYearOffset,
-                    loader: loader,
-                    geometry: geometry
-                )
             }
         }
+        .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, loader: loader))
+        .background(Color.primaryBackground)
         .navigationTitle("charts")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -94,94 +79,80 @@ struct WeeklyAlbumsView: View {
             }
         }
     }
-
-    // Calculate padding for year navigation buttons
-    private func yearNavigationTopPadding(in geometry: GeometryProxy) -> CGFloat {
-        let topSafeArea = geometry.safeAreaInsets.top
-        return loader.canNavigate(to: currentYearOffset - 1) ? max(topSafeArea + 60, 80) : 20
-    }
-
-    private func yearNavigationBottomPadding(in geometry: GeometryProxy) -> CGFloat {
-        let bottomSafeArea = geometry.safeAreaInsets.bottom
-        return loader.canNavigate(to: currentYearOffset + 1) ? max(bottomSafeArea + 60, 80) : 20
-    }
 }
 
 // MARK: - Year Navigation Buttons
 
-private struct YearNavigationButtons: View {
+private struct YearNavigationButtons: ViewModifier {
     @Binding var currentYearOffset: Int
     let loader: WeeklyAlbumLoader
-    let geometry: GeometryProxy
 
-    var body: some View {
-        VStack {
-            // Next year button (top safe area)
-            if loader.canNavigate(to: currentYearOffset - 1) {
-                HStack {
-                    Spacer()
+    func body(content: Content) -> some View {
+        content
+            .safeAreaInset(edge: .top) {
+                // Next year button (top safe area)
+                if loader.canNavigate(to: currentYearOffset - 1) {
+                    HStack {
+                        Spacer()
 
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentYearOffset -= 1
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentYearOffset -= 1
+                            }
+                        }) {
+                            HStack(spacing: 8) {
+                                Text(String(loader.getYear(for: currentYearOffset - 1)))
+                                    .font(.title2.weight(.medium))
+                                    .foregroundColor(.vinylogueBlueBold)
+
+                                Image(systemName: "arrow.right")
+                                    .font(.title3.weight(.medium))
+                                    .foregroundColor(.vinylogueBlueBold)
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .fill(Color.primaryBackground)
+                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                            )
                         }
-                    }) {
-                        HStack(spacing: 8) {
-                            Text(String(loader.getYear(for: currentYearOffset - 1)))
-                                .font(.title2.weight(.medium))
-                                .foregroundColor(.vinylogueBlueBold)
-
-                            Image(systemName: "arrow.right")
-                                .font(.title3.weight(.medium))
-                                .foregroundColor(.vinylogueBlueBold)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 25)
-                                .fill(Color.primaryBackground)
-                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        )
+                        .padding(.trailing, 20)
                     }
-                    .padding(.trailing, 20)
                 }
-                .padding(.top, geometry.safeAreaInsets.top + 10)
             }
+            .safeAreaInset(edge: .bottom) {
+                // Previous year button (bottom safe area)
+                if loader.canNavigate(to: currentYearOffset + 1) {
+                    HStack {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentYearOffset += 1
+                            }
+                        }) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "arrow.left")
+                                    .font(.title3.weight(.medium))
+                                    .foregroundColor(.vinylogueBlueBold)
 
-            Spacer()
-
-            // Previous year button (bottom safe area)
-            if loader.canNavigate(to: currentYearOffset + 1) {
-                HStack {
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentYearOffset += 1
+                                Text(String(loader.getYear(for: currentYearOffset + 1)))
+                                    .font(.title2.weight(.medium))
+                                    .foregroundColor(.vinylogueBlueBold)
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .fill(Color.primaryBackground)
+                                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                            )
                         }
-                    }) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "arrow.left")
-                                .font(.title3.weight(.medium))
-                                .foregroundColor(.vinylogueBlueBold)
+                        .padding(.leading, 20)
 
-                            Text(String(loader.getYear(for: currentYearOffset + 1)))
-                                .font(.title2.weight(.medium))
-                                .foregroundColor(.vinylogueBlueBold)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 25)
-                                .fill(Color.primaryBackground)
-                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                        )
+                        Spacer()
                     }
-                    .padding(.leading, 20)
-
-                    Spacer()
                 }
-                .padding(.bottom, geometry.safeAreaInsets.bottom + 10)
             }
-        }
     }
 }
 
