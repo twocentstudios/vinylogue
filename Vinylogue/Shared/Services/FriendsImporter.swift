@@ -37,7 +37,7 @@ final class FriendsImporter {
         do {
             let response: UserFriendsResponse = try await lastFMClient.request(.userFriends(username: username))
 
-            // Convert Last.fm friends to User objects
+            // Convert Last.fm friends to User objects and sort alphabetically by username
             let importedFriends = response.friends.user.map { friend in
                 User(
                     username: friend.name,
@@ -46,7 +46,7 @@ final class FriendsImporter {
                     url: friend.url,
                     playCount: friend.playcount != nil ? Int(friend.playcount!) : nil
                 )
-            }
+            }.sorted { $0.username.localizedCaseInsensitiveCompare($1.username) == .orderedAscending }
 
             friends = importedFriends
             logger.info("Successfully imported \(importedFriends.count) friends")
@@ -60,10 +60,11 @@ final class FriendsImporter {
         isLoading = false
     }
 
-    /// Gets friends that aren't already in the curated list
+    /// Gets friends that aren't already in the curated list, sorted alphabetically
     func getNewFriends(excluding curatedFriends: [User]) -> [User] {
         let curatedUsernames = Set(curatedFriends.map { $0.username.lowercased() })
         return friends.filter { !curatedUsernames.contains($0.username.lowercased()) }
+            .sorted { $0.username.localizedCaseInsensitiveCompare($1.username) == .orderedAscending }
     }
 
     /// Clears the current friends list and any errors
