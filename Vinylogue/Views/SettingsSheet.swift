@@ -37,14 +37,7 @@ struct SettingsSheet: View {
                             action: { showingUsernameChangeSheet = true }
                         )
                     } header: {
-                        Text("user")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 40)
-                            .padding(.bottom, 0)
-                            .padding(.horizontal, 24)
+                        SectionHeaderView("user")
                     }
 
                     // Play count filter section
@@ -54,14 +47,7 @@ struct SettingsSheet: View {
                             action: { cyclePlayCountFilter() }
                         )
                     } header: {
-                        Text("play count filter")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 40)
-                            .padding(.bottom, 0)
-                            .padding(.horizontal, 24)
+                        SectionHeaderView("play count filter")
                     }
 
                     // Support section
@@ -81,14 +67,7 @@ struct SettingsSheet: View {
                             action: { viewLicenses() }
                         )
                     } header: {
-                        Text("support")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 40)
-                            .padding(.bottom, 0)
-                            .padding(.horizontal, 24)
+                        SectionHeaderView("support")
                     }
 
                     // About section
@@ -103,14 +82,7 @@ struct SettingsSheet: View {
                             action: { openDeveloperTwitter() }
                         )
                     } header: {
-                        Text("about")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 40)
-                            .padding(.bottom, 0)
-                            .padding(.horizontal, 24)
+                        SectionHeaderView("about")
                     }
 
                     // Data source section
@@ -120,14 +92,7 @@ struct SettingsSheet: View {
                             action: { openLastFMWebsite() }
                         )
                     } header: {
-                        Text("artist & album data")
-                            .font(.sectionHeader)
-                            .foregroundColor(.tertiaryText)
-                            .textCase(.lowercase)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 40)
-                            .padding(.bottom, 0)
-                            .padding(.horizontal, 24)
+                        SectionHeaderView("artist & album data")
                     }
                 }
             }

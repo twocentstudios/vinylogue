@@ -33,14 +33,7 @@ struct UsersListView: View {
                                 isCurrentUser: true
                             )
                         } header: {
-                            Text("me")
-                                .font(.sectionHeader)
-                                .foregroundColor(.tertiaryText)
-                                .textCase(.lowercase)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.top, 40)
-                                .padding(.bottom, 0)
-                                .padding(.horizontal, 24)
+                            SectionHeaderView("me")
                         }
                     }
 
@@ -51,14 +44,7 @@ struct UsersListView: View {
                                 UserRowView(user: friend, isCurrentUser: false)
                             }
                         } header: {
-                            Text("friends")
-                                .font(.sectionHeader)
-                                .foregroundColor(.tertiaryText)
-                                .textCase(.lowercase)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.top, 40)
-                                .padding(.bottom, 0)
-                                .padding(.horizontal, 24)
+                            SectionHeaderView("friends")
                         }
                     }
 
