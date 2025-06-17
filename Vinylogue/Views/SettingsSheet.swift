@@ -194,7 +194,6 @@ private struct SettingsRowView: View {
         Button(action: action) {
             Text(title)
                 .font(.f(.regular, .title2))
-                .foregroundColor(.primaryText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 24)
                 .padding(.vertical, 7)
@@ -207,7 +206,7 @@ private struct SettingsRowView: View {
 struct SettingsRowButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundColor(configuration.isPressed ? .white : .primaryText)
+            .foregroundColor(configuration.isPressed ? .vinylogueWhiteSubtle : .primaryText)
             .background {
                 Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 1.0 : 0.0))
             }
