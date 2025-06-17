@@ -28,110 +28,90 @@ struct SettingsSheet: View {
 
     var body: some View {
         NavigationView {
-            List {
-                // User section
-                Section {
-                    Button(action: {
-                        showingUsernameChangeSheet = true
-                    }) {
-                        HStack {
-                            Text("Username")
-                                .font(.scaledBody())
-                                .foregroundColor(.primaryText)
-
-                            Spacer()
-
-                            Text(currentUser?.username ?? "Not set")
-                                .font(.scaledBody())
-                                .foregroundColor(.accent)
-                        }
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    // Play count filter section
+                    Section {
+                        SettingsRowView(
+                            title: playCountFilterString,
+                            action: { cyclePlayCountFilter() }
+                        )
+                    } header: {
+                        Text("play count filter")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                            .padding(.bottom, 0)
+                            .padding(.horizontal, 24)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                } header: {
-                    Text("user")
-                        .font(.sectionHeader)
-                        .foregroundColor(.tertiaryText)
-                        .textCase(.lowercase)
-                }
 
-                // Play count filter section
-                Section {
-                    Button(action: {
-                        cyclePlayCountFilter()
-                    }) {
-                        HStack {
-                            Text("Play count filter")
-                                .font(.scaledBody())
-                                .foregroundColor(.primaryText)
+                    // Support section
+                    Section {
+                        SettingsRowView(
+                            title: "report an issue",
+                            action: { reportIssue() }
+                        )
 
-                            Spacer()
+                        SettingsRowView(
+                            title: "rate on appstore",
+                            action: { rateOnAppStore() }
+                        )
 
-                            Text(playCountFilterString)
-                                .font(.scaledBody())
-                                .foregroundColor(.accent)
-                        }
-                        .contentShape(Rectangle())
+                        SettingsRowView(
+                            title: "licenses",
+                            action: { viewLicenses() }
+                        )
+                    } header: {
+                        Text("support")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                            .padding(.bottom, 0)
+                            .padding(.horizontal, 24)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                } header: {
-                    Text("play count filter")
-                        .font(.sectionHeader)
-                        .foregroundColor(.tertiaryText)
-                        .textCase(.lowercase)
-                }
 
-                // Support section
-                Section {
-                    Button("Report an issue") {
-                        reportIssue()
-                    }
-                    .foregroundColor(.primaryText)
+                    // About section
+                    Section {
+                        SettingsRowView(
+                            title: "twocentstudios.com",
+                            action: { openDeveloperWebsite() }
+                        )
 
-                    Button("Rate on App Store") {
-                        rateOnAppStore()
+                        SettingsRowView(
+                            title: "@twocentstudios",
+                            action: { openDeveloperTwitter() }
+                        )
+                    } header: {
+                        Text("about")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                            .padding(.bottom, 0)
+                            .padding(.horizontal, 24)
                     }
-                    .foregroundColor(.primaryText)
 
-                    Button("Licenses") {
-                        viewLicenses()
+                    // Data source section
+                    Section {
+                        SettingsRowView(
+                            title: "last.fm",
+                            action: { openLastFMWebsite() }
+                        )
+                    } header: {
+                        Text("artist & album data")
+                            .font(.sectionHeader)
+                            .foregroundColor(.tertiaryText)
+                            .textCase(.lowercase)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                            .padding(.bottom, 0)
+                            .padding(.horizontal, 24)
                     }
-                    .foregroundColor(.primaryText)
-                } header: {
-                    Text("support")
-                        .font(.sectionHeader)
-                        .foregroundColor(.tertiaryText)
-                        .textCase(.lowercase)
-                }
-
-                // About section
-                Section {
-                    Button("twocentstudios.com") {
-                        openDeveloperWebsite()
-                    }
-                    .foregroundColor(.primaryText)
-
-                    Button("@twocentstudios") {
-                        openDeveloperTwitter()
-                    }
-                    .foregroundColor(.primaryText)
-                } header: {
-                    Text("about")
-                        .font(.sectionHeader)
-                        .foregroundColor(.tertiaryText)
-                        .textCase(.lowercase)
-                }
-
-                // Data source section
-                Section {
-                    Button("last.fm") {
-                        openLastFMWebsite()
-                    }
-                    .foregroundColor(.primaryText)
-                } header: {
-                    Text("artist & album data")
-                        .font(.sectionHeader)
-                        .foregroundColor(.tertiaryText)
-                        .textCase(.lowercase)
                 }
             }
             .background(Color.primaryBackground)
@@ -215,6 +195,36 @@ struct SettingsSheet: View {
         if let url = URL(string: "https://last.fm") {
             UIApplication.shared.open(url)
         }
+    }
+}
+
+// MARK: - Settings Row View
+
+private struct SettingsRowView: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.scaledTitle2())
+                .foregroundColor(.primaryText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 7)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(SettingsRowButtonStyle())
+    }
+}
+
+struct SettingsRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? .white : .primaryText)
+            .background {
+                Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 1.0 : 0.0))
+            }
     }
 }
 
