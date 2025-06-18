@@ -54,6 +54,7 @@ struct WeeklyAlbumsView: View {
 
             return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
         } action: { _, value in
+            guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
             topProgress = value.top
             bottomProgress = value.bottom
         }
@@ -71,12 +72,20 @@ struct WeeklyAlbumsView: View {
                         currentYearOffset = performCurrentYearOffsetChangeOnScrollIdle
                     }
                     self.performCurrentYearOffsetChangeOnScrollIdle = nil
+                    topProgress = 0.0
+                    bottomProgress = 0.0
                 }
             } else if oldPhase == .interacting, newPhase == .decelerating {
                 if topOverscroll > Self.overscrollThreshold {
                     performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
+                    withAnimation(.snappy(duration: 0.2)) {
+                        topProgress = 1.0
+                    }
                 } else if bottomOverscroll > Self.overscrollThreshold {
                     performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
+                    withAnimation(.snappy(duration: 0.2)) {
+                        bottomProgress = 1.0
+                    }
                 }
             }
         }
