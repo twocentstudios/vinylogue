@@ -114,7 +114,7 @@ private struct OverscrollHandler: ViewModifier {
     @Binding var topProgress: Double
     @Binding var bottomProgress: Double
 
-    private static let overscrollThreshold: CGFloat = 70
+    private static let overscrollThreshold: CGFloat = 90
 
     func body(content: Content) -> some View {
         content
