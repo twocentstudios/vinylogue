@@ -95,6 +95,8 @@ struct SettingsSheet: View {
 
                 ToolbarItem(placement: .principal) {
                     Text("settings")
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
                 }
             }
         }

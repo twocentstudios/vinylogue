@@ -105,6 +105,8 @@ struct EditFriendsView: View {
 
                 ToolbarItem(placement: .principal) {
                     Text("edit friends")
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -306,6 +308,8 @@ private struct AddFriendView: View {
 
                 ToolbarItem(placement: .principal) {
                     Text("add friend")
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
                 }
             }
         }

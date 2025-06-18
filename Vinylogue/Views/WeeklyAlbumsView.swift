@@ -70,8 +70,8 @@ struct WeeklyAlbumsView: View {
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 2) {
                     Text("charts")
-                        .font(.headline.weight(.semibold))
-                        .foregroundColor(.primaryText)
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
 
                     if let weekInfo = loader.currentWeekInfo {
                         Text(weekInfo.displayText)

@@ -15,6 +15,12 @@ struct LicensesView: View {
             .navigationTitle("Licenses")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Licenses")
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
