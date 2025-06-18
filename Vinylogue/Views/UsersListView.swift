@@ -93,8 +93,9 @@ struct UsersListView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    // TODO: font style
                     Text("scrobblers")
+                        .foregroundStyle(Color.vinylogueBlueDark)
+                        .font(.f(.regular, .headline))
                 }
             }
             .sheet(isPresented: $showingEditSheet) {
