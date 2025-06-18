@@ -8,7 +8,7 @@ struct ScrollProgress: Equatable {
 
 struct WeeklyAlbumsView: View {
     let user: User
-    @Bindable private var loader: WeeklyAlbumLoader = .init()
+    @State private var loader: WeeklyAlbumLoader = .init()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
 
@@ -30,9 +30,9 @@ struct WeeklyAlbumsView: View {
                     if loader.albums.isEmpty {
                         EmptyStateView(username: user.username)
                     } else {
-                        ForEach($loader.albums) { $album in
+                        ForEach(loader.albums) { album in
                             let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
-                            NavigationLink(destination: AlbumDetailView(album: $album)) {
+                            NavigationLink(destination: AlbumDetailView(album: album)) {
                                 AlbumRowView(album: album)
                             }
                             .buttonStyle(AlbumRowButtonStyle())

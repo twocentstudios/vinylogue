@@ -4,11 +4,15 @@ import NukeUI
 import SwiftUI
 
 struct AlbumDetailView: View {
-    @Binding var album: Album
+    @State private var album: Album
     @State private var artworkImage: UIImage?
     @State private var representativeColors: ColorExtraction.RepresentativeColors?
     @State private var isLoadingDetails = false
     @Dependency(\.lastFMClient) private var lastFMClient
+
+    init(album: Album) {
+        _album = State(initialValue: album)
+    }
 
     var body: some View {
         ZStack {
@@ -274,8 +278,7 @@ struct AlbumDetailView: View {
 // MARK: - Preview
 
 #Preview("Album Detail") {
-    @Previewable @Namespace var namespace
-    @Previewable @State var album = Album(
+    let album = Album(
         name: "The Sea of Tragic Beasts",
         artist: "Fit For An Autopsy",
         imageURL: "https://lastfm.freetls.fastly.net/i/u/300x300/example.jpg",
@@ -284,6 +287,6 @@ struct AlbumDetailView: View {
     )
 
     return NavigationStack {
-        AlbumDetailView(album: $album)
+        AlbumDetailView(album: album)
     }
 }
