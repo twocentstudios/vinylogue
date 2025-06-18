@@ -56,11 +56,11 @@ struct UsersListView: View {
                                     .foregroundColor(.accent)
 
                                 VStack(spacing: 8) {
-                                    Text("No friends added yet")
+                                    Text("no friends added yet")
                                         .font(.f(.medium, .headline))
                                         .foregroundColor(.primaryText)
 
-                                    Text("Import friends from Last.fm or add them manually")
+                                    Text("import friends from Last.fm or add them manually")
                                         .font(.f(.regular, .caption1))
                                         .foregroundColor(.secondaryText)
                                         .multilineTextAlignment(.center)
