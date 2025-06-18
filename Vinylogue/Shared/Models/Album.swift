@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 struct Album: Codable, Identifiable, Hashable, Sendable {
-    let id = UUID()
+    let id = UUID() // TODO: this should be mbid or not used
     let name: String
     let artist: String
     var imageURL: String?
