@@ -61,9 +61,6 @@ struct AlbumDetailView: View {
                             .blur(radius: 25)
                             .opacity(0.6)
                             .clipped()
-                            .onAppear {
-                                extractRepresentativeColors(from: state.imageContainer?.image)
-                            }
                     } else {
                         Color.vinylogueGray.opacity(0.2)
                     }
@@ -83,6 +80,9 @@ struct AlbumDetailView: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .onAppear {
+                                extractRepresentativeColors(from: state.imageContainer?.image)
+                            }
                     } else if state.error != nil {
                         albumPlaceholder
                     } else {
@@ -93,6 +93,7 @@ struct AlbumDetailView: View {
                 albumPlaceholder
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 6))
         .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 1)
     }
 
@@ -100,16 +101,18 @@ struct AlbumDetailView: View {
     private var albumPlaceholder: some View {
         Rectangle()
             .fill(Color.vinylogueGray)
+            .aspectRatio(1.0, contentMode: .fit)
             .overlay {
                 Circle()
-                    .fill(Color.white.opacity(0.8))
-                    .frame(width: 120, height: 120)
+                    .fill(Color.vinylogueWhiteSubtle)
                     .overlay {
                         Circle()
                             .fill(Color.vinylogueGray)
-                            .frame(width: 24, height: 24)
+                            .padding(80)
                     }
+                    .padding(60)
             }
+            .compositingGroup()
     }
 
     @ViewBuilder
