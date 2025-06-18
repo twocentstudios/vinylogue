@@ -20,7 +20,7 @@ struct UsersListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     if let username = currentUsername {
