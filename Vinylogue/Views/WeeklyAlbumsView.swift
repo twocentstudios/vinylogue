@@ -32,16 +32,24 @@ struct WeeklyAlbumsView: View {
                         EmptyStateView(username: user.username)
                     } else {
                         ForEach($loader.albums) { $album in
+                            let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
                             NavigationLink(destination: AlbumDetailView(album: $album)) {
                                 AlbumRowView(album: $album)
                             }
                             .buttonStyle(AlbumRowButtonStyle())
+                            .transition(
+                                .asymmetric(
+                                    insertion: .offset(x: 0, y: 100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07)),
+                                    removal: .offset(x: 0, y: -100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07))
+                                )
+                            )
                         }
                     }
                 case let .failed(error):
                     ErrorStateView(error: error)
                 }
             }
+            .animation(.snappy(duration: 0.20), value: loader.albumsState)
         }
         .onScrollGeometryChange(for: ScrollProgress.self) { geometry in
             let topOverscroll = -(geometry.contentOffset.y + geometry.contentInsets.top)
@@ -149,9 +157,7 @@ private struct YearNavigationButtons: ViewModifier {
                 let prevOffset = currentYearOffset - 1
                 if loader.canNavigate(to: prevOffset) {
                     Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentYearOffset = prevOffset
-                        }
+                        currentYearOffset = prevOffset
                     }) {
                         VStack(spacing: -2) {
                             Image(systemName: "arrow.up")
@@ -196,15 +202,14 @@ private struct YearNavigationButtons: ViewModifier {
                         }
                         .scaleEffect(x: 1 - pow(max(1.0, topProgress) - 1.0, 0.5) * 0.1, y: max(1.0, pow(topProgress - 1.0, 0.5) * 0.3 + 1.0), anchor: .top)
                     }
+                    .transition(.offset(x: 0, y: -100).combined(with: .opacity))
                 }
             }
             .safeAreaInset(edge: .bottom) {
                 let nextOffset = currentYearOffset + 1
                 if loader.canNavigate(to: nextOffset) {
                     Button(action: {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            currentYearOffset = nextOffset
-                        }
+                        currentYearOffset = nextOffset
                     }) {
                         VStack(spacing: -2) {
                             Text(String(loader.getYear(for: nextOffset)))
@@ -250,6 +255,7 @@ private struct YearNavigationButtons: ViewModifier {
                 }
             }
             .disabled(loader.albumsState == .loading)
+            .animation(.snappy, value: currentYearOffset)
     }
 }
 
