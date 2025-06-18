@@ -47,7 +47,7 @@ struct WeeklyAlbumsView: View {
         }
         .onScrollGeometryChange(for: ScrollProgress.self) { geometry in
             let topOverscroll = -(geometry.contentOffset.y + geometry.contentInsets.top)
-            let bottomOverscroll = geometry.contentOffset.y - (geometry.contentSize.height - geometry.containerSize.height) + geometry.contentInsets.top
+            let bottomOverscroll = geometry.contentOffset.y - max(0.0, geometry.contentSize.height - geometry.containerSize.height) + geometry.contentInsets.top
 
             let newTopProgress = max(0.0, topOverscroll / Self.overscrollThreshold)
             let newBottomProgress = max(0.0, bottomOverscroll / Self.overscrollThreshold)
@@ -62,7 +62,7 @@ struct WeeklyAlbumsView: View {
             let topOverscroll = -(context.geometry.contentOffset.y + context.geometry.contentInsets.top)
 
             // 0 when scrolled exactly to bottom of content, positive when overscrolled below
-            let bottomOverscroll = context.geometry.contentOffset.y - (context.geometry.contentSize.height - context.geometry.containerSize.height) + context.geometry.contentInsets.top
+            let bottomOverscroll = context.geometry.contentOffset.y - max(0.0, context.geometry.contentSize.height - context.geometry.containerSize.height) + context.geometry.contentInsets.top
 
             if newPhase == .idle {
                 // Wait until scroll has returned to idle before changing navigation
