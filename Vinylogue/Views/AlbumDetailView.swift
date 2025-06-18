@@ -40,6 +40,7 @@ struct AlbumDetailView: View {
         }
         .background(representativeColors?.primary ?? Color.vinylogueWhiteSubtle)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
         .task {
             await loadAlbumDetails()
         }
