@@ -89,6 +89,7 @@ struct UsersListView: View {
                             .font(.f(.medium, .body))
                             .foregroundColor(.accent)
                     }
+                    .sensoryFeedback(.impact, trigger: showingSettingsSheet)
                 }
 
                 ToolbarItem(placement: .principal) {
@@ -162,9 +163,13 @@ struct UserRowButtonStyle: ButtonStyle {
 
 private struct EditFriendsButton: View {
     let action: () -> Void
+    @State private var buttonPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            buttonPressed.toggle()
+            action()
+        }) {
             Text("edit friends")
                 .font(.f(.ultralight, .headline))
                 .foregroundColor(Color.accent)
@@ -173,6 +178,7 @@ private struct EditFriendsButton: View {
                 .padding(.vertical, 7)
                 .contentShape(Rectangle())
         }
+        .sensoryFeedback(.impact, trigger: buttonPressed)
         .buttonStyle(PlainButtonStyle())
     }
 }

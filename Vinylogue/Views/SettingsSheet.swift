@@ -174,9 +174,13 @@ struct SettingsSheet: View {
 private struct SettingsRowView: View {
     let title: String
     let action: () -> Void
+    @State private var buttonPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            buttonPressed.toggle()
+            action()
+        }) {
             Text(title)
                 .font(.f(.regular, .title2))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -184,6 +188,7 @@ private struct SettingsRowView: View {
                 .padding(.vertical, 7)
                 .contentShape(Rectangle())
         }
+        .sensoryFeedback(.impact, trigger: buttonPressed)
         .buttonStyle(SettingsRowButtonStyle())
     }
 }
@@ -342,6 +347,7 @@ struct UsernameChangeSheet: View {
                             .cornerRadius(8)
                     }
                     .disabled(!isValid || isValidating)
+                    .sensoryFeedback(.success, trigger: currentUsername)
                     .padding(.horizontal, 24)
 
                     Button("Cancel") {

@@ -84,6 +84,7 @@ struct OnboardingView: View {
                         .cornerRadius(12)
                     }
                     .disabled(username.isEmpty || isValidating)
+                    .sensoryFeedback(.success, trigger: currentUsername)
                     .accessibilityLabel(isValidating ? "Validating username" : "Get started with Last.fm")
                     .accessibilityHint("Validates your username and sets up the app")
                 }

@@ -113,6 +113,7 @@ struct EditFriendsView: View {
                     }
                     .font(.f(.medium, .body))
                     .foregroundColor(.accent)
+                    .sensoryFeedback(.success, trigger: curatedFriends)
                 }
 
                 ToolbarItemGroup(placement: .bottomBar) {
@@ -123,6 +124,7 @@ struct EditFriendsView: View {
                     .font(.f(.medium, .body))
                     .foregroundColor(.accent)
                     .disabled(editableFriends.isEmpty)
+                    .sensoryFeedback(.selection, trigger: selectedFriends)
 
                     Spacer()
 
@@ -132,6 +134,7 @@ struct EditFriendsView: View {
                     .font(.f(.medium, .body))
                     .foregroundColor(.destructive)
                     .disabled(selectedFriends.isEmpty)
+                    .sensoryFeedback(.warning, trigger: selectedFriends.count)
                 }
             }
             .sheet(isPresented: $showingAddFriend) {
@@ -226,6 +229,7 @@ private struct FriendEditRowView: View {
             .padding(.vertical, 7)
             .contentShape(Rectangle())
         }
+        .sensoryFeedback(.selection, trigger: isSelected)
     }
 }
 
@@ -242,6 +246,7 @@ private struct AddFriendView: View {
     @State private var username = ""
     @State private var isValidating = false
     @State private var errorMessage: String?
+    @State private var friendAdded = false
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
@@ -282,6 +287,7 @@ private struct AddFriendView: View {
                     .cornerRadius(8)
                 }
                 .disabled(username.isEmpty || isValidating)
+                .sensoryFeedback(.success, trigger: friendAdded)
 
                 Spacer()
             }
@@ -343,6 +349,7 @@ private struct AddFriendView: View {
             )
 
             onFriendAdded(newFriend)
+            friendAdded = true
             dismiss()
 
         } catch {
@@ -383,6 +390,7 @@ private struct ImportFriendsButton: View {
             .padding(.vertical, 7)
             .contentShape(Rectangle())
         }
+        .sensoryFeedback(.impact, trigger: isLoading)
         .foregroundColor(.accent)
         .disabled(isLoading)
         .buttonStyle(PlainButtonStyle())
@@ -391,9 +399,13 @@ private struct ImportFriendsButton: View {
 
 private struct AddFriendButton: View {
     let action: () -> Void
+    @State private var buttonPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            buttonPressed.toggle()
+            action()
+        }) {
             HStack {
                 Image(systemName: "person.badge.plus")
 
@@ -405,6 +417,7 @@ private struct AddFriendButton: View {
             .padding(.vertical, 7)
             .contentShape(Rectangle())
         }
+        .sensoryFeedback(.impact, trigger: buttonPressed)
         .foregroundColor(.accent)
         .buttonStyle(PlainButtonStyle())
     }

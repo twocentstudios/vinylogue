@@ -156,11 +156,15 @@ private struct OverscrollHandler: ViewModifier {
                 } else if oldPhase == .interacting, newPhase == .decelerating {
                     if topOverscroll > Self.overscrollThreshold {
                         performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
+                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                        impactFeedback.impactOccurred()
                         withAnimation(.snappy(duration: 0.2)) {
                             topProgress = 1.0
                         }
                     } else if bottomOverscroll > Self.overscrollThreshold {
                         performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
+                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                        impactFeedback.impactOccurred()
                         withAnimation(.snappy(duration: 0.2)) {
                             bottomProgress = 1.0
                         }
@@ -229,6 +233,7 @@ private struct YearNavigationButtons: ViewModifier {
                         }
                         .scaleEffect(x: 1 - pow(max(1.0, topProgress) - 1.0, 0.5) * 0.1, y: max(1.0, pow(topProgress - 1.0, 0.5) * 0.3 + 1.0), anchor: .top)
                     }
+                    .sensoryFeedback(.selection, trigger: currentYearOffset)
                     .transition(.offset(x: 0, y: -100).combined(with: .opacity))
                 }
             }
@@ -279,6 +284,7 @@ private struct YearNavigationButtons: ViewModifier {
                         }
                         .scaleEffect(x: 1 - pow(max(1.0, bottomProgress) - 1.0, 0.5) * 0.1, y: max(1.0, pow(bottomProgress - 1.0, 0.5) * 0.3 + 1.0), anchor: .bottom)
                     }
+                    .sensoryFeedback(.selection, trigger: currentYearOffset)
                 }
             }
             .disabled(loader.albumsState == .loading)
