@@ -116,13 +116,13 @@ struct AlbumDetailView: View {
             Text(album.artist.uppercased())
                 .font(.f(.regular, .subheadline))
                 .foregroundColor(textColor.opacity(0.85))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 1)
+                .shadow(color: shadowColor, radius: 0, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
 
             Text(album.name)
                 .font(.f(.demiBold, .title1))
                 .foregroundColor(textColor.opacity(0.95))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 1)
+                .shadow(color: shadowColor, radius: 0, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
         }
@@ -162,7 +162,6 @@ struct AlbumDetailView: View {
             Text(count)
                 .font(.f(.demiBold, .title1))
                 .foregroundStyle(textColor.opacity(0.85))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 1)
                 .padding(.bottom, -5)
             Text("plays")
                 .font(.f(.ultralight, .subheadline))
@@ -170,7 +169,6 @@ struct AlbumDetailView: View {
             Text(period)
                 .font(.f(.regular, .title3))
                 .foregroundStyle(textColor.opacity(0.7))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 1)
         }
         .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, alignment: .center)
