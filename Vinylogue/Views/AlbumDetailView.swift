@@ -57,7 +57,7 @@ struct AlbumDetailView: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .blur(radius: 15)
+                            .blur(radius: 25)
                             .opacity(0.6)
                             .clipped()
                             .onAppear {
