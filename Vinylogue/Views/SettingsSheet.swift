@@ -291,6 +291,10 @@ struct UsernameChangeSheet: View {
         )
     }
 
+    private var canSave: Bool {
+        !newUsername.isEmpty && newUsername != currentUser?.username
+    }
+
     var body: some View {
         NavigationView {
             VStack(spacing: 24) {
@@ -313,7 +317,7 @@ struct UsernameChangeSheet: View {
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
                         .onSubmit {
-                            validateUsername()
+                            validateAndSaveUsername()
                         }
 
                     if let error = validationError {
@@ -337,16 +341,16 @@ struct UsernameChangeSheet: View {
 
                 VStack(spacing: 16) {
                     Button(action: {
-                        saveUsername()
+                        validateAndSaveUsername()
                     }) {
                         Text("Save Username")
                             .font(.f(.medium, .body))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, minHeight: 44)
-                            .background(isValid ? Color.accent : Color.gray)
+                            .background(canSave ? Color.accent : Color.gray)
                             .cornerRadius(8)
                     }
-                    .disabled(!isValid || isValidating)
+                    .disabled(!canSave || isValidating)
                     .sensoryFeedback(.success, trigger: currentUsername)
                     .padding(.horizontal, 24)
 
@@ -363,29 +367,13 @@ struct UsernameChangeSheet: View {
         }
         .onAppear {
             newUsername = currentUser?.username ?? ""
-        }
-        .onChange(of: newUsername) {
-            if newUsername != currentUser?.username {
-                validateUsername()
-            } else {
-                isValid = false
-                validationError = nil
-            }
+            isValid = false
+            validationError = nil
         }
     }
 
-    private func validateUsername() {
-        guard !newUsername.isEmpty else {
-            isValid = false
-            validationError = nil
-            return
-        }
-
-        guard newUsername != currentUser?.username else {
-            isValid = false
-            validationError = nil
-            return
-        }
+    private func validateAndSaveUsername() {
+        guard canSave else { return }
 
         isValidating = true
         validationError = nil
@@ -393,29 +381,22 @@ struct UsernameChangeSheet: View {
         Task {
             do {
                 let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: newUsername))
-                await MainActor.run {
-                    isValid = true
-                    validationError = nil
-                    isValidating = false
-                }
+                isValid = true
+                validationError = nil
+                isValidating = false
+                saveUsername()
+                dismiss()
             } catch {
-                await MainActor.run {
-                    isValid = false
-                    validationError = "User not found or invalid username"
-                    isValidating = false
-                }
+                isValid = false
+                validationError = "User not found or invalid username"
+                isValidating = false
             }
         }
     }
 
     private func saveUsername() {
-        guard isValid else { return }
-
         $currentUsername.withLock { $0 = newUsername }
-
         $curatedFriends.withLock { $0 = [] }
-
-        dismiss()
     }
 }
 
