@@ -1,7 +1,7 @@
 import Foundation
 
 struct User: Codable, Identifiable, Hashable, Sendable {
-    let id = UUID()
+    var id: String { username.lowercased() }
     let username: String
     let realName: String?
     let imageURL: String?
