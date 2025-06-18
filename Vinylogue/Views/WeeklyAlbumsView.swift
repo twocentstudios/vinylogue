@@ -1,6 +1,11 @@
 import Sharing
 import SwiftUI
 
+struct ScrollProgress: Equatable {
+    let top: Double
+    let bottom: Double
+}
+
 struct WeeklyAlbumsView: View {
     let user: User
     @Bindable private var loader: WeeklyAlbumLoader = .init()
@@ -9,6 +14,8 @@ struct WeeklyAlbumsView: View {
 
     private static let overscrollThreshold: CGFloat = 70
     @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
+    @State private var topProgress: Double = 0.0
+    @State private var bottomProgress: Double = 0.0
 
     init(user: User) {
         self.user = user
@@ -38,6 +45,18 @@ struct WeeklyAlbumsView: View {
                 }
             }
         }
+        .onScrollGeometryChange(for: ScrollProgress.self) { geometry in
+            let topOverscroll = -(geometry.contentOffset.y + geometry.contentInsets.top)
+            let bottomOverscroll = geometry.contentOffset.y - (geometry.contentSize.height - geometry.containerSize.height) + geometry.contentInsets.top
+
+            let newTopProgress = max(0.0, topOverscroll / Self.overscrollThreshold)
+            let newBottomProgress = max(0.0, bottomOverscroll / Self.overscrollThreshold)
+
+            return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
+        } action: { _, value in
+            topProgress = value.top
+            bottomProgress = value.bottom
+        }
         .onScrollPhaseChange { oldPhase, newPhase, context in
             // 0 when scrolled exactly to top of content, positive when overscrolled above
             let topOverscroll = -(context.geometry.contentOffset.y + context.geometry.contentInsets.top)
@@ -61,7 +80,7 @@ struct WeeklyAlbumsView: View {
                 }
             }
         }
-        .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, loader: loader))
+        .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, loader: loader, topProgress: topProgress, bottomProgress: bottomProgress))
         .background(Color.primaryBackground)
         .navigationTitle("charts")
         .navigationBarTitleDisplayMode(.inline)
@@ -114,6 +133,8 @@ struct WeeklyAlbumsView: View {
 private struct YearNavigationButtons: ViewModifier {
     @Binding var currentYearOffset: Int
     let loader: WeeklyAlbumLoader
+    let topProgress: Double
+    let bottomProgress: Double
 
     func body(content: Content) -> some View {
         content
@@ -128,10 +149,10 @@ private struct YearNavigationButtons: ViewModifier {
                         VStack(spacing: -2) {
                             Image(systemName: "arrow.up")
                                 .font(.f(.regular, .caption1))
-                                .foregroundColor(.vinylogueBlueBold)
+                                .foregroundColor(.vinylogueBlueDark)
                             Text(String(loader.getYear(for: prevOffset)))
                                 .font(.f(.regular, .title2))
-                                .foregroundColor(.vinylogueBlueBold)
+                                .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(prevOffset)))
                         }
                         .padding(.horizontal, 26)
@@ -142,6 +163,31 @@ private struct YearNavigationButtons: ViewModifier {
                                 .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
                         )
                         .padding(.top, 10)
+                        .overlay {
+                            GeometryReader { proxy in
+                                VStack(spacing: -2) {
+                                    Image(systemName: "arrow.up")
+                                        .font(.f(.regular, .caption1))
+                                        .foregroundColor(.vinylogueWhiteSubtle)
+                                    Text(String(loader.getYear(for: prevOffset)))
+                                        .font(.f(.regular, .title2))
+                                        .foregroundColor(.vinylogueWhiteSubtle)
+                                        .contentTransition(.numericText(value: Double(prevOffset)))
+                                }
+                                .padding(.horizontal, 26)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.vinylogueBlueDark)
+                                        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                )
+                                .padding(.top, 10)
+                                .mask(alignment: .bottom) {
+                                    Rectangle().fill(.black).frame(height: proxy.size.height * max(0.0, min(1.0, topProgress)))
+                                }
+                            }
+                        }
+                        .scaleEffect(x: 1.0, y: max(1.0, topProgress), anchor: .top)
                     }
                 }
             }
@@ -156,11 +202,11 @@ private struct YearNavigationButtons: ViewModifier {
                         VStack(spacing: -2) {
                             Text(String(loader.getYear(for: nextOffset)))
                                 .font(.f(.regular, .title2))
-                                .foregroundColor(.vinylogueBlueBold)
+                                .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(nextOffset)))
                             Image(systemName: "arrow.down")
                                 .font(.f(.regular, .caption1))
-                                .foregroundColor(.vinylogueBlueBold)
+                                .foregroundColor(.vinylogueBlueDark)
                         }
                         .padding(.horizontal, 26)
                         .padding(.vertical, 12)
@@ -169,6 +215,30 @@ private struct YearNavigationButtons: ViewModifier {
                                 .fill(Material.thin)
                                 .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
                         )
+                        .overlay {
+                            GeometryReader { proxy in
+                                VStack(spacing: -2) {
+                                    Text(String(loader.getYear(for: nextOffset)))
+                                        .font(.f(.regular, .title2))
+                                        .foregroundColor(.vinylogueWhiteSubtle)
+                                        .contentTransition(.numericText(value: Double(nextOffset)))
+                                    Image(systemName: "arrow.down")
+                                        .font(.f(.regular, .caption1))
+                                        .foregroundColor(.vinylogueWhiteSubtle)
+                                }
+                                .padding(.horizontal, 26)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.vinylogueBlueDark)
+                                        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                )
+                                .mask(alignment: .top) {
+                                    Rectangle().fill(.black).frame(height: proxy.size.height * max(0.0, min(1.0, bottomProgress)))
+                                }
+                            }
+                        }
+                        .scaleEffect(x: 1.0, y: max(1.0, bottomProgress), anchor: .bottom)
                     }
                 }
             }
