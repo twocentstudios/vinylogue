@@ -229,19 +229,25 @@ extension LastFMClient {
         return album
     }
 
-    /// Clean up album description by removing Last.fm "Read more" links
-    internal func cleanupDescription(_ description: String?) -> String? {
+    /// Clean up album description by removing Last.fm "Read more" links and Creative Commons text
+    func cleanupDescription(_ description: String?) -> String? {
         guard let description else { return nil }
 
-        // Regular expression to match the "Read more on Last.fm" link pattern
-        // This matches: <a href="{any url}">Read more on Last.fm</a> with optional trailing punctuation
-        let pattern = #"<a href="[^"]*">Read more on Last\.fm</a>\.?"#
+        var cleanedDescription = description
 
-        let cleanedDescription = description.replacingOccurrences(
-            of: pattern,
+        // Remove the "Read more on Last.fm" link pattern
+        let lastFmPattern = #"<a href="[^"]*">Read more on Last\.fm</a>\.?"#
+        cleanedDescription = cleanedDescription.replacingOccurrences(
+            of: lastFmPattern,
             with: "",
             options: .regularExpression
-        ).trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+
+        // Remove Creative Commons text
+        let creativeCommonsPattern = "User-contributed text is available under the Creative Commons By-SA License; additional terms may apply."
+        cleanedDescription = cleanedDescription.replacingOccurrences(of: creativeCommonsPattern, with: "")
+
+        cleanedDescription = cleanedDescription.trimmingCharacters(in: .whitespacesAndNewlines)
 
         return cleanedDescription.isEmpty ? nil : cleanedDescription
     }
