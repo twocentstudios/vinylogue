@@ -16,18 +16,6 @@ struct SettingsSheet: View {
     @State private var showingLicenses = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
 
-    // Computed property for User object (for backward compatibility)
-    private var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
-
     var body: some View {
         NavigationView {
             ScrollView {
