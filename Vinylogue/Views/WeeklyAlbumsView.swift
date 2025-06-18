@@ -29,10 +29,10 @@ struct WeeklyAlbumsView: View {
                 case .loaded:
                     if loader.albums.isEmpty {
                         EmptyStateView(username: user.username)
-                    } else {
+                    } else if let weekInfo = loader.currentWeekInfo {
                         ForEach(loader.albums) { album in
                             let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
-                            NavigationLink(destination: AlbumDetailView(album: album)) {
+                            NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
                                 AlbumRowView(album: album)
                             }
                             .buttonStyle(AlbumRowButtonStyle())

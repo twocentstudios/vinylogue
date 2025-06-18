@@ -1,7 +1,6 @@
 import Dependencies
 import Nuke
 import NukeUI
-import Sharing
 import SwiftUI
 
 struct AlbumDetailView: View {
@@ -9,11 +8,12 @@ struct AlbumDetailView: View {
     @State private var artworkImage: UIImage?
     @State private var representativeColors: ColorExtraction.RepresentativeColors?
     @State private var isLoadingDetails = false
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    private let weekInfo: WeekInfo
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    init(album: Album) {
+    init(album: Album, weekInfo: WeekInfo) {
         _album = State(initialValue: album)
+        self.weekInfo = weekInfo
     }
 
     var body: some View {
@@ -134,7 +134,7 @@ struct AlbumDetailView: View {
         // TODO: correct labels
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                playCountBlock(count: album.playCount.formatted(), period: "week 25 2015")
+                playCountBlock(count: album.playCount.formatted(), period: weekInfo.displayText)
                 playCountBlock(count: album.userPlayCount?.formatted() ?? "-", period: "all-time")
             }
         }
@@ -168,7 +168,7 @@ struct AlbumDetailView: View {
                 .font(.f(.ultralight, .subheadline))
                 .foregroundStyle(textColor.opacity(0.7))
             Text(period)
-                .font(.f(.regular, .title3))
+                .font(.f(.regular, .body))
                 .foregroundStyle(textColor.opacity(0.7))
         }
         .padding(.horizontal, 10)
@@ -247,7 +247,7 @@ struct AlbumDetailView: View {
                 artist: album.artist,
                 album: album.name,
                 mbid: album.mbid,
-                username: currentUsername
+                username: weekInfo.username
             )
 
             album.description = detailedAlbum.description
@@ -276,6 +276,6 @@ struct AlbumDetailView: View {
     }()
 
     NavigationStack {
-        AlbumDetailView(album: album)
+        AlbumDetailView(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"))
     }
 }

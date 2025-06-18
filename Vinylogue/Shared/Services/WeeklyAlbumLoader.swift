@@ -10,6 +10,16 @@ enum WeeklyAlbumsLoadingState: Equatable {
     case failed(LastFMError)
 }
 
+struct WeekInfo {
+    let weekNumber: Int
+    let year: Int
+    let username: String
+
+    var displayText: String {
+        "WEEK \(weekNumber) of \(year)"
+    }
+}
+
 @Observable
 @MainActor
 final class WeeklyAlbumLoader {
@@ -40,16 +50,6 @@ final class WeeklyAlbumLoader {
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
     @ObservationIgnored private var loadedPlayCountFilter: Int?
-
-    struct WeekInfo {
-        let weekNumber: Int
-        let year: Int
-        let username: String
-
-        var displayText: String {
-            "WEEK \(weekNumber) of \(year)"
-        }
-    }
 
     init() {}
 
