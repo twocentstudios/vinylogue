@@ -187,7 +187,7 @@ private struct YearNavigationButtons: ViewModifier {
                                 }
                             }
                         }
-                        .scaleEffect(x: 1.0, y: max(1.0, topProgress), anchor: .top)
+                        .scaleEffect(x: 1 - pow(max(1.0, topProgress) - 1.0, 0.5) * 0.1, y: max(1.0, pow(topProgress - 1.0, 0.5) * 0.3 + 1.0), anchor: .top)
                     }
                 }
             }
@@ -238,7 +238,7 @@ private struct YearNavigationButtons: ViewModifier {
                                 }
                             }
                         }
-                        .scaleEffect(x: 1.0, y: max(1.0, bottomProgress), anchor: .bottom)
+                        .scaleEffect(x: 1 - pow(max(1.0, bottomProgress) - 1.0, 0.5) * 0.1, y: max(1.0, pow(bottomProgress - 1.0, 0.5) * 0.3 + 1.0), anchor: .bottom)
                     }
                 }
             }
