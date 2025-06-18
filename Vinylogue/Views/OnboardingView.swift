@@ -5,7 +5,6 @@ import SwiftUI
 struct OnboardingView: View {
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
@@ -23,7 +22,6 @@ struct OnboardingView: View {
             VStack(spacing: 32) {
                 Spacer()
 
-                // App branding
                 VStack(spacing: 16) {
                     Image(systemName: "music.note.list")
                         .font(.system(size: 60))
@@ -45,7 +43,6 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // Username input section
                 VStack(spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Enter your Last.fm username")
@@ -94,7 +91,6 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // Help text
                 VStack(spacing: 8) {
                     Text("Don't have a Last.fm account?")
                         .font(.f(.regular, .caption1))
@@ -112,7 +108,6 @@ struct OnboardingView: View {
             .navigationBarHidden(true)
         }
         .onAppear {
-            // Auto-focus the text field for better UX
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
             }
@@ -156,26 +151,17 @@ struct OnboardingView: View {
         showError = false
 
         do {
-            // Validate by attempting to fetch user info
             let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
 
-            // If successful, save the user and proceed
-
-            // Update the current user using @Shared - automatic persistence
             $currentUsername.withLock { $0 = username }
 
-            // Automatically import friends on first startup
             await friendsImporter.importFriends(for: username)
 
-            // Save imported friends to persistent storage
             if case let .loaded(importedFriends) = friendsImporter.friendsState, !importedFriends.isEmpty {
                 $curatedFriends.withLock { $0 = importedFriends }
             }
 
             isValidating = false
-
-            // The app should now navigate to the main interface
-            // This will be handled by RootView observing the user state
 
         } catch {
             isValidating = false
@@ -199,7 +185,6 @@ struct OnboardingView: View {
         errorMessage = message
         showError = true
 
-        // Provide haptic feedback for errors
         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
         impactFeedback.impactOccurred()
     }

@@ -29,12 +29,10 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
-        // Check network availability
         guard isNetworkAvailable else {
             throw LastFMError.networkUnavailable
         }
 
-        // Validate API key
         guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
             throw LastFMError.invalidAPIKey
         }
@@ -48,12 +46,10 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
                 throw LastFMError.invalidResponse
             }
 
-            // Handle different HTTP status codes
             switch httpResponse.statusCode {
             case 200 ... 299:
                 break
             case 400 ... 499:
-                // Check for specific Last.fm API errors
                 if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
                     throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
                 }
@@ -64,7 +60,6 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
                 throw LastFMError.invalidResponse
             }
 
-            // Check for Last.fm API errors in successful responses
             if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
                 throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
             }
@@ -78,7 +73,6 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
         } catch let error as LastFMError {
             throw error
         } catch {
-            // Network or other system errors
             throw LastFMError.networkUnavailable
         }
     }

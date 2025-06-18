@@ -1,6 +1,6 @@
+import Dependencies
 import Nuke
 import NukeUI
-import Dependencies
 import SwiftUI
 
 struct AlbumRowView: View {
@@ -16,15 +16,12 @@ struct AlbumRowView: View {
             AlbumArtworkView(imageURL: albumImageURL)
                 .frame(width: 80, height: 80)
 
-            // Album and artist info
             VStack(alignment: .leading, spacing: 2) {
-                // Artist name (small, gray, uppercase)
                 Text(album.artist.uppercased())
                     .font(.f(.ultralight, .caption1))
                     .lineLimit(1)
                     .padding(.vertical, -1)
 
-                // Album name (medium, black)
                 Text(album.name)
                     .font(.f(.regular, .body))
                     .shadow(color: .black.opacity(0.25), radius: 0, x: 0, y: 1)
@@ -35,7 +32,6 @@ struct AlbumRowView: View {
 
             Spacer()
 
-            // Play count
             VStack(alignment: .center, spacing: 0) {
                 Text("\(album.playCount)")
                     .font(.f(.regular, .title2))
@@ -57,7 +53,6 @@ struct AlbumRowView: View {
         }
         .contentShape(Rectangle())
         .task(id: album.id) {
-            // Load album artwork URL if not already available
             if album.imageURL == nil {
                 await loadAlbumArtwork()
             }
@@ -75,7 +70,6 @@ struct AlbumRowView: View {
             )
             album.imageURL = detailedAlbum.imageURL
         } catch {
-            // If we can't load the details, we'll show the placeholder
             album.imageURL = nil
         }
     }

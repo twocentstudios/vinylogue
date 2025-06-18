@@ -2,14 +2,12 @@ import Sharing
 import SwiftUI
 
 struct UsersListView: View {
-    // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
     @State private var showingEditSheet = false
     @State private var showingSettingsSheet = false
 
-    // Computed property for User object (for backward compatibility)
     private var currentUser: User? {
         guard let username = currentUsername else { return nil }
         return User(
@@ -25,7 +23,6 @@ struct UsersListView: View {
         NavigationView {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    // Current user section
                     if let username = currentUsername {
                         Section {
                             UserRowView(
@@ -37,7 +34,6 @@ struct UsersListView: View {
                         }
                     }
 
-                    // Friends section
                     if !curatedFriends.isEmpty {
                         Section {
                             ForEach(curatedFriends, id: \.username) { friend in
@@ -52,7 +48,6 @@ struct UsersListView: View {
                         }
                     }
 
-                    // Empty state for friends
                     if curatedFriends.isEmpty {
                         Section {
                             VStack(spacing: 16) {

@@ -6,7 +6,6 @@ import SwiftUI
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
 
-    // Use @Shared directly instead of environment
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
 
@@ -20,7 +19,6 @@ struct SettingsSheet: View {
         NavigationView {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    // Play count filter section
                     Section {
                         SettingsRowView(
                             title: playCountFilterString,
@@ -30,7 +28,6 @@ struct SettingsSheet: View {
                         SectionHeaderView("play count filter")
                     }
 
-                    // User section
                     Section {
                         SettingsRowView(
                             title: "change user",
@@ -40,7 +37,6 @@ struct SettingsSheet: View {
                         SectionHeaderView("me")
                     }
 
-                    // Support section
                     Section {
                         SettingsRowView(
                             title: "report an issue",
@@ -60,7 +56,6 @@ struct SettingsSheet: View {
                         SectionHeaderView("support")
                     }
 
-                    // About section
                     Section {
                         SettingsRowView(
                             title: "twocentstudios.com",
@@ -75,7 +70,6 @@ struct SettingsSheet: View {
                         SectionHeaderView("about")
                     }
 
-                    // Data source section
                     Section {
                         SettingsRowView(
                             title: "last.fm",
@@ -138,7 +132,6 @@ struct SettingsSheet: View {
                 filter *= 2
             }
         }
-        // Automatic persistence via @Shared
     }
 
     private func reportIssue() {
@@ -274,7 +267,6 @@ struct UsernameChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
@@ -283,7 +275,6 @@ struct UsernameChangeSheet: View {
     @State private var validationError: String?
     @State private var isValid = false
 
-    // Computed property for User object (for backward compatibility)
     private var currentUser: User? {
         guard let username = currentUsername else { return nil }
         return User(
@@ -414,10 +405,8 @@ struct UsernameChangeSheet: View {
     private func saveUsername() {
         guard isValid else { return }
 
-        // Save using @Shared - automatic persistence
         $currentUsername.withLock { $0 = newUsername }
 
-        // Clear friends list since we're changing users
         $curatedFriends.withLock { $0 = [] }
 
         dismiss()

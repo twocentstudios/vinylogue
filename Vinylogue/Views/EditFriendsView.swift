@@ -7,7 +7,6 @@ struct EditFriendsView: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
@@ -27,7 +26,6 @@ struct EditFriendsView: View {
     var body: some View {
         NavigationView {
             List {
-                // Import buttons section
                 if currentUsername != nil {
                     Section {
                         ImportFriendsButton(
@@ -50,7 +48,6 @@ struct EditFriendsView: View {
                     }
                 }
 
-                // Friends list section
                 Section {
                     if !editableFriends.isEmpty {
                         ForEach(editableFriends, id: \.username) { friend in
@@ -139,7 +136,6 @@ struct EditFriendsView: View {
             }
             .sheet(isPresented: $showingAddFriend) {
                 AddFriendView { newFriend in
-                    // Check for case-insensitive duplicates
                     if !editableFriends.contains(where: { $0.username.lowercased() == newFriend.username.lowercased() }) {
                         editableFriends.append(newFriend)
                     }
@@ -169,7 +165,6 @@ struct EditFriendsView: View {
         let newFriends = friendsImporter.getNewFriends(excluding: editableFriends)
 
         if !newFriends.isEmpty {
-            // Automatically add new friends without confirmation
             editableFriends.append(contentsOf: newFriends)
         }
     }
@@ -179,7 +174,6 @@ struct EditFriendsView: View {
     }
 
     private func deleteFriends(at offsets: IndexSet) {
-        // Remove the deleted friends from selectedFriends
         for offset in offsets {
             let deletedFriend = editableFriends[offset]
             selectedFriends.remove(deletedFriend.username)
@@ -190,10 +184,8 @@ struct EditFriendsView: View {
 
     private func toggleSelectAll() {
         if selectedFriends.count == editableFriends.count {
-            // Deselect all
             selectedFriends.removeAll()
         } else {
-            // Select all
             selectedFriends = Set(editableFriends.map(\.username))
         }
     }
@@ -206,7 +198,6 @@ struct EditFriendsView: View {
     }
 
     private func saveFriends() {
-        // Persist curated friends using @Shared - automatic persistence
         $curatedFriends.withLock { $0 = editableFriends }
         dismiss()
     }
@@ -222,12 +213,10 @@ private struct FriendEditRowView: View {
     var body: some View {
         Button(action: { onSelectionChanged(!isSelected) }) {
             HStack(spacing: 12) {
-                // Selection indicator
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundColor(isSelected ? .accent : .gray)
                     .font(.system(size: 20))
 
-                // User info
                 Text(friend.username)
                     .font(.f(.regular, .title2))
                     .foregroundColor(.primaryText)
@@ -246,7 +235,6 @@ private struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    // Access current user to prevent self-adding
     @Shared(.appStorage("currentUser")) var currentUsername: String?
 
     let onFriendAdded: (User) -> Void
@@ -328,7 +316,6 @@ private struct AddFriendView: View {
 
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Prevent user from adding themselves
         if cleanUsername.lowercased() == currentUsername?.lowercased() {
             errorMessage = "you cannot add yourself as a friend"
             return

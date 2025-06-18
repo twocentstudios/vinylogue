@@ -1,6 +1,6 @@
+import Dependencies
 import Nuke
 import NukeUI
-import Dependencies
 import SwiftUI
 
 struct AlbumDetailView: View {
@@ -12,22 +12,17 @@ struct AlbumDetailView: View {
 
     var body: some View {
         ZStack {
-            // Full screen dominant color background
             (representativeColors?.primary ?? Color.gray)
                 .ignoresSafeArea(.all)
 
             ScrollView {
                 VStack(spacing: 24) {
-                    // Album artwork section with blurred background
                     ZStack {
-                        // Blurred background album art - only behind artwork and title
                         backgroundArtworkSection
 
                         VStack(spacing: 20) {
-                            // Album artwork
                             artworkSection
 
-                            // Album information
                             albumInfoSection
                         }
                         .padding(.horizontal, 30)
@@ -35,7 +30,6 @@ struct AlbumDetailView: View {
                         .padding(.bottom, 40)
                     }
 
-                    // Description section (no blurred background)
                     descriptionSection
                         .padding(.horizontal, 30)
 
@@ -63,11 +57,9 @@ struct AlbumDetailView: View {
                             .opacity(0.3)
                             .clipped()
                             .onAppear {
-                                // Extract representative colors from loaded image
                                 extractRepresentativeColors(from: state.imageContainer?.image)
                             }
                     } else {
-                        // Background for placeholder
                         Color.vinylogueGray.opacity(0.2)
                     }
                 }
@@ -121,20 +113,17 @@ struct AlbumDetailView: View {
 
     private var albumInfoSection: some View {
         VStack(spacing: 8) {
-            // Artist name (small, uppercase)
             Text(album.artist.uppercased())
                 .font(.f(.regular, .caption1))
                 .foregroundColor(textColor.opacity(0.85))
                 .multilineTextAlignment(.center)
 
-            // Album title (large, bold)
             Text(album.name)
                 .font(.title.weight(.bold))
                 .foregroundColor(textColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
 
-            // Play count and week info
             VStack(spacing: 16) {
                 HStack(spacing: 40) {
                     VStack(spacing: 2) {
@@ -212,14 +201,12 @@ struct AlbumDetailView: View {
                         )
                 }
             } else if album.isDetailLoaded {
-                // No description available - don't show anything like legacy
                 EmptyView()
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // Computed text color based on representative colors
     private var textColor: Color {
         representativeColors?.text ?? .primary
     }
@@ -232,20 +219,16 @@ struct AlbumDetailView: View {
         #if os(iOS)
             let uiImage = platformImage
         #else
-            // Convert NSImage to UIImage if needed for macOS
             let uiImage = UIImage(data: platformImage.tiffRepresentation!)!
         #endif
 
-        // Store the image for future reference
         artworkImage = uiImage
 
-        // Extract representative colors using legacy algorithm
         representativeColors = ColorExtraction.extractRepresentativeColors(from: uiImage)
     }
 
     @MainActor
     private func loadAlbumDetails() async {
-        // Skip if already loaded
         guard !album.isDetailLoaded else { return }
 
         isLoadingDetails = true
@@ -258,14 +241,12 @@ struct AlbumDetailView: View {
                 username: nil
             )
 
-            // Update album with detailed information
             album.description = cleanupDescription(detailedAlbum.description)
             album.totalPlayCount = detailedAlbum.totalPlayCount
             album.userPlayCount = detailedAlbum.userPlayCount
             album.isDetailLoaded = true
 
         } catch {
-            // Failed to load details - mark as loaded to prevent retries
             album.isDetailLoaded = true
         }
 
