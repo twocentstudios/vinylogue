@@ -151,7 +151,7 @@ struct AlbumDetailView: View {
                     )
 
                     VStack(spacing: 2) {
-                        Text("\(album.totalPlayCount ?? 0)")
+                        Text("\(album.userPlayCount ?? 0)")
                             .font(.largeTitle.weight(.bold))
                             .foregroundColor(textColor)
 
