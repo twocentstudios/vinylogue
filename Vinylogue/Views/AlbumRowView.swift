@@ -1,19 +1,13 @@
-import Dependencies
 import Nuke
 import NukeUI
 import SwiftUI
 
 struct AlbumRowView: View {
-    @Binding var album: Album
-    @Dependency(\.lastFMClient) private var lastFMClient
-
-    private var albumImageURL: String? {
-        album.imageURL
-    }
+    let album: Album
 
     var body: some View {
         HStack(spacing: 12) {
-            AlbumArtworkView(imageURL: albumImageURL)
+            AlbumArtworkView(imageURL: album.imageURL)
                 .frame(width: 80, height: 80)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -52,26 +46,6 @@ struct AlbumRowView: View {
             Rectangle().fill(Color.black.opacity(0.1)).frame(height: 1)
         }
         .contentShape(Rectangle())
-        .task(id: album.id) {
-            if album.imageURL == nil {
-                await loadAlbumArtwork()
-            }
-        }
-    }
-
-    @MainActor
-    private func loadAlbumArtwork() async {
-        do {
-            let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
-                artist: album.artist,
-                album: album.name,
-                mbid: album.mbid,
-                username: nil as String?
-            )
-            album.imageURL = detailedAlbum.imageURL
-        } catch {
-            album.imageURL = nil
-        }
     }
 }
 
@@ -129,21 +103,21 @@ private struct AlbumArtworkView: View {
 // MARK: - Preview
 
 #Preview("Album Row") {
-    @Previewable @State var album1 = Album(
+    let album1 = Album(
         name: "The Sea of Tragic Beasts",
         artist: "Fit For An Autopsy",
         imageURL: nil,
         playCount: 20,
         rank: 1
     )
-    @Previewable @State var album2 = Album(
+    let album2 = Album(
         name: "Is This Thing Cursed?",
         artist: "Alkaline Trio",
         imageURL: nil,
         playCount: 25,
         rank: 2
     )
-    @Previewable @State var album3 = Album(
+    let album3 = Album(
         name: "A Very Long Album Title That Should Be Truncated Properly",
         artist: "An Artist With A Long Name",
         imageURL: nil,
@@ -152,15 +126,15 @@ private struct AlbumArtworkView: View {
     )
 
     return VStack(spacing: 0) {
-        AlbumRowView(album: $album1)
+        AlbumRowView(album: album1)
 
         Divider()
 
-        AlbumRowView(album: $album2)
+        AlbumRowView(album: album2)
 
         Divider()
 
-        AlbumRowView(album: $album3)
+        AlbumRowView(album: album3)
     }
     .background(Color.primaryBackground)
 }

@@ -33,7 +33,7 @@ struct WeeklyAlbumsView: View {
                         ForEach($loader.albums) { $album in
                             let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
                             NavigationLink(destination: AlbumDetailView(album: $album)) {
-                                AlbumRowView(album: $album)
+                                AlbumRowView(album: album)
                             }
                             .buttonStyle(AlbumRowButtonStyle())
                             .transition(
@@ -42,6 +42,11 @@ struct WeeklyAlbumsView: View {
                                     removal: .offset(x: 0, y: -100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07))
                                 )
                             )
+                            .task(id: album.id) {
+                                if album.imageURL == nil {
+                                    await loader.loadAlbumArtwork(for: $album)
+                                }
+                            }
                         }
                     }
                 case let .failed(error):

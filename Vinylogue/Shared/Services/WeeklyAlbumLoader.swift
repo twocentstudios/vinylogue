@@ -230,6 +230,21 @@ final class WeeklyAlbumLoader {
         return yearRange.contains(targetYear)
     }
 
+    /// Load album artwork for a specific album
+    func loadAlbumArtwork(for album: Binding<Album>) async {
+        do {
+            let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
+                artist: album.wrappedValue.artist,
+                album: album.wrappedValue.name,
+                mbid: album.wrappedValue.mbid,
+                username: nil as String?
+            )
+            album.wrappedValue.imageURL = detailedAlbum.imageURL
+        } catch {
+            album.wrappedValue.imageURL = nil
+        }
+    }
+
     /// Clear all data
     func clear() {
         albumsState = .initialized
