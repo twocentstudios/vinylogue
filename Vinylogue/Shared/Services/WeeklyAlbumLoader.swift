@@ -231,13 +231,13 @@ final class WeeklyAlbumLoader {
     }
 
     /// Load album details for a specific album
-    func loadAlbum(_ album: Album) async {
+    func loadAlbum(_ album: Album, for user: User) async {
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                 artist: album.artist,
                 album: album.name,
                 mbid: album.mbid,
-                username: nil as String?
+                username: user.username
             )
 
             // Find and update the album in our stored collection

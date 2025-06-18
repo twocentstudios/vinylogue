@@ -247,7 +247,7 @@ struct AlbumDetailView: View {
                 artist: album.artist,
                 album: album.name,
                 mbid: album.mbid,
-                username: nil
+                username: currentUsername
             )
 
             album.description = detailedAlbum.description
