@@ -208,7 +208,7 @@ private struct LoadingIndicatorView: View {
 }
 
 #Preview("Scroll button mask") {
-    @Previewable @State var progress = 0.0 // 0.0...1.0
+    @Previewable @State var progress = 0.0 // 0.0...1.0 fill, 1.0..<.infinity stretch
     VStack {
         VStack(spacing: -2) {
             Image(systemName: "arrow.up")
@@ -245,11 +245,12 @@ private struct LoadingIndicatorView: View {
                 )
                 .padding(.top, 10)
                 .mask(alignment: .bottom) {
-                    Rectangle().fill(.black).frame(height: proxy.size.height * progress)
+                    Rectangle().fill(.black).frame(height: proxy.size.height * max(0.0, min(1.0, progress)))
                 }
             }
         }
-        Slider(value: $progress, in: 0.0 ... 1.0)
+        .scaleEffect(x: 1.0, y: max(1.0, progress), anchor: .top)
+        Slider(value: $progress, in: -1.0 ... 2.0)
             .padding()
     }
 }
