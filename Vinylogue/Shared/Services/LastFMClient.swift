@@ -72,7 +72,7 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
             do {
                 return try JSONDecoder().decode(T.self, from: data)
             } catch {
-                throw LastFMError.decodingError(error)
+                throw LastFMError.decodingError(error.toEquatableError())
             }
 
         } catch let error as LastFMError {
@@ -324,13 +324,13 @@ enum LastFMEndpoint {
 
 // MARK: - Error Types
 
-enum LastFMError: Error, LocalizedError {
+enum LastFMError: Error, LocalizedError, Equatable {
     case invalidAPIKey
     case userNotFound
     case networkUnavailable
     case invalidResponse
     case serviceUnavailable
-    case decodingError(Error)
+    case decodingError(EquatableError)
     case apiError(code: Int, message: String)
     case noDataAvailable
 

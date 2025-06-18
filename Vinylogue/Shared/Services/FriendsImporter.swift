@@ -7,20 +7,7 @@ enum FriendsLoadingState: Equatable {
     case initialized
     case loading
     case loaded([User])
-    case failed(Error)
-
-    static func == (lhs: FriendsLoadingState, rhs: FriendsLoadingState) -> Bool {
-        switch (lhs, rhs) {
-        case (.initialized, .initialized), (.loading, .loading):
-            true
-        case let (.loaded(lhsUsers), .loaded(rhsUsers)):
-            lhsUsers == rhsUsers
-        case let (.failed(lhsError), .failed(rhsError)):
-            lhsError.localizedDescription == rhsError.localizedDescription
-        default:
-            false
-        }
-    }
+    case failed(EquatableError)
 }
 
 /// Service responsible for importing and managing friends from Last.fm
@@ -60,7 +47,7 @@ final class FriendsImporter {
 
         } catch {
             logger.error("Failed to import friends: \(error.localizedDescription)")
-            friendsState = .failed(error)
+            friendsState = .failed(error.toEquatableError())
         }
     }
 
@@ -77,24 +64,5 @@ final class FriendsImporter {
     func clearFriends() {
         friendsState = .initialized
         logger.info("Cleared friends list")
-    }
-}
-
-// MARK: - Import Errors
-
-enum FriendsImportError: LocalizedError {
-    case noCurrentUser
-    case importFailed(String)
-    case networkUnavailable
-
-    var errorDescription: String? {
-        switch self {
-        case .noCurrentUser:
-            "No current user found. Please set up your Last.fm username first."
-        case let .importFailed(message):
-            "Failed to import friends: \(message)"
-        case .networkUnavailable:
-            "Network unavailable. Please check your connection and try again."
-        }
     }
 }

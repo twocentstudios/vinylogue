@@ -315,25 +315,3 @@ final class LastFMClientTests: XCTestCase {
         XCTAssertEqual(album.description, "Test description")
     }
 }
-
-// MARK: - LastFMError Equatable
-
-extension LastFMError: @retroactive Equatable {
-    public static func == (lhs: LastFMError, rhs: LastFMError) -> Bool {
-        switch (lhs, rhs) {
-        case (.invalidAPIKey, .invalidAPIKey),
-             (.userNotFound, .userNotFound),
-             (.networkUnavailable, .networkUnavailable),
-             (.invalidResponse, .invalidResponse),
-             (.serviceUnavailable, .serviceUnavailable),
-             (.noDataAvailable, .noDataAvailable):
-            true
-        case let (.apiError(lhsCode, lhsMessage), .apiError(rhsCode, rhsMessage)):
-            lhsCode == rhsCode && lhsMessage == rhsMessage
-        case let (.decodingError(lhsError), .decodingError(rhsError)):
-            lhsError.localizedDescription == rhsError.localizedDescription
-        default:
-            false
-        }
-    }
-}

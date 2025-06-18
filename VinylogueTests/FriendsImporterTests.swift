@@ -106,7 +106,8 @@ final class FriendsImporterTests: XCTestCase {
             return
         }
 
-        if case LastFMError.networkUnavailable = error {
+        if let lastFMError = error.asError(type: LastFMError.self),
+           case LastFMError.networkUnavailable = lastFMError {
             // Expected error type
         } else {
             XCTFail("Expected network unavailable error")
@@ -133,7 +134,8 @@ final class FriendsImporterTests: XCTestCase {
             return
         }
 
-        if case LastFMError.userNotFound = error {
+        if let lastFMError = error.asError(type: LastFMError.self),
+           case LastFMError.userNotFound = lastFMError {
             // Expected error type
         } else {
             XCTFail("Expected user not found error")

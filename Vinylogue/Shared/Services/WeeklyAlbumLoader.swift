@@ -8,19 +8,6 @@ enum WeeklyAlbumsLoadingState: Equatable {
     case loading
     case loaded([Album])
     case failed(LastFMError)
-
-    static func == (lhs: WeeklyAlbumsLoadingState, rhs: WeeklyAlbumsLoadingState) -> Bool {
-        switch (lhs, rhs) {
-        case (.initialized, .initialized), (.loading, .loading):
-            true
-        case let (.loaded(lhsAlbums), .loaded(rhsAlbums)):
-            lhsAlbums == rhsAlbums
-        case let (.failed(lhsError), .failed(rhsError)):
-            lhsError.localizedDescription == rhsError.localizedDescription
-        default:
-            false
-        }
-    }
 }
 
 @Observable
