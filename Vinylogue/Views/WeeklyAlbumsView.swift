@@ -32,12 +32,10 @@ struct WeeklyAlbumsView: View {
                         EmptyStateView(username: user.username)
                     } else {
                         ForEach($loader.albums) { $album in
-                            VStack(spacing: 0) {
-                                NavigationLink(destination: AlbumDetailView(album: $album)) {
-                                    AlbumRowView(album: $album)
-                                }
-                                .buttonStyle(AlbumRowButtonStyle())
+                            NavigationLink(destination: AlbumDetailView(album: $album)) {
+                                AlbumRowView(album: $album)
                             }
+                            .buttonStyle(AlbumRowButtonStyle())
                         }
                     }
                 case let .failed(error):
@@ -251,6 +249,7 @@ private struct YearNavigationButtons: ViewModifier {
                     }
                 }
             }
+            .disabled(loader.albumsState == .loading)
     }
 }
 
