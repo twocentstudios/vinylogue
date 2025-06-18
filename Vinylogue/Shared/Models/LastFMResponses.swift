@@ -106,7 +106,7 @@ struct LastFMAlbumInfo: Codable, Sendable {
     let url: String?
     let image: [LastFMImage]?
     let playcount: String?
-    let userplaycount: String?
+    let userplaycount: Int?
     let wiki: LastFMWiki?
 
     var imageURL: String? {
@@ -121,10 +121,7 @@ struct LastFMAlbumInfo: Codable, Sendable {
     }
 
     var userPlayCount: Int? {
-        if let userplaycount {
-            return Int(userplaycount)
-        }
-        return nil
+        userplaycount
     }
 
     var description: String? {
