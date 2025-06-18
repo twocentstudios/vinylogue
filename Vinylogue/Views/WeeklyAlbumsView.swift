@@ -44,7 +44,7 @@ struct WeeklyAlbumsView: View {
                             )
                             .task(id: album.id) {
                                 if album.imageURL == nil {
-                                    await loader.loadAlbumArtwork(for: $album)
+                                    await loader.loadAlbum(album)
                                 }
                             }
                         }

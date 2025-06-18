@@ -231,17 +231,24 @@ final class WeeklyAlbumLoader {
     }
 
     /// Load album artwork for a specific album
-    func loadAlbumArtwork(for album: Binding<Album>) async {
+    func loadAlbum(_ album: Album) async {
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
-                artist: album.wrappedValue.artist,
-                album: album.wrappedValue.name,
-                mbid: album.wrappedValue.mbid,
+                artist: album.artist,
+                album: album.name,
+                mbid: album.mbid,
                 username: nil as String?
             )
-            album.wrappedValue.imageURL = detailedAlbum.imageURL
+
+            // Find and update the album in our stored collection
+            if let index = albums.firstIndex(where: { $0.id == album.id }) {
+                albums[index].imageURL = detailedAlbum.imageURL
+            }
         } catch {
-            album.wrappedValue.imageURL = nil
+            // Find and update the album in our stored collection
+            if let index = albums.firstIndex(where: { $0.id == album.id }) {
+                albums[index].imageURL = nil
+            }
         }
     }
 
