@@ -12,7 +12,6 @@ struct WeeklyAlbumsView: View {
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
 
-    private static let overscrollThreshold: CGFloat = 70
     @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
     @State private var topProgress: Double = 0.0
     @State private var bottomProgress: Double = 0.0
@@ -51,50 +50,13 @@ struct WeeklyAlbumsView: View {
             }
             .animation(.snappy(duration: 0.20), value: loader.albumsState)
         }
-        .onScrollGeometryChange(for: ScrollProgress.self) { geometry in
-            let topOverscroll = -(geometry.contentOffset.y + geometry.contentInsets.top)
-            let bottomOverscroll = geometry.contentOffset.y - max(0.0, geometry.contentSize.height - geometry.containerSize.height) + geometry.contentInsets.top
-
-            let newTopProgress = max(0.0, topOverscroll / Self.overscrollThreshold)
-            let newBottomProgress = max(0.0, bottomOverscroll / Self.overscrollThreshold)
-
-            return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
-        } action: { _, value in
-            guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
-            topProgress = value.top
-            bottomProgress = value.bottom
-        }
-        .onScrollPhaseChange { oldPhase, newPhase, context in
-            // 0 when scrolled exactly to top of content, positive when overscrolled above
-            let topOverscroll = -(context.geometry.contentOffset.y + context.geometry.contentInsets.top)
-
-            // 0 when scrolled exactly to bottom of content, positive when overscrolled below
-            let bottomOverscroll = context.geometry.contentOffset.y - max(0.0, context.geometry.contentSize.height - context.geometry.containerSize.height) + context.geometry.contentInsets.top
-
-            if newPhase == .idle {
-                // Wait until scroll has returned to idle before changing navigation
-                if let performCurrentYearOffsetChangeOnScrollIdle {
-                    if loader.canNavigate(to: performCurrentYearOffsetChangeOnScrollIdle) {
-                        currentYearOffset = performCurrentYearOffsetChangeOnScrollIdle
-                    }
-                    self.performCurrentYearOffsetChangeOnScrollIdle = nil
-                    topProgress = 0.0
-                    bottomProgress = 0.0
-                }
-            } else if oldPhase == .interacting, newPhase == .decelerating {
-                if topOverscroll > Self.overscrollThreshold {
-                    performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
-                    withAnimation(.snappy(duration: 0.2)) {
-                        topProgress = 1.0
-                    }
-                } else if bottomOverscroll > Self.overscrollThreshold {
-                    performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
-                    withAnimation(.snappy(duration: 0.2)) {
-                        bottomProgress = 1.0
-                    }
-                }
-            }
-        }
+        .modifier(OverscrollHandler(
+            currentYearOffset: $currentYearOffset,
+            loader: loader,
+            performCurrentYearOffsetChangeOnScrollIdle: $performCurrentYearOffsetChangeOnScrollIdle,
+            topProgress: $topProgress,
+            bottomProgress: $bottomProgress
+        ))
         .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, loader: loader, topProgress: topProgress, bottomProgress: bottomProgress))
         .background(Color.primaryBackground)
         .navigationTitle("charts")
@@ -140,6 +102,66 @@ struct WeeklyAlbumsView: View {
                 await loader.updatePlayCountFilter(newFilter, for: user, yearOffset: currentYearOffset)
             }
         }
+    }
+}
+
+// MARK: - Overscroll Handler
+
+private struct OverscrollHandler: ViewModifier {
+    @Binding var currentYearOffset: Int
+    let loader: WeeklyAlbumLoader
+    @Binding var performCurrentYearOffsetChangeOnScrollIdle: Int?
+    @Binding var topProgress: Double
+    @Binding var bottomProgress: Double
+
+    private static let overscrollThreshold: CGFloat = 70
+
+    func body(content: Content) -> some View {
+        content
+            .onScrollGeometryChange(for: ScrollProgress.self) { geometry in
+                let topOverscroll = -(geometry.contentOffset.y + geometry.contentInsets.top)
+                let bottomOverscroll = geometry.contentOffset.y - max(0.0, geometry.contentSize.height - geometry.containerSize.height) + geometry.contentInsets.top
+
+                let newTopProgress = max(0.0, topOverscroll / Self.overscrollThreshold)
+                let newBottomProgress = max(0.0, bottomOverscroll / Self.overscrollThreshold)
+
+                return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
+            } action: { _, value in
+                guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
+                topProgress = value.top
+                bottomProgress = value.bottom
+            }
+            .onScrollPhaseChange { oldPhase, newPhase, context in
+                // 0 when scrolled exactly to top of content, positive when overscrolled above
+                let topOverscroll = -(context.geometry.contentOffset.y + context.geometry.contentInsets.top)
+
+                // 0 when scrolled exactly to bottom of content, positive when overscrolled below
+                let bottomOverscroll = context.geometry.contentOffset.y - max(0.0, context.geometry.contentSize.height - context.geometry.containerSize.height) + context.geometry.contentInsets.top
+
+                if newPhase == .idle {
+                    // Wait until scroll has returned to idle before changing navigation
+                    if let performCurrentYearOffsetChangeOnScrollIdle {
+                        if loader.canNavigate(to: performCurrentYearOffsetChangeOnScrollIdle) {
+                            currentYearOffset = performCurrentYearOffsetChangeOnScrollIdle
+                        }
+                        self.performCurrentYearOffsetChangeOnScrollIdle = nil
+                        topProgress = 0.0
+                        bottomProgress = 0.0
+                    }
+                } else if oldPhase == .interacting, newPhase == .decelerating {
+                    if topOverscroll > Self.overscrollThreshold {
+                        performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
+                        withAnimation(.snappy(duration: 0.2)) {
+                            topProgress = 1.0
+                        }
+                    } else if bottomOverscroll > Self.overscrollThreshold {
+                        performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
+                        withAnimation(.snappy(duration: 0.2)) {
+                            bottomProgress = 1.0
+                        }
+                    }
+                }
+            }
     }
 }
 
