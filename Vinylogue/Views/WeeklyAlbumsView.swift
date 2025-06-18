@@ -181,3 +181,50 @@ private struct LoadingIndicatorView: View {
     ErrorStateView(error: .networkUnavailable)
         .background(Color.primaryBackground)
 }
+
+#Preview("Scroll button mask") {
+    @Previewable @State var progress = 0.0 // 0.0...1.0
+    VStack {
+        VStack(spacing: -2) {
+            Image(systemName: "arrow.up")
+                .font(.f(.regular, .caption1))
+                .foregroundColor(.vinylogueBlueDark)
+            Text(String("2001"))
+                .font(.f(.regular, .title2))
+                .foregroundColor(.vinylogueBlueDark)
+        }
+        .padding(.horizontal, 26)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Material.thin)
+                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+        )
+        .padding(.top, 10)
+        .overlay {
+            GeometryReader { proxy in
+                VStack(spacing: -2) {
+                    Image(systemName: "arrow.up")
+                        .font(.f(.regular, .caption1))
+                        .foregroundColor(.vinylogueWhiteSubtle)
+                    Text(String("2001"))
+                        .font(.f(.regular, .title2))
+                        .foregroundColor(.vinylogueWhiteSubtle)
+                }
+                .padding(.horizontal, 26)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.vinylogueBlueDark)
+                        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                )
+                .padding(.top, 10)
+                .mask(alignment: .bottom) {
+                    Rectangle().fill(.black).frame(height: proxy.size.height * progress)
+                }
+            }
+        }
+        Slider(value: $progress, in: 0.0 ... 1.0)
+            .padding()
+    }
+}
