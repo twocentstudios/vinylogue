@@ -3,10 +3,12 @@ import SwiftUI
 
 struct WeeklyAlbumsView: View {
     let user: User
-
     @Bindable private var loader: WeeklyAlbumLoader = .init()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+
+    private static let overscrollThreshold: CGFloat = 70
+    @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
 
     init(user: User) {
         self.user = user
@@ -33,6 +35,29 @@ struct WeeklyAlbumsView: View {
                     }
                 case let .failed(error):
                     ErrorStateView(error: error)
+                }
+            }
+        }
+        .onScrollPhaseChange { oldPhase, newPhase, context in
+            // 0 when scrolled exactly to top of content, positive when overscrolled above
+            let topOverscroll = -(context.geometry.contentOffset.y + context.geometry.contentInsets.top)
+
+            // 0 when scrolled exactly to bottom of content, positive when overscrolled below
+            let bottomOverscroll = context.geometry.contentOffset.y - (context.geometry.contentSize.height - context.geometry.containerSize.height) + context.geometry.contentInsets.top
+
+            if newPhase == .idle {
+                // Wait until scroll has returned to idle before changing navigation
+                if let performCurrentYearOffsetChangeOnScrollIdle {
+                    if loader.canNavigate(to: performCurrentYearOffsetChangeOnScrollIdle) {
+                        currentYearOffset = performCurrentYearOffsetChangeOnScrollIdle
+                    }
+                    self.performCurrentYearOffsetChangeOnScrollIdle = nil
+                }
+            } else if oldPhase == .interacting, newPhase == .decelerating {
+                if topOverscroll > Self.overscrollThreshold {
+                    performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
+                } else if bottomOverscroll > Self.overscrollThreshold {
+                    performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
                 }
             }
         }
