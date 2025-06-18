@@ -37,11 +37,10 @@ targets:
     platform: iOS
     sources:
       - path: Vinylogue
-        excludes:
-          - "**/*.md"
     resources:
       - Vinylogue/Assets.xcassets
       - Vinylogue/Preview Content
+      - Vinylogue/acknowledgements.md
     dependencies:
       - package: Nuke
         product: Nuke

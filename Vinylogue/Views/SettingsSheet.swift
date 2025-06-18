@@ -13,6 +13,7 @@ struct SettingsSheet: View {
     @State private var showingMailComposer = false
     @State private var showingUsernamePicker = false
     @State private var showingUsernameChangeSheet = false
+    @State private var showingLicenses = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
 
     // Computed property for User object (for backward compatibility)
@@ -121,6 +122,9 @@ struct SettingsSheet: View {
         .sheet(isPresented: $showingUsernameChangeSheet) {
             UsernameChangeSheet()
         }
+        .sheet(isPresented: $showingLicenses) {
+            LicensesView()
+        }
     }
 
     // MARK: - Private Methods
@@ -162,8 +166,7 @@ struct SettingsSheet: View {
     }
 
     private func viewLicenses() {
-        // This would open a licenses view - for now just a placeholder
-        // In a real app, you'd present a web view or dedicated licenses view
+        showingLicenses = true
     }
 
     private func openDeveloperWebsite() {
