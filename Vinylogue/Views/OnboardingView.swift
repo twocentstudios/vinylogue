@@ -168,8 +168,8 @@ struct OnboardingView: View {
             await friendsImporter.importFriends(for: username)
 
             // Save imported friends to persistent storage
-            if !friendsImporter.friends.isEmpty {
-                $curatedFriends.withLock { $0 = friendsImporter.friends }
+            if case let .loaded(importedFriends) = friendsImporter.friendsState, !importedFriends.isEmpty {
+                $curatedFriends.withLock { $0 = importedFriends }
             }
 
             isValidating = false

@@ -3,14 +3,45 @@ import Foundation
 import Observation
 import SwiftUI
 
+enum WeeklyAlbumsLoadingState: Equatable {
+    case initialized
+    case loading
+    case loaded([Album])
+    case failed(LastFMError)
+
+    static func == (lhs: WeeklyAlbumsLoadingState, rhs: WeeklyAlbumsLoadingState) -> Bool {
+        switch (lhs, rhs) {
+        case (.initialized, .initialized), (.loading, .loading):
+            true
+        case let (.loaded(lhsAlbums), .loaded(rhsAlbums)):
+            lhsAlbums == rhsAlbums
+        case let (.failed(lhsError), .failed(rhsError)):
+            lhsError.localizedDescription == rhsError.localizedDescription
+        default:
+            false
+        }
+    }
+}
+
 @Observable
 @MainActor
 final class WeeklyAlbumLoader {
-    var albums: [Album] = []
-    var isLoading = false
-    var error: LastFMError?
+    var albumsState: WeeklyAlbumsLoadingState = .initialized
     var currentWeekInfo: WeekInfo?
     var availableYearRange: ClosedRange<Int>?
+
+    /// Computed property to provide access to albums array for binding purposes
+    var albums: [Album] {
+        get {
+            if case let .loaded(albums) = albumsState {
+                return albums
+            }
+            return []
+        }
+        set {
+            albumsState = .loaded(newValue)
+        }
+    }
 
     @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
     @ObservationIgnored @Dependency(\.cacheManager) private var cacheManager
@@ -50,16 +81,15 @@ final class WeeklyAlbumLoader {
 
     /// Check if albums are already loaded for the given user and year offset
     func isDataLoaded(for user: User, yearOffset: Int, playCountFilter: Int) -> Bool {
-        loadedUsername == user.username &&
+        guard case .loaded = albumsState else { return false }
+        return loadedUsername == user.username &&
             loadedYearOffset == yearOffset &&
-            loadedPlayCountFilter == playCountFilter &&
-            !albums.isEmpty
+            loadedPlayCountFilter == playCountFilter
     }
 
     /// Load albums for a specific user and year offset
     func loadAlbums(for user: User, yearOffset: Int = 0, forceReload: Bool = false) async {
-        isLoading = true
-        error = nil
+        albumsState = .loading
 
         do {
             // First, get the weekly chart list if we don't have it
@@ -72,13 +102,11 @@ final class WeeklyAlbumLoader {
 
             // Find the matching weekly chart period
             guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else {
-                albums = []
+                albumsState = .failed(.noDataAvailable)
                 currentWeekInfo = nil
-                error = .noDataAvailable
                 loadedUsername = nil
                 loadedYearOffset = nil
                 loadedPlayCountFilter = nil
-                isLoading = false
                 return
             }
 
@@ -131,30 +159,25 @@ final class WeeklyAlbumLoader {
                 }
                 .sorted { $0.playCount > $1.playCount }
 
-            albums = filteredAlbums
+            albumsState = .loaded(filteredAlbums)
 
             // Update tracking state on successful load
             loadedUsername = user.username
             loadedYearOffset = yearOffset
             loadedPlayCountFilter = playCountFilter
-            isLoading = false
 
         } catch let lastFMError as LastFMError {
-            error = lastFMError
-            albums = []
+            albumsState = .failed(lastFMError)
             currentWeekInfo = nil
             loadedUsername = nil
             loadedYearOffset = nil
             loadedPlayCountFilter = nil
-            isLoading = false
         } catch {
-            self.error = .invalidResponse
-            albums = []
+            albumsState = .failed(.invalidResponse)
             currentWeekInfo = nil
             loadedUsername = nil
             loadedYearOffset = nil
             loadedPlayCountFilter = nil
-            isLoading = false
         }
     }
 
@@ -239,10 +262,8 @@ final class WeeklyAlbumLoader {
 
     /// Clear all data
     func clear() {
-        albums = []
+        albumsState = .initialized
         currentWeekInfo = nil
-        error = nil
-        isLoading = false
         loadedUsername = nil
         loadedYearOffset = nil
         loadedPlayCountFilter = nil

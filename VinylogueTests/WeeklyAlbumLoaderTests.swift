@@ -25,9 +25,10 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         } operation: {
             WeeklyAlbumLoader()
         }
-        XCTAssertTrue(loader.albums.isEmpty)
-        XCTAssertFalse(loader.isLoading)
-        XCTAssertNil(loader.error)
+        guard case .initialized = loader.albumsState else {
+            XCTFail("Expected albums state to be initialized")
+            return
+        }
         XCTAssertNil(loader.currentWeekInfo)
         XCTAssertNil(loader.availableYearRange)
     }
@@ -74,10 +75,9 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
             WeeklyAlbumLoader()
         }
         // Set some test data
-        loader.albums = [
+        loader.albumsState = .loaded([
             Album(name: "Test Album", artist: "Test Artist", playCount: 10),
-        ]
-        loader.error = .networkUnavailable
+        ])
         loader.currentWeekInfo = WeeklyAlbumLoader.WeekInfo(
             weekNumber: 25,
             year: 2024,
@@ -87,10 +87,11 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         // Clear and verify
         loader.clear()
 
-        XCTAssertTrue(loader.albums.isEmpty)
-        XCTAssertNil(loader.error)
+        guard case .initialized = loader.albumsState else {
+            XCTFail("Expected albums state to be initialized")
+            return
+        }
         XCTAssertNil(loader.currentWeekInfo)
-        XCTAssertFalse(loader.isLoading)
     }
 }
 

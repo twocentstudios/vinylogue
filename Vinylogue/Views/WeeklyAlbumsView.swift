@@ -15,21 +15,24 @@ struct WeeklyAlbumsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                if loader.albums.isEmpty, !loader.isLoading {
-                    if loader.error != nil {
-                        ErrorStateView(error: loader.error!)
-                    } else {
+                switch loader.albumsState {
+                case .initialized, .loading:
+                    EmptyView()
+                case .loaded:
+                    if loader.albums.isEmpty {
                         EmptyStateView(username: user.username)
-                    }
-                } else {
-                    ForEach($loader.albums) { $album in
-                        VStack(spacing: 0) {
-                            NavigationLink(destination: AlbumDetailView(album: $album)) {
-                                AlbumRowView(album: $album)
+                    } else {
+                        ForEach($loader.albums) { $album in
+                            VStack(spacing: 0) {
+                                NavigationLink(destination: AlbumDetailView(album: $album)) {
+                                    AlbumRowView(album: $album)
+                                }
+                                .buttonStyle(AlbumRowButtonStyle())
                             }
-                            .buttonStyle(AlbumRowButtonStyle())
                         }
                     }
+                case let .failed(error):
+                    ErrorStateView(error: error)
                 }
             }
         }
@@ -53,7 +56,7 @@ struct WeeklyAlbumsView: View {
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                if loader.isLoading {
+                if case .loading = loader.albumsState {
                     LoadingIndicatorView()
                 } else {
                     EmptyView()

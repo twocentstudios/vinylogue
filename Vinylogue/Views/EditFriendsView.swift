@@ -17,6 +17,13 @@ struct EditFriendsView: View {
     @State private var selectedFriends: Set<String> = []
     @State private var showingAddFriend = false
 
+    private var isImportingFriends: Bool {
+        if case .loading = friendsImporter.friendsState {
+            return true
+        }
+        return false
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -24,7 +31,7 @@ struct EditFriendsView: View {
                 if currentUsername != nil {
                     Section {
                         ImportFriendsButton(
-                            isLoading: friendsImporter.isLoading,
+                            isLoading: isImportingFriends,
                             action: importFriends
                         )
                         .listRowBackground(Color.primaryBackground)
@@ -143,8 +150,8 @@ struct EditFriendsView: View {
             editableFriends = curatedFriends
             selectedFriends = Set(curatedFriends.map(\.username))
         }
-        .onChange(of: friendsImporter.friends) { _, importedFriends in
-            if !importedFriends.isEmpty {
+        .onChange(of: friendsImporter.friendsState) { _, friendsState in
+            if case let .loaded(importedFriends) = friendsState {
                 handleImportedFriends(importedFriends)
             }
         }
