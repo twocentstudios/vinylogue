@@ -314,4 +314,55 @@ final class LastFMClientTests: XCTestCase {
         XCTAssertTrue(album.isDetailLoaded)
         XCTAssertEqual(album.description, "Test description")
     }
+
+    // MARK: - Description Cleanup Tests
+
+    func testCleanupDescriptionRemovesLastFMLink() {
+        let description = "Postcard From A Living Hell is the full-length debut studio album from Australian pop punk band RedHook. It was independently released on April 21, 2023. <a href=\"https://www.last.fm/music/RedHook/Postcard+From+A+Living+Hell\">Read more on Last.fm</a>."
+        
+        let cleaned = client.cleanupDescription(description)
+        let expected = "Postcard From A Living Hell is the full-length debut studio album from Australian pop punk band RedHook. It was independently released on April 21, 2023."
+        
+        XCTAssertEqual(cleaned, expected)
+    }
+
+    func testCleanupDescriptionRemovesLastFMLinkWithoutTrailingPeriod() {
+        let description = "Test album description. <a href=\"https://www.last.fm/music/Artist/Album\">Read more on Last.fm</a>"
+        
+        let cleaned = client.cleanupDescription(description)
+        let expected = "Test album description."
+        
+        XCTAssertEqual(cleaned, expected)
+    }
+
+    func testCleanupDescriptionWithNilInput() {
+        let cleaned = client.cleanupDescription(nil)
+        
+        XCTAssertNil(cleaned)
+    }
+
+    func testCleanupDescriptionWithEmptyStringAfterCleanup() {
+        let description = "<a href=\"https://www.last.fm/music/Artist/Album\">Read more on Last.fm</a>"
+        
+        let cleaned = client.cleanupDescription(description)
+        
+        XCTAssertNil(cleaned)
+    }
+
+    func testCleanupDescriptionWithNoLastFMLink() {
+        let description = "This is a normal album description without any Last.fm links."
+        
+        let cleaned = client.cleanupDescription(description)
+        
+        XCTAssertEqual(cleaned, description)
+    }
+
+    func testCleanupDescriptionWithMultipleSpacesAndWhitespace() {
+        let description = "   Test description.   <a href=\"https://www.last.fm/music/Artist/Album\">Read more on Last.fm</a>   "
+        
+        let cleaned = client.cleanupDescription(description)
+        let expected = "Test description."
+        
+        XCTAssertEqual(cleaned, expected)
+    }
 }

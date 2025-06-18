@@ -128,7 +128,7 @@ struct LastFMAlbumInfo: Codable, Sendable {
     }
 
     var description: String? {
-        wiki?.summary
+        wiki?.content
     }
 }
 

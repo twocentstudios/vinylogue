@@ -221,12 +221,29 @@ extension LastFMClient {
             mbid: info.mbid
         )
 
-        album.description = info.description
+        album.description = cleanupDescription(info.description)
         album.totalPlayCount = info.totalPlayCount
         album.userPlayCount = info.userPlayCount
         album.isDetailLoaded = true
 
         return album
+    }
+
+    /// Clean up album description by removing Last.fm "Read more" links
+    internal func cleanupDescription(_ description: String?) -> String? {
+        guard let description else { return nil }
+
+        // Regular expression to match the "Read more on Last.fm" link pattern
+        // This matches: <a href="{any url}">Read more on Last.fm</a> with optional trailing punctuation
+        let pattern = #"<a href="[^"]*">Read more on Last\.fm</a>\.?"#
+
+        let cleanedDescription = description.replacingOccurrences(
+            of: pattern,
+            with: "",
+            options: .regularExpression
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return cleanedDescription.isEmpty ? nil : cleanedDescription
     }
 
     /// Fetch user information

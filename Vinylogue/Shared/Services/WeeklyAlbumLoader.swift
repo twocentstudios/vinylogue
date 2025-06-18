@@ -230,7 +230,7 @@ final class WeeklyAlbumLoader {
         return yearRange.contains(targetYear)
     }
 
-    /// Load album artwork for a specific album
+    /// Load album details for a specific album
     func loadAlbum(_ album: Album) async {
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
@@ -243,6 +243,10 @@ final class WeeklyAlbumLoader {
             // Find and update the album in our stored collection
             if let index = albums.firstIndex(where: { $0.id == album.id }) {
                 albums[index].imageURL = detailedAlbum.imageURL
+                albums[index].description = detailedAlbum.description
+                albums[index].totalPlayCount = detailedAlbum.totalPlayCount
+                albums[index].userPlayCount = detailedAlbum.userPlayCount
+                albums[index].isDetailLoaded = true
             }
         } catch {
             // Find and update the album in our stored collection
