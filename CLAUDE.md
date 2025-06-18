@@ -4,8 +4,8 @@
 - ALWAYS consider visual appearance should match the legacy application; dark mode is NOT supported. 
 - ALWAYS reference the legacy code in ./vinylogue-legacy when determining UX and styling for a feature.
 - ALWAYS run xcodegen after adding/removing files.
-- ALWAYS run swiftformat on all changed files before building.
-- ALWAYS build with xcodebuild when a feature is complete and ensure the project builds with no errors.
+- ALWAYS run swiftformat on all changed files before building ignoring the output. If the command fails, run it again and read the error.
+- ALWAYS build with xcodebuild when a feature is complete ignoring the output. If the command returns errors, run it again observing the errors returned.
 - ALWAYS run tests when a feature is complete and ensure there are no failures.
 - ALWAYS update PRD.md to reflect the current status of the sprint.
 - NEVER look in ./DerivedData unless absolutely necessary to determine the cause of a build error. If so, be very very careful about how many tokens you look at.
