@@ -39,8 +39,9 @@ struct AlbumDetailView: View {
             }
         }
         .background(representativeColors?.primary ?? Color.vinylogueWhiteSubtle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+        .toolbarVisibility(.visible, for: .navigationBar) // This doesn't work for some reason
+        .toolbarTitleDisplayMode(.inline)
+        .toolbarBackground(Material.ultraThin, for: .navigationBar)
         .task {
             await loadAlbumDetails()
         }
