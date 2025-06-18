@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import Network
 
@@ -13,10 +14,7 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
     private let networkMonitor = NWPathMonitor()
-    private let cacheManager = CacheManager()
-
-    @MainActor
-    static let shared = LastFMClient()
+    @Dependency(\.cacheManager) private var cacheManager
 
     init() {
         setupNetworkMonitoring()

@@ -1,16 +1,17 @@
 import Combine
+import Dependencies
 import Sharing
 import SwiftUI
 
 struct EditFriendsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
     @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
 
-    @State private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
+    @State private var friendsImporter = FriendsImporter()
 
     @State private var editableFriends: [User] = []
     @State private var selectedFriends: Set<String> = []
@@ -141,8 +142,6 @@ struct EditFriendsView: View {
         .onAppear {
             editableFriends = curatedFriends
             selectedFriends = Set(curatedFriends.map(\.username))
-
-            friendsImporter.updateClient(lastFMClient)
         }
         .onChange(of: friendsImporter.friends) { _, importedFriends in
             if !importedFriends.isEmpty {
@@ -238,7 +237,7 @@ private struct FriendEditRowView: View {
 
 private struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     // Access current user to prevent self-adding
     @Shared(.appStorage("currentUser")) var currentUsername: String?

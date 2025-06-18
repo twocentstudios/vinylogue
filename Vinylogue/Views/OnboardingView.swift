@@ -1,8 +1,9 @@
+import Dependencies
 import Sharing
 import SwiftUI
 
 struct OnboardingView: View {
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
@@ -15,7 +16,7 @@ struct OnboardingView: View {
 
     @FocusState private var isTextFieldFocused: Bool
 
-    @State private var friendsImporter = FriendsImporter(lastFMClient: LastFMClient.shared)
+    @State private var friendsImporter = FriendsImporter()
 
     var body: some View {
         NavigationView {
@@ -164,9 +165,6 @@ struct OnboardingView: View {
             $currentUsername.withLock { $0 = username }
 
             // Automatically import friends on first startup
-            // Update the friendsImporter to use the environment client
-            friendsImporter.updateClient(lastFMClient)
-
             await friendsImporter.importFriends(for: username)
 
             // Save imported friends to persistent storage

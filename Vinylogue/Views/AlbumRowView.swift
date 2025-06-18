@@ -1,10 +1,11 @@
 import Nuke
 import NukeUI
+import Dependencies
 import SwiftUI
 
 struct AlbumRowView: View {
     @Binding var album: Album
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     private var albumImageURL: String? {
         album.imageURL
@@ -168,5 +169,4 @@ private struct AlbumArtworkView: View {
         AlbumRowView(album: $album3)
     }
     .background(Color.primaryBackground)
-    .environment(\.lastFMClient, LastFMClient.shared)
 }

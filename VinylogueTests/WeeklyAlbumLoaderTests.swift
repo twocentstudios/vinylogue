@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 @testable import Vinylogue
 import XCTest
@@ -16,10 +17,14 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         mockClient = nil
     }
 
-    func testInitialState() {
+    func testInitialState() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
+        loader = withDependencies {
+            $0.lastFMClient = mockClient
+        } operation: {
+            WeeklyAlbumLoader()
+        }
         XCTAssertTrue(loader.albums.isEmpty)
         XCTAssertFalse(loader.isLoading)
         XCTAssertNil(loader.error)
@@ -27,30 +32,47 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         XCTAssertNil(loader.availableYearRange)
     }
 
-    func testYearCalculation() {
+    func testYearCalculation() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
-        let currentYear = Calendar.current.component(.year, from: Date())
+        let testDate = Date()
+        let testCalendar = Calendar.current
+        let currentYear = testCalendar.component(.year, from: testDate)
+
+        loader = withDependencies {
+            $0.lastFMClient = mockClient
+            $0.date = .constant(testDate)
+            $0.calendar = testCalendar
+        } operation: {
+            WeeklyAlbumLoader()
+        }
 
         XCTAssertEqual(loader.getYear(for: 0), currentYear)
         XCTAssertEqual(loader.getYear(for: 1), currentYear - 1)
         XCTAssertEqual(loader.getYear(for: 2), currentYear - 2)
     }
 
-    func testCanNavigateWithNoData() {
+    func testCanNavigateWithNoData() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
+        loader = withDependencies {
+            $0.lastFMClient = mockClient
+        } operation: {
+            WeeklyAlbumLoader()
+        }
         XCTAssertFalse(loader.canNavigate(to: 1))
         XCTAssertFalse(loader.canNavigate(to: 0))
         XCTAssertFalse(loader.canNavigate(to: -1))
     }
 
-    func testClearFunctionality() {
+    func testClearFunctionality() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = WeeklyAlbumLoader(lastFMClient: mockClient)
+        loader = withDependencies {
+            $0.lastFMClient = mockClient
+        } operation: {
+            WeeklyAlbumLoader()
+        }
         // Set some test data
         loader.albums = [
             Album(name: "Test Album", artist: "Test Artist", playCount: 10),

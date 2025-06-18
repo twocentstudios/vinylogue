@@ -167,7 +167,6 @@ private struct LoadingIndicatorView: View {
             playCount: 1500
         ))
     }
-    .environment(\.lastFMClient, LastFMClient.shared)
 }
 
 #Preview("Empty State") {

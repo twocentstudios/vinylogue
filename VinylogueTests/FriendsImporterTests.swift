@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 @testable import Vinylogue
 import XCTest
@@ -21,7 +22,11 @@ final class FriendsImporterTests: XCTestCase {
     func testImportFriendsSuccess() async {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Mock API response with friends
         let mockResponse = UserFriendsResponse(
             friends: LastFMFriends(
@@ -82,7 +87,11 @@ final class FriendsImporterTests: XCTestCase {
     func testImportFriendsNetworkError() async {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Mock API error
         mockLastFMClient.mockError = LastFMError.networkUnavailable
 
@@ -104,7 +113,11 @@ final class FriendsImporterTests: XCTestCase {
     func testImportFriendsUserNotFound() async {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Mock API user not found error
         mockLastFMClient.mockError = LastFMError.userNotFound
 
@@ -120,7 +133,11 @@ final class FriendsImporterTests: XCTestCase {
     func testImportFriendsEmptyResponse() async {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Mock API response with no friends
         let mockResponse = UserFriendsResponse(
             friends: LastFMFriends(
@@ -151,7 +168,11 @@ final class FriendsImporterTests: XCTestCase {
     func testGetNewFriendsExcludingCurated() {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Imported friends and curated friends
         let importedFriends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
@@ -179,7 +200,11 @@ final class FriendsImporterTests: XCTestCase {
     func testGetNewFriendsAllAlreadyCurated() {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: All imported friends are already curated
         let importedFriends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
@@ -202,7 +227,11 @@ final class FriendsImporterTests: XCTestCase {
     func testClearFriends() {
         // Setup
         mockLastFMClient = MockLastFMClient()
-        friendsImporter = FriendsImporter(lastFMClient: mockLastFMClient)
+        friendsImporter = withDependencies {
+            $0.lastFMClient = mockLastFMClient
+        } operation: {
+            FriendsImporter()
+        }
         // Given: Friends list with data and an error
         friendsImporter.friends = [
             User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),

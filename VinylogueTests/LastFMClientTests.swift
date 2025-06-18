@@ -318,7 +318,7 @@ final class LastFMClientTests: XCTestCase {
 
 // MARK: - LastFMError Equatable
 
-extension LastFMError: Equatable {
+extension LastFMError: @retroactive Equatable {
     public static func == (lhs: LastFMError, rhs: LastFMError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidAPIKey, .invalidAPIKey),

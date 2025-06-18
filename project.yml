@@ -27,6 +27,9 @@ packages:
   Sharing:
     url: https://github.com/pointfreeco/swift-sharing
     majorVersion: 1.0.0
+  Dependencies:
+    url: https://github.com/pointfreeco/swift-dependencies
+    majorVersion: 1.0.0
 
 targets:
   Vinylogue:
@@ -46,6 +49,8 @@ targets:
         product: NukeUI
       - package: Sharing
         product: Sharing
+      - package: Dependencies
+        product: Dependencies
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.twocentstudios.vinylogue
       DEVELOPMENT_ASSET_PATHS: "\"Vinylogue/Preview Content\""

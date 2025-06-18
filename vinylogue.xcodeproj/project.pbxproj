@@ -11,6 +11,7 @@
 		05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */; };
 		0CD455DE58200990F340A629 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E56759C070D9789838E509 /* RootView.swift */; };
 		1237B5A3BDAFAF1FB0E21902 /* LegacyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE9DA06101640076F5973EA /* LegacyModels.swift */; };
+		153B304063EB9C5A4A111217 /* Dependencies+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56154FB563EA127014EA5AF3 /* Dependencies+Vinylogue.swift */; };
 		1828F284CCFA8305FD52BCD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2459B22F6080B54FA09B5E5C /* Assets.xcassets */; };
 		1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69DA986080E9218D89262C1 /* VinylogueApp.swift */; };
 		239735FA5611B57BA112AAEF /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD7AE9D64A2CA43F4F5B55E2 /* Secrets.swift */; };
@@ -49,6 +50,7 @@
 		EA2920FFF857C2EB16F37816 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C86A0EC162997FB14DE6C8 /* SectionHeaderView.swift */; };
 		F16C5956AD579642DAE259E5 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935600D4241C39F4972F9B7 /* CacheManagerTests.swift */; };
 		F51E1C28395A5C5CA223C7A8 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74186B195551DD3AD1407172 /* SettingsSheet.swift */; };
+		FFF6FDAD0F9AB75E05A4A65F /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 981758FEB9D5A2C37FA571F7 /* Dependencies */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,7 @@
 		3ADEEE4964731E948A556161 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
+		56154FB563EA127014EA5AF3 /* Dependencies+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dependencies+Vinylogue.swift"; sourceTree = "<group>"; };
 		61A2103491B1B740C03DDE8E /* FriendsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporter.swift; sourceTree = "<group>"; };
 		667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF18C5C82ECDA87AD06AA7D /* LegacyMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMigrator.swift; sourceTree = "<group>"; };
@@ -113,6 +116,7 @@
 				A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */,
 				00B39DBA804826E5E9353332 /* NukeUI in Frameworks */,
 				E396A750FC17CA951C08DD21 /* Sharing in Frameworks */,
+				FFF6FDAD0F9AB75E05A4A65F /* Dependencies in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,13 +268,14 @@
 			children = (
 				941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */,
 				3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */,
+				56154FB563EA127014EA5AF3 /* Dependencies+Vinylogue.swift */,
 				705D26434CDB654DACBBA5F6 /* Environment+Keys.swift */,
 				229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		"TEMP_80BB3246-9101-4665-9B4B-A881EE89DC7F" /* Features */ = {
+		"TEMP_66E1FDE4-EFC3-48A7-8E41-D70306893A71" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -297,6 +302,7 @@
 				51CB558AF1F5FF422CE975FF /* Nuke */,
 				EB3BBA0B2FD4CD346C4CC0A7 /* NukeUI */,
 				B0D78D9D36F23A3928EE8368 /* Sharing */,
+				981758FEB9D5A2C37FA571F7 /* Dependencies */,
 			);
 			productName = Vinylogue;
 			productReference = 74CD2D864124E180A45B91E3 /* Vinylogue.app */;
@@ -345,6 +351,7 @@
 			mainGroup = E304281509B6F6D69E915585;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				B6EC3D14A53D5938A9187F06 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
 				3866EAA516F770881ABF4A03 /* XCRemoteSwiftPackageReference "Nuke" */,
 				A9EB0DA07C985D5B67455282 /* XCRemoteSwiftPackageReference "swift-sharing" */,
 			);
@@ -384,6 +391,7 @@
 				8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */,
 				736CF7D501FC7A910EC4D3E4 /* ColorExtraction.swift in Sources */,
 				BEFF2A0B7A8A4F030FCC2C27 /* ContentView.swift in Sources */,
+				153B304063EB9C5A4A111217 /* Dependencies+Vinylogue.swift in Sources */,
 				CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */,
 				64953255D6E3917D09643F11 /* EmptyStateView.swift in Sources */,
 				05E3A5A51071DE5E7E2AA534 /* Environment+Keys.swift in Sources */,
@@ -689,6 +697,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		B6EC3D14A53D5938A9187F06 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -696,6 +712,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3866EAA516F770881ABF4A03 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = Nuke;
+		};
+		981758FEB9D5A2C37FA571F7 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B6EC3D14A53D5938A9187F06 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
 		};
 		B0D78D9D36F23A3928EE8368 /* Sharing */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,5 +1,6 @@
 import Nuke
 import NukeUI
+import Dependencies
 import SwiftUI
 
 struct AlbumDetailView: View {
@@ -7,7 +8,7 @@ struct AlbumDetailView: View {
     @State private var artworkImage: UIImage?
     @State private var representativeColors: ColorExtraction.RepresentativeColors?
     @State private var isLoadingDetails = false
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     var body: some View {
         ZStack {
@@ -304,5 +305,4 @@ struct AlbumDetailView: View {
     return NavigationStack {
         AlbumDetailView(album: $album)
     }
-    .environment(\.lastFMClient, LastFMClient.shared)
 }

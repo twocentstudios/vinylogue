@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import Observation
 import OSLog
@@ -7,7 +8,7 @@ import OSLog
 @MainActor
 final class FriendsImporter {
     @ObservationIgnored private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "FriendsImporter")
-    @ObservationIgnored private var lastFMClient: LastFMClientProtocol
+    @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
 
     /// Current friends list loaded from Last.fm
     var friends: [User] = []
@@ -18,14 +19,7 @@ final class FriendsImporter {
     /// Any import error that occurred
     var importError: Error?
 
-    init(lastFMClient: LastFMClientProtocol) {
-        self.lastFMClient = lastFMClient
-    }
-
-    /// Updates the Last.fm client (useful when injecting environment dependencies)
-    func updateClient(_ client: LastFMClientProtocol) {
-        lastFMClient = client
-    }
+    init() {}
 
     /// Fetches friends list from Last.fm for the current user
     func importFriends(for username: String) async {

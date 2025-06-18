@@ -1,3 +1,4 @@
+import Dependencies
 import Foundation
 import Observation
 import SwiftUI
@@ -11,8 +12,10 @@ final class WeeklyAlbumLoader {
     var currentWeekInfo: WeekInfo?
     var availableYearRange: ClosedRange<Int>?
 
-    @ObservationIgnored private let lastFMClient: LastFMClientProtocol
-    @ObservationIgnored private let cacheManager = CacheManager()
+    @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
+    @ObservationIgnored @Dependency(\.cacheManager) private var cacheManager
+    @ObservationIgnored @Dependency(\.date) private var date
+    @ObservationIgnored @Dependency(\.calendar) private var calendar
     @ObservationIgnored private var playCountFilter: Int = 1
     @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
 
@@ -31,9 +34,7 @@ final class WeeklyAlbumLoader {
         }
     }
 
-    init(lastFMClient: LastFMClientProtocol = LastFMClient.shared) {
-        self.lastFMClient = lastFMClient
-    }
+    init() {}
 
     /// Update the play count filter and reload if necessary
     func updatePlayCountFilter(_ newFilter: Int, for user: User, yearOffset: Int) async {
@@ -82,7 +83,6 @@ final class WeeklyAlbumLoader {
             }
 
             // Update week info
-            let calendar = Calendar.current
             let weekNumber = calendar.component(.weekOfYear, from: chartPeriod.fromDate)
             let year = calendar.component(.yearForWeekOfYear, from: chartPeriod.fromDate)
             currentWeekInfo = WeekInfo(weekNumber: weekNumber, year: year, username: user.username)
@@ -191,7 +191,6 @@ final class WeeklyAlbumLoader {
             if let firstChart = weeklyCharts.first,
                let lastChart = weeklyCharts.last
             {
-                let calendar = Calendar.current
                 let earliestYear = calendar.component(.year, from: firstChart.fromDate)
                 let latestYear = calendar.component(.year, from: lastChart.toDate)
                 availableYearRange = earliestYear ... latestYear
@@ -206,8 +205,7 @@ final class WeeklyAlbumLoader {
 
     /// Calculate the target date for a given year offset
     private func calculateTargetDate(yearOffset: Int) -> Date {
-        let calendar = Calendar.current
-        let now = Date()
+        let now = date()
 
         var components = DateComponents()
         components.year = -yearOffset
@@ -224,7 +222,6 @@ final class WeeklyAlbumLoader {
 
     /// Get the year for a given offset (for navigation button display)
     func getYear(for yearOffset: Int) -> Int {
-        let calendar = Calendar.current
         let targetDate = calculateTargetDate(yearOffset: yearOffset)
         return calendar.component(.year, from: targetDate)
     }

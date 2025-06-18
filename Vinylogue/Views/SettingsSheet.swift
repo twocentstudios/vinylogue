@@ -1,3 +1,4 @@
+import Dependencies
 import MessageUI
 import Sharing
 import SwiftUI
@@ -280,7 +281,7 @@ struct MailComposerView: UIViewControllerRepresentable {
 
 struct UsernameChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.lastFMClient) private var lastFMClient
+    @Dependency(\.lastFMClient) private var lastFMClient
 
     // Use @Shared directly
     @Shared(.appStorage("currentUser")) var currentUsername: String?
