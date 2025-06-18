@@ -81,6 +81,22 @@ struct CacheManager: Sendable {
         try FileManager.default.removeItem(at: url)
     }
 
+    // MARK: - Cache Management
+
+    func clearCache() async throws {
+        guard FileManager.default.fileExists(atPath: cacheDirectory.path) else {
+            return
+        }
+
+        try FileManager.default.removeItem(at: cacheDirectory)
+
+        // Recreate the cache directory
+        try FileManager.default.createDirectory(
+            at: cacheDirectory,
+            withIntermediateDirectories: true
+        )
+    }
+
     // MARK: - Specific Cache Methods
 }
 
