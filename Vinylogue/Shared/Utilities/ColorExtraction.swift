@@ -148,8 +148,7 @@ enum ColorExtraction {
         let bitmapBytesPerRow = width * 4
         _ = bitmapBytesPerRow * height
 
-        // Use the generic RGB color space
-        guard let colorSpace = CGColorSpace(name: CGColorSpace.genericRGBLinear) else {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
             return nil
         }
 
