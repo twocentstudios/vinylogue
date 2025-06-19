@@ -43,7 +43,7 @@ final class LegacyMigratorTests: XCTestCase {
     func testMigrationSkippedWhenAlreadyCompleted() async {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration was already completed
-        tempUserDefaults.set(true, forKey: "VinylogueMigrationCompleted")
+        migrator.$migrationCompletedShared.withLock { $0 = true }
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
@@ -56,14 +56,14 @@ final class LegacyMigratorTests: XCTestCase {
     func testMigrationRunsWhenNotCompleted() async {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration has not been completed
-        XCTAssertFalse(tempUserDefaults.bool(forKey: "VinylogueMigrationCompleted"))
+        XCTAssertFalse(migrator.migrationCompletedShared)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes and is marked as done
         XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertTrue(tempUserDefaults.bool(forKey: "VinylogueMigrationCompleted"))
+        XCTAssertTrue(migrator.migrationCompletedShared)
         XCTAssertNil(migrator.migrationError)
     }
 
@@ -181,7 +181,7 @@ final class LegacyMigratorTests: XCTestCase {
         // Then: Migration completes successfully
         XCTAssertTrue(migrator.migrationCompleted)
         XCTAssertNil(migrator.migrationError)
-        XCTAssertTrue(tempUserDefaults.bool(forKey: "VinylogueMigrationCompleted"))
+        XCTAssertTrue(migrator.migrationCompletedShared)
 
         // And: New settings are in place (via @Shared)
         // Note: @Shared properties in LegacyMigrator use production storage, not test storage
@@ -213,7 +213,7 @@ final class LegacyMigratorTests: XCTestCase {
         // Then: Migration state is reset
         XCTAssertFalse(migrator.migrationCompleted)
         XCTAssertNil(migrator.migrationError)
-        XCTAssertFalse(tempUserDefaults.bool(forKey: "VinylogueMigrationCompleted"))
+        XCTAssertFalse(migrator.migrationCompletedShared)
     }
 
     // MARK: - Model Tests

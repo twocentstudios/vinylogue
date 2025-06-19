@@ -22,6 +22,7 @@ final class LegacyMigrator {
     @ObservationIgnored @Shared(.appStorage("currentUser")) var currentUsername: String?
     @ObservationIgnored @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
     @ObservationIgnored @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @ObservationIgnored @Shared(.appStorage("migration_completed_1_3_1")) var migrationCompletedShared: Bool = false
 
     init(userDefaults: UserDefaults = .standard, fileManager: FileManager = .default, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults
@@ -32,7 +33,7 @@ final class LegacyMigrator {
     /// Performs migration if needed. Safe to call multiple times.
     func migrateIfNeeded() async {
         // Check if migration was already completed
-        if userDefaults.bool(forKey: "VinylogueMigrationCompleted") {
+        if migrationCompletedShared {
             logger.info("Migration already completed, skipping")
             migrationCompleted = true
             return
@@ -46,7 +47,7 @@ final class LegacyMigrator {
             await cleanupLegacyData()
 
             // Mark migration as completed
-            userDefaults.set(true, forKey: "VinylogueMigrationCompleted")
+            $migrationCompletedShared.withLock { $0 = true }
             migrationCompleted = true
 
             logger.info("Migration completed successfully")
@@ -197,7 +198,7 @@ final class LegacyMigrator {
 
     /// Force a re-migration (for testing purposes)
     func resetMigration() {
-        userDefaults.removeObject(forKey: "VinylogueMigrationCompleted")
+        $migrationCompletedShared.withLock { $0 = false }
         migrationCompleted = false
         migrationError = nil
         logger.info("Reset migration state")

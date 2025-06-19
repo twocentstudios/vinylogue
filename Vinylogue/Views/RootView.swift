@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RootView: View {
     @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.appStorage("migration_completed_1_3_1")) var migrationCompleted: Bool = false
 
     @State private var migrator = LegacyMigrator()
     @State private var isMigrationComplete: Bool?
@@ -64,7 +65,7 @@ struct RootView: View {
 
     @MainActor
     private func performMigration() async {
-        let needsMigration = UserDefaults.standard.bool(forKey: "VinylogueMigrationCompleted") == false
+        let needsMigration = !migrationCompleted
 
         if needsMigration {
             isMigrationComplete = false
@@ -85,27 +86,9 @@ struct RootView: View {
 
 private struct MigrationLoadingView: View {
     var body: some View {
-        VStack(spacing: 24) {
-            AnimatedLoadingIndicator(size: 60)
-
-            VStack(spacing: 8) {
-                Text("Setting up Vinylogue")
-                    .font(.f(.demiBold, .headline))
-                    .foregroundColor(.primaryText)
-
-                Text("Migrating your data...")
-                    .font(.f(.medium, .body))
-                    .foregroundColor(.secondaryText)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.primaryBackground)
+        Color.primaryBackground.ignoresSafeArea()
     }
 }
-
-// MARK: - Placeholder Views
-
-// UsersListView is now implemented in its own file
 
 // MARK: - Previews
 
