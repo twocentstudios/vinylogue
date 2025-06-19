@@ -7,8 +7,7 @@ struct AlbumRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AlbumArtworkView(imageURL: album.imageURL)
-                .frame(width: 80, height: 80)
+            ReusableAlbumArtworkView.fixedSize(imageURL: album.imageURL, size: 80)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(album.artist.uppercased())
@@ -54,49 +53,6 @@ struct AlbumRowButtonStyle: ButtonStyle {
         configuration.label
             .foregroundColor(configuration.isPressed ? .vinylogueWhiteSubtle : .vinylogueBlueDark)
             .background(configuration.isPressed ? Color.vinylogueBlueDark : Color.vinylogueWhiteSubtle)
-    }
-}
-
-// MARK: - Album Artwork View
-
-private struct AlbumArtworkView: View {
-    let imageURL: String?
-
-    var body: some View {
-        Group {
-            if let imageURL, let url = URL(string: imageURL) {
-                LazyImage(url: url) { state in
-                    if let image = state.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else if state.error != nil {
-                        placeholderView
-                    } else {
-                        placeholderView
-                    }
-                }
-            } else {
-                placeholderView
-            }
-        }
-        .frame(width: 80, height: 80)
-        .clipShape(RoundedRectangle(cornerRadius: 4))
-    }
-
-    private var placeholderView: some View {
-        RoundedRectangle(cornerRadius: 8)
-            .fill(Color.vinylogueGray)
-            .overlay {
-                Circle()
-                    .fill(Color.white.opacity(0.8))
-                    .frame(width: 40, height: 40)
-                    .overlay {
-                        Circle()
-                            .fill(Color.vinylogueGray)
-                            .frame(width: 8, height: 8)
-                    }
-            }
     }
 }
 

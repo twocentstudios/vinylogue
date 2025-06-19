@@ -300,68 +300,24 @@ struct UsernameChangeSheet: View {
                     .padding(.top, 40)
 
                 VStack(spacing: 0) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("a last.fm username")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .font(.f(.ultralight, .headline))
-                            .foregroundColor(.primaryText)
-                            .padding(.horizontal)
-                            .padding(.bottom, 0)
+                    LastFMUsernameInputView(
+                        username: $newUsername,
+                        isValidating: $isValidating,
+                        accessibilityHint: "Enter your Last.fm username to change",
+                        onSubmit: validateAndSaveUsername
+                    )
+                    .focused($isTextFieldFocused)
 
-                        HStack(spacing: 0) {
-                            Image(systemName: "music.note")
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .foregroundStyle(Color.vinylogueGray)
-                            TextField("username", text: $newUsername)
-                                .foregroundStyle(Color.primaryText)
-                                .textFieldStyle(.plain)
-                                .textInputAutocapitalization(.never)
-                                .minimumScaleFactor(0.7)
-                                .autocorrectionDisabled()
-                                .textContentType(.username)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            if !newUsername.isEmpty {
-                                Button(action: { newUsername = "" }) {
-                                    Image(systemName: "multiply.circle.fill")
-                                        .font(.f(.demiBold, 40))
-                                        .foregroundStyle(Color.primaryText.opacity(0.3))
-                                }
-                                .padding(.trailing, 8)
-                            }
-                        }
-                        .font(.f(.demiBold, 60))
-                        .background {
-                            Color.vinylogueGray.opacity(0.4)
-                        }
-                        .focused($isTextFieldFocused)
-                        .onSubmit {
-                            validateAndSaveUsername()
-                        }
-                        .accessibilityLabel("Last.fm username")
-                        .accessibilityHint("Enter your Last.fm username to change")
-                        .padding(.bottom, 16)
-                    }
-
-                    Button(action: validateAndSaveUsername) {
-                        HStack {
-                            if isValidating {
-                                AnimatedLoadingIndicator(size: 20)
-                            }
-
-                            Text(isValidating ? "validating..." : "save username")
-                                .font(.f(.regular, .body))
-                                .fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(submitButtonBackground)
-                        .foregroundColor(isValidating ? .primaryText.opacity(0.6) : .vinylogueWhiteSubtle)
-                    }
-                    .disabled(!canSave || isValidating)
+                    LoadingButton(
+                        title: "save username",
+                        loadingTitle: "validating...",
+                        isLoading: isValidating,
+                        isDisabled: !canSave,
+                        accessibilityLabel: isValidating ? "Validating username" : "Save username",
+                        accessibilityHint: "Validates your username and updates the app",
+                        action: validateAndSaveUsername
+                    )
                     .sensoryFeedback(.success, trigger: currentUsername)
-                    .accessibilityLabel(isValidating ? "Validating username" : "Save username")
-                    .accessibilityHint("Validates your username and updates the app")
                 }
 
                 Spacer()
@@ -393,14 +349,6 @@ struct UsernameChangeSheet: View {
             if let errorMessage = validationError {
                 Text(errorMessage)
             }
-        }
-    }
-
-    private var submitButtonBackground: Color {
-        if !canSave || isValidating {
-            .vinylogueGray
-        } else {
-            .accent
         }
     }
 

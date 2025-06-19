@@ -6,7 +6,7 @@ import XCTest
 @MainActor
 final class FriendsImporterTests: XCTestCase {
     nonisolated var friendsImporter: FriendsImporter!
-    nonisolated var mockLastFMClient: MockLastFMClient!
+    nonisolated var mockLastFMClient: TestLastFMClient!
 
     override func setUpWithError() throws {
         // Set up will be done in the test methods since we need MainActor
@@ -21,7 +21,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testImportFriendsSuccess() async {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -59,7 +59,7 @@ final class FriendsImporterTests: XCTestCase {
             )
         )
 
-        mockLastFMClient.mockResponse = mockResponse
+        mockLastFMClient.setGenericMockResponse(mockResponse)
 
         // When: Importing friends
         await friendsImporter.importFriends(for: "testuser")
@@ -88,7 +88,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testImportFriendsNetworkError() async {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -107,7 +107,8 @@ final class FriendsImporterTests: XCTestCase {
         }
 
         if let lastFMError = error.asError(type: LastFMError.self),
-           case LastFMError.networkUnavailable = lastFMError {
+           case LastFMError.networkUnavailable = lastFMError
+        {
             // Expected error type
         } else {
             XCTFail("Expected network unavailable error")
@@ -116,7 +117,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testImportFriendsUserNotFound() async {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -135,7 +136,8 @@ final class FriendsImporterTests: XCTestCase {
         }
 
         if let lastFMError = error.asError(type: LastFMError.self),
-           case LastFMError.userNotFound = lastFMError {
+           case LastFMError.userNotFound = lastFMError
+        {
             // Expected error type
         } else {
             XCTFail("Expected user not found error")
@@ -144,7 +146,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testImportFriendsEmptyResponse() async {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -164,7 +166,7 @@ final class FriendsImporterTests: XCTestCase {
             )
         )
 
-        mockLastFMClient.mockResponse = mockResponse
+        mockLastFMClient.setGenericMockResponse(mockResponse)
 
         // When: Importing friends
         await friendsImporter.importFriends(for: "testuser")
@@ -181,7 +183,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testGetNewFriendsExcludingCurated() {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -189,9 +191,9 @@ final class FriendsImporterTests: XCTestCase {
         }
         // Given: Imported friends and curated friends
         let importedFriends = [
-            User(username: "friend1", realName: "Friend One", imageURL: nil, url: nil, playCount: 100),
-            User(username: "friend2", realName: "Friend Two", imageURL: nil, url: nil, playCount: 200),
-            User(username: "friend3", realName: "Friend Three", imageURL: nil, url: nil, playCount: 300),
+            TestDataFactory.createFriend(username: "friend1", realName: "Friend One", playCount: 100),
+            TestDataFactory.createFriend(username: "friend2", realName: "Friend Two", playCount: 200),
+            TestDataFactory.createFriend(username: "friend3", realName: "Friend Three", playCount: 300),
         ]
 
         let curatedFriends = [
@@ -213,7 +215,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testGetNewFriendsAllAlreadyCurated() {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -240,7 +242,7 @@ final class FriendsImporterTests: XCTestCase {
 
     func testClearFriends() {
         // Setup
-        mockLastFMClient = MockLastFMClient()
+        mockLastFMClient = TestLastFMClient()
         friendsImporter = withDependencies {
             $0.lastFMClient = mockLastFMClient
         } operation: {
@@ -264,59 +266,4 @@ final class FriendsImporterTests: XCTestCase {
 
 // MARK: - Mock LastFM Client
 
-final class MockLastFMClient: LastFMClientProtocol, @unchecked Sendable {
-    private let lock = NSLock()
-    private var _mockResponse: Any?
-    private var _mockError: Error?
-
-    var mockResponse: Any? {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _mockResponse
-        }
-        set {
-            lock.lock()
-            defer { lock.unlock() }
-            _mockResponse = newValue
-        }
-    }
-
-    var mockError: Error? {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _mockError
-        }
-        set {
-            lock.lock()
-            defer { lock.unlock() }
-            _mockError = newValue
-        }
-    }
-
-    func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
-        if let error = mockError {
-            throw error
-        }
-
-        guard let response = mockResponse as? T else {
-            throw LastFMError.invalidResponse
-        }
-
-        return response
-    }
-
-    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album {
-        // Simple mock implementation for testing
-        Album(
-            name: album ?? "Mock Album",
-            artist: artist ?? "Mock Artist",
-            imageURL: "https://example.com/mock.jpg",
-            playCount: 0,
-            rank: nil,
-            url: nil,
-            mbid: mbid
-        )
-    }
-}
+// Use the shared TestLastFMClient instead of local TestLastFMClient

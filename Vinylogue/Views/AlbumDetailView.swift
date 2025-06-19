@@ -80,46 +80,14 @@ struct AlbumDetailView: View {
 
     @ViewBuilder
     private var artworkSection: some View {
-        Group {
-            if let imageURL = album.imageURL, let url = URL(string: imageURL) {
-                LazyImage(url: url) { state in
-                    if let image = state.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .task {
-                                extractRepresentativeColors(from: state.imageContainer?.image)
-                            }
-                    } else if state.error != nil {
-                        albumPlaceholder
-                    } else {
-                        albumPlaceholder
-                    }
-                }
-            } else {
-                albumPlaceholder
+        ReusableAlbumArtworkView.flexible(
+            imageURL: album.imageURL,
+            cornerRadius: 6,
+            showShadow: true,
+            onImageLoaded: { uiImage in
+                extractRepresentativeColors(from: uiImage)
             }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 6))
-        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 1)
-    }
-
-    @ViewBuilder
-    private var albumPlaceholder: some View {
-        Rectangle()
-            .fill(Color.vinylogueGray)
-            .aspectRatio(1.0, contentMode: .fit)
-            .overlay {
-                Circle()
-                    .fill(Color.vinylogueWhiteSubtle)
-                    .overlay {
-                        Circle()
-                            .fill(Color.vinylogueGray)
-                            .padding(80)
-                    }
-                    .padding(60)
-            }
-            .compositingGroup()
+        )
     }
 
     @ViewBuilder

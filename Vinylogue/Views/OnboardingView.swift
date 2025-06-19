@@ -37,75 +37,26 @@ struct OnboardingView: View {
                 .padding(.top, 40)
 
                 VStack(spacing: 0) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("a last.fm username")
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .font(.f(.ultralight, .headline))
-                            .foregroundColor(.primaryText)
-                            .padding(.horizontal)
-                            .padding(.bottom, 0)
+                    LastFMUsernameInputView(
+                        username: $username,
+                        isValidating: $isValidating,
+                        errorMessage: errorMessage,
+                        showError: showError,
+                        accessibilityHint: "Enter your Last.fm username to get started",
+                        onSubmit: validateAndSubmit
+                    )
+                    .focused($isTextFieldFocused)
 
-                        HStack(spacing: 0) {
-                            Image(systemName: "music.note")
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .foregroundStyle(Color.vinylogueGray)
-                            TextField("username", text: $username)
-                                .foregroundStyle(Color.primaryText)
-                                .textFieldStyle(.plain)
-                                .textInputAutocapitalization(.never)
-                                .minimumScaleFactor(0.7)
-                                .autocorrectionDisabled()
-                                .textContentType(.username)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            if !username.isEmpty {
-                                Button(action: { username = "" }) {
-                                    Image(systemName: "multiply.circle.fill")
-                                        .font(.f(.demiBold, 40))
-                                        .foregroundStyle(Color.primaryText.opacity(0.3))
-                                }
-                                .padding(.trailing, 8)
-                            }
-                        }
-                        .font(.f(.demiBold, 60))
-                        .background {
-                            Color.vinylogueGray.opacity(0.4)
-                        }
-                        .focused($isTextFieldFocused)
-                        .onSubmit {
-                            validateAndSubmit()
-                        }
-                        .accessibilityLabel("Last.fm username")
-                        .accessibilityHint("Enter your Last.fm username to get started")
-                        .padding(.bottom, 16)
-
-                        if let errorMessage, showError {
-                            Label(errorMessage, systemImage: "exclamationmark.triangle")
-                                .foregroundColor(.destructive)
-                                .font(.f(.regular, .caption1))
-                                .padding(.horizontal)
-                        }
-                    }
-
-                    Button(action: validateAndSubmit) {
-                        HStack {
-                            if isValidating {
-                                AnimatedLoadingIndicator(size: 20)
-                            }
-
-                            Text(isValidating ? "validating..." : "get started")
-                                .font(.f(.regular, .body))
-                                .fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(submitButtonBackground)
-                        .foregroundColor(isValidating ? .primaryText.opacity(0.6) : .vinylogueWhiteSubtle)
-                    }
-                    .disabled(username.isEmpty || isValidating)
+                    LoadingButton(
+                        title: "get started",
+                        loadingTitle: "validating...",
+                        isLoading: isValidating,
+                        isDisabled: username.isEmpty,
+                        accessibilityLabel: isValidating ? "Validating username" : "Get started with Last.fm",
+                        accessibilityHint: "Validates your username and sets up the app",
+                        action: validateAndSubmit
+                    )
                     .sensoryFeedback(.success, trigger: currentUsername)
-                    .accessibilityLabel(isValidating ? "Validating username" : "Get started with Last.fm")
-                    .accessibilityHint("Validates your username and sets up the app")
                 }
 
                 Spacer()
@@ -126,14 +77,6 @@ struct OnboardingView: View {
             if let errorMessage {
                 Text(errorMessage)
             }
-        }
-    }
-
-    private var submitButtonBackground: Color {
-        if username.isEmpty || isValidating {
-            .vinylogueGray
-        } else {
-            .accent
         }
     }
 

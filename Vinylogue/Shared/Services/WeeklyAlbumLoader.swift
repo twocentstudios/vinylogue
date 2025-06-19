@@ -98,7 +98,7 @@ final class WeeklyAlbumLoader {
             let year = calendar.component(.yearForWeekOfYear, from: chartPeriod.fromDate)
             currentWeekInfo = WeekInfo(weekNumber: weekNumber, year: year, username: user.username)
 
-            let cacheKey = "weekly_chart_\(user.username)_\(Int(chartPeriod.fromDate.timeIntervalSince1970))_\(Int(chartPeriod.toDate.timeIntervalSince1970))"
+            let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
             var response: UserWeeklyAlbumChartResponse?
 
             if !forceReload {
@@ -170,7 +170,7 @@ final class WeeklyAlbumLoader {
     /// Load the available weekly chart periods for a user
     private func loadWeeklyChartList(for username: String) async {
         do {
-            let cacheKey = "weekly_chart_list_\(username)"
+            let cacheKey = CacheKeyBuilder.weeklyChartList(username: username)
 
             var response: UserWeeklyChartListResponse?
             response = try? await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey)
@@ -306,7 +306,7 @@ final class WeeklyAlbumLoader {
                 return // No data available for this year
             }
 
-            let cacheKey = "weekly_chart_\(user.username)_\(Int(chartPeriod.fromDate.timeIntervalSince1970))_\(Int(chartPeriod.toDate.timeIntervalSince1970))"
+            let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
 
             // Check if already cached
             if let _ = try? await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey) {

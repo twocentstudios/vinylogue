@@ -107,7 +107,7 @@ struct ChartCache: Sendable {
     init() {}
 
     func load(user: String, from: Date, to: Date) async throws -> Data? {
-        let key = chartCacheKey(user: user, from: from, to: to)
+        let key = CacheKeyBuilder.chart(user: user, from: from, to: to)
 
         do {
             let albums: [Album]? = try await cacheManager.retrieve([Album].self, key: key)
@@ -121,7 +121,7 @@ struct ChartCache: Sendable {
     }
 
     func save(_ data: Data, user: String, from: Date, to: Date) async throws {
-        let key = chartCacheKey(user: user, from: from, to: to)
+        let key = CacheKeyBuilder.chart(user: user, from: from, to: to)
 
         do {
             let albums = try JSONDecoder().decode([Album].self, from: data)
@@ -129,11 +129,5 @@ struct ChartCache: Sendable {
         } catch {
             throw CacheError.writeFailure(error)
         }
-    }
-
-    private func chartCacheKey(user: String, from: Date, to: Date) -> String {
-        let fromTimestamp = Int(from.timeIntervalSince1970)
-        let toTimestamp = Int(to.timeIntervalSince1970)
-        return "chart_\(user)_\(fromTimestamp)_\(toTimestamp)"
     }
 }

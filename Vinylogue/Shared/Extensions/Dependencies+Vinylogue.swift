@@ -8,9 +8,10 @@ import XCTestDynamicOverlay
 extension LastFMClient: DependencyKey {
     static let liveValue: LastFMClientProtocol = LastFMClient()
 
+    // Note: Tests should override this with TestLastFMClient using withDependencies
     static let testValue: LastFMClientProtocol = MockLastFMClient()
 
-    static let previewValue: LastFMClientProtocol = LastFMClient()
+    static let previewValue: LastFMClientProtocol = MockLastFMClient()
 }
 
 // MARK: - Mock LastFM Client for Testing/Previews

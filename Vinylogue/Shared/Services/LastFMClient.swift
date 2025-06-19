@@ -29,14 +29,7 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
-        guard isNetworkAvailable else {
-            throw LastFMError.networkUnavailable
-        }
-
-        guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
-            throw LastFMError.invalidAPIKey
-        }
-
+        try validatePrerequisites()
         let url = buildURL(for: endpoint)
 
         do {
@@ -46,19 +39,7 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
                 throw LastFMError.invalidResponse
             }
 
-            switch httpResponse.statusCode {
-            case 200 ... 299:
-                break
-            case 400 ... 499:
-                if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
-                    throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
-                }
-                throw LastFMError.invalidResponse
-            case 500 ... 599:
-                throw LastFMError.serviceUnavailable
-            default:
-                throw LastFMError.invalidResponse
-            }
+            try handleHTTPResponse(httpResponse, data: data)
 
             if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
                 throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
@@ -90,17 +71,48 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
         }
     }
 
-    func requestData(_ endpoint: LastFMEndpoint) async throws -> Data {
-        // Check network availability
+    private func validatePrerequisites() throws {
         guard isNetworkAvailable else {
             throw LastFMError.networkUnavailable
         }
 
-        // Validate API key
         guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
             throw LastFMError.invalidAPIKey
         }
+    }
 
+    private func handleHTTPResponse(_ response: HTTPURLResponse, data: Data) throws {
+        switch response.statusCode {
+        case 200 ... 299:
+            break
+        case 400 ... 499:
+            if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
+                throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
+            }
+            throw LastFMError.invalidResponse
+        case 500 ... 599:
+            throw LastFMError.serviceUnavailable
+        default:
+            throw LastFMError.invalidResponse
+        }
+    }
+
+    private func handleHTTPErrorResponse(_ response: HTTPURLResponse, data: Data) throws {
+        switch response.statusCode {
+        case 400 ... 499:
+            if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
+                throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
+            }
+            throw LastFMError.invalidResponse
+        case 500 ... 599:
+            throw LastFMError.serviceUnavailable
+        default:
+            throw LastFMError.invalidResponse
+        }
+    }
+
+    func requestData(_ endpoint: LastFMEndpoint) async throws -> Data {
+        try validatePrerequisites()
         let url = buildURL(for: endpoint)
 
         do {
@@ -113,15 +125,9 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
             switch httpResponse.statusCode {
             case 200 ... 299:
                 return data
-            case 400 ... 499:
-                if let errorResponse = try? JSONDecoder().decode(LastFMErrorResponse.self, from: data) {
-                    throw mapLastFMError(code: errorResponse.error, message: errorResponse.message)
-                }
-                throw LastFMError.invalidResponse
-            case 500 ... 599:
-                throw LastFMError.serviceUnavailable
             default:
-                throw LastFMError.invalidResponse
+                try handleHTTPErrorResponse(httpResponse, data: data)
+                return data // This line will never be reached, but satisfies the compiler
             }
 
         } catch let error as LastFMError {
@@ -182,14 +188,7 @@ extension LastFMClient {
     /// Fetch detailed album information
     func fetchAlbumInfo(artist: String? = nil, album: String? = nil, mbid: String? = nil, username: String? = nil) async throws -> Album {
         // Create cache key based on album identifiers
-        let cacheKey: String
-        if let mbid, !mbid.isEmpty {
-            cacheKey = "album_info_mbid_\(mbid)_\(username ?? "none")"
-        } else if let artist, let album {
-            let normalizedArtist = artist.lowercased().replacingOccurrences(of: " ", with: "_")
-            let normalizedAlbum = album.lowercased().replacingOccurrences(of: " ", with: "_")
-            cacheKey = "album_info_\(normalizedArtist)_\(normalizedAlbum)_\(username ?? "none")"
-        } else {
+        guard let cacheKey = CacheKeyBuilder.albumInfo(artist: artist, album: album, mbid: mbid, username: username) else {
             // Fallback to original API call without caching for invalid parameters
             let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
             return createAlbumFromResponse(response.album)
