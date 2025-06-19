@@ -46,7 +46,8 @@ struct AlbumDetailView: View {
         .task {
             await loadAlbumDetails()
         }
-        .task {
+        .task(id: representativeColors != nil) {
+            guard representativeColors != nil else { return }
             withAnimation(.easeIn(duration: 0.75).delay(0.15)) {
                 shouldAnimateColors = true
             }
@@ -86,7 +87,7 @@ struct AlbumDetailView: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .onAppear {
+                            .task {
                                 extractRepresentativeColors(from: state.imageContainer?.image)
                             }
                     } else if state.error != nil {
