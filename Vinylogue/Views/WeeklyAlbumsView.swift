@@ -83,7 +83,7 @@ struct WeeklyAlbumsView: View {
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 if case .loading = loader.albumsState {
-                    LoadingIndicatorView()
+                    AnimatedLoadingIndicator(size: 24)
                 } else {
                     EmptyView()
                 }
