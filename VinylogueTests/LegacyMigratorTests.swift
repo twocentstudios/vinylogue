@@ -69,11 +69,12 @@ final class LegacyMigratorTests: XCTestCase {
 
     // MARK: - Legacy User Migration Tests
 
-    func testLegacyUserMigration() async {
+    func testLegacyUserMigration() async throws {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Legacy user data exists
-        let testUsername = "testuser123"
-        tempUserDefaults.set(testUsername, forKey: LegacyUser.userDefaultsKey)
+        let legacyUser = LegacyUser(username: "testuser123", realName: "Test User", imageURL: "http://example.com/image.jpg")
+        let userData = try NSKeyedArchiver.archivedData(withRootObject: legacyUser, requiringSecureCoding: false)
+        tempUserDefaults.set(userData, forKey: LegacyUser.userDefaultsKey)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
@@ -83,7 +84,7 @@ final class LegacyMigratorTests: XCTestCase {
         XCTAssertNil(migrator.migrationError)
 
         // And: Legacy user data is cleaned up
-        XCTAssertNil(tempUserDefaults.string(forKey: LegacyUser.userDefaultsKey))
+        XCTAssertNil(tempUserDefaults.object(forKey: LegacyUser.userDefaultsKey))
     }
 
     func testNoLegacyUserMigration() async {
@@ -128,18 +129,15 @@ final class LegacyMigratorTests: XCTestCase {
 
     func testLegacyFriendsMigration() async throws {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Legacy friends cache exists
+        // Given: Legacy friends data exists in UserDefaults
         let legacyFriends = [
-            LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil),
-            LegacyFriend(username: "friend2", realName: "Friend Two", playCount: 2000, imageURL: "http://example.com/image.jpg"),
+            LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil, imageThumbURL: nil, url: nil),
+            LegacyFriend(username: "friend2", realName: "Friend Two", playCount: 2000, imageURL: "http://example.com/image.jpg", imageThumbURL: "http://example.com/thumb.jpg", url: "http://example.com/user"),
         ]
 
-        let cacheDirectory = tempDirectory.appendingPathComponent("VinylogueCache")
-        try tempFileManager.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-
-        let friendsCacheURL = cacheDirectory.appendingPathComponent(LegacyFriend.cacheFileName)
-        let friendsData = try JSONEncoder().encode(legacyFriends)
-        try friendsData.write(to: friendsCacheURL)
+        // Store friends data using NSKeyedArchiver like the legacy app
+        let friendsData = try NSKeyedArchiver.archivedData(withRootObject: legacyFriends, requiringSecureCoding: false)
+        tempUserDefaults.set(friendsData, forKey: LegacySettings.Keys.friendsList)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
@@ -148,8 +146,8 @@ final class LegacyMigratorTests: XCTestCase {
         XCTAssertTrue(migrator.migrationCompleted)
         XCTAssertNil(migrator.migrationError)
 
-        // And: Legacy friends cache is cleaned up
-        XCTAssertFalse(tempFileManager.fileExists(atPath: friendsCacheURL.path))
+        // And: Legacy friends data is cleaned up
+        XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.friendsList))
     }
 
     // MARK: - Full Migration Test
@@ -157,11 +155,12 @@ final class LegacyMigratorTests: XCTestCase {
     func testFullMigrationWithAllLegacyData() async throws {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: All types of legacy data exist
-        let testUsername = "fulluser"
         let testPlayCountFilter = 3
 
         // Set up legacy user
-        tempUserDefaults.set(testUsername, forKey: LegacyUser.userDefaultsKey)
+        let legacyUser = LegacyUser(username: "fulluser", realName: "Full User", imageURL: "http://example.com/image.jpg")
+        let userData = try NSKeyedArchiver.archivedData(withRootObject: legacyUser, requiringSecureCoding: false)
+        tempUserDefaults.set(userData, forKey: LegacyUser.userDefaultsKey)
 
         // Set up legacy settings
         tempUserDefaults.set(testPlayCountFilter, forKey: LegacySettings.Keys.playCountFilter)
@@ -169,15 +168,12 @@ final class LegacyMigratorTests: XCTestCase {
 
         // Set up legacy friends
         let legacyFriends = [
-            LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil),
+            LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil, imageThumbURL: nil, url: nil),
         ]
 
-        let cacheDirectory = tempDirectory.appendingPathComponent("VinylogueCache")
-        try tempFileManager.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-
-        let friendsCacheURL = cacheDirectory.appendingPathComponent(LegacyFriend.cacheFileName)
-        let friendsData = try JSONEncoder().encode(legacyFriends)
-        try friendsData.write(to: friendsCacheURL)
+        // Store friends data using NSKeyedArchiver like the legacy app
+        let friendsData = try NSKeyedArchiver.archivedData(withRootObject: legacyFriends, requiringSecureCoding: false)
+        tempUserDefaults.set(friendsData, forKey: LegacySettings.Keys.friendsList)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
@@ -192,14 +188,14 @@ final class LegacyMigratorTests: XCTestCase {
         // This is acceptable for migration tests as they verify the migration logic works
 
         // And: All legacy data is cleaned up
-        XCTAssertNil(tempUserDefaults.string(forKey: LegacyUser.userDefaultsKey))
+        XCTAssertNil(tempUserDefaults.object(forKey: LegacyUser.userDefaultsKey))
         XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.playCountFilter))
         XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.lastOpenedDate))
-        XCTAssertFalse(tempFileManager.fileExists(atPath: friendsCacheURL.path))
+        XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.friendsList))
 
         // And: Migration record is saved
         let migrationRecordURL = tempFileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("migration_record.json")
+            .appendingPathComponent("migration_record.txt")
         XCTAssertTrue(tempFileManager.fileExists(atPath: migrationRecordURL.path))
     }
 
@@ -243,7 +239,9 @@ final class LegacyMigratorTests: XCTestCase {
             username: "frienduser",
             realName: "Friend User",
             playCount: 5000,
-            imageURL: "http://example.com/image.jpg"
+            imageURL: "http://example.com/image.jpg",
+            imageThumbURL: "http://example.com/thumb.jpg",
+            url: "http://example.com/user"
         )
 
         // When: Converting to new User model
@@ -254,6 +252,6 @@ final class LegacyMigratorTests: XCTestCase {
         XCTAssertEqual(user.realName, "Friend User")
         XCTAssertEqual(user.imageURL, "http://example.com/image.jpg")
         XCTAssertEqual(user.playCount, 5000)
-        XCTAssertNil(user.url)
+        XCTAssertEqual(user.url, "http://example.com/user")
     }
 }
