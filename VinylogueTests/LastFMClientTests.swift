@@ -166,7 +166,7 @@ final class LastFMClientTests: XCTestCase {
                     }
                 ],
                 "playcount": "1000",
-                "userplaycount": "15",
+                "userplaycount": 15,
                 "wiki": {
                     "content": "Test album description"
                 }
