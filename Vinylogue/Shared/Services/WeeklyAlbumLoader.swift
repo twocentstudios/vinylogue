@@ -142,6 +142,14 @@ final class WeeklyAlbumLoader {
             loadedYearOffset = yearOffset
             loadedPlayCountFilter = playCountFilter
 
+            // Trigger precaching for previous year data (non-blocking)
+            let previousYearOffset = yearOffset + 1
+            if canNavigate(to: previousYearOffset) {
+                Task.detached { [weak self] in
+                    await self?.precacheDataForYear(previousYearOffset, user: user)
+                }
+            }
+
         } catch let lastFMError as LastFMError {
             albumsState = .failed(lastFMError)
             currentWeekInfo = nil
@@ -253,6 +261,76 @@ final class WeeklyAlbumLoader {
             if let index = albums.firstIndex(where: { $0.id == album.id }) {
                 albums[index].imageURL = nil
             }
+        }
+    }
+
+    /// Precache data for a specific year offset (used for performance optimization)
+    private func precacheDataForYear(_ yearOffset: Int, user: User) async {
+        do {
+            // Ensure we have the weekly charts loaded
+            if weeklyCharts.isEmpty {
+                await loadWeeklyChartList(for: user.username)
+            }
+
+            let targetDate = calculateTargetDate(yearOffset: yearOffset)
+
+            guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else {
+                return // No data available for this year
+            }
+
+            let cacheKey = "weekly_chart_\(user.username)_\(Int(chartPeriod.fromDate.timeIntervalSince1970))_\(Int(chartPeriod.toDate.timeIntervalSince1970))"
+
+            // Check if already cached
+            if let _ = try? await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey) {
+                return // Already cached
+            }
+
+            // Fetch and cache the weekly chart response
+            let response: UserWeeklyAlbumChartResponse = try await lastFMClient.request(
+                .userWeeklyAlbumChart(
+                    username: user.username,
+                    from: chartPeriod.fromDate,
+                    to: chartPeriod.toDate
+                )
+            )
+
+            try await cacheManager.store(response, key: cacheKey)
+
+            // Process albums and precache their details
+            let albums = (response.weeklyalbumchart.album ?? [])
+                .filter { $0.playCount > playCountFilter }
+                .map { albumEntry in
+                    Album(
+                        name: albumEntry.name,
+                        artist: albumEntry.artist.name,
+                        imageURL: nil,
+                        playCount: albumEntry.playCount,
+                        rank: albumEntry.rankNumber,
+                        url: albumEntry.url,
+                        mbid: albumEntry.mbid
+                    )
+                }
+
+            // Load album details in parallel for precaching
+            await withTaskGroup(of: Void.self) { group in
+                for album in albums {
+                    group.addTask {
+                        do {
+                            _ = try await self.lastFMClient.fetchAlbumInfo(
+                                artist: album.artist,
+                                album: album.name,
+                                mbid: album.mbid,
+                                username: user.username
+                            )
+                        } catch {
+                            // Ignore errors in precaching
+                        }
+                    }
+                }
+            }
+
+        } catch {
+            // Ignore errors in precaching - it's a performance optimization
         }
     }
 
