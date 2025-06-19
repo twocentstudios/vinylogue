@@ -249,85 +249,139 @@ private struct AddFriendView: View {
     @State private var isValidating = false
     @State private var errorMessage: String?
     @State private var friendAdded = false
+    @State private var showError = false
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("enter last.fm username")
-                        .font(.f(.ultralight, .headline))
+            VStack(spacing: 32) {
+                VStack(spacing: 10) {
+                    Text("add friend")
+                        .font(.f(.regular, .largeTitle))
+                        .tracking(2)
                         .foregroundColor(.primaryText)
+                        .multilineTextAlignment(.center)
 
-                    TextField("username", text: $username)
-                        .textFieldStyle(.roundedBorder)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .focused($isTextFieldFocused)
-                        .onSubmit(validateAndAdd)
-
-                    if let errorMessage {
-                        Text(errorMessage)
-                            .font(.f(.regular, .caption1))
-                            .foregroundColor(.destructive)
-                    }
+                    Text("enter last.fm username to add as friend")
+                        .font(.f(.ultralight, .title3))
+                        .foregroundColor(.primaryText)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .padding(.horizontal)
                 }
+                .padding(.top, 40)
 
-                Button(action: validateAndAdd) {
-                    HStack {
-                        if isValidating {
-                            AnimatedLoadingIndicator(size: 20)
+                VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("a last.fm username")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .font(.f(.ultralight, .headline))
+                            .foregroundColor(.primaryText)
+                            .padding(.horizontal)
+                            .padding(.bottom, 0)
+
+                        HStack(spacing: 0) {
+                            Image(systemName: "music.note")
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .foregroundStyle(Color.vinylogueGray)
+                            TextField("username", text: $username)
+                                .foregroundStyle(Color.primaryText)
+                                .textFieldStyle(.plain)
+                                .textInputAutocapitalization(.never)
+                                .minimumScaleFactor(0.7)
+                                .autocorrectionDisabled()
+                                .textContentType(.username)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if !username.isEmpty {
+                                Button(action: { username = "" }) {
+                                    Image(systemName: "multiply.circle.fill")
+                                        .font(.f(.demiBold, 40))
+                                        .foregroundStyle(Color.primaryText.opacity(0.3))
+                                }
+                                .padding(.trailing, 8)
+                            }
                         }
-
-                        Text(isValidating ? "validating..." : "add friend")
-                            .font(.f(.medium, .body))
+                        .font(.f(.demiBold, 60))
+                        .background {
+                            Color.vinylogueGray.opacity(0.4)
+                        }
+                        .focused($isTextFieldFocused)
+                        .onSubmit {
+                            validateAndAdd()
+                        }
+                        .accessibilityLabel("Last.fm username")
+                        .accessibilityHint("Enter a Last.fm username to add as friend")
+                        .padding(.bottom, 16)
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 44)
-                    .background(username.isEmpty || isValidating ? Color.gray.opacity(0.6) : Color.accent)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+
+                    Button(action: validateAndAdd) {
+                        HStack {
+                            if isValidating {
+                                AnimatedLoadingIndicator(size: 20)
+                            }
+
+                            Text(isValidating ? "validating..." : "add friend")
+                                .font(.f(.regular, .body))
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(submitButtonBackground)
+                        .foregroundColor(isValidating ? .primaryText.opacity(0.6) : .vinylogueWhiteSubtle)
+                    }
+                    .disabled(username.isEmpty || isValidating)
+                    .sensoryFeedback(.success, trigger: friendAdded)
+                    .accessibilityLabel(isValidating ? "Validating username" : "Add friend")
+                    .accessibilityHint("Validates the username and adds them as a friend")
                 }
-                .disabled(username.isEmpty || isValidating)
-                .sensoryFeedback(.success, trigger: friendAdded)
 
                 Spacer()
-            }
-            .padding()
-            .navigationTitle("add friend")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden()
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("cancel") {
-                        dismiss()
-                    }
-                    .font(.f(.medium, .body))
-                    .foregroundColor(.accent)
-                }
 
-                ToolbarItem(placement: .principal) {
-                    Text("add friend")
-                        .foregroundStyle(Color.vinylogueBlueDark)
-                        .font(.f(.regular, .headline))
+                Button("cancel") {
+                    dismiss()
                 }
+                .font(.f(.medium, .body))
+                .foregroundColor(.accent)
+                .padding(.bottom, 32)
             }
+            .background(Color.primaryBackground)
+            .navigationBarHidden(true)
         }
         .onAppear {
-            isTextFieldFocused = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                isTextFieldFocused = true
+            }
+        }
+        .alert("Friend Validation", isPresented: $showError) {
+            Button("OK") {
+                isTextFieldFocused = true
+            }
+        } message: {
+            if let errorMessage {
+                Text(errorMessage)
+            }
+        }
+    }
+
+    private var submitButtonBackground: Color {
+        if username.isEmpty || isValidating {
+            .vinylogueGray
+        } else {
+            .accent
         }
     }
 
     private func validateAndAdd() {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            errorMessage = "please enter a username"
+            setError("please enter a username")
             return
         }
 
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if cleanUsername.lowercased() == currentUsername?.lowercased() {
-            errorMessage = "you cannot add yourself as a friend"
+            setError("you cannot add yourself as a friend")
             return
         }
 
@@ -340,6 +394,7 @@ private struct AddFriendView: View {
     private func validateUsername(_ username: String) async {
         isValidating = true
         errorMessage = nil
+        showError = false
 
         do {
             let response: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
@@ -357,17 +412,31 @@ private struct AddFriendView: View {
             dismiss()
 
         } catch {
+            isValidating = false
+
             switch error {
             case LastFMError.userNotFound:
-                errorMessage = "username not found. please check your spelling."
+                setError("Username not found. Please check your spelling or create a Last.fm account.")
             case LastFMError.networkUnavailable:
-                errorMessage = "no internet connection. please try again."
+                setError("No internet connection. Please check your network and try again.")
+            case LastFMError.serviceUnavailable:
+                setError("Last.fm is temporarily unavailable. Please try again later.")
+            case LastFMError.invalidAPIKey:
+                setError("There's an issue with the app configuration. Please contact support.")
             default:
-                errorMessage = "unable to validate username. please try again."
+                setError("Unable to validate username. Please try again.")
             }
         }
 
         isValidating = false
+    }
+
+    private func setError(_ message: String) {
+        errorMessage = message
+        showError = true
+
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
     }
 }
 

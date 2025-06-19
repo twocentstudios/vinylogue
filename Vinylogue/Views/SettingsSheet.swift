@@ -281,119 +281,180 @@ struct UsernameChangeSheet: View {
     @State private var isValidating = false
     @State private var validationError: String?
     @State private var isValid = false
+    @State private var showError = false
 
-    private var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
+    @FocusState private var isTextFieldFocused: Bool
 
     private var canSave: Bool {
-        !newUsername.isEmpty && newUsername != currentUser?.username
+        !newUsername.isEmpty && newUsername != currentUsername
     }
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
-                VStack(spacing: 16) {
-                    Text("Change Username")
-                        .font(.f(.regular, .title2))
-                        .foregroundColor(.primaryText)
+            VStack(spacing: 32) {
+                Text("change username")
+                    .font(.f(.regular, .largeTitle))
+                    .tracking(2)
+                    .foregroundColor(.primaryText)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 40)
 
-                    Text("Enter your Last.fm username to continue")
-                        .font(.f(.medium, .body))
-                        .foregroundColor(.primaryText)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.top, 32)
+                VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("a last.fm username")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .font(.f(.ultralight, .headline))
+                            .foregroundColor(.primaryText)
+                            .padding(.horizontal)
+                            .padding(.bottom, 0)
 
-                VStack(spacing: 8) {
-                    TextField("Username", text: $newUsername)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .font(.f(.medium, .body))
-                        .autocapitalization(.none)
-                        .autocorrectionDisabled()
+                        HStack(spacing: 0) {
+                            Image(systemName: "music.note")
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .foregroundStyle(Color.vinylogueGray)
+                            TextField("username", text: $newUsername)
+                                .foregroundStyle(Color.primaryText)
+                                .textFieldStyle(.plain)
+                                .textInputAutocapitalization(.never)
+                                .minimumScaleFactor(0.7)
+                                .autocorrectionDisabled()
+                                .textContentType(.username)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if !newUsername.isEmpty {
+                                Button(action: { newUsername = "" }) {
+                                    Image(systemName: "multiply.circle.fill")
+                                        .font(.f(.demiBold, 40))
+                                        .foregroundStyle(Color.primaryText.opacity(0.3))
+                                }
+                                .padding(.trailing, 8)
+                            }
+                        }
+                        .font(.f(.demiBold, 60))
+                        .background {
+                            Color.vinylogueGray.opacity(0.4)
+                        }
+                        .focused($isTextFieldFocused)
                         .onSubmit {
                             validateAndSaveUsername()
                         }
-
-                    if let error = validationError {
-                        Text(error)
-                            .font(.f(.regular, .caption1))
-                            .foregroundColor(.red)
+                        .accessibilityLabel("Last.fm username")
+                        .accessibilityHint("Enter your Last.fm username to change")
+                        .padding(.bottom, 16)
                     }
-                }
-                .padding(.horizontal, 24)
 
-                if isValidating {
-                    HStack {
-                        AnimatedLoadingIndicator(size: 24)
-                        Text("Validating...")
-                            .font(.f(.medium, .body))
+                    Button(action: validateAndSaveUsername) {
+                        HStack {
+                            if isValidating {
+                                AnimatedLoadingIndicator(size: 20)
+                            }
+
+                            Text(isValidating ? "validating..." : "save username")
+                                .font(.f(.regular, .body))
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(submitButtonBackground)
+                        .foregroundColor(isValidating ? .primaryText.opacity(0.6) : .vinylogueWhiteSubtle)
                     }
-                    .foregroundColor(.primaryText)
+                    .disabled(!canSave || isValidating)
+                    .sensoryFeedback(.success, trigger: currentUsername)
+                    .accessibilityLabel(isValidating ? "Validating username" : "Save username")
+                    .accessibilityHint("Validates your username and updates the app")
                 }
 
                 Spacer()
 
-                VStack(spacing: 16) {
-                    Button(action: {
-                        validateAndSaveUsername()
-                    }) {
-                        Text("Save Username")
-                            .font(.f(.medium, .body))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity, minHeight: 44)
-                            .background(canSave ? Color.accent : Color.gray)
-                            .cornerRadius(8)
-                    }
-                    .disabled(!canSave || isValidating)
-                    .sensoryFeedback(.success, trigger: currentUsername)
-                    .padding(.horizontal, 24)
-
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .font(.f(.medium, .body))
-                    .foregroundColor(.accent)
+                Button("cancel") {
+                    dismiss()
                 }
+                .font(.f(.medium, .body))
+                .foregroundColor(.accent)
                 .padding(.bottom, 32)
             }
             .background(Color.primaryBackground)
             .navigationBarHidden(true)
         }
         .onAppear {
-            newUsername = currentUser?.username ?? ""
+            newUsername = currentUsername ?? ""
             isValid = false
             validationError = nil
+            showError = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                isTextFieldFocused = true
+            }
+        }
+        .alert("Username Validation", isPresented: $showError) {
+            Button("OK") {
+                isTextFieldFocused = true
+            }
+        } message: {
+            if let errorMessage = validationError {
+                Text(errorMessage)
+            }
+        }
+    }
+
+    private var submitButtonBackground: Color {
+        if !canSave || isValidating {
+            .vinylogueGray
+        } else {
+            .accent
         }
     }
 
     private func validateAndSaveUsername() {
         guard canSave else { return }
+        guard !newUsername.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            setError("please enter a username")
+            return
+        }
 
-        isValidating = true
-        validationError = nil
+        let cleanUsername = newUsername.trimmingCharacters(in: .whitespacesAndNewlines)
 
         Task {
-            do {
-                let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: newUsername))
-                isValid = true
-                validationError = nil
-                isValidating = false
-                saveUsername()
-                dismiss()
-            } catch {
-                isValid = false
-                validationError = "User not found or invalid username"
-                isValidating = false
+            await validateUsername(cleanUsername)
+        }
+    }
+
+    @MainActor
+    private func validateUsername(_ username: String) async {
+        isValidating = true
+        validationError = nil
+        showError = false
+
+        do {
+            let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
+            isValid = true
+            validationError = nil
+            isValidating = false
+            saveUsername()
+            dismiss()
+        } catch {
+            isValidating = false
+
+            switch error {
+            case LastFMError.userNotFound:
+                setError("Username not found. Please check your spelling or create a Last.fm account.")
+            case LastFMError.networkUnavailable:
+                setError("No internet connection. Please check your network and try again.")
+            case LastFMError.serviceUnavailable:
+                setError("Last.fm is temporarily unavailable. Please try again later.")
+            case LastFMError.invalidAPIKey:
+                setError("There's an issue with the app configuration. Please contact support.")
+            default:
+                setError("Unable to validate username. Please try again.")
             }
         }
+    }
+
+    private func setError(_ message: String) {
+        validationError = message
+        showError = true
+
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
     }
 
     private func saveUsername() {
