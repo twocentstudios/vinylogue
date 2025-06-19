@@ -273,6 +273,7 @@ struct AlbumDetailView: View {
                 username: weekInfo.username
             )
 
+            album.imageURL = detailedAlbum.imageURL
             album.description = detailedAlbum.description
             album.totalPlayCount = detailedAlbum.totalPlayCount
             album.userPlayCount = detailedAlbum.userPlayCount
