@@ -69,7 +69,7 @@ struct WeeklyAlbumsView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 VStack(spacing: 2) {
-                    Text("charts")
+                    Text("\(user.username)'s charts")
                         .foregroundStyle(Color.vinylogueBlueDark)
                         .font(.f(.regular, .headline))
 
