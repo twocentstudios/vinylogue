@@ -24,6 +24,8 @@ struct SettingsSheet: View {
                             title: playCountFilterString,
                             action: { cyclePlayCountFilter() }
                         )
+                        .animation(.default, value: playCountFilterString)
+                        .contentTransition(.numericText(countsDown: false))
                     } header: {
                         SectionHeaderView("play count filter")
                     }
