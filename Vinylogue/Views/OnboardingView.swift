@@ -20,50 +20,70 @@ struct OnboardingView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 32) {
-                Spacer()
-
-                VStack(spacing: 16) {
-                    Image(systemName: "music.note.list")
-                        .font(.system(size: 60))
-                        .foregroundColor(.accent)
-                        .accessibilityHidden(true)
-
-                    Text("Welcome to Vinylogue")
+                VStack(spacing: 10) {
+                    Text("vinylogue")
                         .font(.f(.regular, .largeTitle))
-                        .fontWeight(.bold)
+                        .tracking(2)
                         .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
 
-                    Text("Discover your weekly music listening habits")
-                        .font(.f(.medium, .title3))
+                    Text("what were you listening to this week last year?")
+                        .font(.f(.ultralight, .title3))
                         .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
+                        .lineLimit(nil)
                         .padding(.horizontal)
                 }
+                .padding(.top, 40)
 
-                Spacer()
-
-                VStack(spacing: 24) {
+                VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Enter your Last.fm username")
+                        Text("a last.fm username")
+                            .frame(maxWidth: .infinity, alignment: .center)
                             .font(.f(.ultralight, .headline))
                             .foregroundColor(.primaryText)
+                            .padding(.horizontal)
+                            .padding(.bottom, 0)
 
-                        TextField("username", text: $username)
-                            .textFieldStyle(.roundedBorder)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .focused($isTextFieldFocused)
-                            .onSubmit {
-                                validateAndSubmit()
+                        HStack(spacing: 0) {
+                            Image(systemName: "music.note")
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .foregroundStyle(Color.vinylogueGray)
+                            TextField("username", text: $username)
+                                .foregroundStyle(Color.primaryText)
+                                .textFieldStyle(.plain)
+                                .textInputAutocapitalization(.never)
+                                .minimumScaleFactor(0.7)
+                                .autocorrectionDisabled()
+                                .textContentType(.username)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if !username.isEmpty {
+                                Button(action: { username = "" }) {
+                                    Image(systemName: "multiply.circle.fill")
+                                        .font(.f(.demiBold, 40))
+                                        .foregroundStyle(Color.primaryText.opacity(0.3))
+                                }
+                                .padding(.trailing, 8)
                             }
-                            .accessibilityLabel("Last.fm username")
-                            .accessibilityHint("Enter your Last.fm username to get started")
+                        }
+                        .font(.f(.demiBold, 60))
+                        .background {
+                            Color.vinylogueGray.opacity(0.4)
+                        }
+                        .focused($isTextFieldFocused)
+                        .onSubmit {
+                            validateAndSubmit()
+                        }
+                        .accessibilityLabel("Last.fm username")
+                        .accessibilityHint("Enter your Last.fm username to get started")
+                        .padding(.bottom, 16)
 
                         if let errorMessage, showError {
                             Label(errorMessage, systemImage: "exclamationmark.triangle")
                                 .foregroundColor(.destructive)
                                 .font(.f(.regular, .caption1))
+                                .padding(.horizontal)
                         }
                     }
 
@@ -73,38 +93,23 @@ struct OnboardingView: View {
                                 AnimatedLoadingIndicator(size: 20)
                             }
 
-                            Text(isValidating ? "Validating..." : "Get Started")
-                                .font(.f(.medium, .body))
+                            Text(isValidating ? "validating..." : "get started")
+                                .font(.f(.regular, .body))
                                 .fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(submitButtonBackground)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                        .foregroundColor(isValidating ? .primaryText.opacity(0.6) : .vinylogueWhiteSubtle)
                     }
                     .disabled(username.isEmpty || isValidating)
                     .sensoryFeedback(.success, trigger: currentUsername)
                     .accessibilityLabel(isValidating ? "Validating username" : "Get started with Last.fm")
                     .accessibilityHint("Validates your username and sets up the app")
                 }
-                .padding(.horizontal, 24)
 
                 Spacer()
-
-                VStack(spacing: 8) {
-                    Text("Don't have a Last.fm account?")
-                        .font(.f(.regular, .caption1))
-                        .foregroundColor(.primaryText)
-
-                    Link("Sign up at Last.fm", destination: URL(string: "https://www.last.fm/join")!)
-                        .font(.f(.regular, .caption1))
-                        .foregroundColor(.accent)
-                        .accessibilityHint("Opens Last.fm signup page in browser")
-                }
-                .padding(.bottom, 32)
             }
-            .padding()
             .background(Color.primaryBackground)
             .navigationBarHidden(true)
         }
@@ -134,7 +139,7 @@ struct OnboardingView: View {
 
     private func validateAndSubmit() {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            setError("Please enter a username")
+            setError("please enter a username")
             return
         }
 
