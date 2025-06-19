@@ -291,35 +291,3 @@ private struct YearNavigationButtons: ViewModifier {
             .animation(.snappy, value: currentYearOffset)
     }
 }
-
-// MARK: - Loading Indicator
-
-private struct LoadingIndicatorView: View {
-    var body: some View {
-        AnimatedLoadingIndicator(size: 24)
-    }
-}
-
-// MARK: - Preview
-
-#Preview("With Albums") {
-    NavigationStack {
-        WeeklyAlbumsView(user: User(
-            username: "ybsc",
-            realName: "Christopher",
-            imageURL: nil,
-            url: nil,
-            playCount: 1500
-        ))
-    }
-}
-
-#Preview("Empty State") {
-    EmptyStateView(username: "ybsc")
-        .background(Color.primaryBackground)
-}
-
-#Preview("Error State") {
-    ErrorStateView(error: .networkUnavailable)
-        .background(Color.primaryBackground)
-}

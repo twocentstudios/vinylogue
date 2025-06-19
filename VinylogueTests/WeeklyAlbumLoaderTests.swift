@@ -78,7 +78,7 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         loader.albumsState = .loaded([
             Album(name: "Test Album", artist: "Test Artist", playCount: 10),
         ])
-        loader.currentWeekInfo = WeeklyAlbumLoader.WeekInfo(
+        loader.currentWeekInfo = WeekInfo(
             weekNumber: 25,
             year: 2024,
             username: "testuser"
