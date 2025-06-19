@@ -8,6 +8,7 @@ struct AlbumDetailView: View {
     @State private var artworkImage: UIImage?
     @State private var representativeColors: ColorExtraction.RepresentativeColors?
     @State private var isLoadingDetails = false
+    @State private var shouldAnimateColors = false
     private let weekInfo: WeekInfo
     @Dependency(\.lastFMClient) private var lastFMClient
 
@@ -38,12 +39,17 @@ struct AlbumDetailView: View {
                 Spacer(minLength: 100) // Extra space at bottom
             }
         }
-        .background(representativeColors?.primary ?? Color.vinylogueWhiteSubtle)
+        .background(animatedBackgroundColor)
         .toolbarVisibility(.visible, for: .navigationBar) // This doesn't work for some reason
         .toolbarTitleDisplayMode(.inline)
         .toolbarBackground(Material.ultraThin, for: .navigationBar)
         .task {
             await loadAlbumDetails()
+        }
+        .task {
+            withAnimation(.easeIn(duration: 0.75).delay(0.15)) {
+                shouldAnimateColors = true
+            }
         }
     }
 
@@ -216,12 +222,25 @@ struct AlbumDetailView: View {
         }
     }
 
+    private var animatedBackgroundColor: Color {
+        if shouldAnimateColors, let representativeColors {
+            return representativeColors.primary
+        }
+        return Color.vinylogueWhiteSubtle
+    }
+
     private var textColor: Color {
-        representativeColors?.text ?? Color.vinylogueBlueDark
+        if shouldAnimateColors, let representativeColors {
+            return representativeColors.text
+        }
+        return Color.vinylogueBlueDark
     }
 
     private var shadowColor: Color {
-        representativeColors?.textShadow ?? Color.clear
+        if shouldAnimateColors, let representativeColors {
+            return representativeColors.textShadow
+        }
+        return Color.clear
     }
 
     // MARK: - Helper Methods
