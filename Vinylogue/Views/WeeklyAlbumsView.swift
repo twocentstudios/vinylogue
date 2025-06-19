@@ -303,7 +303,7 @@ private struct LoadingIndicatorView: View {
 // MARK: - Preview
 
 #Preview("With Albums") {
-    NavigationView {
+    NavigationStack {
         WeeklyAlbumsView(user: User(
             username: "ybsc",
             realName: "Christopher",
