@@ -1,5 +1,6 @@
 import Dependencies
 import Foundation
+import Nuke
 import Observation
 import SwiftUI
 
@@ -42,6 +43,7 @@ final class WeeklyAlbumLoader {
 
     @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
     @ObservationIgnored @Dependency(\.cacheManager) private var cacheManager
+    @ObservationIgnored @Dependency(\.imagePipeline) private var imagePipeline
     @ObservationIgnored @Dependency(\.date) private var date
     @ObservationIgnored @Dependency(\.calendar) private var calendar
     @ObservationIgnored private var playCountFilter: Int = 1
@@ -264,6 +266,32 @@ final class WeeklyAlbumLoader {
         }
     }
 
+    /// Precache images for a collection of albums (used for performance optimization)
+    private func precacheImages(for albums: [Album]) async {
+        // Filter albums to get only those with valid image URLs
+        let imageURLs = albums.compactMap { album -> URL? in
+            guard let imageURLString = album.imageURL,
+                  !imageURLString.isEmpty,
+                  let url = URL(string: imageURLString)
+            else {
+                return nil
+            }
+            return url
+        }
+
+        // Only proceed if we have URLs to prefetch
+        guard !imageURLs.isEmpty else { return }
+
+        // Create prefetcher with disk-only caching for memory efficiency
+        let prefetcher = ImagePrefetcher(pipeline: imagePipeline, destination: .diskCache)
+
+        // Start prefetching all album images
+        prefetcher.startPrefetching(with: imageURLs)
+
+        // Note: We don't wait for completion or handle errors since this is a background optimization
+        // The ImagePrefetcher will automatically manage the download lifecycle
+    }
+
     /// Precache data for a specific year offset (used for performance optimization)
     private func precacheDataForYear(_ yearOffset: Int, user: User) async {
         do {
@@ -311,23 +339,38 @@ final class WeeklyAlbumLoader {
                     )
                 }
 
-            // Load album details in parallel for precaching
-            await withTaskGroup(of: Void.self) { group in
+            // Load album details and then precache images
+            let populatedAlbums = await withTaskGroup(of: Album?.self) { group in
+                // Precache album details
                 for album in albums {
                     group.addTask {
                         do {
-                            _ = try await self.lastFMClient.fetchAlbumInfo(
+                            let detailedAlbum = try await self.lastFMClient.fetchAlbumInfo(
                                 artist: album.artist,
                                 album: album.name,
                                 mbid: album.mbid,
                                 username: user.username
                             )
+                            return detailedAlbum
                         } catch {
-                            // Ignore errors in precaching
+                            // Return nil for failed requests
+                            return nil
                         }
                     }
                 }
+
+                // Collect all results
+                var results: [Album] = []
+                for await result in group {
+                    if let album = result {
+                        results.append(album)
+                    }
+                }
+                return results
             }
+
+            // Now precache images using albums with populated imageURL
+            await precacheImages(for: populatedAlbums)
 
         } catch {
             // Ignore errors in precaching - it's a performance optimization
