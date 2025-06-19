@@ -34,6 +34,10 @@ extension Font {
     static func f(_ fontVariant: VinylogueFont, _ textStyle: UIFont.TextStyle) -> Font {
         Font.custom(fontVariant.rawValue, size: UIFont.preferredFont(forTextStyle: textStyle).pointSize)
     }
+    
+    static func f(_ fontVariant: VinylogueFont, _ pointSize: CGFloat) -> Font {
+        Font.custom(fontVariant.rawValue, size: pointSize)
+    }
 }
 
 enum VinylogueFont: String {
