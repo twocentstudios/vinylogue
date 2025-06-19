@@ -76,7 +76,7 @@ struct WeeklyAlbumsView: View {
                     if let weekInfo = loader.currentWeekInfo {
                         Text(weekInfo.displayText)
                             .font(.caption)
-                            .foregroundColor(.secondaryText)
+                            .foregroundColor(.primaryText)
                     }
                 }
             }

@@ -36,7 +36,7 @@ struct OnboardingView: View {
 
                     Text("Discover your weekly music listening habits")
                         .font(.f(.medium, .title3))
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -95,7 +95,7 @@ struct OnboardingView: View {
                 VStack(spacing: 8) {
                     Text("Don't have a Last.fm account?")
                         .font(.f(.regular, .caption1))
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(.primaryText)
 
                     Link("Sign up at Last.fm", destination: URL(string: "https://www.last.fm/join")!)
                         .font(.f(.regular, .caption1))

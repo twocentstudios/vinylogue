@@ -7,7 +7,7 @@ struct EmptyStateView: View {
         VStack(spacing: 24) {
             Image(systemName: "music.note")
                 .font(.system(size: 64, weight: .light))
-                .foregroundColor(.vinylogueBlueBold)
+                .foregroundColor(.vinylogueBlueDark)
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: 12) {
@@ -17,7 +17,7 @@ struct EmptyStateView: View {
 
                 Text("Looks like \(username) didn't listen to\nmuch music this week.")
                     .font(.f(.regular, .body))
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(.primaryText)
                     .multilineTextAlignment(.center)
                     .lineSpacing(2)
             }

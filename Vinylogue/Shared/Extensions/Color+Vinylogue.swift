@@ -6,16 +6,8 @@ extension Color {
     /// Primary text color - always black (legacy design doesn't support dark mode)
     static let primaryText = Color.vinylogueBlueDark
 
-    /// Secondary text color for less important information
-    static let secondaryText = Color.vinylogueBlueDark
-
-    /// Tertiary text color for very subtle information
-    static let tertiaryText = Color.vinylogueBlueDark
-
     /// Background colors - always light (legacy design doesn't support dark mode)
     static let primaryBackground = Color.vinylogueWhiteSubtle
-    static let secondaryBackground = Color.vinylogueWhiteSubtle
-    static let tertiaryBackground = Color.vinylogueWhiteSubtle
 
     /// Interactive elements
     static let accent = Color.accentColor
@@ -29,17 +21,8 @@ extension Color {
     /// BLUE_DARK - RGB(15, 24, 46)
     static let vinylogueBlueDark = Color(red: 15 / 255, green: 24 / 255, blue: 46 / 255)
 
-    /// BLUE_BOLD - RGB(67, 85, 129)
-    static let vinylogueBlueBold = Color(red: 67 / 255, green: 85 / 255, blue: 129 / 255)
-
     /// BLUE_PERI - RGB(220, 220, 220)
     static let vinylogueBluePeri = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
-
-    /// BLUE_PERI_SHADOW - RGB(195, 195, 195)
-    static let vinylogueBluePeriShadow = Color(red: 195 / 255, green: 195 / 255, blue: 195 / 255)
-
-    /// BAR_BUTTON_TINT - RGB(220, 220, 220)
-    static let vinylogueButtonTint = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255)
 
     /// Legacy gray for disabled states
     static let vinylogueGray = Color.vinylogueBluePeri

@@ -62,7 +62,7 @@ struct UsersListView: View {
 
                                     Text("import friends from Last.fm or add them manually")
                                         .font(.f(.regular, .caption1))
-                                        .foregroundColor(.secondaryText)
+                                        .foregroundColor(.primaryText)
                                         .multilineTextAlignment(.center)
                                 }
                             }

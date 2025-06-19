@@ -7,7 +7,7 @@ struct ErrorStateView: View {
         VStack(spacing: 24) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 64, weight: .light))
-                .foregroundColor(.vinylogueBlueBold)
+                .foregroundColor(.vinylogueBlueDark)
                 .symbolRenderingMode(.hierarchical)
 
             VStack(spacing: 12) {
@@ -17,7 +17,7 @@ struct ErrorStateView: View {
 
                 Text(error.localizedDescription)
                     .font(.f(.regular, .body))
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(.primaryText)
                     .multilineTextAlignment(.center)
                     .lineSpacing(2)
             }

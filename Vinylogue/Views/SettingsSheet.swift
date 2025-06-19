@@ -307,7 +307,7 @@ struct UsernameChangeSheet: View {
 
                     Text("Enter your Last.fm username to continue")
                         .font(.f(.medium, .body))
-                        .foregroundColor(.secondaryText)
+                        .foregroundColor(.primaryText)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.top, 32)
@@ -336,7 +336,7 @@ struct UsernameChangeSheet: View {
                         Text("Validating...")
                             .font(.f(.medium, .body))
                     }
-                    .foregroundColor(.secondaryText)
+                    .foregroundColor(.primaryText)
                 }
 
                 Spacer()
