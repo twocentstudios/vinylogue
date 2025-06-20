@@ -149,7 +149,7 @@ private struct OverscrollHandler: ViewModifier {
         let top: Double
         let bottom: Double
     }
-    
+
     @Binding var currentYearOffset: Int
     let loader: WeeklyAlbumLoader
     @Binding var performCurrentYearOffsetChangeOnScrollIdle: Int?
