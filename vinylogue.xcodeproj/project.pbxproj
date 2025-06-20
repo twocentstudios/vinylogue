@@ -59,6 +59,7 @@
 		CB4BDF94480D1F1B5CDF2E5A /* EditFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18724C512AAB5F959701021B /* EditFriendsView.swift */; };
 		D76975DCB7793EDBD9FB2FF5 /* CacheKeyBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BC3CDDD1DA69BA0CB5D538 /* CacheKeyBuilder.swift */; };
 		E396A750FC17CA951C08DD21 /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = B0D78D9D36F23A3928EE8368 /* Sharing */; };
+		E3D16A0D2F1750A1E8D3D767 /* UsersListStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E959FE79BEBB7EAE04995C89 /* UsersListStore.swift */; };
 		E64665EE589A7B433EDBB826 /* AlbumArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684C63E570884C8932C211CF /* AlbumArtworkView.swift */; };
 		EA2920FFF857C2EB16F37816 /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C86A0EC162997FB14DE6C8 /* SectionHeaderView.swift */; };
 		F16C5956AD579642DAE259E5 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935600D4241C39F4972F9B7 /* CacheManagerTests.swift */; };
@@ -135,6 +136,7 @@
 		DE558E9128DB9A867018AA1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E3E116C6835654F9B2520C2A /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		E6437ED44DCCDADA6FD21424 /* TestingUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingUtilities.swift; sourceTree = "<group>"; };
+		E959FE79BEBB7EAE04995C89 /* UsersListStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersListStore.swift; sourceTree = "<group>"; };
 		EA95D8560225422135D2FE41 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F0B88E9576F5D832F788592A /* SharedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedKeys.swift; sourceTree = "<group>"; };
 		F525C206B45976A213075204 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				3B106FF3D75C51CB914CFD85 /* RootStore.swift */,
 				14E56759C070D9789838E509 /* RootView.swift */,
 				74186B195551DD3AD1407172 /* SettingsSheet.swift */,
+				E959FE79BEBB7EAE04995C89 /* UsersListStore.swift */,
 				7F035580BEB530F91763B554 /* UsersListView.swift */,
 				27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */,
 				07BA835C69C3A8F89A5AB779 /* Components */,
@@ -347,7 +350,7 @@
 			path = TestUtilities;
 			sourceTree = "<group>";
 		};
-		"TEMP_9BBB610B-C50F-43D3-8511-3058551BC8F1" /* Features */ = {
+		"TEMP_E650AA7E-83D8-469D-87C2-D369E325CCD1" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -521,6 +524,7 @@
 				3CA448D2A78D6963CCF9050A /* SharedKeys.swift in Sources */,
 				B495993D0B98C78B8581941E /* TestingUtilities.swift in Sources */,
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
+				E3D16A0D2F1750A1E8D3D767 /* UsersListStore.swift in Sources */,
 				C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
 				785D22E4EFCB74F4E524964B /* WeeklyAlbumLoader.swift in Sources */,

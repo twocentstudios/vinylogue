@@ -2,31 +2,16 @@ import Sharing
 import SwiftUI
 
 struct UsersListView: View {
-    @Shared(.currentUser) var currentUsername: String?
-    @Shared(.curatedFriends) var curatedFriends
-
-    @State private var showingEditSheet = false
-    @State private var showingSettingsSheet = false
-
-    private var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
+    @Bindable var store: UsersListStore
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    if let username = currentUsername {
+                    if let username = store.currentUsername {
                         Section {
                             UserRowView(
-                                user: currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
+                                user: store.currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
                                 isCurrentUser: true
                             )
                         } header: {
@@ -34,19 +19,19 @@ struct UsersListView: View {
                         }
                     }
 
-                    if !curatedFriends.isEmpty {
+                    if store.hasFriends {
                         Section {
-                            ForEach(curatedFriends, id: \.username) { friend in
+                            ForEach(store.curatedFriends, id: \.username) { friend in
                                 UserRowView(user: friend, isCurrentUser: false)
                             }
                         } header: {
                             FriendsHeaderView {
-                                showingEditSheet = true
+                                store.showEditSheet()
                             }
                         }
                     }
 
-                    if curatedFriends.isEmpty {
+                    if !store.hasFriends {
                         Section {
                             VStack(spacing: 16) {
                                 Image(systemName: "person.2.badge.plus")
@@ -68,7 +53,7 @@ struct UsersListView: View {
                             .padding(.vertical, 32)
                         } header: {
                             FriendsHeaderView {
-                                showingEditSheet = true
+                                store.showEditSheet()
                             }
                         }
                     }
@@ -79,13 +64,13 @@ struct UsersListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        showingSettingsSheet = true
+                        store.showSettingsSheet()
                     }) {
                         Image(systemName: "gearshape")
                             .font(.f(.ultralight, .body))
                             .foregroundColor(.accent)
                     }
-                    .sensoryFeedback(.impact, trigger: showingSettingsSheet)
+                    .sensoryFeedback(.impact, trigger: store.showingSettingsSheet)
                 }
 
                 ToolbarItem(placement: .principal) {
@@ -94,10 +79,10 @@ struct UsersListView: View {
                         .font(.f(.regular, .headline))
                 }
             }
-            .sheet(isPresented: $showingEditSheet) {
+            .sheet(isPresented: $store.showingEditSheet) {
                 EditFriendsView()
             }
-            .sheet(isPresented: $showingSettingsSheet) {
+            .sheet(isPresented: $store.showingSettingsSheet) {
                 SettingsSheet()
             }
             .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
@@ -127,23 +112,27 @@ private struct UserRowView: View {
 // MARK: - Previews
 
 #Preview("With Friends") {
-    @Previewable @Shared(.currentUser) var currentUsername: String? = "musiclover123"
-    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = [
-        User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
-        User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
-        User(username: "metalhead", realName: nil, playCount: 23456),
-        User(username: "popstar_fan", realName: "Emma Davis", playCount: 5678),
-        User(username: "classicalmusic", realName: "David Wilson", playCount: 12890),
-    ]
-
-    UsersListView()
+    let store = UsersListStore()
+    return UsersListView(store: store)
+        .onAppear {
+            store.$currentUsername.withLock { $0 = "musiclover123" }
+            store.$curatedFriends.withLock { $0 = [
+                User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
+                User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
+                User(username: "metalhead", realName: nil, playCount: 23456),
+                User(username: "popstar_fan", realName: "Emma Davis", playCount: 5678),
+                User(username: "classicalmusic", realName: "David Wilson", playCount: 12890),
+            ] }
+        }
 }
 
 #Preview("Empty State") {
-    @Previewable @Shared(.currentUser) var currentUsername: String? = "newuser"
-    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = []
-
-    UsersListView()
+    let store = UsersListStore()
+    return UsersListView(store: store)
+        .onAppear {
+            store.$currentUsername.withLock { $0 = "newuser" }
+            store.$curatedFriends.withLock { $0 = [] }
+        }
 }
 
 struct UserRowButtonStyle: ButtonStyle {
