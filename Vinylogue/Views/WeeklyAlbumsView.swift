@@ -227,40 +227,40 @@ private struct YearNavigationButtons: ViewModifier {
                     Button(action: {
                         currentYearOffset = prevOffset
                     }) {
-                        VStack(spacing: -2) {
+                        HStack(spacing: 5) {
                             Image(systemName: "arrow.up")
-                                .font(.f(.regular, .caption1))
+                                .font(.f(.ultralight, .caption1))
                                 .foregroundColor(.vinylogueBlueDark)
                             Text(String(loader.getYear(for: prevOffset)))
-                                .font(.f(.regular, .title2))
+                                .font(.f(.medium, .headline))
                                 .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(prevOffset)))
                         }
-                        .padding(.horizontal, 26)
-                        .padding(.vertical, 12)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
                         .background(
-                            RoundedRectangle(cornerRadius: 16)
+                            RoundedRectangle(cornerRadius: 10)
                                 .fill(Material.thin)
-                                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                         )
                         .padding(.top, 10)
                         .overlay {
                             GeometryReader { proxy in
-                                VStack(spacing: -2) {
+                                HStack(spacing: 5) {
                                     Image(systemName: "arrow.up")
-                                        .font(.f(.regular, .caption1))
+                                        .font(.f(.ultralight, .caption1))
                                         .foregroundColor(.vinylogueWhiteSubtle)
                                     Text(String(loader.getYear(for: prevOffset)))
-                                        .font(.f(.regular, .title2))
+                                        .font(.f(.medium, .headline))
                                         .foregroundColor(.vinylogueWhiteSubtle)
                                         .contentTransition(.numericText(value: Double(prevOffset)))
                                 }
-                                .padding(.horizontal, 26)
-                                .padding(.vertical, 12)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color.vinylogueBlueDark)
-                                        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                        .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                                 )
                                 .padding(.top, 10)
                                 .mask(alignment: .bottom) {
@@ -280,39 +280,39 @@ private struct YearNavigationButtons: ViewModifier {
                     Button(action: {
                         currentYearOffset = nextOffset
                     }) {
-                        VStack(spacing: -2) {
+                        HStack(spacing: 5) {
+                            Image(systemName: "arrow.down")
+                                .font(.f(.ultralight, .caption1))
+                                .foregroundColor(.vinylogueBlueDark)
                             Text(String(loader.getYear(for: nextOffset)))
-                                .font(.f(.regular, .title2))
+                                .font(.f(.medium, .headline))
                                 .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(nextOffset)))
-                            Image(systemName: "arrow.down")
-                                .font(.f(.regular, .caption1))
-                                .foregroundColor(.vinylogueBlueDark)
                         }
-                        .padding(.horizontal, 26)
-                        .padding(.vertical, 12)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
                         .background(
-                            RoundedRectangle(cornerRadius: 16)
+                            RoundedRectangle(cornerRadius: 10)
                                 .fill(Material.thin)
-                                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                         )
                         .overlay {
                             GeometryReader { proxy in
-                                VStack(spacing: -2) {
+                                HStack(spacing: 5) {
+                                    Image(systemName: "arrow.down")
+                                        .font(.f(.ultralight, .caption1))
+                                        .foregroundColor(.vinylogueWhiteSubtle)
                                     Text(String(loader.getYear(for: nextOffset)))
-                                        .font(.f(.regular, .title2))
+                                        .font(.f(.medium, .headline))
                                         .foregroundColor(.vinylogueWhiteSubtle)
                                         .contentTransition(.numericText(value: Double(nextOffset)))
-                                    Image(systemName: "arrow.down")
-                                        .font(.f(.regular, .caption1))
-                                        .foregroundColor(.vinylogueWhiteSubtle)
                                 }
-                                .padding(.horizontal, 26)
-                                .padding(.vertical, 12)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 16)
+                                    RoundedRectangle(cornerRadius: 10)
                                         .fill(Color.vinylogueBlueDark)
-                                        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 1)
+                                        .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
                                 )
                                 .mask(alignment: .top) {
                                     Rectangle().fill(.black).frame(height: proxy.size.height * max(0.0, min(1.0, bottomProgress)))
