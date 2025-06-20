@@ -162,6 +162,7 @@ private struct OverscrollHandler: ViewModifier {
                 return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
             } action: { _, value in
                 guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
+                guard case .loaded = loader.albumsState else { return }
                 topProgress = value.top
                 bottomProgress = value.bottom
             }
