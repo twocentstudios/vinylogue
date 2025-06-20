@@ -66,10 +66,6 @@ struct UsersListView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 32)
-
-                            EditFriendsButton {
-                                showingEditSheet = true
-                            }
                         } header: {
                             FriendsHeaderView {
                                 showingEditSheet = true
@@ -172,9 +168,9 @@ private struct FriendsHeaderView: View {
                 .font(.f(.ultralight, .headline))
                 .foregroundColor(.primaryText)
                 .textCase(.lowercase)
-            
+
             Spacer()
-            
+
             Button(action: {
                 buttonPressed.toggle()
                 action()
