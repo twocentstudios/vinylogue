@@ -12,17 +12,17 @@ struct LicensesView: View {
                     .padding()
             }
             .background(Color.primaryBackground)
-            .navigationTitle("Licenses")
+            .navigationTitle("licenses")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Licenses")
+                    Text("licenses")
                         .foregroundStyle(Color.vinylogueBlueDark)
                         .font(.f(.regular, .headline))
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
+                    Button("done") {
                         dismiss()
                     }
                     .font(.f(.medium, .body))
