@@ -4,10 +4,10 @@ import NukeUI
 import SwiftUI
 
 struct AlbumDetailView: View {
-    @State private var store: AlbumDetailStore
+    @Bindable var store: AlbumDetailStore
 
-    init(album: Album, weekInfo: WeekInfo) {
-        _store = State(initialValue: AlbumDetailStore(album: album, weekInfo: weekInfo))
+    init(album: Album, weekInfo: WeekInfo, store: AlbumDetailStore) {
+        self.store = store
     }
 
     var body: some View {
@@ -195,6 +195,7 @@ struct AlbumDetailView: View {
     }()
 
     NavigationStack {
-        AlbumDetailView(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"))
+        let store = AlbumDetailStore(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"))
+        AlbumDetailView(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"), store: store)
     }
 }

@@ -11,7 +11,7 @@ enum WeeklyAlbumsLoadingState: Equatable {
     case failed(LastFMError)
 }
 
-struct WeekInfo {
+struct WeekInfo: Hashable {
     let weekNumber: Int
     let year: Int
     let username: String
@@ -52,6 +52,9 @@ final class WeeklyAlbumsStore {
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
     @ObservationIgnored private var loadedPlayCountFilter: Int?
+
+    // Store instances for child views, keyed by album ID
+    @ObservationIgnored private var albumDetailStores: [String: AlbumDetailStore] = [:]
 
     init() {}
 
@@ -443,5 +446,21 @@ final class WeeklyAlbumsStore {
         loadedUsername = nil
         loadedYearOffset = nil
         loadedPlayCountFilter = nil
+    }
+
+    // MARK: - Child Store Management
+
+    func getAlbumDetailStore(for album: Album, weekInfo: WeekInfo) -> AlbumDetailStore {
+        let key = album.id
+
+        if let existingStore = albumDetailStores[key] {
+            return existingStore
+        }
+
+        // Create new store - dependencies should propagate automatically
+        let newStore = AlbumDetailStore(album: album, weekInfo: weekInfo)
+
+        albumDetailStores[key] = newStore
+        return newStore
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 
 struct WeeklyAlbumsView: View {
     let user: User
-    @State private var store: WeeklyAlbumsStore = .init()
+    @Bindable var store: WeeklyAlbumsStore
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.currentPlayCountFilter) var playCountFilter
 
@@ -12,8 +12,9 @@ struct WeeklyAlbumsView: View {
     @State private var bottomProgress: Double = 0.0
     @State private var scrollPosition = ScrollPosition()
 
-    init(user: User) {
+    init(user: User, store: WeeklyAlbumsStore) {
         self.user = user
+        self.store = store
     }
 
     var body: some View {
@@ -58,6 +59,13 @@ struct WeeklyAlbumsView: View {
         }
         .task(id: playCountFilter) {
             await store.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
+        }
+        .navigationDestination(for: AlbumNavigation.self) { albumNav in
+            AlbumDetailView(
+                album: albumNav.album,
+                weekInfo: albumNav.weekInfo,
+                store: store.getAlbumDetailStore(for: albumNav.album, weekInfo: albumNav.weekInfo)
+            )
         }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: currentYearOffset)
     }
@@ -119,7 +127,7 @@ private struct AlbumListView: View {
             EmptyStateView(username: user.username)
         } else if let weekInfo = store.currentWeekInfo {
             ForEach(store.albums) { album in
-                NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
+                NavigationLink(value: AlbumNavigation(album: album, weekInfo: weekInfo)) {
                     AlbumRowView(album: album)
                 }
                 .buttonStyle(AlbumRowButtonStyle())

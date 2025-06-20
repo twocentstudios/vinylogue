@@ -5,7 +5,7 @@ struct UsersListView: View {
     @Bindable var store: UsersListStore
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.navigationPath) {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     if let username = store.currentUsername {
@@ -85,6 +85,12 @@ struct UsersListView: View {
             .sheet(isPresented: $store.showingSettingsSheet) {
                 SettingsSheet()
             }
+            .navigationDestination(for: UserNavigation.self) { userNav in
+                WeeklyAlbumsView(
+                    user: userNav.user,
+                    store: store.getWeeklyAlbumsStore(for: userNav.user)
+                )
+            }
             .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
         }
     }
@@ -97,7 +103,7 @@ private struct UserRowView: View {
     let isCurrentUser: Bool
 
     var body: some View {
-        NavigationLink(destination: WeeklyAlbumsView(user: user)) {
+        NavigationLink(value: UserNavigation(user: user)) {
             Text(user.username)
                 .padding(.horizontal, 24)
                 .font(isCurrentUser ? .f(.regular, .largeTitle) : .f(.regular, .title2))
