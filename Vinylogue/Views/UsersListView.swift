@@ -80,7 +80,7 @@ struct UsersListView: View {
                 }
             }
             .sheet(isPresented: $store.showingEditSheet) {
-                EditFriendsView()
+                EditFriendsView(store: store.editFriendsStore)
             }
             .sheet(isPresented: $store.showingSettingsSheet) {
                 SettingsSheet()

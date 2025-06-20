@@ -10,6 +10,8 @@ final class UsersListStore {
     var showingEditSheet = false
     var showingSettingsSheet = false
 
+    var editFriendsStore = EditFriendsStore()
+
     var currentUser: User? {
         guard let username = currentUsername else { return nil }
         return User(

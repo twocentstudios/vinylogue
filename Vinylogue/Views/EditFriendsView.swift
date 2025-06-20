@@ -5,39 +5,23 @@ import SwiftUI
 
 struct EditFriendsView: View {
     @Environment(\.dismiss) private var dismiss
-    @Dependency(\.lastFMClient) private var lastFMClient
-
-    @Shared(.currentUser) var currentUsername: String?
-    @Shared(.curatedFriends) var curatedFriends
-
-    @State private var friendsImporter = FriendsImporter()
-
-    @State private var editableFriends: [User] = []
-    @State private var selectedFriends: Set<String> = []
-    @State private var showingAddFriend = false
-
-    private var isImportingFriends: Bool {
-        if case .loading = friendsImporter.friendsState {
-            return true
-        }
-        return false
-    }
+    @Bindable var store: EditFriendsStore
 
     var body: some View {
         NavigationView {
             List {
-                if currentUsername != nil {
+                if store.currentUsername != nil {
                     Section {
                         ImportFriendsButton(
-                            isLoading: isImportingFriends,
-                            action: importFriends
+                            isLoading: store.isImportingFriends,
+                            action: { Task { store.importFriends } }
                         )
                         .listRowBackground(Color.primaryBackground)
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets())
 
                         AddFriendButton {
-                            showingAddFriend = true
+                            store.showAddFriend()
                         }
                         .listRowBackground(Color.primaryBackground)
                         .listRowSeparator(.hidden)
@@ -49,24 +33,20 @@ struct EditFriendsView: View {
                 }
 
                 Section {
-                    if !editableFriends.isEmpty {
-                        ForEach(editableFriends, id: \.username) { friend in
+                    if store.hasEditableFriends {
+                        ForEach(store.editableFriends, id: \.username) { friend in
                             FriendEditRowView(
                                 friend: friend,
-                                isSelected: selectedFriends.contains(friend.username)
-                            ) { isSelected in
-                                if isSelected {
-                                    selectedFriends.insert(friend.username)
-                                } else {
-                                    selectedFriends.remove(friend.username)
-                                }
+                                isSelected: store.isFriendSelected(friend)
+                            ) { _ in
+                                store.toggleFriendSelection(friend)
                             }
                             .listRowBackground(Color.primaryBackground)
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets())
                         }
-                        .onMove(perform: moveFriends)
-                        .onDelete(perform: deleteFriends)
+                        .onMove(perform: store.moveFriends)
+                        .onDelete(perform: store.deleteFriends)
                     } else {
                         VStack(spacing: 16) {
                             Image(systemName: "person.2")
@@ -111,100 +91,49 @@ struct EditFriendsView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("save") {
-                        saveFriends()
+                        store.saveFriends()
+                        dismiss()
                     }
                     .font(.f(.medium, .body))
                     .foregroundColor(.accent)
-                    .sensoryFeedback(.success, trigger: curatedFriends)
+                    .sensoryFeedback(.success, trigger: store.curatedFriends)
                 }
 
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Button("select \(selectedFriends.count == editableFriends.count ? "none" : "all")") {
-                        toggleSelectAll()
+                    Button("select \(store.selectAllButtonText)") {
+                        store.toggleSelectAll()
                     }
                     .contentTransition(.numericText())
                     .font(.f(.medium, .body))
                     .foregroundColor(.accent)
-                    .disabled(editableFriends.isEmpty)
-                    .sensoryFeedback(.selection, trigger: selectedFriends)
+                    .disabled(!store.hasEditableFriends)
+                    .sensoryFeedback(.selection, trigger: store.selectedFriends)
 
                     Spacer()
 
-                    Button("delete selected (\(selectedFriends.count))") {
-                        deleteSelectedFriends()
+                    Button("delete selected (\(store.selectedCount))") {
+                        store.deleteSelectedFriends()
                     }
                     .font(.f(.medium, .body))
                     .foregroundColor(.destructive)
-                    .disabled(selectedFriends.isEmpty)
-                    .sensoryFeedback(.warning, trigger: selectedFriends.count)
+                    .disabled(!store.hasSelectedFriends)
+                    .sensoryFeedback(.warning, trigger: store.selectedCount)
                 }
             }
-            .sheet(isPresented: $showingAddFriend) {
+            .sheet(isPresented: $store.showingAddFriend) {
                 AddFriendView { newFriend in
-                    if !editableFriends.contains(where: { $0.username.lowercased() == newFriend.username.lowercased() }) {
-                        editableFriends.append(newFriend)
-                    }
+                    store.addFriend(newFriend)
                 }
             }
         }
         .onAppear {
-            editableFriends = curatedFriends
-            selectedFriends = Set()
+            store.loadFriends()
         }
-        .onChange(of: friendsImporter.friendsState) { _, friendsState in
+        .onChange(of: store.friendsImporter.friendsState) { _, friendsState in
             if case let .loaded(importedFriends) = friendsState {
-                handleImportedFriends(importedFriends)
+                store.handleImportedFriends(importedFriends)
             }
         }
-    }
-
-    private func importFriends() {
-        guard let username = currentUsername else { return }
-
-        Task {
-            await friendsImporter.importFriends(for: username)
-        }
-    }
-
-    private func handleImportedFriends(_ importedFriends: [User]) {
-        let newFriends = friendsImporter.getNewFriends(excluding: editableFriends)
-
-        if !newFriends.isEmpty {
-            editableFriends.append(contentsOf: newFriends)
-        }
-    }
-
-    private func moveFriends(from source: IndexSet, to destination: Int) {
-        editableFriends.move(fromOffsets: source, toOffset: destination)
-    }
-
-    private func deleteFriends(at offsets: IndexSet) {
-        for offset in offsets {
-            let deletedFriend = editableFriends[offset]
-            selectedFriends.remove(deletedFriend.username)
-        }
-
-        editableFriends.remove(atOffsets: offsets)
-    }
-
-    private func toggleSelectAll() {
-        if selectedFriends.count == editableFriends.count {
-            selectedFriends.removeAll()
-        } else {
-            selectedFriends = Set(editableFriends.map(\.username))
-        }
-    }
-
-    private func deleteSelectedFriends() {
-        editableFriends.removeAll { friend in
-            selectedFriends.contains(friend.username)
-        }
-        selectedFriends.removeAll()
-    }
-
-    private func saveFriends() {
-        $curatedFriends.withLock { $0 = editableFriends }
-        dismiss()
     }
 }
 
@@ -449,12 +378,15 @@ private struct AddFriendButton: View {
 // MARK: - Previews
 
 #Preview {
-    @Previewable @Shared(.currentUser) var currentUsername: String? = "musiclover123"
-    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = [
-        User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
-        User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
-        User(username: "metalhead", realName: nil, playCount: 23456),
-    ]
-
-    EditFriendsView()
+    let store = EditFriendsStore()
+    return EditFriendsView(store: store)
+        .onAppear {
+            store.$currentUsername.withLock { $0 = "musiclover123" }
+            store.$curatedFriends.withLock { $0 = [
+                User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
+                User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
+                User(username: "metalhead", realName: nil, playCount: 23456),
+            ] }
+            store.loadFriends()
+        }
 }
