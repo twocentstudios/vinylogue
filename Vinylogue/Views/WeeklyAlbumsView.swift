@@ -119,12 +119,11 @@ private struct AlbumListView: View {
             EmptyStateView(username: user.username)
         } else if let weekInfo = loader.currentWeekInfo {
             ForEach(loader.albums) { album in
-                let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
                 NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
                     AlbumRowView(album: album)
                 }
                 .buttonStyle(AlbumRowButtonStyle())
-                .transition(albumTransition(for: index))
+                .transition(.identity)
                 .task(id: album.id) {
                     if album.imageURL == nil {
                         await loader.loadAlbum(album, for: user)
@@ -132,13 +131,6 @@ private struct AlbumListView: View {
                 }
             }
         }
-    }
-
-    private func albumTransition(for index: Int) -> AnyTransition {
-        .asymmetric(
-            insertion: .offset(x: 0, y: 100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07)),
-            removal: .offset(x: 0, y: -100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07))
-        )
     }
 }
 
