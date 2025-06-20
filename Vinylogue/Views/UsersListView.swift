@@ -81,8 +81,8 @@ struct UsersListView: View {
                     Button(action: {
                         showingSettingsSheet = true
                     }) {
-                        Image(systemName: "gearshape.fill")
-                            .font(.f(.medium, .body))
+                        Image(systemName: "gearshape")
+                            .font(.f(.ultralight, .body))
                             .foregroundColor(.accent)
                     }
                     .sensoryFeedback(.impact, trigger: showingSettingsSheet)
