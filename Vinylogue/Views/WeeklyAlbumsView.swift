@@ -63,6 +63,7 @@ struct WeeklyAlbumsView: View {
                 await loader.updatePlayCountFilter(newFilter, for: user, yearOffset: currentYearOffset)
             }
         }
+        .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: currentYearOffset)
     }
 
     @ViewBuilder private var toolbarTitle: some View {
