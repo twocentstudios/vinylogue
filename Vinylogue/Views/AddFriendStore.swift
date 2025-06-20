@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class AddFriendStore {
+final class AddFriendStore: Identifiable {
     @ObservationIgnored @SharedReader(.currentUser) var currentUsername: String?
     @ObservationIgnored @Dependency(\.lastFMClient) var lastFMClient
 
@@ -14,6 +14,8 @@ final class AddFriendStore {
     var friendAdded = false
     var showError = false
 
+    let onFriendAdded: (User) -> Void
+
     var isAddButtonDisabled: Bool {
         username.isEmpty
     }
@@ -22,22 +24,26 @@ final class AddFriendStore {
         isValidating ? "Validating username" : "Add friend"
     }
 
-    init() {}
+    init(onFriendAdded: @escaping (User) -> Void) {
+        self.onFriendAdded = onFriendAdded
+    }
 
-    func validateAndAdd() async -> User? {
+    func validateAndAdd() async {
         guard !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             setError("please enter a username")
-            return nil
+            return
         }
 
         let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if cleanUsername.lowercased() == currentUsername?.lowercased() {
             setError("you cannot add yourself as a friend")
-            return nil
+            return
         }
 
-        return await validateUsername(cleanUsername)
+        if let user = await validateUsername(cleanUsername) {
+            onFriendAdded(user)
+        }
     }
 
     func validateUsername(_ username: String) async -> User? {

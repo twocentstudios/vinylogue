@@ -4,8 +4,6 @@ struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var store: AddFriendStore
 
-    let onFriendAdded: (User) -> Void
-
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
@@ -33,7 +31,7 @@ struct AddFriendView: View {
                         isValidating: $store.isValidating,
                         accessibilityHint: "Enter a Last.fm username to add as friend",
                         onSubmit: {
-                            Task { await validateAndAdd() }
+                            Task { await store.validateAndAdd() }
                         }
                     )
                     .focused($isTextFieldFocused)
@@ -46,7 +44,9 @@ struct AddFriendView: View {
                         accessibilityLabel: store.accessibilityLabel,
                         accessibilityHint: "Validates the username and adds them as a friend",
                         action: {
-                            Task { await validateAndAdd() }
+                            Task {
+                                await store.validateAndAdd()
+                            }
                         }
                     )
                     .sensoryFeedback(.success, trigger: store.friendAdded)
@@ -66,6 +66,11 @@ struct AddFriendView: View {
                 }
             }
         }
+        .onChange(of: store.friendAdded) { _, newValue in
+            if newValue {
+                dismiss()
+            }
+        }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
@@ -82,20 +87,10 @@ struct AddFriendView: View {
             }
         }
     }
-
-    private func validateAndAdd() async {
-        if let newFriend = await store.validateAndAdd() {
-            onFriendAdded(newFriend)
-            dismiss()
-        }
-    }
 }
 
 // MARK: - Previews
 
 #Preview {
-    let store = AddFriendStore()
-    return AddFriendView(store: store) { friend in
-        print("Friend added: \(friend.username)")
-    }
+    AddFriendView(store: AddFriendStore(onFriendAdded: { _ in }))
 }

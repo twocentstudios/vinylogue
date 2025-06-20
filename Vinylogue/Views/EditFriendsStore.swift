@@ -12,9 +12,8 @@ final class EditFriendsStore {
     var friendsImporter = FriendsImporter()
     var editableFriends: [User] = []
     var selectedFriends: Set<String> = []
-    var showingAddFriend = false
 
-    var addFriendStore = AddFriendStore()
+    var addFriendStore: AddFriendStore?
 
     var isImportingFriends: Bool {
         if case .loading = friendsImporter.friendsState {
@@ -64,11 +63,11 @@ final class EditFriendsStore {
     }
 
     func showAddFriend() {
-        showingAddFriend = true
-    }
-
-    func hideAddFriend() {
-        showingAddFriend = false
+        addFriendStore = withDependencies(from: self) {
+            AddFriendStore { [weak self] addedUser in
+                self?.addFriend(addedUser)
+            }
+        }
     }
 
     func addFriend(_ newFriend: User) {

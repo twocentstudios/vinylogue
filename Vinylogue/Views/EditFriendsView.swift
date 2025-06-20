@@ -122,10 +122,8 @@ struct EditFriendsView: View {
                     .sensoryFeedback(.warning, trigger: store.selectedCount)
                 }
             }
-            .sheet(isPresented: $store.showingAddFriend) {
-                AddFriendView(store: store.addFriendStore) { newFriend in
-                    store.addFriend(newFriend)
-                }
+            .sheet(item: $store.addFriendStore) { store in
+                AddFriendView(store: store)
             }
         }
         .onAppear {
