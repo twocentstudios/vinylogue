@@ -85,7 +85,7 @@ struct EditFriendsView: View {
                         .listRowInsets(EdgeInsets())
                     }
                 } header: {
-                    SectionHeaderView("friends", topPadding: 20)
+                    SectionHeaderView("friends (hold & drag to reorder)", topPadding: 20)
                         .listRowInsets(EdgeInsets())
                 }
             }
