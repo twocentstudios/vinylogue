@@ -190,7 +190,7 @@ private struct ImportFriendsButton: View {
         .sensoryFeedback(.impact, trigger: isLoading)
         .foregroundColor(.accent)
         .disabled(isLoading)
-        .buttonStyle(.plain)
+        .buttonStyle(AddFriendRowButtonStyle())
     }
 }
 
@@ -216,7 +216,17 @@ private struct AddFriendButton: View {
         }
         .sensoryFeedback(.impact, trigger: buttonPressed)
         .foregroundColor(.accent)
-        .buttonStyle(.plain)
+        .buttonStyle(AddFriendRowButtonStyle())
+    }
+}
+
+struct AddFriendRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? .vinylogueWhiteSubtle : .primaryText)
+            .background {
+                Rectangle().fill(Color.vinylogueBlueDark.opacity(configuration.isPressed ? 1.0 : 0.0))
+            }
     }
 }
 
