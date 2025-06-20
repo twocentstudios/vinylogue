@@ -39,12 +39,10 @@ struct UsersListView: View {
                             ForEach(curatedFriends, id: \.username) { friend in
                                 UserRowView(user: friend, isCurrentUser: false)
                             }
-
-                            EditFriendsButton {
+                        } header: {
+                            FriendsHeaderView {
                                 showingEditSheet = true
                             }
-                        } header: {
-                            SectionHeaderView("friends")
                         }
                     }
 
@@ -73,7 +71,9 @@ struct UsersListView: View {
                                 showingEditSheet = true
                             }
                         } header: {
-                            SectionHeaderView("friends")
+                            FriendsHeaderView {
+                                showingEditSheet = true
+                            }
                         }
                     }
                 }
@@ -160,6 +160,40 @@ struct UserRowButtonStyle: ButtonStyle {
     }
 }
 
+// MARK: - Friends Header View
+
+private struct FriendsHeaderView: View {
+    let action: () -> Void
+    @State private var buttonPressed = false
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text("friends")
+                .font(.f(.ultralight, .headline))
+                .foregroundColor(.primaryText)
+                .textCase(.lowercase)
+            
+            Spacer()
+            
+            Button(action: {
+                buttonPressed.toggle()
+                action()
+            }) {
+                Text("edit")
+                    .font(.f(.ultralight, .headline))
+                    .foregroundColor(Color.accent)
+                    .contentShape(Rectangle())
+            }
+            .sensoryFeedback(.impact, trigger: buttonPressed)
+            .buttonStyle(PlainButtonStyle())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 40)
+        .padding(.bottom, 0)
+        .padding(.horizontal, 24)
+    }
+}
+
 // MARK: - Edit Friends Button
 
 private struct EditFriendsButton: View {
@@ -171,7 +205,7 @@ private struct EditFriendsButton: View {
             buttonPressed.toggle()
             action()
         }) {
-            Text("edit friends")
+            Text("edit")
                 .font(.f(.ultralight, .headline))
                 .foregroundColor(Color.accent)
                 .frame(maxWidth: .infinity, alignment: .leading)
