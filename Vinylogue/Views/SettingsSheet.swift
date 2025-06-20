@@ -323,16 +323,18 @@ struct UsernameChangeSheet: View {
                 }
 
                 Spacer()
-
-                Button("cancel") {
-                    dismiss()
-                }
-                .font(.f(.medium, .body))
-                .foregroundColor(.accent)
-                .padding(.bottom, 32)
             }
-            .background(Color.primaryBackground)
-            .navigationBarHidden(true)
+            .background(Color.primaryBackground.ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("cancel") {
+                        dismiss()
+                    }
+                    .font(.f(.medium, .body))
+                    .foregroundColor(.accent)
+                }
+            }
         }
         .onAppear {
             newUsername = currentUsername ?? ""
