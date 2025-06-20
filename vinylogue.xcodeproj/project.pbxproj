@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -42,6 +42,8 @@
 		7C4CFFEF047A77C995DC2DD6 /* LastFMUsernameInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B9E7061D116779D5A6F381 /* LastFMUsernameInputView.swift */; };
 		7DFC31279C41E3AC004FFEA0 /* AnimatedLoadingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824994C100455863CEAC27A1 /* AnimatedLoadingIndicator.swift */; };
 		808B7C443A13B242F689460A /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = D179D6B028859C27F293B752 /* Album.swift */; };
+		853BDAD2006A086B4FDB30DD /* AddFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C9E413A401481272B5527D /* AddFriendView.swift */; };
+		866D0503CDD333131794FF6F /* AddFriendStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C5EBE4437DA0F42F8D0D20 /* AddFriendStore.swift */; };
 		8B99C803924AEDF4879A9071 /* Color+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */; };
 		8F3135D6D612FFC7E5F1816D /* ImagePipeline+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229E5912519929D5165F78D6 /* ImagePipeline+Vinylogue.swift */; };
 		939ADAE53F231DFD5366FCD0 /* Calendar+WeekCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */; };
@@ -100,6 +102,7 @@
 		3B106FF3D75C51CB914CFD85 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
+		41C9E413A401481272B5527D /* AddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendView.swift; sourceTree = "<group>"; };
 		4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		56154FB563EA127014EA5AF3 /* Dependencies+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dependencies+Vinylogue.swift"; sourceTree = "<group>"; };
 		5FDA371FD0FA86EEF318A80E /* EquatableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableError.swift; sourceTree = "<group>"; };
@@ -121,6 +124,7 @@
 		941884892ADC0CF5CFA3FE3C /* Calendar+WeekCalculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+WeekCalculations.swift"; sourceTree = "<group>"; };
 		9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyChart.swift; sourceTree = "<group>"; };
 		9D793EA7C39BC6B436106746 /* LoadingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
+		A4C5EBE4437DA0F42F8D0D20 /* AddFriendStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendStore.swift; sourceTree = "<group>"; };
 		A935600D4241C39F4972F9B7 /* CacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		AA9F67EEB152FF5CC61718F5 /* TestDataFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataFactory.swift; sourceTree = "<group>"; };
 		B3B9E7061D116779D5A6F381 /* LastFMUsernameInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMUsernameInputView.swift; sourceTree = "<group>"; };
@@ -216,6 +220,8 @@
 		8B086034E09A923B47C71F3A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A4C5EBE4437DA0F42F8D0D20 /* AddFriendStore.swift */,
+				41C9E413A401481272B5527D /* AddFriendView.swift */,
 				F525C206B45976A213075204 /* AlbumDetailView.swift */,
 				93EBBF8305D3E51421F7E7F4 /* AlbumRowView.swift */,
 				824994C100455863CEAC27A1 /* AnimatedLoadingIndicator.swift */,
@@ -353,13 +359,6 @@
 			path = TestUtilities;
 			sourceTree = "<group>";
 		};
-		"TEMP_25689190-6CAB-4011-A287-4DF66EB126A7" /* Features */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -455,7 +454,6 @@
 				3866EAA516F770881ABF4A03 /* XCRemoteSwiftPackageReference "Nuke" */,
 				A9EB0DA07C985D5B67455282 /* XCRemoteSwiftPackageReference "swift-sharing" */,
 			);
-			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -492,6 +490,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				853BDAD2006A086B4FDB30DD /* AddFriendView.swift in Sources */,
+				866D0503CDD333131794FF6F /* AddFriendStore.swift in Sources */,
 				808B7C443A13B242F689460A /* Album.swift in Sources */,
 				E64665EE589A7B433EDBB826 /* AlbumArtworkView.swift in Sources */,
 				6E603D081E6C7BA6D141092E /* AlbumDetailView.swift in Sources */,

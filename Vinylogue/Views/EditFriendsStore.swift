@@ -14,6 +14,8 @@ final class EditFriendsStore {
     var selectedFriends: Set<String> = []
     var showingAddFriend = false
 
+    var addFriendStore = AddFriendStore()
+
     var isImportingFriends: Bool {
         if case .loading = friendsImporter.friendsState {
             return true
