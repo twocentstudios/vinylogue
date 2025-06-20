@@ -4,17 +4,10 @@ import NukeUI
 import SwiftUI
 
 struct AlbumDetailView: View {
-    @State private var album: Album
-    @State private var artworkImage: UIImage?
-    @State private var representativeColors: ColorExtraction.RepresentativeColors?
-    @State private var isLoadingDetails = false
-    @State private var shouldAnimateColors = false
-    private let weekInfo: WeekInfo
-    @Dependency(\.lastFMClient) private var lastFMClient
+    @State private var store: AlbumDetailStore
 
     init(album: Album, weekInfo: WeekInfo) {
-        _album = State(initialValue: album)
-        self.weekInfo = weekInfo
+        _store = State(initialValue: AlbumDetailStore(album: album, weekInfo: weekInfo))
     }
 
     var body: some View {
@@ -39,18 +32,15 @@ struct AlbumDetailView: View {
                 Spacer(minLength: 100) // Extra space at bottom
             }
         }
-        .background(animatedBackgroundColor)
+        .background(store.animatedBackgroundColor)
         .toolbarVisibility(.visible, for: .navigationBar) // This doesn't work for some reason
         .toolbarTitleDisplayMode(.inline)
         .toolbarBackground(Material.ultraThin, for: .navigationBar)
         .task {
-            await loadAlbumDetails()
+            await store.loadAlbumDetails()
         }
-        .task(id: representativeColors != nil) {
-            guard representativeColors != nil else { return }
-            withAnimation(.easeIn(duration: 0.75).delay(0.15)) {
-                shouldAnimateColors = true
-            }
+        .task(id: store.representativeColors != nil) {
+            store.startColorAnimation()
         }
     }
 
@@ -59,7 +49,7 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var backgroundArtworkSection: some View {
         Group {
-            if let imageURL = album.imageURL, let url = URL(string: imageURL) {
+            if let imageURL = store.album.imageURL, let url = URL(string: imageURL) {
                 LazyImage(url: url) { state in
                     if let image = state.image {
                         image
@@ -81,11 +71,11 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var artworkSection: some View {
         ReusableAlbumArtworkView.flexible(
-            imageURL: album.imageURL,
+            imageURL: store.album.imageURL,
             cornerRadius: 6,
             showShadow: true,
             onImageLoaded: { uiImage in
-                extractRepresentativeColors(from: uiImage)
+                store.extractRepresentativeColors(from: uiImage)
             }
         )
     }
@@ -93,16 +83,16 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var albumInfoSection: some View {
         VStack(spacing: 2) {
-            Text(album.artist.uppercased())
+            Text(store.album.artist.uppercased())
                 .font(.f(.regular, .subheadline))
-                .foregroundColor(textColor.opacity(0.85))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 0.5)
+                .foregroundColor(store.textColor.opacity(0.85))
+                .shadow(color: store.shadowColor, radius: 0, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
 
-            Text(album.name)
+            Text(store.album.name)
                 .font(.f(.demiBold, .title1))
-                .foregroundColor(textColor.opacity(0.95))
-                .shadow(color: shadowColor, radius: 0, x: 0, y: 0.5)
+                .foregroundColor(store.textColor.opacity(0.95))
+                .shadow(color: store.shadowColor, radius: 0, x: 0, y: 0.5)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
         }
@@ -113,8 +103,8 @@ struct AlbumDetailView: View {
         // TODO: correct labels
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                playCountBlock(count: album.playCount.formatted(), period: weekInfo.displayText)
-                playCountBlock(count: album.userPlayCount?.formatted() ?? "-", period: "all-time")
+                playCountBlock(count: store.album.playCount.formatted(), period: store.weekInfo.displayText)
+                playCountBlock(count: store.album.userPlayCount?.formatted() ?? "-", period: "all-time")
             }
         }
         .padding(.vertical, 12)
@@ -141,14 +131,14 @@ struct AlbumDetailView: View {
         VStack(spacing: 0) {
             Text(count)
                 .font(.f(.demiBold, .title1))
-                .foregroundStyle(textColor.opacity(0.85))
+                .foregroundStyle(store.textColor.opacity(0.85))
                 .padding(.bottom, -5)
             Text("plays")
                 .font(.f(.ultralight, .subheadline))
-                .foregroundStyle(textColor.opacity(0.7))
+                .foregroundStyle(store.textColor.opacity(0.7))
             Text(period)
                 .font(.f(.regular, .body))
-                .foregroundStyle(textColor.opacity(0.7))
+                .foregroundStyle(store.textColor.opacity(0.7))
         }
         .padding(.horizontal, 10)
         .frame(maxWidth: .infinity, alignment: .center)
@@ -157,28 +147,28 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var descriptionSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if isLoadingDetails {
+            if store.isLoadingDetails {
                 HStack {
                     AnimatedLoadingIndicator(size: 32)
                     Text("loading album details...")
                         .font(.f(.regular, .body))
-                        .foregroundColor(textColor.opacity(0.6))
+                        .foregroundColor(store.textColor.opacity(0.6))
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
-            } else if let description = album.description, !description.isEmpty {
+            } else if let description = store.album.description, !description.isEmpty {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("about this album")
                         .font(.f(.demiBold, .title1))
-                        .foregroundColor(textColor.opacity(0.6))
+                        .foregroundColor(store.textColor.opacity(0.6))
 
                     Text(description)
                         .font(.f(.regular, .body))
-                        .foregroundColor(textColor.opacity(0.95))
+                        .foregroundColor(store.textColor.opacity(0.95))
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
                 }
-            } else if album.isDetailLoaded {
+            } else if store.album.isDetailLoaded {
                 EmptyView()
             }
         }
@@ -189,62 +179,6 @@ struct AlbumDetailView: View {
         .background(alignment: .bottom) {
             Color.black.opacity(0.25).frame(height: 1)
         }
-    }
-
-    private var animatedBackgroundColor: Color {
-        if shouldAnimateColors, let representativeColors {
-            return representativeColors.primary
-        }
-        return Color.vinylogueWhiteSubtle
-    }
-
-    private var textColor: Color {
-        if shouldAnimateColors, let representativeColors {
-            return representativeColors.text
-        }
-        return Color.vinylogueBlueDark
-    }
-
-    private var shadowColor: Color {
-        if shouldAnimateColors, let representativeColors {
-            return representativeColors.textShadow
-        }
-        return Color.clear
-    }
-
-    // MARK: - Helper Methods
-
-    private func extractRepresentativeColors(from image: UIImage?) {
-        guard let image else { return }
-        artworkImage = image
-        representativeColors = ColorExtraction.extractRepresentativeColors(from: image)
-    }
-
-    @MainActor
-    private func loadAlbumDetails() async {
-        guard !album.isDetailLoaded else { return }
-
-        isLoadingDetails = true
-
-        do {
-            let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
-                artist: album.artist,
-                album: album.name,
-                mbid: album.mbid,
-                username: weekInfo.username
-            )
-
-            album.imageURL = detailedAlbum.imageURL
-            album.description = detailedAlbum.description
-            album.totalPlayCount = detailedAlbum.totalPlayCount
-            album.userPlayCount = detailedAlbum.userPlayCount
-            album.isDetailLoaded = true
-
-        } catch {
-            album.isDetailLoaded = true
-        }
-
-        isLoadingDetails = false
     }
 }
 

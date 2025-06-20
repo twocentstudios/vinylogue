@@ -4,8 +4,8 @@ import Foundation
 import XCTest
 
 @MainActor
-final class WeeklyAlbumLoaderTests: XCTestCase {
-    nonisolated var loader: WeeklyAlbumLoader!
+final class WeeklyAlbumsStoreTests: XCTestCase {
+    nonisolated var store: WeeklyAlbumsStore!
     nonisolated var mockClient: MockWeeklyAlbumClient!
 
     override func setUpWithError() throws {
@@ -13,24 +13,24 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        loader = nil
+        store = nil
         mockClient = nil
     }
 
     func testInitialState() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = withDependencies {
+        store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumLoader()
+            WeeklyAlbumsStore()
         }
-        guard case .initialized = loader.albumsState else {
+        guard case .initialized = store.albumsState else {
             XCTFail("Expected albums state to be initialized")
             return
         }
-        XCTAssertNil(loader.currentWeekInfo)
-        XCTAssertNil(loader.availableYearRange)
+        XCTAssertNil(store.currentWeekInfo)
+        XCTAssertNil(store.availableYearRange)
     }
 
     func testYearCalculation() async {
@@ -40,58 +40,58 @@ final class WeeklyAlbumLoaderTests: XCTestCase {
         let testCalendar = Calendar.current
         let currentYear = testCalendar.component(.year, from: testDate)
 
-        loader = withDependencies {
+        store = withDependencies {
             $0.lastFMClient = mockClient
             $0.date = .constant(testDate)
             $0.calendar = testCalendar
         } operation: {
-            WeeklyAlbumLoader()
+            WeeklyAlbumsStore()
         }
 
-        XCTAssertEqual(loader.getYear(for: 0), currentYear)
-        XCTAssertEqual(loader.getYear(for: 1), currentYear - 1)
-        XCTAssertEqual(loader.getYear(for: 2), currentYear - 2)
+        XCTAssertEqual(store.getYear(for: 0), currentYear)
+        XCTAssertEqual(store.getYear(for: 1), currentYear - 1)
+        XCTAssertEqual(store.getYear(for: 2), currentYear - 2)
     }
 
     func testCanNavigateWithNoData() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = withDependencies {
+        store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumLoader()
+            WeeklyAlbumsStore()
         }
-        XCTAssertFalse(loader.canNavigate(to: 1))
-        XCTAssertFalse(loader.canNavigate(to: 0))
-        XCTAssertFalse(loader.canNavigate(to: -1))
+        XCTAssertFalse(store.canNavigate(to: 1))
+        XCTAssertFalse(store.canNavigate(to: 0))
+        XCTAssertFalse(store.canNavigate(to: -1))
     }
 
     func testClearFunctionality() async {
         // Setup
         mockClient = MockWeeklyAlbumClient()
-        loader = withDependencies {
+        store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumLoader()
+            WeeklyAlbumsStore()
         }
         // Set some test data
-        loader.albumsState = .loaded([
+        store.albumsState = .loaded([
             Album(name: "Test Album", artist: "Test Artist", playCount: 10),
         ])
-        loader.currentWeekInfo = WeekInfo(
+        store.currentWeekInfo = WeekInfo(
             weekNumber: 25,
             year: 2024,
             username: "testuser"
         )
 
         // Clear and verify
-        loader.clear()
+        store.clear()
 
-        guard case .initialized = loader.albumsState else {
+        guard case .initialized = store.albumsState else {
             XCTFail("Expected albums state to be initialized")
             return
         }
-        XCTAssertNil(loader.currentWeekInfo)
+        XCTAssertNil(store.currentWeekInfo)
     }
 }
 

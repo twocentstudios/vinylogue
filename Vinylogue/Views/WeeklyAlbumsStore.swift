@@ -23,7 +23,7 @@ struct WeekInfo {
 
 @Observable
 @MainActor
-final class WeeklyAlbumLoader {
+final class WeeklyAlbumsStore {
     var albumsState: WeeklyAlbumsLoadingState = .initialized
     var currentWeekInfo: WeekInfo?
     var availableYearRange: ClosedRange<Int>?

@@ -5,9 +5,9 @@ import SwiftUI
 
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var store = SettingsStore()
 
     @Shared(.currentUser) var currentUsername: String?
-    @Shared(.currentPlayCountFilter) var playCountFilter
 
     @State private var showingMailComposer = false
     @State private var showingUsernamePicker = false
@@ -21,10 +21,10 @@ struct SettingsSheet: View {
                 LazyVStack(spacing: 0) {
                     Section {
                         SettingsRowView(
-                            title: playCountFilterString,
-                            action: { cyclePlayCountFilter() }
+                            title: store.playCountFilterString,
+                            action: { store.cyclePlayCountFilter() }
                         )
-                        .animation(.default, value: playCountFilterString)
+                        .animation(.default, value: store.playCountFilterString)
                         .contentTransition(.numericText(countsDown: false))
                     } header: {
                         SectionHeaderView("play count filter")
@@ -114,29 +114,6 @@ struct SettingsSheet: View {
     }
 
     // MARK: - Private Methods
-
-    private var playCountFilterString: String {
-        switch playCountFilter {
-        case 0:
-            "off"
-        case 1:
-            "1 play"
-        default:
-            "\(playCountFilter) plays"
-        }
-    }
-
-    private func cyclePlayCountFilter() {
-        $playCountFilter.withLock { filter in
-            if filter > 31 {
-                filter = 0
-            } else if filter == 0 {
-                filter = 1
-            } else {
-                filter *= 2
-            }
-        }
-    }
 
     private func reportIssue() {
         if MFMailComposeViewController.canSendMail() {
@@ -274,22 +251,11 @@ struct MailComposerView: UIViewControllerRepresentable {
 
 struct UsernameChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
-    @Dependency(\.lastFMClient) private var lastFMClient
+    @State private var store = UsernameChangeStore()
 
     @Shared(.currentUser) var currentUsername: String?
-    @Shared(.curatedFriends) var curatedFriends
-
-    @State private var newUsername = ""
-    @State private var isValidating = false
-    @State private var validationError: String?
-    @State private var isValid = false
-    @State private var showError = false
 
     @FocusState private var isTextFieldFocused: Bool
-
-    private var canSave: Bool {
-        !newUsername.isEmpty && newUsername != currentUsername
-    }
 
     var body: some View {
         NavigationView {
@@ -303,21 +269,25 @@ struct UsernameChangeSheet: View {
 
                 VStack(spacing: 0) {
                     LastFMUsernameInputView(
-                        username: $newUsername,
-                        isValidating: $isValidating,
+                        username: $store.newUsername,
+                        isValidating: $store.isValidating,
                         accessibilityHint: "Enter your Last.fm username to change",
-                        onSubmit: validateAndSaveUsername
+                        onSubmit: {
+                            Task { await validateAndSave() }
+                        }
                     )
                     .focused($isTextFieldFocused)
 
                     LoadingButton(
                         title: "save username",
                         loadingTitle: "validating...",
-                        isLoading: isValidating,
-                        isDisabled: !canSave,
-                        accessibilityLabel: isValidating ? "Validating username" : "Save username",
+                        isLoading: store.isValidating,
+                        isDisabled: !store.canSave,
+                        accessibilityLabel: store.isValidating ? "Validating username" : "Save username",
                         accessibilityHint: "Validates your username and updates the app",
-                        action: validateAndSaveUsername
+                        action: {
+                            Task { await validateAndSave() }
+                        }
                     )
                     .sensoryFeedback(.success, trigger: currentUsername)
                 }
@@ -337,81 +307,26 @@ struct UsernameChangeSheet: View {
             }
         }
         .onAppear {
-            newUsername = currentUsername ?? ""
-            isValid = false
-            validationError = nil
-            showError = false
+            store.prepareForEntry()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
             }
         }
-        .alert("Username Validation", isPresented: $showError) {
+        .alert("Username Validation", isPresented: $store.showError) {
             Button("OK") {
                 isTextFieldFocused = true
             }
         } message: {
-            if let errorMessage = validationError {
+            if let errorMessage = store.validationError {
                 Text(errorMessage)
             }
         }
     }
 
-    private func validateAndSaveUsername() {
-        guard canSave else { return }
-        guard !newUsername.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            setError("please enter a username")
-            return
-        }
-
-        let cleanUsername = newUsername.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        Task {
-            await validateUsername(cleanUsername)
-        }
-    }
-
-    @MainActor
-    private func validateUsername(_ username: String) async {
-        isValidating = true
-        validationError = nil
-        showError = false
-
-        do {
-            let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
-            isValid = true
-            validationError = nil
-            isValidating = false
-            saveUsername()
+    private func validateAndSave() async {
+        if await store.validateAndSave() {
             dismiss()
-        } catch {
-            isValidating = false
-
-            switch error {
-            case LastFMError.userNotFound:
-                setError("Username not found. Please check your spelling or create a Last.fm account.")
-            case LastFMError.networkUnavailable:
-                setError("No internet connection. Please check your network and try again.")
-            case LastFMError.serviceUnavailable:
-                setError("Last.fm is temporarily unavailable. Please try again later.")
-            case LastFMError.invalidAPIKey:
-                setError("There's an issue with the app configuration. Please contact support.")
-            default:
-                setError("Unable to validate username. Please try again.")
-            }
         }
-    }
-
-    private func setError(_ message: String) {
-        validationError = message
-        showError = true
-
-        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-        impactFeedback.impactOccurred()
-    }
-
-    private func saveUsername() {
-        $currentUsername.withLock { $0 = newUsername }
-        $curatedFriends.withLock { $0 = [] }
     }
 }
 

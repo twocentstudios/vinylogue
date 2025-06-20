@@ -3,7 +3,7 @@ import SwiftUI
 
 struct WeeklyAlbumsView: View {
     let user: User
-    @State private var loader: WeeklyAlbumLoader = .init()
+    @State private var store: WeeklyAlbumsStore = .init()
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.currentPlayCountFilter) var playCountFilter
 
@@ -19,18 +19,18 @@ struct WeeklyAlbumsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ContentStateView(loader: loader, user: user)
+                ContentStateView(store: store, user: user)
             }
         }
         .scrollPosition($scrollPosition)
         .modifier(OverscrollHandler(
             currentYearOffset: $currentYearOffset,
-            loader: loader,
+            store: store,
             performCurrentYearOffsetChangeOnScrollIdle: $performCurrentYearOffsetChangeOnScrollIdle,
             topProgress: $topProgress,
             bottomProgress: $bottomProgress
         ))
-        .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, loader: loader, topProgress: topProgress, bottomProgress: bottomProgress))
+        .modifier(YearNavigationButtons(currentYearOffset: $currentYearOffset, store: store, topProgress: topProgress, bottomProgress: bottomProgress))
         .background(Color.primaryBackground)
         .navigationTitle("charts")
         .navigationBarTitleDisplayMode(.inline)
@@ -45,19 +45,19 @@ struct WeeklyAlbumsView: View {
         }
         .task {
             // Only load if data isn't already loaded for this user, year offset, and play count filter
-            if !loader.isDataLoaded(for: user, yearOffset: currentYearOffset, playCountFilter: playCountFilter) {
-                await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
-                await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
+            if !store.isDataLoaded(for: user, yearOffset: currentYearOffset, playCountFilter: playCountFilter) {
+                await store.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
+                await store.loadAlbums(for: user, yearOffset: currentYearOffset)
             }
         }
         .task(id: currentYearOffset) {
-            await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
-            await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
+            await store.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
+            await store.loadAlbums(for: user, yearOffset: currentYearOffset)
 
             scrollPosition.scrollTo(edge: .top)
         }
         .task(id: playCountFilter) {
-            await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
+            await store.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
         }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: currentYearOffset)
     }
@@ -69,19 +69,19 @@ struct WeeklyAlbumsView: View {
                 .font(.f(.regular, .headline))
                 .padding(.bottom, -2)
 
-            if let weekInfo = loader.currentWeekInfo {
+            if let weekInfo = store.currentWeekInfo {
                 Text(weekInfo.displayText)
                     .font(.caption)
                     .foregroundColor(.primaryText)
                     .contentTransition(.numericText())
             }
         }
-        .animation(.default, value: loader.currentWeekInfo?.displayText)
+        .animation(.default, value: store.currentWeekInfo?.displayText)
     }
 
     @ViewBuilder private var toolbarTrailing: some View {
         Group {
-            if case .loading = loader.albumsState {
+            if case .loading = store.albumsState {
                 AnimatedLoadingIndicator(size: 24)
             } else {
                 EmptyView()
@@ -93,15 +93,15 @@ struct WeeklyAlbumsView: View {
 // MARK: - Content State View
 
 private struct ContentStateView: View {
-    let loader: WeeklyAlbumLoader
+    let store: WeeklyAlbumsStore
     let user: User
 
     var body: some View {
-        switch loader.albumsState {
+        switch store.albumsState {
         case .initialized, .loading:
             EmptyView()
         case .loaded:
-            AlbumListView(loader: loader, user: user)
+            AlbumListView(store: store, user: user)
         case let .failed(error):
             ErrorStateView(error: error)
         }
@@ -111,14 +111,14 @@ private struct ContentStateView: View {
 // MARK: - Album List View
 
 private struct AlbumListView: View {
-    let loader: WeeklyAlbumLoader
+    let store: WeeklyAlbumsStore
     let user: User
 
     var body: some View {
-        if loader.albums.isEmpty {
+        if store.albums.isEmpty {
             EmptyStateView(username: user.username)
-        } else if let weekInfo = loader.currentWeekInfo {
-            ForEach(loader.albums) { album in
+        } else if let weekInfo = store.currentWeekInfo {
+            ForEach(store.albums) { album in
                 NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
                     AlbumRowView(album: album)
                 }
@@ -126,7 +126,7 @@ private struct AlbumListView: View {
                 .transition(.identity)
                 .task(id: album.id) {
                     if album.imageURL == nil {
-                        await loader.loadAlbum(album, for: user)
+                        await store.loadAlbum(album, for: user)
                     }
                 }
             }
@@ -143,7 +143,7 @@ private struct OverscrollHandler: ViewModifier {
     }
 
     @Binding var currentYearOffset: Int
-    let loader: WeeklyAlbumLoader
+    let store: WeeklyAlbumsStore
     @Binding var performCurrentYearOffsetChangeOnScrollIdle: Int?
     @Binding var topProgress: Double
     @Binding var bottomProgress: Double
@@ -164,7 +164,7 @@ private struct OverscrollHandler: ViewModifier {
                 return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
             } action: { oldValue, newValue in
                 guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
-                guard case .loaded = loader.albumsState else { return }
+                guard case .loaded = store.albumsState else { return }
                 topProgress = newValue.top
                 bottomProgress = newValue.bottom
                 if oldValue.top < 1.0, newValue.top >= 1.0 {
@@ -187,7 +187,7 @@ private struct OverscrollHandler: ViewModifier {
                 if newPhase == .idle {
                     // Wait until scroll has returned to idle before changing navigation
                     if let performCurrentYearOffsetChangeOnScrollIdle {
-                        if loader.canNavigate(to: performCurrentYearOffsetChangeOnScrollIdle) {
+                        if store.canNavigate(to: performCurrentYearOffsetChangeOnScrollIdle) {
                             currentYearOffset = performCurrentYearOffsetChangeOnScrollIdle
                         }
                         self.performCurrentYearOffsetChangeOnScrollIdle = nil
@@ -223,7 +223,7 @@ private struct OverscrollHandler: ViewModifier {
 
 private struct YearNavigationButtons: ViewModifier {
     @Binding var currentYearOffset: Int
-    let loader: WeeklyAlbumLoader
+    let store: WeeklyAlbumsStore
     let topProgress: Double
     let bottomProgress: Double
 
@@ -231,7 +231,7 @@ private struct YearNavigationButtons: ViewModifier {
         content
             .safeAreaInset(edge: .top) {
                 let prevOffset = currentYearOffset - 1
-                if loader.canNavigate(to: prevOffset) {
+                if store.canNavigate(to: prevOffset) {
                     Button(action: {
                         currentYearOffset = prevOffset
                     }) {
@@ -239,7 +239,7 @@ private struct YearNavigationButtons: ViewModifier {
                             Image(systemName: "arrow.up")
                                 .font(.f(.ultralight, .caption1))
                                 .foregroundColor(.vinylogueBlueDark)
-                            Text(String(loader.getYear(for: prevOffset)))
+                            Text(String(store.getYear(for: prevOffset)))
                                 .font(.f(.medium, .headline))
                                 .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(prevOffset)))
@@ -258,7 +258,7 @@ private struct YearNavigationButtons: ViewModifier {
                                     Image(systemName: "arrow.up")
                                         .font(.f(.ultralight, .caption1))
                                         .foregroundColor(.vinylogueWhiteSubtle)
-                                    Text(String(loader.getYear(for: prevOffset)))
+                                    Text(String(store.getYear(for: prevOffset)))
                                         .font(.f(.medium, .headline))
                                         .foregroundColor(.vinylogueWhiteSubtle)
                                         .contentTransition(.numericText(value: Double(prevOffset)))
@@ -284,7 +284,7 @@ private struct YearNavigationButtons: ViewModifier {
             }
             .safeAreaInset(edge: .bottom) {
                 let nextOffset = currentYearOffset + 1
-                if loader.canNavigate(to: nextOffset) {
+                if store.canNavigate(to: nextOffset) {
                     Button(action: {
                         currentYearOffset = nextOffset
                     }) {
@@ -292,7 +292,7 @@ private struct YearNavigationButtons: ViewModifier {
                             Image(systemName: "arrow.down")
                                 .font(.f(.ultralight, .caption1))
                                 .foregroundColor(.vinylogueBlueDark)
-                            Text(String(loader.getYear(for: nextOffset)))
+                            Text(String(store.getYear(for: nextOffset)))
                                 .font(.f(.medium, .headline))
                                 .foregroundColor(.vinylogueBlueDark)
                                 .contentTransition(.numericText(value: Double(nextOffset)))
@@ -310,7 +310,7 @@ private struct YearNavigationButtons: ViewModifier {
                                     Image(systemName: "arrow.down")
                                         .font(.f(.ultralight, .caption1))
                                         .foregroundColor(.vinylogueWhiteSubtle)
-                                    Text(String(loader.getYear(for: nextOffset)))
+                                    Text(String(store.getYear(for: nextOffset)))
                                         .font(.f(.medium, .headline))
                                         .foregroundColor(.vinylogueWhiteSubtle)
                                         .contentTransition(.numericText(value: Double(nextOffset)))
@@ -332,7 +332,7 @@ private struct YearNavigationButtons: ViewModifier {
                     .sensoryFeedback(.selection, trigger: currentYearOffset)
                 }
             }
-            .disabled(loader.albumsState == .loading)
+            .disabled(store.albumsState == .loading)
             .animation(.snappy, value: currentYearOffset)
     }
 }
