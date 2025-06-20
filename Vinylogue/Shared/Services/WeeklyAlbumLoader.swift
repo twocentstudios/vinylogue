@@ -102,7 +102,12 @@ final class WeeklyAlbumLoader {
             var response: UserWeeklyAlbumChartResponse?
 
             if !forceReload {
-                response = try? await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey)
+                do {
+                    response = try await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey)
+                } catch {
+                    print("Cache retrieval failed for weekly chart \(cacheKey): \(error)")
+                    response = nil
+                }
             }
 
             if response == nil {
@@ -147,7 +152,7 @@ final class WeeklyAlbumLoader {
             // Trigger precaching for previous year data (non-blocking)
             let previousYearOffset = yearOffset + 1
             if canNavigate(to: previousYearOffset) {
-                Task.detached { [weak self] in
+                Task { [weak self] in
                     await self?.precacheDataForYear(previousYearOffset, user: user)
                 }
             }
@@ -173,7 +178,12 @@ final class WeeklyAlbumLoader {
             let cacheKey = CacheKeyBuilder.weeklyChartList(username: username)
 
             var response: UserWeeklyChartListResponse?
-            response = try? await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey)
+            do {
+                response = try await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey)
+            } catch {
+                print("Cache retrieval failed for weekly chart list \(cacheKey): \(error)")
+                response = nil
+            }
 
             if response == nil {
                 response = try await lastFMClient.request(
@@ -309,8 +319,13 @@ final class WeeklyAlbumLoader {
             let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
 
             // Check if already cached
-            if let _ = try? await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey) {
-                return // Already cached
+            do {
+                if let _ = try await cacheManager.retrieve(UserWeeklyAlbumChartResponse.self, key: cacheKey) {
+                    return // Already cached
+                }
+            } catch {
+                print("Cache check failed for precaching \(cacheKey): \(error)")
+                // Continue to fetch and cache
             }
 
             // Fetch and cache the weekly chart response
@@ -341,8 +356,18 @@ final class WeeklyAlbumLoader {
 
             // Load album details and then precache images
             let populatedAlbums = await withTaskGroup(of: Album?.self) { group in
+                // Limit concurrent requests to avoid overwhelming the API and memory
+                let maxConcurrentRequests = 5
+                var activeTaskCount = 0
+
                 // Precache album details
                 for album in albums {
+                    // Wait if we've reached the concurrency limit
+                    if activeTaskCount >= maxConcurrentRequests {
+                        _ = await group.next()
+                        activeTaskCount -= 1
+                    }
+
                     group.addTask {
                         do {
                             let detailedAlbum = try await self.lastFMClient.fetchAlbumInfo(
@@ -357,6 +382,7 @@ final class WeeklyAlbumLoader {
                             return nil
                         }
                     }
+                    activeTaskCount += 1
                 }
 
                 // Collect all results

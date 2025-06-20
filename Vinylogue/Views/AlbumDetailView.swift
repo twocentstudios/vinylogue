@@ -214,18 +214,10 @@ struct AlbumDetailView: View {
 
     // MARK: - Helper Methods
 
-    private func extractRepresentativeColors(from platformImage: PlatformImage?) {
-        guard let platformImage else { return }
-
-        #if os(iOS)
-            let uiImage = platformImage
-        #else
-            let uiImage = UIImage(data: platformImage.tiffRepresentation!)!
-        #endif
-
-        artworkImage = uiImage
-
-        representativeColors = ColorExtraction.extractRepresentativeColors(from: uiImage)
+    private func extractRepresentativeColors(from image: UIImage?) {
+        guard let image else { return }
+        artworkImage = image
+        representativeColors = ColorExtraction.extractRepresentativeColors(from: image)
     }
 
     @MainActor

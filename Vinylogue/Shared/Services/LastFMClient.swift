@@ -138,7 +138,9 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     }
 
     func buildURL(for endpoint: LastFMEndpoint) -> URL {
-        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+            fatalError("Invalid base URL configuration")
+        }
 
         var queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),
@@ -148,7 +150,10 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
         queryItems.append(contentsOf: endpoint.queryItems)
         components.queryItems = queryItems
 
-        return components.url!
+        guard let url = components.url else {
+            fatalError("Failed to construct URL for endpoint: \(endpoint)")
+        }
+        return url
     }
 }
 
@@ -195,8 +200,13 @@ extension LastFMClient {
         }
 
         // Try to load from cache first
-        if let cachedAlbum: Album = try? await cacheManager.retrieve(Album.self, key: cacheKey) {
-            return cachedAlbum
+        do {
+            if let cachedAlbum: Album = try await cacheManager.retrieve(Album.self, key: cacheKey) {
+                return cachedAlbum
+            }
+        } catch {
+            print("Cache retrieval failed for album info \(cacheKey): \(error)")
+            // Continue to fetch from API
         }
 
         // Fetch from API and cache the result

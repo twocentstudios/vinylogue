@@ -60,7 +60,8 @@ struct RootView: View {
     }
 
     private var hasCurrentUser: Bool {
-        currentUsername != nil && !currentUsername!.isEmpty
+        guard let username = currentUsername else { return false }
+        return !username.isEmpty
     }
 
     @MainActor
