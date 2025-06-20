@@ -35,6 +35,20 @@
                ReferencedContainer = "container:Vinylogue.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A679576B4186A2482EE74A7B"
+               BuildableName = "VinylogueUITests.xctest"
+               BlueprintName = "VinylogueUITests"
+               ReferencedContainer = "container:Vinylogue.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -60,6 +74,16 @@
                BlueprintIdentifier = "1745DB35E0B0F59AF57E4FEC"
                BuildableName = "VinylogueTests.xctest"
                BlueprintName = "VinylogueTests"
+               ReferencedContainer = "container:Vinylogue.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A679576B4186A2482EE74A7B"
+               BuildableName = "VinylogueUITests.xctest"
+               BlueprintName = "VinylogueUITests"
                ReferencedContainer = "container:Vinylogue.xcodeproj">
             </BuildableReference>
          </TestableReference>

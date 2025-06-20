@@ -28,6 +28,7 @@
 		46B2E850C5719DBFDEC3EEDF /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918077500BAC67836FBF270A /* LastFMResponses.swift */; };
 		594C0B6BFA0D15EC4BDC4DE9 /* TestDataFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9F67EEB152FF5CC61718F5 /* TestDataFactory.swift */; };
 		5C55BCE44E722DBC01E2E9C5 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5587926756100F8666AAA8 /* CacheManager.swift */; };
+		5F7A2989EA4FFF585640EF6B /* AppStoreScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */; };
 		6283572CAEC049C1CD467DC4 /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D793EA7C39BC6B436106746 /* LoadingButton.swift */; };
 		63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */; };
 		64953255D6E3917D09643F11 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E116C6835654F9B2520C2A /* EmptyStateView.swift */; };
@@ -48,6 +49,7 @@
 		A1BE3087E8DB6768FF2CD935 /* WeeklyAlbumLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AC920B7F52AF9107BBF620 /* WeeklyAlbumLoaderTests.swift */; };
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
 		A9062E48AA5E776B8C70ACD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */; };
+		B495993D0B98C78B8581941E /* TestingUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6437ED44DCCDADA6FD21424 /* TestingUtilities.swift */; };
 		B6F4C8EF591F01AC10A2E2C3 /* ColorExtractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CEB50014FEA3665EB062F5 /* ColorExtractionTests.swift */; };
 		BB331787659199DD4C834776 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEEE4964731E948A556161 /* ErrorStateView.swift */; };
 		BDCC721C37900C6313FBBC6E /* WeeklyChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */; };
@@ -64,6 +66,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		36628E91518636715833482B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED341E05211FAFE0EC43AE1B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 130E284405C187DF086D20A1;
+			remoteInfo = Vinylogue;
+		};
 		5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ED341E05211FAFE0EC43AE1B /* Project object */;
@@ -83,9 +92,11 @@
 		2459B22F6080B54FA09B5E5C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		27E42C84A715E517F4559088 /* WeeklyAlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumsView.swift; sourceTree = "<group>"; };
 		2DD6C197A31FBD864F56D3FC /* AssertionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertionHelpers.swift; sourceTree = "<group>"; };
+		30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ADEEE4964731E948A556161 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
+		4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		56154FB563EA127014EA5AF3 /* Dependencies+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dependencies+Vinylogue.swift"; sourceTree = "<group>"; };
 		5FDA371FD0FA86EEF318A80E /* EquatableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableError.swift; sourceTree = "<group>"; };
 		61A2103491B1B740C03DDE8E /* FriendsImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsImporter.swift; sourceTree = "<group>"; };
@@ -121,6 +132,7 @@
 		DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtraction.swift; sourceTree = "<group>"; };
 		DE558E9128DB9A867018AA1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E3E116C6835654F9B2520C2A /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		E6437ED44DCCDADA6FD21424 /* TestingUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingUtilities.swift; sourceTree = "<group>"; };
 		EA95D8560225422135D2FE41 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F0B88E9576F5D832F788592A /* SharedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedKeys.swift; sourceTree = "<group>"; };
 		F525C206B45976A213075204 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
@@ -158,6 +170,7 @@
 			children = (
 				74CD2D864124E180A45B91E3 /* Vinylogue.app */,
 				667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */,
+				30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,8 +194,17 @@
 				C6BC3CDDD1DA69BA0CB5D538 /* CacheKeyBuilder.swift */,
 				DBD99C4C3347938E3B6B5D74 /* ColorExtraction.swift */,
 				5FDA371FD0FA86EEF318A80E /* EquatableError.swift */,
+				E6437ED44DCCDADA6FD21424 /* TestingUtilities.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		73006DD227CB46F119D46BF2 /* VinylogueUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */,
+			);
+			path = VinylogueUITests;
 			sourceTree = "<group>";
 		};
 		8B086034E09A923B47C71F3A /* Views */ = {
@@ -281,6 +303,7 @@
 			children = (
 				E75DC78AECDC4C93130E52A1 /* Vinylogue */,
 				B1826081BBBD3E82AD791792 /* VinylogueTests */,
+				73006DD227CB46F119D46BF2 /* VinylogueUITests */,
 				1C9984247BA068703842241F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -321,7 +344,7 @@
 			path = TestUtilities;
 			sourceTree = "<group>";
 		};
-		"TEMP_747EAE23-6E08-4337-B156-00562690CB58" /* Features */ = {
+		"TEMP_6A21B5D9-DCA2-457E-A2EB-2BF69053AE4A" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -372,6 +395,24 @@
 			productReference = 667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		A679576B4186A2482EE74A7B /* VinylogueUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2660A776607620AD3E60FC70 /* Build configuration list for PBXNativeTarget "VinylogueUITests" */;
+			buildPhases = (
+				7F9A7E257953AF80FC62FAFE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D9E2385B5091246F66F986E3 /* PBXTargetDependency */,
+			);
+			name = VinylogueUITests;
+			packageProductDependencies = (
+			);
+			productName = VinylogueUITests;
+			productReference = 30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -384,6 +425,9 @@
 					130E284405C187DF086D20A1 = {
 						DevelopmentTeam = YK25EF78NT;
 						ProvisioningStyle = Automatic;
+					};
+					A679576B4186A2482EE74A7B = {
+						TestTargetID = 130E284405C187DF086D20A1;
 					};
 				};
 			};
@@ -408,6 +452,7 @@
 			targets = (
 				130E284405C187DF086D20A1 /* Vinylogue */,
 				1745DB35E0B0F59AF57E4FEC /* VinylogueTests */,
+				A679576B4186A2482EE74A7B /* VinylogueUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -426,6 +471,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7F9A7E257953AF80FC62FAFE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5F7A2989EA4FFF585640EF6B /* AppStoreScreenshotTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9ACC666C86A34ED581446A38 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -462,6 +515,7 @@
 				EA2920FFF857C2EB16F37816 /* SectionHeaderView.swift in Sources */,
 				F51E1C28395A5C5CA223C7A8 /* SettingsSheet.swift in Sources */,
 				3CA448D2A78D6963CCF9050A /* SharedKeys.swift in Sources */,
+				B495993D0B98C78B8581941E /* TestingUtilities.swift in Sources */,
 				A1797BB9D2468DA37A5625AF /* User.swift in Sources */,
 				C3D3E18185AB32273B837B7E /* UsersListView.swift in Sources */,
 				1D99671C2FE734CB6A614841 /* VinylogueApp.swift in Sources */,
@@ -494,6 +548,11 @@
 			isa = PBXTargetDependency;
 			target = 130E284405C187DF086D20A1 /* Vinylogue */;
 			targetProxy = 5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */;
+		};
+		D9E2385B5091246F66F986E3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 130E284405C187DF086D20A1 /* Vinylogue */;
+			targetProxy = 36628E91518636715833482B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -624,6 +683,22 @@
 			};
 			name = Debug;
 		};
+		69D271A1421ABDB07DB45A7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Vinylogue;
+			};
+			name = Debug;
+		};
 		8B7520F40D86A7BC12202100 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -711,9 +786,34 @@
 			};
 			name = Release;
 		};
+		F6CB44D92A4E7A1EB3F67E61 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Vinylogue;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2660A776607620AD3E60FC70 /* Build configuration list for PBXNativeTarget "VinylogueUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69D271A1421ABDB07DB45A7D /* Debug */,
+				F6CB44D92A4E7A1EB3F67E61 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		6ED8E64A28935DB97C0E6840 /* Build configuration list for PBXNativeTarget "Vinylogue" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

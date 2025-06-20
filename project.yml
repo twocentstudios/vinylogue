@@ -68,18 +68,28 @@ targets:
     dependencies:
       - target: Vinylogue
 
+  VinylogueUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - VinylogueUITests
+    dependencies:
+      - target: Vinylogue
+
 schemes:
   Vinylogue:
     build:
       targets:
         Vinylogue: all
         VinylogueTests: [test]
+        VinylogueUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
         - VinylogueTests
+        - VinylogueUITests
     profile:
       config: Release
     analyze:
