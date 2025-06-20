@@ -1,11 +1,6 @@
 import Sharing
 import SwiftUI
 
-struct ScrollProgress: Equatable {
-    let top: Double
-    let bottom: Double
-}
-
 struct WeeklyAlbumsView: View {
     let user: User
     @State private var loader: WeeklyAlbumLoader = .init()
@@ -23,35 +18,7 @@ struct WeeklyAlbumsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                switch loader.albumsState {
-                case .initialized, .loading:
-                    EmptyView()
-                case .loaded:
-                    if loader.albums.isEmpty {
-                        EmptyStateView(username: user.username)
-                    } else if let weekInfo = loader.currentWeekInfo {
-                        ForEach(loader.albums) { album in
-                            let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
-                            NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
-                                AlbumRowView(album: album)
-                            }
-                            .buttonStyle(AlbumRowButtonStyle())
-                            .transition(
-                                .asymmetric(
-                                    insertion: .offset(x: 0, y: 100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07)),
-                                    removal: .offset(x: 0, y: -100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07))
-                                )
-                            )
-                            .task(id: album.id) {
-                                if album.imageURL == nil {
-                                    await loader.loadAlbum(album, for: user)
-                                }
-                            }
-                        }
-                    }
-                case let .failed(error):
-                    ErrorStateView(error: error)
-                }
+                ContentStateView(loader: loader, user: user)
             }
             .animation(.snappy(duration: 0.20), value: loader.albumsState)
         }
@@ -68,25 +35,11 @@ struct WeeklyAlbumsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                VStack(spacing: 2) {
-                    Text("\(user.username)'s charts")
-                        .foregroundStyle(Color.vinylogueBlueDark)
-                        .font(.f(.regular, .headline))
-
-                    if let weekInfo = loader.currentWeekInfo {
-                        Text(weekInfo.displayText)
-                            .font(.caption)
-                            .foregroundColor(.primaryText)
-                    }
-                }
+                toolbarTitle
             }
 
             ToolbarItem(placement: .navigationBarTrailing) {
-                if case .loading = loader.albumsState {
-                    AnimatedLoadingIndicator(size: 24)
-                } else {
-                    EmptyView()
-                }
+                toolbarTrailing
             }
         }
         .task {
@@ -108,11 +61,95 @@ struct WeeklyAlbumsView: View {
             }
         }
     }
+
+    @ViewBuilder private var toolbarTitle: some View {
+        VStack(spacing: 2) {
+            Text("\(user.username)'s charts")
+                .foregroundStyle(Color.vinylogueBlueDark)
+                .font(.f(.regular, .headline))
+                .padding(.bottom, -2)
+
+            if let weekInfo = loader.currentWeekInfo {
+                Text(weekInfo.displayText)
+                    .font(.caption)
+                    .foregroundColor(.primaryText)
+                    .contentTransition(.numericText())
+            }
+        }
+        .animation(.default, value: loader.currentWeekInfo?.displayText)
+    }
+
+    @ViewBuilder private var toolbarTrailing: some View {
+        Group {
+            if case .loading = loader.albumsState {
+                AnimatedLoadingIndicator(size: 24)
+            } else {
+                EmptyView()
+            }
+        }
+    }
+}
+
+// MARK: - Content State View
+
+private struct ContentStateView: View {
+    let loader: WeeklyAlbumLoader
+    let user: User
+
+    var body: some View {
+        switch loader.albumsState {
+        case .initialized, .loading:
+            EmptyView()
+        case .loaded:
+            AlbumListView(loader: loader, user: user)
+        case let .failed(error):
+            ErrorStateView(error: error)
+        }
+    }
+}
+
+// MARK: - Album List View
+
+private struct AlbumListView: View {
+    let loader: WeeklyAlbumLoader
+    let user: User
+
+    var body: some View {
+        if loader.albums.isEmpty {
+            EmptyStateView(username: user.username)
+        } else if let weekInfo = loader.currentWeekInfo {
+            ForEach(loader.albums) { album in
+                let index = loader.albums.firstIndex(where: { $0.id == album.id }) ?? 0
+                NavigationLink(destination: AlbumDetailView(album: album, weekInfo: weekInfo)) {
+                    AlbumRowView(album: album)
+                }
+                .buttonStyle(AlbumRowButtonStyle())
+                .transition(albumTransition(for: index))
+                .task(id: album.id) {
+                    if album.imageURL == nil {
+                        await loader.loadAlbum(album, for: user)
+                    }
+                }
+            }
+        }
+    }
+
+    private func albumTransition(for index: Int) -> AnyTransition {
+        .asymmetric(
+            insertion: .offset(x: 0, y: 100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07)),
+            removal: .offset(x: 0, y: -100).combined(with: .opacity).animation(.snappy(duration: 0.2).delay(Double(index) * 0.07))
+        )
+    }
 }
 
 // MARK: - Overscroll Handler
 
 private struct OverscrollHandler: ViewModifier {
+    struct ScrollProgress: Equatable {
+        let top: Double
+        let bottom: Double
+    }
+    
     @Binding var currentYearOffset: Int
     let loader: WeeklyAlbumLoader
     @Binding var performCurrentYearOffsetChangeOnScrollIdle: Int?
