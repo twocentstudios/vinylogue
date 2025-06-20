@@ -2,29 +2,13 @@ import Sharing
 import SwiftUI
 
 struct RootView: View {
-    @Shared(.currentUser) var currentUsername: String?
-    @Shared(.migrationCompleted) var migrationCompleted
-
-    @State private var migrator = LegacyMigrator()
-    @State private var isMigrationComplete: Bool?
-    @State private var showMigrationError = false
-
-    private var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
+    @Bindable var store: RootStore
 
     var body: some View {
         Group {
-            if let migrationComplete = isMigrationComplete {
+            if let migrationComplete = store.isMigrationComplete {
                 if migrationComplete {
-                    if hasCurrentUser {
+                    if store.hasCurrentUser {
                         UsersListView()
                     } else {
                         OnboardingView()
@@ -33,7 +17,7 @@ struct RootView: View {
                     MigrationLoadingView()
                 }
             } else {
-                if hasCurrentUser {
+                if store.hasCurrentUser {
                     UsersListView()
                 } else {
                     OnboardingView()
@@ -41,44 +25,21 @@ struct RootView: View {
             }
         }
         .task {
-            await performMigration()
+            await store.performMigration()
         }
-        .alert("Migration Error", isPresented: $showMigrationError) {
+        .alert("Migration Error", isPresented: $store.showMigrationError) {
             Button("Continue Anyway") {
-                isMigrationComplete = true
+                store.continueAnyway()
             }
             Button("Retry") {
                 Task {
-                    await performMigration()
+                    await store.retryMigration()
                 }
             }
         } message: {
-            if let error = migrator.migrationError {
+            if let error = store.migrator.migrationError {
                 Text("Failed to migrate legacy data: \(error.localizedDescription)")
             }
-        }
-    }
-
-    private var hasCurrentUser: Bool {
-        guard let username = currentUsername else { return false }
-        return !username.isEmpty
-    }
-
-    @MainActor
-    private func performMigration() async {
-        let needsMigration = !migrationCompleted
-
-        if needsMigration {
-            isMigrationComplete = false
-            await migrator.migrateIfNeeded()
-
-            if migrator.migrationError != nil {
-                showMigrationError = true
-            } else {
-                isMigrationComplete = true
-            }
-        } else {
-            isMigrationComplete = true
         }
     }
 }
@@ -94,16 +55,14 @@ private struct MigrationLoadingView: View {
 // MARK: - Previews
 
 #Preview("Root - No User") {
-    RootView()
-        .environment(\.lastFMClient, LastFMClient())
+    RootView(store: RootStore())
 }
 
 #Preview("Root - With User") {
-    let rootView = RootView()
-    return rootView
-        .environment(\.lastFMClient, LastFMClient())
+    let store = RootStore()
+    return RootView(store: store)
         .onAppear {
-            rootView.$currentUsername.withLock { $0 = "testuser" }
+            store.$currentUsername.withLock { $0 = "testuser" }
         }
 }
 

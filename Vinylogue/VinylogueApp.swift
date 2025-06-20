@@ -5,12 +5,14 @@ import SwiftUI
 
 @main
 struct VinylogueApp: App {
+    static let rootStore = RootStore()
+
     var body: some Scene {
         WindowGroup {
             if isTesting, !isScreenshotTesting {
                 EmptyView()
             } else {
-                RootView()
+                RootView(store: Self.rootStore)
                     .task {
                         if isScreenshotTesting {
                             await setupScreenshotTestData()

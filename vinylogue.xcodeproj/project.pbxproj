@@ -50,6 +50,7 @@
 		A604B4BC7DD6B80002A1D58A /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 51CB558AF1F5FF422CE975FF /* Nuke */; };
 		A9062E48AA5E776B8C70ACD9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDB301C2D59DC8E597CAA6 /* Preview Assets.xcassets */; };
 		B495993D0B98C78B8581941E /* TestingUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6437ED44DCCDADA6FD21424 /* TestingUtilities.swift */; };
+		B6DAB5C140DDD40B3D11EE34 /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B106FF3D75C51CB914CFD85 /* RootStore.swift */; };
 		B6F4C8EF591F01AC10A2E2C3 /* ColorExtractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CEB50014FEA3665EB062F5 /* ColorExtractionTests.swift */; };
 		BB331787659199DD4C834776 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEEE4964731E948A556161 /* ErrorStateView.swift */; };
 		BDCC721C37900C6313FBBC6E /* WeeklyChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BBA051395B2F1CDC6232330 /* WeeklyChart.swift */; };
@@ -94,6 +95,7 @@
 		2DD6C197A31FBD864F56D3FC /* AssertionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertionHelpers.swift; sourceTree = "<group>"; };
 		30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ADEEE4964731E948A556161 /* ErrorStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorStateView.swift; sourceTree = "<group>"; };
+		3B106FF3D75C51CB914CFD85 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
 		3D94ADA74FE090C49ED3CFA6 /* Color+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Vinylogue.swift"; sourceTree = "<group>"; };
 		3EE9DA06101640076F5973EA /* LegacyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyModels.swift; sourceTree = "<group>"; };
 		4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				18724C512AAB5F959701021B /* EditFriendsView.swift */,
 				FEBCBC3FB06E61B9CF213FFF /* LicensesView.swift */,
 				EA95D8560225422135D2FE41 /* OnboardingView.swift */,
+				3B106FF3D75C51CB914CFD85 /* RootStore.swift */,
 				14E56759C070D9789838E509 /* RootView.swift */,
 				74186B195551DD3AD1407172 /* SettingsSheet.swift */,
 				7F035580BEB530F91763B554 /* UsersListView.swift */,
@@ -344,7 +347,7 @@
 			path = TestUtilities;
 			sourceTree = "<group>";
 		};
-		"TEMP_6A21B5D9-DCA2-457E-A2EB-2BF69053AE4A" /* Features */ = {
+		"TEMP_9BBB610B-C50F-43D3-8511-3058551BC8F1" /* Features */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -510,6 +513,7 @@
 				78F7A45F717C5891B30FE957 /* LicensesView.swift in Sources */,
 				6283572CAEC049C1CD467DC4 /* LoadingButton.swift in Sources */,
 				64A1FE783FF0E95A47106D74 /* OnboardingView.swift in Sources */,
+				B6DAB5C140DDD40B3D11EE34 /* RootStore.swift in Sources */,
 				0CD455DE58200990F340A629 /* RootView.swift in Sources */,
 				239735FA5611B57BA112AAEF /* Secrets.swift in Sources */,
 				EA2920FFF857C2EB16F37816 /* SectionHeaderView.swift in Sources */,
