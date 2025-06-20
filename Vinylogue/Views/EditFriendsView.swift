@@ -7,8 +7,8 @@ struct EditFriendsView: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.curatedFriends) var curatedFriends
 
     @State private var friendsImporter = FriendsImporter()
 
@@ -241,7 +241,7 @@ private struct AddFriendView: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
+    @Shared(.currentUser) var currentUsername: String?
 
     let onFriendAdded: (User) -> Void
 
@@ -447,8 +447,8 @@ private struct AddFriendButton: View {
 // MARK: - Previews
 
 #Preview {
-    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "musiclover123"
-    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = [
+    @Previewable @Shared(.currentUser) var currentUsername: String? = "musiclover123"
+    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = [
         User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
         User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
         User(username: "metalhead", realName: nil, playCount: 23456),

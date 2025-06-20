@@ -5,8 +5,8 @@ import SwiftUI
 struct OnboardingView: View {
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.curatedFriends) var curatedFriends
 
     @State private var username = ""
     @State private var isValidating = false

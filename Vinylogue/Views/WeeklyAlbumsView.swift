@@ -10,7 +10,7 @@ struct WeeklyAlbumsView: View {
     let user: User
     @State private var loader: WeeklyAlbumLoader = .init()
     @State private var currentYearOffset = 1 // Start with 1 year ago
-    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+    @Shared(.currentPlayCountFilter) var playCountFilter
 
     @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
     @State private var topProgress: Double = 0.0

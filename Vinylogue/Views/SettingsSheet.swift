@@ -6,8 +6,8 @@ import SwiftUI
 struct SettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
 
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.currentPlayCountFilter) var playCountFilter
 
     @State private var showingMailComposer = false
     @State private var showingUsernamePicker = false
@@ -276,8 +276,8 @@ struct UsernameChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Dependency(\.lastFMClient) private var lastFMClient
 
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.curatedFriends) var curatedFriends
 
     @State private var newUsername = ""
     @State private var isValidating = false

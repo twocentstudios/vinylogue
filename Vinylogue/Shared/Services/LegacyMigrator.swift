@@ -19,10 +19,10 @@ final class LegacyMigrator {
     var migrationError: Error?
 
     // @Shared properties for data persistence (excluded from observation)
-    @ObservationIgnored @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @ObservationIgnored @Shared(.appStorage("currentPlayCountFilter")) var playCountFilter: Int = 1
-    @ObservationIgnored @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
-    @ObservationIgnored @Shared(.appStorage("migration_completed_1_3_1")) var migrationCompletedShared: Bool = false
+    @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
+    @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
+    @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
+    @ObservationIgnored @Shared(.migrationCompleted) var migrationCompletedShared
 
     init(userDefaults: UserDefaults = .standard, fileManager: FileManager = .default, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults

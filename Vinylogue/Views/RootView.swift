@@ -2,8 +2,8 @@ import Sharing
 import SwiftUI
 
 struct RootView: View {
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.appStorage("migration_completed_1_3_1")) var migrationCompleted: Bool = false
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.migrationCompleted) var migrationCompleted
 
     @State private var migrator = LegacyMigrator()
     @State private var isMigrationComplete: Bool?

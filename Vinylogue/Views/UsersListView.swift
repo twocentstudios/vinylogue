@@ -2,8 +2,8 @@ import Sharing
 import SwiftUI
 
 struct UsersListView: View {
-    @Shared(.appStorage("currentUser")) var currentUsername: String?
-    @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @Shared(.currentUser) var currentUsername: String?
+    @Shared(.curatedFriends) var curatedFriends
 
     @State private var showingEditSheet = false
     @State private var showingSettingsSheet = false
@@ -131,8 +131,8 @@ private struct UserRowView: View {
 // MARK: - Previews
 
 #Preview("With Friends") {
-    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "musiclover123"
-    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = [
+    @Previewable @Shared(.currentUser) var currentUsername: String? = "musiclover123"
+    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = [
         User(username: "rockfan92", realName: "Alex Johnson", playCount: 15432),
         User(username: "jazzlover", realName: "Sarah Miller", playCount: 8901),
         User(username: "metalhead", realName: nil, playCount: 23456),
@@ -144,8 +144,8 @@ private struct UserRowView: View {
 }
 
 #Preview("Empty State") {
-    @Previewable @Shared(.appStorage("currentUser")) var currentUsername: String? = "newuser"
-    @Previewable @Shared(.fileStorage(.curatedFriendsURL)) var curatedFriends: [User] = []
+    @Previewable @Shared(.currentUser) var currentUsername: String? = "newuser"
+    @Previewable @Shared(.curatedFriends) var curatedFriends: [User] = []
 
     UsersListView()
 }
