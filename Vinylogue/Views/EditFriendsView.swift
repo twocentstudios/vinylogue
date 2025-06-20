@@ -149,7 +149,7 @@ struct EditFriendsView: View {
         }
         .onAppear {
             editableFriends = curatedFriends
-            selectedFriends = Set(curatedFriends.map(\.username))
+            selectedFriends = Set()
         }
         .onChange(of: friendsImporter.friendsState) { _, friendsState in
             if case let .loaded(importedFriends) = friendsState {
