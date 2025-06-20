@@ -153,7 +153,18 @@ final class WeeklyAlbumLoader {
             let previousYearOffset = yearOffset + 1
             if canNavigate(to: previousYearOffset) {
                 Task { [weak self] in
-                    await self?.precacheDataForYear(previousYearOffset, user: user)
+                    guard let self else { return }
+                    let targetDate = calculateTargetDate(yearOffset: previousYearOffset)
+                    guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else { return }
+
+                    await precacheDataForYear(
+                        user: user,
+                        chartPeriod: chartPeriod,
+                        playCountFilter: playCountFilter,
+                        lastFMClient: lastFMClient,
+                        cacheManager: cacheManager,
+                        imagePipeline: imagePipeline
+                    )
                 }
             }
 
@@ -302,20 +313,42 @@ final class WeeklyAlbumLoader {
         // The ImagePrefetcher will automatically manage the download lifecycle
     }
 
+    /// Precache images for a collection of albums (nonisolated version)
+    private nonisolated func precacheImages(for albums: [Album], imagePipeline: ImagePipeline) async {
+        // Filter albums to get only those with valid image URLs
+        let imageURLs = albums.compactMap { album -> URL? in
+            guard let imageURLString = album.imageURL,
+                  !imageURLString.isEmpty,
+                  let url = URL(string: imageURLString)
+            else {
+                return nil
+            }
+            return url
+        }
+
+        // Only proceed if we have URLs to prefetch
+        guard !imageURLs.isEmpty else { return }
+
+        // Create prefetcher with disk-only caching for memory efficiency
+        let prefetcher = ImagePrefetcher(pipeline: imagePipeline, destination: .diskCache)
+
+        // Start prefetching all album images
+        prefetcher.startPrefetching(with: imageURLs)
+
+        // Note: We don't wait for completion or handle errors since this is a background optimization
+        // The ImagePrefetcher will automatically manage the download lifecycle
+    }
+
     /// Precache data for a specific year offset (used for performance optimization)
-    private func precacheDataForYear(_ yearOffset: Int, user: User) async {
+    private nonisolated func precacheDataForYear(
+        user: User,
+        chartPeriod: ChartPeriod,
+        playCountFilter: Int,
+        lastFMClient: LastFMClientProtocol,
+        cacheManager: CacheManager,
+        imagePipeline: ImagePipeline
+    ) async {
         do {
-            // Ensure we have the weekly charts loaded
-            if weeklyCharts.isEmpty {
-                await loadWeeklyChartList(for: user.username)
-            }
-
-            let targetDate = calculateTargetDate(yearOffset: yearOffset)
-
-            guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else {
-                return // No data available for this year
-            }
-
             let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
 
             // Check if already cached
@@ -370,7 +403,7 @@ final class WeeklyAlbumLoader {
 
                     group.addTask {
                         do {
-                            let detailedAlbum = try await self.lastFMClient.fetchAlbumInfo(
+                            let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                                 artist: album.artist,
                                 album: album.name,
                                 mbid: album.mbid,
@@ -396,7 +429,7 @@ final class WeeklyAlbumLoader {
             }
 
             // Now precache images using albums with populated imageURL
-            await precacheImages(for: populatedAlbums)
+            await precacheImages(for: populatedAlbums, imagePipeline: imagePipeline)
 
         } catch {
             // Ignore errors in precaching - it's a performance optimization
