@@ -3,10 +3,12 @@
 - ALWAYS reference ./vinylogue-legacy/TCSVinylogueDesign.h when implementing colors and fonts.
 - ALWAYS consider visual appearance should match the legacy application; dark mode is NOT supported. 
 - ALWAYS reference the legacy code in ./vinylogue-legacy when determining UX and styling for a feature.
-- ALWAYS run xcodegen after adding/removing/renaming files.
-- ALWAYS run swiftformat on all changed files before building ignoring the output. If the command fails, run it again and read the error.
-- ALWAYS build with xcodebuild when a feature is complete ignoring the output. If the command returns errors, run it again observing the errors returned.
-- ALWAYS run tests when a feature is complete ignoring the output and ensure there are no failures.
+- ALWAYS run xcodegen after adding/removing/renaming files IGNORING THE OUTPUTfr.
+- ALWAYS run swiftformat on all changed files before building IGNORING THE OUTPUT. If the command fails, run it again and read the error.
+- DO NOT run swiftformat on any files in ./DerivedData
+- ALWAYS build with xcodebuild when a feature is complete IGNORING THE OUTPUT. If the command returns errors, run it again observing the errors returned.
+- ALWAYS run unit tests when a feature is complete IGNORING THE OUTPUT and ensure there are no failures.
+- NEVER run UI tests unless I specifically request it.
 - ALWAYS update PRD.md to reflect the current status of the sprint.
 - NEVER look in ./DerivedData unless absolutely necessary to determine the cause of a build error. If so, be very very careful about how many tokens you look at.
 - NEVER write UI tests until you have confirmed with me that the UI is 100% correct.
