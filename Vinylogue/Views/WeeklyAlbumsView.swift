@@ -189,21 +189,18 @@ private struct OverscrollHandler: ViewModifier {
                 } else if oldPhase == .interacting, newPhase == .decelerating {
                     if topOverscroll > Self.overscrollThreshold {
                         performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
-                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-                        impactFeedback.impactOccurred()
                         withAnimation(.snappy(duration: 0.2)) {
                             topProgress = 1.0
                         }
                     } else if bottomOverscroll > Self.overscrollThreshold {
                         performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset + 1
-                        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-                        impactFeedback.impactOccurred()
                         withAnimation(.snappy(duration: 0.2)) {
                             bottomProgress = 1.0
                         }
                     }
                 }
             }
+            .sensoryFeedback(.impact(weight: .medium, intensity: 1.0), trigger: performCurrentYearOffsetChangeOnScrollIdle != nil)
     }
 }
 
