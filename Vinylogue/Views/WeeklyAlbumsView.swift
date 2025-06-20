@@ -150,6 +150,8 @@ private struct OverscrollHandler: ViewModifier {
     @Binding var performCurrentYearOffsetChangeOnScrollIdle: Int?
     @Binding var topProgress: Double
     @Binding var bottomProgress: Double
+    @State var reachedOverscrollThreshold: Bool = false
+    @State var reachedOverscrollThresholdFeedback: Bool = false
 
     private static let overscrollThreshold: CGFloat = 90
 
@@ -163,11 +165,20 @@ private struct OverscrollHandler: ViewModifier {
                 let newBottomProgress = max(0.0, bottomOverscroll / Self.overscrollThreshold)
 
                 return ScrollProgress(top: newTopProgress, bottom: newBottomProgress)
-            } action: { _, value in
+            } action: { oldValue, newValue in
                 guard performCurrentYearOffsetChangeOnScrollIdle == nil else { return }
                 guard case .loaded = loader.albumsState else { return }
-                topProgress = value.top
-                bottomProgress = value.bottom
+                topProgress = newValue.top
+                bottomProgress = newValue.bottom
+                if oldValue.top < 1.0, newValue.top >= 1.0 {
+                    reachedOverscrollThreshold = true
+                } else if oldValue.bottom < 1.0, newValue.bottom >= 1.0 {
+                    reachedOverscrollThreshold = true
+                } else if oldValue.top > 1.0, newValue.top < 1.0 {
+                    reachedOverscrollThreshold = false
+                } else if oldValue.bottom > 1.0, newValue.bottom < 1.0 {
+                    reachedOverscrollThreshold = false
+                }
             }
             .onScrollPhaseChange { oldPhase, newPhase, context in
                 // 0 when scrolled exactly to top of content, positive when overscrolled above
@@ -186,6 +197,7 @@ private struct OverscrollHandler: ViewModifier {
                         topProgress = 0.0
                         bottomProgress = 0.0
                     }
+                    reachedOverscrollThreshold = false
                 } else if oldPhase == .interacting, newPhase == .decelerating {
                     if topOverscroll > Self.overscrollThreshold {
                         performCurrentYearOffsetChangeOnScrollIdle = currentYearOffset - 1
@@ -200,6 +212,12 @@ private struct OverscrollHandler: ViewModifier {
                     }
                 }
             }
+            .onChange(of: reachedOverscrollThreshold) { oldValue, newValue in
+                if !oldValue, newValue {
+                    reachedOverscrollThresholdFeedback.toggle()
+                }
+            }
+            .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: reachedOverscrollThresholdFeedback)
             .sensoryFeedback(.impact(weight: .medium, intensity: 1.0), trigger: performCurrentYearOffsetChangeOnScrollIdle != nil)
     }
 }
