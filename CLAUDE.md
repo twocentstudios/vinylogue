@@ -6,8 +6,8 @@
 - ALWAYS run xcodegen after adding/removing/renaming files IGNORING THE OUTPUTfr.
 - ALWAYS run swiftformat on all changed files before building IGNORING THE OUTPUT. If the command fails, run it again and read the error.
 - DO NOT run swiftformat on any files in ./DerivedData
-- ALWAYS build with xcodebuild when a feature is complete IGNORING THE OUTPUT. If the command returns errors, run it again observing the errors returned.
-- ALWAYS run unit tests when a feature is complete IGNORING THE OUTPUT and ensure there are no failures.
+- ALWAYS build with xcodebuild with `-quiet` flag when a feature is complete. If the command returns errors you may run xcodebuild again without the `-quiet` flag.
+- ALWAYS run unit tests with the `-quiet` flag when a feature is complete and ensure there are no failures.
 - NEVER run UI tests unless I specifically request it.
 - ALWAYS update PRD.md to reflect the current status of the sprint.
 - NEVER look in ./DerivedData unless absolutely necessary to determine the cause of a build error. If so, be very very careful about how many tokens you look at.
