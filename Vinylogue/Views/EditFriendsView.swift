@@ -190,7 +190,7 @@ private struct ImportFriendsButton: View {
         .sensoryFeedback(.impact, trigger: isLoading)
         .foregroundColor(.accent)
         .disabled(isLoading)
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
     }
 }
 
@@ -216,7 +216,7 @@ private struct AddFriendButton: View {
         }
         .sensoryFeedback(.impact, trigger: buttonPressed)
         .foregroundColor(.accent)
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
     }
 }
 

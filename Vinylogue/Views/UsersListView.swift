@@ -170,7 +170,7 @@ private struct FriendsHeaderView: View {
                     .contentShape(Rectangle())
             }
             .sensoryFeedback(.impact, trigger: buttonPressed)
-            .buttonStyle(PlainButtonStyle())
+            .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 40)
@@ -199,6 +199,6 @@ private struct EditFriendsButton: View {
                 .contentShape(Rectangle())
         }
         .sensoryFeedback(.impact, trigger: buttonPressed)
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
     }
 }
