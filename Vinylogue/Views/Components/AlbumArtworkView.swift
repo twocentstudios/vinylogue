@@ -1,3 +1,5 @@
+import CoreImage
+import Nuke
 import NukeUI
 import SwiftUI
 
@@ -25,7 +27,10 @@ struct ReusableAlbumArtworkView: View {
     var body: some View {
         Group {
             if let imageURL, let url = URL(string: imageURL) {
-                LazyImage(url: url) { state in
+                let processors: [ImageProcessing] = isScreenshotTesting ? [PixelateProcessor()] : []
+                let request = ImageRequest(url: url, processors: processors)
+
+                LazyImage(request: request) { state in
                     if let image = state.image {
                         image
                             .resizable()
@@ -113,5 +118,37 @@ extension ReusableAlbumArtworkView {
             showShadow: showShadow,
             onImageLoaded: onImageLoaded
         )
+    }
+}
+
+// MARK: - Pixelate Processor for UI Testing
+
+struct PixelateProcessor: ImageProcessing, Hashable {
+    let scale: Float
+
+    init(scale: Float = 50.0) {
+        self.scale = scale
+    }
+
+    func process(_ image: UIImage) -> UIImage? {
+        guard let inputImage = CIImage(image: image) else { return image }
+
+        let filter = CIFilter(name: "CIPixellate")!
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(CIVector(cgPoint: CGPoint(x: inputImage.extent.midX, y: inputImage.extent.midY)), forKey: kCIInputCenterKey)
+        filter.setValue(scale, forKey: kCIInputScaleKey)
+
+        guard let outputImage = filter.outputImage else { return image }
+
+        let context = CIContext()
+        guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else {
+            return image
+        }
+
+        return UIImage(cgImage: cgImage)
+    }
+
+    var identifier: String {
+        "PixelateProcessor-\(scale)"
     }
 }
