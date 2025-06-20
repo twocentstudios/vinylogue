@@ -10,6 +10,7 @@ struct WeeklyAlbumsView: View {
     @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
     @State private var topProgress: Double = 0.0
     @State private var bottomProgress: Double = 0.0
+    @State private var scrollPosition = ScrollPosition()
 
     init(user: User) {
         self.user = user
@@ -21,6 +22,7 @@ struct WeeklyAlbumsView: View {
                 ContentStateView(loader: loader, user: user)
             }
         }
+        .scrollPosition($scrollPosition)
         .modifier(OverscrollHandler(
             currentYearOffset: $currentYearOffset,
             loader: loader,
@@ -49,6 +51,8 @@ struct WeeklyAlbumsView: View {
             }
         }
         .onChange(of: currentYearOffset) { _, newOffset in
+            scrollPosition.scrollTo(y: 0)
+            
             Task {
                 await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: newOffset)
                 await loader.loadAlbums(for: user, yearOffset: newOffset)
