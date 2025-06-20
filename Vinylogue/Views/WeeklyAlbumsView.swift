@@ -50,18 +50,14 @@ struct WeeklyAlbumsView: View {
                 await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
             }
         }
-        .onChange(of: currentYearOffset) { _, newOffset in
-            scrollPosition.scrollTo(y: 0)
-            
-            Task {
-                await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: newOffset)
-                await loader.loadAlbums(for: user, yearOffset: newOffset)
-            }
+        .task(id: currentYearOffset) {
+            await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
+            await loader.loadAlbums(for: user, yearOffset: currentYearOffset)
+
+            scrollPosition.scrollTo(edge: .top)
         }
-        .onChange(of: playCountFilter) { _, newFilter in
-            Task {
-                await loader.updatePlayCountFilter(newFilter, for: user, yearOffset: currentYearOffset)
-            }
+        .task(id: playCountFilter) {
+            await loader.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
         }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: currentYearOffset)
     }
