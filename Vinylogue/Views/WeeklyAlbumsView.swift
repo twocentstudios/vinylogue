@@ -20,7 +20,6 @@ struct WeeklyAlbumsView: View {
             LazyVStack(spacing: 0) {
                 ContentStateView(loader: loader, user: user)
             }
-            .animation(.snappy(duration: 0.20), value: loader.albumsState)
         }
         .modifier(OverscrollHandler(
             currentYearOffset: $currentYearOffset,
