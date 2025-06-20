@@ -14,7 +14,9 @@ struct EditFriendsView: View {
                     Section {
                         ImportFriendsButton(
                             isLoading: store.isImportingFriends,
-                            action: { Task { store.importFriends } }
+                            action: {
+                                Task { await store.importFriends() }
+                            }
                         )
                         .listRowBackground(Color.primaryBackground)
                         .listRowSeparator(.hidden)
