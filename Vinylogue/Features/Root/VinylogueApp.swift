@@ -7,6 +7,10 @@ import SwiftUI
 struct VinylogueApp: App {
     static let rootStore = RootStore()
 
+    init() {
+        setUpForUITest()
+    }
+
     var body: some Scene {
         WindowGroup {
             if isTesting, !isScreenshotTesting {
@@ -14,9 +18,7 @@ struct VinylogueApp: App {
             } else {
                 RootView(store: Self.rootStore)
                     .task {
-                        if isScreenshotTesting {
-                            await setupScreenshotTestData()
-                        } else {
+                        if !isScreenshotTesting {
                             #if DEBUG
                                 @Dependency(\.cacheManager) var cacheManager
                                 try! await cacheManager.clearCache()
@@ -26,35 +28,55 @@ struct VinylogueApp: App {
             }
         }
     }
+}
 
-    @MainActor
-    private func setupScreenshotTestData() async {
-        // Set up current user
-        if let currentUser = TestingUtilities.getTestString(for: "CURRENT_USER") {
-            @Shared(.currentUser) var currentUsername: String?
-            $currentUsername.withLock { $0 = currentUser }
-        }
+// MARK: - UI Test Setup
 
-        // Set up friends data
-        if let friendsJSON = TestingUtilities.getTestString(for: "FRIENDS_DATA"),
-           let friendsData = friendsJSON.data(using: .utf8)
-        {
-            do {
-                let jsonObject = try JSONSerialization.jsonObject(with: friendsData, options: [])
-                if let friendsArray = jsonObject as? [[String: Any]] {
-                    let friends = friendsArray.compactMap { dict -> User? in
-                        guard let username = dict["username"] as? String else { return nil }
-                        let realName = dict["realName"] as? String
-                        let playCount = dict["playCount"] as? Int
-                        return User(username: username, realName: realName, imageURL: nil, url: nil, playCount: playCount)
-                    }
-
-                    @Shared(.curatedFriends) var curatedFriends: [User]
-                    $curatedFriends.withLock { $0 = friends }
-                }
-            } catch {
-                print("Failed to decode friends data: \(error)")
-            }
-        }
+private func setUpForUITest() {
+    guard let testName = ProcessInfo.processInfo.environment["UI_TEST_NAME"]
+    else {
+        return
     }
+
+    // Set up dependencies for UI testing based on test name
+    switch testName {
+    case "testUsersListViewScreenshot", "testMultipleScreenshots":
+        setupScreenshotTestDependencies()
+    default:
+        print("Unrecognized UI test: \(testName)")
+    }
+}
+
+private func setupScreenshotTestDependencies() {
+    // Override dependencies to provide test data instead of modifying @Shared directly
+    prepareDependencies {
+        // Use in-memory storage for testing to avoid persisting test data
+        $0.defaultFileStorage = .inMemory
+
+        // Create a temporary UserDefaults for testing
+        $0.defaultAppStorage = UserDefaults(
+            suiteName: "\(NSTemporaryDirectory())\(UUID().uuidString)"
+        )!
+    }
+
+    // Set up test data in the overridden storage
+    setupTestData()
+}
+
+private func setupTestData() {
+    // Set up current user for screenshot tests
+    @Shared(.currentUser) var currentUsername: String?
+    $currentUsername.withLock { $0 = "ybsc" }
+
+    // Set up friends data for screenshot tests
+    let testFriends = [
+        User(username: "BobbyStompy", realName: "Bobby Stompy", imageURL: nil, url: nil, playCount: 15432),
+        User(username: "slippydrums", realName: "Slippy Drums", imageURL: nil, url: nil, playCount: 12890),
+        User(username: "lackenir", realName: "Lacke Nir", imageURL: nil, url: nil, playCount: 23456),
+        User(username: "itschinatown", realName: "Its Chinatown", imageURL: nil, url: nil, playCount: 8901),
+        User(username: "esheihk", realName: "Esheihk", imageURL: nil, url: nil, playCount: 5678),
+    ]
+
+    @Shared(.curatedFriends) var curatedFriends: [User]
+    $curatedFriends.withLock { $0 = testFriends }
 }

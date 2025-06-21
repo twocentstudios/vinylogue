@@ -10,14 +10,15 @@ final class AppStoreScreenshotTests: XCTestCase {
     }
 
     @MainActor
-    private func setupApp() throws {
+    private func setupApp(testName: String? = nil) throws {
         // Disable hardware keyboard to prevent issues with screenshots
         app = XCUIApplication()
         app.launchArguments = ["--screenshot-testing"]
 
-        // Set up test data as launch environment
-        app.launchEnvironment["CURRENT_USER"] = "ybsc"
-        app.launchEnvironment["FRIENDS_DATA"] = createFriendsJSON()
+        // Set up UI test environment similar to SyncUps pattern
+        if let testName {
+            app.launchEnvironment["UI_TEST_NAME"] = testName
+        }
     }
 
     override func tearDownWithError() throws {
@@ -26,8 +27,8 @@ final class AppStoreScreenshotTests: XCTestCase {
 
     @MainActor
     func testUsersListViewScreenshot() throws {
-        // Set up the app
-        try setupApp()
+        // Set up the app with test name for environment detection
+        try setupApp(testName: "testUsersListViewScreenshot")
 
         // Launch the app
         app.launch()
@@ -45,8 +46,8 @@ final class AppStoreScreenshotTests: XCTestCase {
 
     @MainActor
     func testMultipleScreenshots() throws {
-        // Set up the app
-        try setupApp()
+        // Set up the app with test name for environment detection
+        try setupApp(testName: "testMultipleScreenshots")
 
         // This test can be extended to capture multiple app screens
         app.launch()
@@ -72,23 +73,5 @@ final class AppStoreScreenshotTests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
-    }
-
-    /// Creates JSON string for test friends data
-    private func createFriendsJSON() -> String {
-        let friends = [
-            ["username": "BobbyStompy", "realName": "Bobby Stompy", "playCount": 15432],
-            ["username": "slippydrums", "realName": "Slippy Drums", "playCount": 12890],
-            ["username": "lackenir", "realName": "Lacke Nir", "playCount": 23456],
-            ["username": "itschinatown", "realName": "Its Chinatown", "playCount": 8901],
-            ["username": "esheihk", "realName": "Esheihk", "playCount": 5678],
-        ]
-
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: friends, options: [])
-            return String(data: jsonData, encoding: .utf8) ?? "[]"
-        } catch {
-            return "[]"
-        }
     }
 }
