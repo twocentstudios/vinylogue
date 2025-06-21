@@ -3,7 +3,7 @@ import SwiftUI
 
 struct UsersListView: View {
     @Bindable var store: UsersListStore
-    let appModel: AppModel
+    let onUserTap: (User) -> Void
 
     var body: some View {
         ScrollView {
@@ -13,7 +13,7 @@ struct UsersListView: View {
                         UserRowView(
                             user: store.currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
                             isCurrentUser: true,
-                            appModel: appModel
+                            onTap: onUserTap
                         )
                     } header: {
                         SectionHeaderView("me")
@@ -23,7 +23,11 @@ struct UsersListView: View {
                 if store.hasFriends {
                     Section {
                         ForEach(store.curatedFriends, id: \.username) { friend in
-                            UserRowView(user: friend, isCurrentUser: false, appModel: appModel)
+                            UserRowView(
+                                user: friend,
+                                isCurrentUser: false,
+                                onTap: onUserTap
+                            )
                         }
                     } header: {
                         FriendsHeaderView {
@@ -95,11 +99,11 @@ struct UsersListView: View {
 private struct UserRowView: View {
     let user: User
     let isCurrentUser: Bool
-    let appModel: AppModel
+    let onTap: (User) -> Void
 
     var body: some View {
         Button {
-            appModel.navigateToWeeklyAlbums(for: user)
+            onTap(user)
         } label: {
             Text(user.username)
                 .padding(.horizontal, 24)
@@ -116,8 +120,7 @@ private struct UserRowView: View {
 
 #Preview("With Friends") {
     let store = UsersListStore()
-    let appModel = AppModel(usersListStore: store)
-    return UsersListView(store: store, appModel: appModel)
+    return UsersListView(store: store, onUserTap: { _ in })
         .onAppear {
             store.$currentUsername.withLock { $0 = "musiclover123" }
             store.$curatedFriends.withLock { $0 = [
@@ -132,8 +135,7 @@ private struct UserRowView: View {
 
 #Preview("Empty State") {
     let store = UsersListStore()
-    let appModel = AppModel(usersListStore: store)
-    return UsersListView(store: store, appModel: appModel)
+    return UsersListView(store: store, onUserTap: { _ in })
         .onAppear {
             store.$currentUsername.withLock { $0 = "newuser" }
             store.$curatedFriends.withLock { $0 = [] }

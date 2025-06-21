@@ -5,15 +5,26 @@ struct AppView: View {
 
     var body: some View {
         NavigationStack(path: $model.path) {
-            UsersListView(store: model.usersListStore, appModel: model)
-                .navigationDestination(for: AppModel.Path.self) { path in
-                    switch path {
-                    case let .weeklyAlbums(store, user):
-                        WeeklyAlbumsView(user: user, store: store, appModel: model)
-                    case let .albumDetail(store):
-                        AlbumDetailView(store: store)
-                    }
+            UsersListView(
+                store: model.usersListStore,
+                onUserTap: { user in
+                    model.navigateToWeeklyAlbums(for: user)
                 }
+            )
+            .navigationDestination(for: AppModel.Path.self) { path in
+                switch path {
+                case let .weeklyAlbums(store, user):
+                    WeeklyAlbumsView(
+                        user: user,
+                        store: store,
+                        onAlbumTap: { album, weekInfo in
+                            model.navigateToAlbumDetail(album: album, weekInfo: weekInfo)
+                        }
+                    )
+                case let .albumDetail(store):
+                    AlbumDetailView(store: store)
+                }
+            }
         }
     }
 }

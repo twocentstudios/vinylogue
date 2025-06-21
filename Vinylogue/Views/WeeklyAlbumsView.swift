@@ -4,7 +4,7 @@ import SwiftUI
 struct WeeklyAlbumsView: View {
     let user: User
     @Bindable var store: WeeklyAlbumsStore
-    let appModel: AppModel
+    let onAlbumTap: (Album, WeekInfo) -> Void
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.currentPlayCountFilter) var playCountFilter
 
@@ -16,7 +16,11 @@ struct WeeklyAlbumsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ContentStateView(store: store, user: user, appModel: appModel)
+                ContentStateView(
+                    store: store,
+                    user: user,
+                    onAlbumTap: onAlbumTap
+                )
             }
         }
         .scrollPosition($scrollPosition)
@@ -92,14 +96,14 @@ struct WeeklyAlbumsView: View {
 private struct ContentStateView: View {
     let store: WeeklyAlbumsStore
     let user: User
-    let appModel: AppModel
+    let onAlbumTap: (Album, WeekInfo) -> Void
 
     var body: some View {
         switch store.albumsState {
         case .initialized, .loading:
             EmptyView()
         case .loaded:
-            AlbumListView(store: store, user: user, appModel: appModel)
+            AlbumListView(store: store, user: user, onAlbumTap: onAlbumTap)
         case let .failed(error):
             ErrorStateView(error: error)
         }
@@ -111,7 +115,7 @@ private struct ContentStateView: View {
 private struct AlbumListView: View {
     let store: WeeklyAlbumsStore
     let user: User
-    let appModel: AppModel
+    let onAlbumTap: (Album, WeekInfo) -> Void
 
     var body: some View {
         if store.albums.isEmpty {
@@ -119,7 +123,7 @@ private struct AlbumListView: View {
         } else if let weekInfo = store.currentWeekInfo {
             ForEach(store.albums) { album in
                 Button {
-                    appModel.navigateToAlbumDetail(album: album, weekInfo: weekInfo)
+                    onAlbumTap(album, weekInfo)
                 } label: {
                     AlbumRowView(album: album)
                 }
