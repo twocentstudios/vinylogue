@@ -1,9 +1,9 @@
+import Dependencies
 import Sharing
 import SwiftUI
 
 struct WeeklyAlbumsView: View {
     @Bindable var store: WeeklyAlbumsStore
-    let onAlbumTap: (Album, WeekInfo) -> Void
 
     @State private var performCurrentYearOffsetChangeOnScrollIdle: Int? = nil
     @State private var topProgress: Double = 0.0
@@ -13,10 +13,7 @@ struct WeeklyAlbumsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ContentStateView(
-                    store: store,
-                    onAlbumTap: onAlbumTap
-                )
+                ContentStateView(store: store)
             }
         }
         .scrollPosition($scrollPosition)
@@ -84,14 +81,13 @@ struct WeeklyAlbumsView: View {
 
 private struct ContentStateView: View {
     let store: WeeklyAlbumsStore
-    let onAlbumTap: (Album, WeekInfo) -> Void
 
     var body: some View {
         switch store.albumsState {
         case .initialized, .loading:
             EmptyView()
         case .loaded:
-            AlbumListView(store: store, onAlbumTap: onAlbumTap)
+            AlbumListView(store: store, onAlbumTap: store.navigateToAlbum)
         case let .failed(error):
             ErrorStateView(error: error)
         }
@@ -102,15 +98,15 @@ private struct ContentStateView: View {
 
 private struct AlbumListView: View {
     let store: WeeklyAlbumsStore
-    let onAlbumTap: (Album, WeekInfo) -> Void
+    let onAlbumTap: (Album) -> Void
 
     var body: some View {
         if store.albums.isEmpty {
             EmptyStateView(username: store.user.username)
-        } else if let weekInfo = store.currentWeekInfo {
+        } else {
             ForEach(store.albums) { album in
                 Button {
-                    onAlbumTap(album, weekInfo)
+                    onAlbumTap(album)
                 } label: {
                     AlbumRowView(album: album)
                 }

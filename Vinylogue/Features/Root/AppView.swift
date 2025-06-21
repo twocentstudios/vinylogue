@@ -1,3 +1,5 @@
+import Dependencies
+import Sharing
 import SwiftUI
 
 struct AppView: View {
@@ -5,25 +7,15 @@ struct AppView: View {
 
     var body: some View {
         NavigationStack(path: $model.path) {
-            UsersListView(
-                store: model.usersListStore,
-                onUserTap: { user in
-                    model.navigateToWeeklyAlbums(for: user)
+            UsersListView(store: model.usersListStore)
+                .navigationDestination(for: AppModel.Path.self) { path in
+                    switch path {
+                    case let .weeklyAlbums(store):
+                        WeeklyAlbumsView(store: store)
+                    case let .albumDetail(store):
+                        AlbumDetailView(store: store)
+                    }
                 }
-            )
-            .navigationDestination(for: AppModel.Path.self) { path in
-                switch path {
-                case let .weeklyAlbums(store):
-                    WeeklyAlbumsView(
-                        store: store,
-                        onAlbumTap: { album, weekInfo in
-                            model.navigateToAlbumDetail(album: album, weekInfo: weekInfo)
-                        }
-                    )
-                case let .albumDetail(store):
-                    AlbumDetailView(store: store)
-                }
-            }
         }
     }
 }

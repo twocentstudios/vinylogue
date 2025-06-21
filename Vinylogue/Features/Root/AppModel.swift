@@ -1,12 +1,13 @@
 import Dependencies
+import Sharing
 import SwiftUI
 
 @MainActor
 @Observable
 final class AppModel {
-    var path: [Path] {
-        didSet { bind() }
-    }
+    @ObservationIgnored
+    @Shared(.navigationPath) var path: [Path]
+
     var usersListStore: UsersListStore {
         didSet { bind() }
     }
@@ -22,10 +23,8 @@ final class AppModel {
     }
 
     init(
-        path: [Path] = [],
         usersListStore: UsersListStore = UsersListStore()
     ) {
-        self.path = path
         self.usersListStore = usersListStore
         bind()
     }
@@ -44,17 +43,5 @@ final class AppModel {
     private func bindWeeklyAlbums(store: WeeklyAlbumsStore) {
         // Set up any needed bindings for WeeklyAlbumsStore
         // For example, navigation to album detail could be handled here
-    }
-
-    // MARK: - Navigation Actions
-
-    func navigateToWeeklyAlbums(for user: User) {
-        let weeklyAlbumsStore = WeeklyAlbumsStore(user: user, currentYearOffset: 1)
-        path.append(.weeklyAlbums(weeklyAlbumsStore))
-    }
-
-    func navigateToAlbumDetail(album: Album, weekInfo: WeekInfo) {
-        let albumDetailStore = AlbumDetailStore(album: album, weekInfo: weekInfo)
-        path.append(.albumDetail(albumDetailStore))
     }
 }

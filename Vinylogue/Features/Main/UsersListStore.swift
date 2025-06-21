@@ -7,6 +7,7 @@ import SwiftUI
 final class UsersListStore {
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
+    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
 
     var showingEditSheet = false
     var showingSettingsSheet = false
@@ -49,5 +50,10 @@ final class UsersListStore {
 
     func hideSettingsSheet() {
         showingSettingsSheet = false
+    }
+
+    func navigateToUser(_ user: User) {
+        let weeklyAlbumsStore = WeeklyAlbumsStore(user: user, currentYearOffset: 1)
+        $navigationPath.withLock { $0.append(.weeklyAlbums(weeklyAlbumsStore)) }
     }
 }

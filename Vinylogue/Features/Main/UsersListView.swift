@@ -1,9 +1,9 @@
+import Dependencies
 import Sharing
 import SwiftUI
 
 struct UsersListView: View {
     @Bindable var store: UsersListStore
-    let onUserTap: (User) -> Void
 
     var body: some View {
         ScrollView {
@@ -13,7 +13,7 @@ struct UsersListView: View {
                         UserRowView(
                             user: store.currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
                             isCurrentUser: true,
-                            onTap: onUserTap
+                            onUserTap: store.navigateToUser
                         )
                     } header: {
                         SectionHeaderView("me")
@@ -26,7 +26,7 @@ struct UsersListView: View {
                             UserRowView(
                                 user: friend,
                                 isCurrentUser: false,
-                                onTap: onUserTap
+                                onUserTap: store.navigateToUser
                             )
                         }
                     } header: {
@@ -99,11 +99,11 @@ struct UsersListView: View {
 private struct UserRowView: View {
     let user: User
     let isCurrentUser: Bool
-    let onTap: (User) -> Void
+    let onUserTap: (User) -> Void
 
     var body: some View {
         Button {
-            onTap(user)
+            onUserTap(user)
         } label: {
             Text(user.username)
                 .padding(.horizontal, 24)
@@ -120,7 +120,7 @@ private struct UserRowView: View {
 
 #Preview("With Friends") {
     let store = UsersListStore()
-    return UsersListView(store: store, onUserTap: { _ in })
+    return UsersListView(store: store)
         .onAppear {
             store.$currentUsername.withLock { $0 = "musiclover123" }
             store.$curatedFriends.withLock { $0 = [
@@ -135,7 +135,7 @@ private struct UserRowView: View {
 
 #Preview("Empty State") {
     let store = UsersListStore()
-    return UsersListView(store: store, onUserTap: { _ in })
+    return UsersListView(store: store)
         .onAppear {
             store.$currentUsername.withLock { $0 = "newuser" }
             store.$curatedFriends.withLock { $0 = [] }

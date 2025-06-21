@@ -31,6 +31,7 @@ final class WeeklyAlbumsStore: Hashable {
     var user: User
     var currentYearOffset: Int = 1
     @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
+    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
 
     /// Computed property to provide access to albums array for binding purposes
     var albums: [Album] {
@@ -433,6 +434,15 @@ final class WeeklyAlbumsStore: Hashable {
         } catch {
             // Ignore errors in precaching - it's a performance optimization
         }
+    }
+
+    /// Navigate to album detail
+    func navigateToAlbum(_ album: Album) {
+        guard let weekInfo = currentWeekInfo else { return }
+        let albumDetailStore = withDependencies(from: self) {
+            AlbumDetailStore(album: album, weekInfo: weekInfo)
+        }
+        $navigationPath.withLock { $0.append(.albumDetail(albumDetailStore)) }
     }
 
     /// Clear all data
