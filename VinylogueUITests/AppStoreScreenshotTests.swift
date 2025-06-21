@@ -34,7 +34,11 @@ final class AppStoreScreenshotTests: XCTestCase {
         // Screenshot 1: UsersListView with mock data
         let usersListNavigationTitle = app.navigationBars["scrobblers"]
         XCTAssertTrue(usersListNavigationTitle.waitForExistence(timeout: 10.0), "Users list should be visible")
-        Thread.sleep(forTimeInterval: 2.0)
+        
+        // Wait for user data to be fully loaded (friends should be visible)
+        let firstFriend = app.buttons["BobbyStompy"]
+        XCTAssertTrue(firstFriend.waitForExistence(timeout: 8.0), "First friend should be visible")
+        
         takeScreenshot(named: "01-UsersListView")
 
         // Navigate to first user's weekly albums
@@ -43,31 +47,39 @@ final class AppStoreScreenshotTests: XCTestCase {
         firstUser.tap()
 
         // Screenshot 2: WeeklyAlbumsView with mock date (2023-06-20)
-        // Wait for weekly albums view to load by looking for chart-specific content
-        Thread.sleep(forTimeInterval: 3.0) // Wait for navigation and data loading
-        Thread.sleep(forTimeInterval: 3.0) // Wait for data to load
+        let playsText = app.staticTexts["plays"]
+        let albumDataExpectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true"),
+            object: playsText
+        )
+        wait(for: [albumDataExpectation], timeout: 10.0)
         takeScreenshot(named: "02-WeeklyAlbumsView")
 
         // Navigate to first album in the list
-        // Look for album row by finding text with "plays" (unique to album rows)
-        let playsText = app.staticTexts["plays"]
-        XCTAssertTrue(playsText.waitForExistence(timeout: 5.0), "Album with play count should be visible")
-
-        // Tap the first album row by finding the button containing "plays"
+        XCTAssertTrue(playsText.waitForExistence(timeout: 10.0), "Album with play count should be visible")
         let albumButtons = app.buttons.allElementsBoundByIndex
-        var albumTapped = false
+        var firstAlbumButton: XCUIElement?
         for button in albumButtons {
             if button.staticTexts["plays"].exists {
-                button.tap()
-                albumTapped = true
+                firstAlbumButton = button
                 break
             }
         }
-        XCTAssertTrue(albumTapped, "Should be able to tap an album row")
+        guard let albumButton = firstAlbumButton else {
+            XCTFail("Should find an album button with plays text")
+            return
+        }
+        albumButton.tap()
 
         // Screenshot 3: AlbumDetailView
-        // Wait for album detail view to load
-        Thread.sleep(forTimeInterval: 3.0)
+        let playsLabel = app.staticTexts["plays"]
+        let contentLoadedExpectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true"),
+            object: playsLabel
+        )
+        wait(for: [contentLoadedExpectation], timeout: 8.0)
+        let anyText = app.staticTexts.firstMatch
+        _ = anyText.waitForExistence(timeout: 3.0)
         takeScreenshot(named: "03-AlbumDetailView")
     }
 
