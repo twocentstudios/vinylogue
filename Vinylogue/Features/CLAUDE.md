@@ -1,53 +1,24 @@
-# Features Architecture Guide
+# Features Directory
 
-The Features directory contains the main user-facing functionality of the Vinylogue application. This layer implements the business requirements and user experience flows, building upon the Core infrastructure and Domain services.
+## Features Layer Overview
+Main user-facing functionality implementing business requirements and user experience flows.
 
-## Architecture Overview
+## Subdirectories
+- **[Root/](Root/)** - App-level architecture, navigation, lifecycle
+- **[UserManagement/](UserManagement/)** - Onboarding, settings, account management
+- **[Main/](Main/)** - Core music discovery features (charts, albums, users)
 
-The Features layer is organized into distinct functional areas:
-- **Root**: App-level architecture, navigation, and lifecycle management
-- **UserManagement**: User onboarding, settings, and account management
-- **Main**: Core music discovery features (album charts, user selection, album details)
+## Architecture Pattern
+Consistent **Store + View** pattern across all features:
+- `@Observable` stores for business logic and state management
+- `@Dependency` for service injection
+- `@Shared` for global app state (navigation, user, friends)
+- SwiftUI views with clean separation of concerns
 
-## Quick Navigation Guide
-
-### 🚀 Understanding App Architecture?
-📂 **See [Root/CLAUDE.md](Root/CLAUDE.md)** for:
-- App initialization and lifecycle management
-- Global state management and migration handling
-- Navigation architecture and routing patterns
-- Testing infrastructure and dependency configuration
-
-### 👤 Working on User Features?
-📂 **See [UserManagement/CLAUDE.md](UserManagement/CLAUDE.md)** for:
-- Onboarding and username validation flows
-- Settings and preference management
-- Friend management and curation
-- Username change functionality
-
-### 🎵 Building Music Discovery Features?
-📂 **See [Main/CLAUDE.md](Main/CLAUDE.md)** for:
-- Weekly album chart displays and navigation
-- Album detail views with dynamic color theming
-- User selection and management interfaces
-- Performance optimization patterns
-
-## Feature Development Patterns
-
-### 1. Store-View Architecture
-All features follow a consistent architectural pattern:
-
-```swift
-// Store: Business logic and state management
-@MainActor
-@Observable
-final class FeatureStore {
-    // State properties
-    var loadingState: LoadingState = .idle
-    var data: [DataType] = []
-    
-    // Dependencies
-    @ObservationIgnored @Dependency(\.service) private var service
+## Cross-Feature Integration
+- **Navigation**: Shared `navigationPath` for deep linking and feature coordination
+- **State**: Global shared state for user data, friends, and settings
+- **Communication**: Callback patterns for decoupled feature interaction
     @ObservationIgnored @Shared(.globalState) var globalState
     
     // Actions

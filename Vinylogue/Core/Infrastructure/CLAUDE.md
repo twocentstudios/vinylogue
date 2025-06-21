@@ -1,53 +1,22 @@
-# Infrastructure Directory - Developer Guide
+# Infrastructure Directory
 
-This directory contains essential infrastructure utilities, extensions, and configurations for the Vinylogue iOS application. These utilities provide foundation services for caching, dependency injection, color processing, image handling, testing, and more.
+## Files
+- `CacheKeyBuilder.swift` - Consistent cache key generation (prefers MBID over names)
+- `Calendar+WeekCalculations.swift` - Weekly chart date calculations and year navigation
+- `Color+Vinylogue.swift` - Legacy color palette (light mode only) and typography
+- `ColorExtraction.swift` - Advanced color extraction from album artwork (ported from Objective-C)
+- `Dependencies+Vinylogue.swift` - Dependency injection setup with realistic mocks
+- `Environment+Keys.swift` - SwiftUI Environment keys (legacy compatibility)
+- `EquatableError.swift` - Error wrapper for SwiftUI state management
+- `ImagePipeline+Vinylogue.swift` - Nuke image pipeline with temporary disk caching
+- `Secrets.swift` - API key management (currently hardcoded)
+- `TestingUtilities.swift` - Testing environment detection and test data utilities
 
-## Table of Contents
-1. [Cache Key Generation](#cache-key-generation)
-2. [Calendar and Date Utilities](#calendar-and-date-utilities)
-3. [Color System and Processing](#color-system-and-processing)
-4. [Color Extraction from Images](#color-extraction-from-images)
-5. [Dependency Injection](#dependency-injection)
-6. [Environment Configuration](#environment-configuration)
-7. [Error Handling](#error-handling)
-8. [Image Pipeline](#image-pipeline)
-9. [Secrets Management](#secrets-management)
-10. [Testing Utilities](#testing-utilities)
-
----
-
-## Cache Key Generation
-
-**File:** `CacheKeyBuilder.swift`
-
-Provides consistent cache key generation for various data types in the application.
-
-### Key Functions
-
-```swift
-// Chart-related cache keys
-CacheKeyBuilder.weeklyChart(username: "user", from: startDate, to: endDate)
-CacheKeyBuilder.weeklyChartList(username: "user")
-CacheKeyBuilder.chart(user: "user", from: startDate, to: endDate)
-
-// Album-related cache keys
-CacheKeyBuilder.albumInfo(mbid: "album-mbid", username: "user")
-CacheKeyBuilder.albumInfo(artist: "Artist Name", album: "Album Name", username: "user")
-
-// User-related cache keys
-CacheKeyBuilder.user("username")
-CacheKeyBuilder.userFriends("username")
-
-// Utility functions
-CacheKeyBuilder.timestamp(from: date) // Unix timestamp
-CacheKeyBuilder.normalize("String With Spaces") // "string_with_spaces"
-```
-
-### Best Practices
-- **Always use the builder** instead of creating cache keys manually
-- **MBID is prioritized** over artist/album name when available
-- **Username parameter** is optional but recommended for user-specific cached data
-- Cache keys are automatically normalized (lowercase, spaces → underscores)
+## Critical Notes
+- **NO DARK MODE**: Entire color system designed for light mode only, matching legacy app
+- **Color Extraction**: Direct Objective-C port with two-pass pixel analysis for accuracy
+- **Cache Keys**: Hierarchical approach prioritizing MBID over artist/album names
+- **Week Calculations**: Essential for weekly chart features and year-over-year comparisons
 
 ---
 

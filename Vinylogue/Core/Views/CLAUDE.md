@@ -1,53 +1,24 @@
-# Core UI Components Guide
+# Core Views Directory
 
-This directory contains reusable UI components that form the foundation of the Vinylogue app's user interface. These components follow established design patterns and should be used consistently throughout the app.
+## Reusable UI Components
+- `ReusableAlbumArtworkView.swift` - Album artwork display with loading states
+- `AnimatedLoadingIndicator.swift` - Spinning vinyl record loading animation
+- `EmptyStateView.swift` - Consistent empty state messaging
+- `ErrorStateView.swift` - Standardized error display with retry
+- `LastFMUsernameInputView.swift` - Username input with validation
+- `LoadingButton.swift` - Button with integrated loading states
+- `SectionHeaderView.swift` - Consistent section headers
 
-## Design System Overview
+## Design System
+- **Colors**: Legacy-based, NO DARK MODE (use `Color+Vinylogue.swift`)
+- **Typography**: AvenirNext fonts via `.f()` helper function
+- **Layout**: Standard padding (24pt horizontal, 12-40pt vertical)
 
-### Color System
-- **Primary Colors**: Based on legacy Vinylogue design (no dark mode support)
-  - `primaryText`: Always `.vinylogueBlueDark` (RGB 15, 24, 46)
-  - `primaryBackground`: Always `.vinylogueWhiteSubtle` (RGB 240, 240, 240)
-  - `vinylogueGray`: `.vinylogueBluePeri` (RGB 220, 220, 220) for disabled states
-  - `accent`: System accent color for interactive elements
-  - `destructive`: Red for error states
-
-### Typography System
-- **Font Function**: Use `.f(fontVariant, textStyle)` or `.f(fontVariant, pointSize)`
-- **Font Variants**: 
-  - `.ultralight`: AvenirNext-Ultralight (for section headers, captions)
-  - `.regular`: AvenirNext-Regular (for body text)
-  - `.medium`: AvenirNext-Medium (for titles)
-  - `.demiBold`: AvenirNext-Demibold (for emphasized text)
-  - `.bold`, `.heavy`: Available for special emphasis
-
-### Layout Patterns
-- **Standard Padding**: 
-  - Horizontal: 24pt for main content, 32pt for centered content
-  - Vertical: 12pt for tight spacing, 24pt for section spacing, 40pt for major sections
-- **Corner Radius**: 4pt for small elements, 6pt for larger elements
-- **Shadows**: Subtle black opacity (0.1-0.25) with minimal offset
-
-## Available Components
-
-### 1. ReusableAlbumArtworkView
-**Purpose**: Displays album artwork with consistent styling and loading states.
-
-**Key Features**:
-- Automatic image loading with Nuke/NukeUI
-- Placeholder state with vinyl record design
-- Screenshot testing support (pixelation for UI tests)
-- Flexible sizing (fixed or aspect ratio)
-- Optional shadow effects
-- Completion callback for image loading
-
-**Usage Patterns**:
-```swift
-// Fixed size for lists/rows
-ReusableAlbumArtworkView.fixedSize(
-    imageURL: album.imageURL,
-    size: 80,
-    cornerRadius: 4
+## Key Patterns
+- `@State` for internal component state, `@Binding` for parent-child communication
+- TimelineView for smooth animations (AnimatedLoadingIndicator)
+- Comprehensive accessibility labels and screen reader support
+- Screenshot testing with pixelation processor for UI tests
 )
 
 // Flexible for detail views

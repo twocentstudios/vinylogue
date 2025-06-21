@@ -1,53 +1,27 @@
-# Root Architecture Documentation
+# Features/Root Directory
 
-This directory contains the foundational app-level architecture for Vinylogue, implementing a clean separation of concerns with modern Swift concurrency, SwiftUI, and Point-Free's Dependencies and Sharing libraries.
+## App-Level Architecture
+- `VinylogueApp.swift` - Main app entry point with testing infrastructure
+- `RootStore.swift` - Central app state management with migration handling
+- `AppModel.swift` - App-level navigation and feature coordination
+- `RootView.swift` - Root UI coordinator managing app flow
+- `AppView.swift` - Main navigation container
 
-## Architecture Overview
-
-The app follows a layered architecture pattern:
-1. **App Entry Point** (`VinylogueApp`) - Main app configuration and lifecycle
-2. **Root State Management** (`RootStore`) - App-wide state and migration handling
-3. **App-Level Navigation** (`AppModel`) - Navigation coordination and feature integration
-4. **View Hierarchy** (`RootView`, `AppView`) - UI composition and routing
-
-## Core Files and Responsibilities
-
-### VinylogueApp.swift
-**Main app entry point with `@main` attribute**
-
-**Key Responsibilities:**
-- App lifecycle management and initialization
-- Global dependency configuration for testing
-- UI test setup and screenshot testing support
-- Debug cache clearing
-- Static root store instance management
-
-**Architecture Patterns:**
-```swift
-@main
-struct VinylogueApp: App {
-    static let rootStore = RootStore()  // Singleton pattern for root state
-    
-    init() {
-        setUpForUITest()  // Conditional test setup
-    }
-}
+## Architecture Pattern
+```
+App Launch → Migration → Authentication → Main App
 ```
 
-**Testing Infrastructure:**
-- Supports UI testing with environment-based configuration
-- Screenshot testing with mock data injection
-- Dependency override system for testing isolation
-- In-memory storage for tests to avoid data persistence
+## Key Patterns
+- **@Observable** for state management with @Shared for global state
+- **Type-Safe Navigation**: Enum-based navigation with associated values
+- **Migration-First Design**: Legacy data migration as first-class concern
+- **Feature Integration**: Store creation in AppModel, view routing in AppView
 
-### RootStore.swift
-**Central app state management using SwiftUI's `@Observable`**
-
-**Key Responsibilities:**
-- Current user state management via `@Shared(.currentUser)`
-- Legacy data migration coordination
-- Migration error handling and retry logic
-- App-wide state initialization
+## Critical Notes
+- Uses Point-Free Sharing library with different storage strategies (AppStorage, FileStorage, InMemory)
+- Comprehensive testing support with dependency injection and mock data
+- Conditional UI rendering based on migration status and user authentication
 
 **State Management Patterns:**
 ```swift

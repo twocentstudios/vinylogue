@@ -1,53 +1,29 @@
-# VinylogueTests Directory Guide
+# VinylogueTests Directory
 
-This directory contains the unit test suite for the Vinylogue iOS application. This guide provides comprehensive information about the testing architecture, patterns, utilities, and best practices for writing and maintaining tests in this codebase.
+## Test Files
+- `CacheManagerTests.swift` - Cache storage/retrieval and cleanup
+- `ColorExtractionTests.swift` - Image processing with edge cases
+- `FriendsImporterTests.swift` - Network error handling and data transformation
+- `LastFMClientTests.swift` - URL building, response parsing, error handling
+- `LegacyMigratorTests.swift` - Data migration with cleanup verification
+- `WeeklyAlbumsStoreTests.swift` - State management and data flow
 
-## Testing Architecture & Frameworks
+## Test Utilities (`TestUtilities/`)
+- `TestDataFactory.swift` - Factory pattern for test data with sensible defaults
+- `AssertionHelpers.swift` - Domain-specific assertions with meaningful error messages
+- `TestLastFMClient.swift` - Thread-safe mock API client with flexible response setup
 
-### Core Testing Framework
-- **XCTest**: Primary testing framework
-- **@testable import Vinylogue**: Provides access to internal app components
-- **Swift 6.0** with strict concurrency enabled
-- **iOS 18.0** minimum deployment target
+## Testing Architecture
+- **XCTest** with async/await and Swift 6.0 concurrency
+- **Dependencies** framework for clean mocking
+- **@MainActor** isolation for UI-related tests
+- **Given-When-Then** structure throughout
 
-### Key Testing Dependencies
-- **Dependencies**: Point-Free's dependency injection framework for mocking dependencies
-- **Sharing**: Point-Free's shared state management for testing settings and persistence
-- **Foundation**: For core data types and async testing
-
-### Concurrency & MainActor
-- Tests that interact with UI components or @MainActor isolated code use `@MainActor` annotation
-- Async/await patterns are used extensively for testing asynchronous operations
-- MainActor isolation is properly handled in test setup/teardown methods
-
-## Test Organization & Structure
-
-### Test File Structure
-```
-VinylogueTests/
-├── CacheManagerTests.swift          # Cache and persistence testing
-├── ColorExtractionTests.swift       # Image color analysis testing
-├── FriendsImporterTests.swift       # Friend data import logic
-├── LastFMClientTests.swift          # API client and networking
-├── LegacyMigratorTests.swift        # Legacy data migration
-├── WeeklyAlbumsStoreTests.swift     # Core business logic store
-└── TestUtilities/
-    ├── AssertionHelpers.swift       # Custom assertion helpers
-    ├── TestDataFactory.swift       # Test data builders
-    └── TestLastFMClient.swift       # Mock API client
-```
-
-### Test Classes
-- All test classes inherit from `XCTestCase`
-- Follow the naming convention: `{ComponentName}Tests`
-- Use `final` keyword for test classes
-- Implement proper `setUp()` and `tearDown()` lifecycle methods
-
-### Test Method Naming
-- Use descriptive names that explain the test scenario
-- Format: `test{ActionOrCondition}{ExpectedOutcome}`
-- Examples:
-  - `testStoreAndRetrieveString()`
+## Key Patterns
+- Proper setup/teardown with async cleanup
+- Performance testing with XCTest measure blocks
+- Custom image creation for visual component testing
+- Temporary resources with automatic cleanup
   - `testImportFriendsNetworkError()`
   - `testDominantColorFromSolidRedImage()`
 

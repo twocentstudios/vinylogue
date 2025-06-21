@@ -1,52 +1,22 @@
-# Core Architecture Guide
+# Core Directory
 
-The Core directory contains the foundational components that support the entire Vinylogue application. This layer provides essential infrastructure, business logic, and reusable UI components that maintain consistency across all features.
+## Core Layer Overview
+Foundational components supporting the entire Vinylogue application.
 
-## Architecture Overview
+## Subdirectories
+- **[Domain/](Domain/)** - Business logic, data models, services
+- **[Infrastructure/](Infrastructure/)** - Utilities, extensions, configuration
+- **[Views/](Views/)** - Reusable UI components and design system
 
-The Core layer is organized into four main areas:
-- **Domain**: Business logic, data models, and services
-- **Infrastructure**: Utilities, extensions, and configuration
-- **Views**: Reusable UI components and design system
-- **Features**: Feature-specific implementations (referenced elsewhere)
+## Critical Design Constraints
+- **NO DARK MODE** - App designed exclusively for light mode matching legacy design
+- **Legacy Color System** - Must use predefined colors from `TCSVinylogueDesign.h`
+- **AvenirNext Typography** - Exclusive font family via `.f()` helper system
 
-## Quick Navigation Guide
-
-### 🏗️ Need to Understand Business Logic?
-📂 **See [Domain/CLAUDE.md](Domain/CLAUDE.md)** for:
-- Data models and API integration patterns
-- Service architecture and dependency injection
-- Legacy migration strategies
-- Shared state management approach
-
-### ⚙️ Working with Infrastructure & Utilities?
-📂 **See [Infrastructure/CLAUDE.md](Infrastructure/CLAUDE.md)** for:
-- Color system (NO DARK MODE - light mode only)
-- Image processing and color extraction
-- Cache key generation and strategies
-- Dependency injection configuration
-- Testing utilities and environment detection
-
-### 🎨 Building User Interface Components?
-📂 **See [Views/CLAUDE.md](Views/CLAUDE.md)** for:
-- Reusable UI component library
-- Design system patterns and typography
-- Loading, empty, and error state components
-- Accessibility and testing patterns
-
-## Core Design Principles
-
-### 1. Visual Design Philosophy
-- **Legacy Matching**: All visual elements match the original Objective-C Vinylogue app
-- **NO DARK MODE**: The app is designed exclusively for light mode
-- **Color Consistency**: Uses predefined color palette from `TCSVinylogueDesign.h`
-- **Typography**: AvenirNext font family exclusively via `.f()` helper system
-
-### 2. Architectural Patterns
-- **SwiftUI + TCA-Style**: Modern SwiftUI with structured state management
-- **Dependency Injection**: Uses Point-Free's Dependencies framework
-- **Shared State**: Global state via Point-Free's Sharing library
-- **Protocol-Oriented Design**: All services implement protocols for testability
+## Key Architecture
+- **SwiftUI + @Observable** - Modern state management with Point-Free Sharing library
+- **Protocol-Oriented Services** - Dependency injection for testability
+- **Type-Safe Patterns** - Codable + Sendable + Identifiable throughout
 
 ### 3. Data Flow Strategy
 - **Unidirectional Data Flow**: Clear data dependencies and state updates

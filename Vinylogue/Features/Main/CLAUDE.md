@@ -1,53 +1,29 @@
-# Main Features Architecture Guide
+# Features/Main Directory
 
-This document provides comprehensive guidance for understanding and working with the main user-facing features in Vinylogue. These features form the core of the application's functionality.
+## Core App Features
+- `UsersListStore/View.swift` - User selection and friends management
+- `WeeklyAlbumsStore/View.swift` - Weekly charts with year navigation
+- `AlbumDetailStore/View.swift` - Rich album details with dynamic color theming
+- `AlbumRowView.swift` - Reusable list component with consistent styling
 
-## Overview
-
-The Main features directory contains the primary user-facing components that handle:
-- User selection and management (Users List)
-- Weekly album charts display and navigation (Weekly Albums)
-- Album detail views with color theming (Album Detail)
-- Reusable album row components
-
-## Core Architecture Patterns
-
-### 1. Store-View Pattern
-All major features follow a consistent Store-View architecture:
-- **Store**: `@Observable` classes that manage state, data loading, and business logic
-- **View**: SwiftUI views that bind to stores and handle UI presentation
-- **Navigation**: Stores handle navigation through shared `navigationPath`
-
-### 2. State Management Strategy
-- Uses `@Observable` for reactive state management
-- Leverages `@Shared` for global state (current user, friends, navigation)
-- Implements proper loading, loaded, and error states
-- Maintains data consistency through proper state tracking
-
-### 3. Data Loading & Caching
-- Multi-layered caching strategy (memory + disk)
-- Background data prefetching for performance
-- Graceful error handling and fallbacks
+## Architecture Pattern
+Consistent **Store + View** pattern:
+- `@Observable` stores for state management and business logic
+- `@Shared` for global state (user, friends, navigation)
+- Multi-layered caching (memory + disk) with background prefetching
 - Smart cache invalidation based on user/filter changes
 
-## Feature Components
+## Key Features
+- **Advanced Scroll Navigation**: 90pt overscroll threshold for year navigation
+- **Dynamic Color Theming**: UI adapts to album artwork dominant colors
+- **Performance Optimizations**: Background prefetching, concurrent requests with rate limiting
+- **Smart Caching**: Prevents duplicate requests with state tracking
 
-### Users List (`UsersListStore` + `UsersListView`)
-
-**Purpose**: Main entry point for user selection and navigation to charts
-
-**Key Patterns**:
-- Displays current user prominently with larger text styling
-- Shows curated friends list with edit functionality
-- Empty state management for users with no friends
-- Modal sheet presentation for friend editing and settings
-
-**State Management**:
-```swift
-@Shared(.currentUser) var currentUsername: String?
-@Shared(.curatedFriends) var curatedFriends
-@Shared(.navigationPath) var navigationPath: [AppModel.Path]
-```
+## Critical Notes
+- WeeklyAlbumsStore handles sophisticated chart period calculations
+- AlbumDetailStore provides dynamic color theming from artwork
+- Background prefetching for smooth navigation between years
+- All stores integrate with shared navigation path for deep linking
 
 **Navigation**:
 - Creates `WeeklyAlbumsStore` for selected user

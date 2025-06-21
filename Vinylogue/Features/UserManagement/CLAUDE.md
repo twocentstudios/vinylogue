@@ -1,53 +1,31 @@
-# User Management Features Architecture Guide
+# Features/UserManagement Directory
 
-This directory contains the user management features of the Vinylogue app, including onboarding, settings, username changes, and friend management. This guide documents the patterns and architecture used for building user-facing features in the app.
+## User Management Features
+- `OnboardingStore/View.swift` - First-time user setup with username validation
+- `SettingsStore/View.swift` - App configuration and preferences
+- `UsernameChangeStore/View.swift` - Username change with validation
+- `AddFriendStore/View.swift` - Manual friend addition
+- `EditFriendsStore/View.swift` - Friend list management with drag-and-drop
+- `LicensesView.swift` - Legal/licenses display
 
-## Architecture Overview
+## Architecture Pattern
+Consistent **Store + View** pattern:
+- `@Observable` stores for business logic and state
+- `@Dependency` for service injection
+- `@Shared` for global app state (user, friends, settings)
+- SwiftUI views with clean separation of concerns
 
-### Store + View Pattern
-All user management features follow a consistent **Store + View** architecture pattern:
-- **Store**: `@Observable` class containing business logic, state management, and API interactions
-- **View**: SwiftUI view that presents the UI and binds to the store's state
-- **Dependencies**: Stores use `@Dependency` for injecting services like `lastFMClient`
-- **Shared State**: Global app state is managed via `@Shared` from the Sharing library
+## Key Patterns
+- **Username Validation**: Last.fm API validation before allowing access
+- **Automatic Friend Import**: FriendsImporter integration during onboarding
+- **Cyclic Settings**: Play count filter cycles through values (0,1,2,4,8,16,32)
+- **Bulk Operations**: Drag-and-drop reordering and bulk selection for friends
+- **State Synchronization**: Updates shared state with proper thread safety
 
-### Key Dependencies
-- `Dependencies`: Dependency injection framework for services
-- `Sharing`: Global shared state management across the app
-- `SwiftUI`: UI framework with modern declarative patterns
-
-## Feature Architecture Patterns
-
-### 1. Onboarding Flow (OnboardingStore + OnboardingView)
-
-**Purpose**: First-time user setup and username validation
-
-**Key Patterns**:
-- **Username Validation**: Validates Last.fm usernames via API before allowing app access
-- **Global State Updates**: Updates `@Shared(.currentUser)` and `@Shared(.curatedFriends)` 
-- **Friend Import**: Automatically imports friends during onboarding via `FriendsImporter`
-- **Error Handling**: Comprehensive error states with haptic feedback
-- **Focus Management**: Auto-focuses text field on appear with delay
-- **Loading States**: Shows validation progress with loading button
-
-**State Management**:
-```swift
-var username = ""
-var isValidating = false
-var errorMessage: String?
-var showError = false
-```
-
-**Integration Pattern**:
-- Calls `lastFMClient.request(.userInfo(username:))` for validation
-- Updates global shared state on success
-- Imports friends automatically after validation
-
-### 2. Settings Management (SettingsStore + SettingsView)
-
-**Purpose**: App configuration and user preferences
-
-**Key Patterns**:
+## Critical Notes
+- All username operations validate via Last.fm API
+- Friends list cleared on username changes
+- Modal sheets for secondary features, full-screen for primary flows
 - **Sectioned UI**: Uses `LazyVStack` with sections and custom headers
 - **Cyclic Settings**: Play count filter cycles through predefined values (0, 1, 2, 4, 8, 16, 32)
 - **External Actions**: Handles mail composition, app store rating, web links

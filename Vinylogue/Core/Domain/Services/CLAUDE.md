@@ -1,53 +1,22 @@
-# Services Architecture Guide
+# Services Directory
 
-This directory contains the core services that power the Vinylogue application. This guide explains the architecture, patterns, and best practices for working with these services.
+## Files
+- `LastFMClient.swift` - Last.FM API client with network monitoring and caching
+- `CacheManager.swift` - Generic JSON-based caching system
+- `FriendsImporter.swift` - Observable service for importing friends from Last.fm
+- `LegacyMigrator.swift` - One-time migration from NSKeyedArchiver to new format
 
-## Service Overview
+## Key Patterns
+- **Dependency Injection**: Uses Swift Dependencies framework with protocol-based design
+- **Error Handling**: Semantic error mapping with LocalizedError descriptions
+- **Async/Await**: Modern concurrency with Sendable conformance throughout
+- **State Management**: @Observable/@MainActor for UI integration, @Shared for persistence
 
-### 1. LastFMClient (`LastFMClient.swift`)
-**Purpose**: Primary API client for communicating with the Last.fm Web Services API.
-
-**Key Responsibilities**:
-- HTTP requests to Last.fm endpoints with proper error handling
-- Network availability monitoring using NWPathMonitor
-- API response validation and error mapping
-- Album info caching for performance optimization
-- Response data cleaning (removes Last.fm promotional text)
-
-**Key Patterns**:
-```swift
-// Dependency injection pattern
-@Dependency(\.lastFMClient) private var lastFMClient
-
-// Generic request method with proper error handling
-func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T
-
-// Cached album info with fallback to API
-func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> AlbumDetail
-```
-
-**Error Handling Strategy**:
-- Maps Last.fm API error codes to semantic errors (userNotFound, serviceUnavailable, etc.)
-- Handles network unavailability gracefully
-- Provides user-friendly error messages via LocalizedError
-
-### 2. CacheManager (`CacheManager.swift`)
-**Purpose**: Generic, type-safe caching system using JSON serialization.
-
-**Key Features**:
-- Generic Codable storage: `store<T: Codable>(_ object: T, key: String)`
-- Type-safe retrieval: `retrieve<T: Codable>(_ type: T.Type, key: String) -> T?`
-- Automatic cache directory management in temporary directory
-- Legacy compatibility via ChartCache wrapper
-
-**Cache Architecture**:
-```swift
-// Main cache operations
-await cacheManager.store(data, key: "user_data")
-let cached: UserData? = try await cacheManager.retrieve(UserData.self, key: "user_data")
-
-// Cache key building (see CacheKeyBuilder.swift)
-let key = CacheKeyBuilder.albumInfo(artist: "Artist", album: "Album", username: "user")
+## Critical Notes
+- LastFMClient includes network monitoring and caches album info automatically
+- CacheManager stores in temporary directory with type-safe JSON operations
+- FriendsImporter updates @Shared state for reactive UI updates
+- LegacyMigrator handles NSKeyedArchiver -> Codable conversion safely
 ```
 
 **Threading**: Marked as `Sendable` for thread-safe usage across async contexts.
