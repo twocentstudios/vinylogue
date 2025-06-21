@@ -95,3 +95,21 @@ schemes:
       config: Debug
     archive:
       config: Release
+  VinylogueUITests:
+    build:
+      targets:
+        Vinylogue: all
+        VinylogueTests: [test]
+        VinylogueUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - VinylogueUITests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

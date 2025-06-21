@@ -22,7 +22,7 @@ declare -A DEVICES=(
 )
 
 # Test configurations
-SCHEME="Vinylogue"
+SCHEME="VinylogueUITests"
 PROJECT_FILE="Vinylogue.xcodeproj"
 
 # Colors for output
