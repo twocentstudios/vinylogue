@@ -40,9 +40,9 @@ targets:
     sources:
       - path: Vinylogue
     resources:
-      - Vinylogue/Assets.xcassets
-      - Vinylogue/Preview Content
-      - Vinylogue/acknowledgements.md
+      - Vinylogue/Resources/Assets.xcassets
+      - Vinylogue/Resources/Preview Content
+      - Vinylogue/Resources/acknowledgements.md
     dependencies:
       - package: Nuke
         product: Nuke
@@ -54,7 +54,7 @@ targets:
         product: Dependencies
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.twocentstudios.vinylogue
-      DEVELOPMENT_ASSET_PATHS: "\"Vinylogue/Preview Content\""
+      DEVELOPMENT_ASSET_PATHS: "\"Vinylogue/Resources/Preview Content\""
       CODE_SIGN_STYLE: Automatic
       DEVELOPMENT_TEAM: YK25EF78NT
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

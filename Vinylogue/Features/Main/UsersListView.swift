@@ -88,7 +88,7 @@ struct UsersListView: View {
             EditFriendsView(store: store.editFriendsStore)
         }
         .sheet(isPresented: $store.showingSettingsSheet) {
-            SettingsSheet()
+            SettingsView()
         }
         .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
     }
