@@ -37,6 +37,7 @@ struct WeeklyAlbumsView: View {
             }
         }
         .task(id: store.currentYearOffset) {
+            // This task is also called on first load
             await store.loadAlbums()
         }
         .onChange(of: store.currentYearOffset) { _, _ in
