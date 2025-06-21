@@ -10,12 +10,8 @@ final class UsersListStore {
 
     var showingEditSheet = false
     var showingSettingsSheet = false
-    var navigationPath = NavigationPath()
 
     var editFriendsStore = EditFriendsStore()
-
-    // Store instances for child views, keyed by username
-    @ObservationIgnored private var weeklyAlbumsStores: [String: WeeklyAlbumsStore] = [:]
 
     var currentUser: User? {
         guard let username = currentUsername else { return nil }
@@ -53,21 +49,5 @@ final class UsersListStore {
 
     func hideSettingsSheet() {
         showingSettingsSheet = false
-    }
-
-    // MARK: - Child Store Management
-
-    func getWeeklyAlbumsStore(for user: User) -> WeeklyAlbumsStore {
-        let key = user.username
-
-        if let existingStore = weeklyAlbumsStores[key] {
-            return existingStore
-        }
-
-        // Create new store - dependencies should propagate automatically
-        let newStore = WeeklyAlbumsStore()
-
-        weeklyAlbumsStores[key] = newStore
-        return newStore
     }
 }

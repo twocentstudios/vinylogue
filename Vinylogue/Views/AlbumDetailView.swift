@@ -6,10 +6,6 @@ import SwiftUI
 struct AlbumDetailView: View {
     @Bindable var store: AlbumDetailStore
 
-    init(album: Album, weekInfo: WeekInfo, store: AlbumDetailStore) {
-        self.store = store
-    }
-
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
@@ -196,6 +192,6 @@ struct AlbumDetailView: View {
 
     NavigationStack {
         let store = AlbumDetailStore(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"))
-        AlbumDetailView(album: album, weekInfo: .init(weekNumber: 3, year: 1949, username: "ybsd"), store: store)
+        AlbumDetailView(store: store)
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class AlbumDetailStore {
+final class AlbumDetailStore: Hashable {
     @ObservationIgnored @Dependency(\.lastFMClient) var lastFMClient
 
     var album: Album
@@ -77,5 +77,16 @@ final class AlbumDetailStore {
         withAnimation(.easeIn(duration: 0.75).delay(0.15)) {
             shouldAnimateColors = true
         }
+    }
+
+    // MARK: - Hashable
+
+    nonisolated static func == (lhs: AlbumDetailStore, rhs: AlbumDetailStore) -> Bool {
+        // For navigation purposes, we'll use object identity
+        lhs === rhs
+    }
+
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

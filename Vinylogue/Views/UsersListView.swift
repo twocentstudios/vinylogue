@@ -3,96 +3,90 @@ import SwiftUI
 
 struct UsersListView: View {
     @Bindable var store: UsersListStore
+    let appModel: AppModel
 
     var body: some View {
-        NavigationStack(path: $store.navigationPath) {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    if let username = store.currentUsername {
-                        Section {
-                            UserRowView(
-                                user: store.currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
-                                isCurrentUser: true
-                            )
-                        } header: {
-                            SectionHeaderView("me")
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                if let username = store.currentUsername {
+                    Section {
+                        UserRowView(
+                            user: store.currentUser ?? User(username: username, realName: nil, imageURL: nil, url: nil, playCount: nil),
+                            isCurrentUser: true,
+                            appModel: appModel
+                        )
+                    } header: {
+                        SectionHeaderView("me")
+                    }
+                }
+
+                if store.hasFriends {
+                    Section {
+                        ForEach(store.curatedFriends, id: \.username) { friend in
+                            UserRowView(user: friend, isCurrentUser: false, appModel: appModel)
+                        }
+                    } header: {
+                        FriendsHeaderView {
+                            store.showEditSheet()
                         }
                     }
+                }
 
-                    if store.hasFriends {
-                        Section {
-                            ForEach(store.curatedFriends, id: \.username) { friend in
-                                UserRowView(user: friend, isCurrentUser: false)
-                            }
-                        } header: {
-                            FriendsHeaderView {
-                                store.showEditSheet()
+                if !store.hasFriends {
+                    Section {
+                        VStack(spacing: 16) {
+                            Image(systemName: "person.2.badge.plus")
+                                .font(.system(size: 40))
+                                .foregroundColor(.accent)
+
+                            VStack(spacing: 8) {
+                                Text("no friends added yet")
+                                    .font(.f(.medium, .headline))
+                                    .foregroundColor(.primaryText)
+
+                                Text("import friends from Last.fm or add them manually")
+                                    .font(.f(.regular, .caption1))
+                                    .foregroundColor(.primaryText)
+                                    .multilineTextAlignment(.center)
                             }
                         }
-                    }
-
-                    if !store.hasFriends {
-                        Section {
-                            VStack(spacing: 16) {
-                                Image(systemName: "person.2.badge.plus")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.accent)
-
-                                VStack(spacing: 8) {
-                                    Text("no friends added yet")
-                                        .font(.f(.medium, .headline))
-                                        .foregroundColor(.primaryText)
-
-                                    Text("import friends from Last.fm or add them manually")
-                                        .font(.f(.regular, .caption1))
-                                        .foregroundColor(.primaryText)
-                                        .multilineTextAlignment(.center)
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 32)
-                        } header: {
-                            FriendsHeaderView {
-                                store.showEditSheet()
-                            }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 32)
+                    } header: {
+                        FriendsHeaderView {
+                            store.showEditSheet()
                         }
                     }
                 }
             }
-            .navigationTitle("scrobblers")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        store.showSettingsSheet()
-                    }) {
-                        Image(systemName: "gearshape")
-                            .font(.f(.ultralight, .body))
-                            .foregroundColor(.accent)
-                    }
-                    .sensoryFeedback(.impact, trigger: store.showingSettingsSheet)
-                }
-
-                ToolbarItem(placement: .principal) {
-                    Text("scrobblers")
-                        .foregroundStyle(Color.vinylogueBlueDark)
-                        .font(.f(.regular, .headline))
-                }
-            }
-            .sheet(isPresented: $store.showingEditSheet) {
-                EditFriendsView(store: store.editFriendsStore)
-            }
-            .sheet(isPresented: $store.showingSettingsSheet) {
-                SettingsSheet()
-            }
-            .navigationDestination(for: UserNavigation.self) { userNav in
-                WeeklyAlbumsView(
-                    user: userNav.user,
-                    store: store.getWeeklyAlbumsStore(for: userNav.user)
-                )
-            }
-            .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
         }
+        .navigationTitle("scrobblers")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    store.showSettingsSheet()
+                }) {
+                    Image(systemName: "gearshape")
+                        .font(.f(.ultralight, .body))
+                        .foregroundColor(.accent)
+                }
+                .sensoryFeedback(.impact, trigger: store.showingSettingsSheet)
+            }
+
+            ToolbarItem(placement: .principal) {
+                Text("scrobblers")
+                    .foregroundStyle(Color.vinylogueBlueDark)
+                    .font(.f(.regular, .headline))
+            }
+        }
+        .sheet(isPresented: $store.showingEditSheet) {
+            EditFriendsView(store: store.editFriendsStore)
+        }
+        .sheet(isPresented: $store.showingSettingsSheet) {
+            SettingsSheet()
+        }
+        .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
     }
 }
 
@@ -101,9 +95,12 @@ struct UsersListView: View {
 private struct UserRowView: View {
     let user: User
     let isCurrentUser: Bool
+    let appModel: AppModel
 
     var body: some View {
-        NavigationLink(value: UserNavigation(user: user)) {
+        Button {
+            appModel.navigateToWeeklyAlbums(for: user)
+        } label: {
             Text(user.username)
                 .padding(.horizontal, 24)
                 .font(isCurrentUser ? .f(.regular, .largeTitle) : .f(.regular, .title2))
@@ -119,7 +116,8 @@ private struct UserRowView: View {
 
 #Preview("With Friends") {
     let store = UsersListStore()
-    return UsersListView(store: store)
+    let appModel = AppModel(usersListStore: store)
+    return UsersListView(store: store, appModel: appModel)
         .onAppear {
             store.$currentUsername.withLock { $0 = "musiclover123" }
             store.$curatedFriends.withLock { $0 = [
@@ -134,7 +132,8 @@ private struct UserRowView: View {
 
 #Preview("Empty State") {
     let store = UsersListStore()
-    return UsersListView(store: store)
+    let appModel = AppModel(usersListStore: store)
+    return UsersListView(store: store, appModel: appModel)
         .onAppear {
             store.$currentUsername.withLock { $0 = "newuser" }
             store.$curatedFriends.withLock { $0 = [] }

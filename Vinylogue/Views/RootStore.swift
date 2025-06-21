@@ -11,7 +11,7 @@ final class RootStore {
     var isMigrationComplete: Bool?
     var showMigrationError = false
 
-    var usersListStore = UsersListStore()
+    var appModel = AppModel()
 
     var currentUser: User? {
         guard let username = currentUsername else { return nil }

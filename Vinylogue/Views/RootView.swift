@@ -9,7 +9,7 @@ struct RootView: View {
             if let migrationComplete = store.isMigrationComplete {
                 if migrationComplete {
                     if store.hasCurrentUser {
-                        UsersListView(store: store.usersListStore)
+                        AppView(model: store.appModel)
                     } else {
                         OnboardingView()
                     }
@@ -18,7 +18,7 @@ struct RootView: View {
                 }
             } else {
                 if store.hasCurrentUser {
-                    UsersListView(store: store.usersListStore)
+                    AppView(model: store.appModel)
                 } else {
                     OnboardingView()
                 }
@@ -70,6 +70,6 @@ private struct MigrationLoadingView: View {
     MigrationLoadingView()
 }
 
-#Preview("Users List") {
-    UsersListView(store: UsersListStore())
+#Preview("App View") {
+    AppView(model: AppModel())
 }

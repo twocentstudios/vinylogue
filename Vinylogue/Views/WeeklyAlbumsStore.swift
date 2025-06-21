@@ -23,7 +23,7 @@ struct WeekInfo: Hashable {
 
 @Observable
 @MainActor
-final class WeeklyAlbumsStore {
+final class WeeklyAlbumsStore: Hashable {
     var albumsState: WeeklyAlbumsLoadingState = .initialized
     var currentWeekInfo: WeekInfo?
     var availableYearRange: ClosedRange<Int>?
@@ -52,9 +52,6 @@ final class WeeklyAlbumsStore {
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
     @ObservationIgnored private var loadedPlayCountFilter: Int?
-
-    // Store instances for child views, keyed by album ID
-    @ObservationIgnored private var albumDetailStores: [String: AlbumDetailStore] = [:]
 
     init() {}
 
@@ -448,19 +445,14 @@ final class WeeklyAlbumsStore {
         loadedPlayCountFilter = nil
     }
 
-    // MARK: - Child Store Management
+    // MARK: - Hashable
 
-    func getAlbumDetailStore(for album: Album, weekInfo: WeekInfo) -> AlbumDetailStore {
-        let key = album.id
+    nonisolated static func == (lhs: WeeklyAlbumsStore, rhs: WeeklyAlbumsStore) -> Bool {
+        // For navigation purposes, we'll use object identity
+        lhs === rhs
+    }
 
-        if let existingStore = albumDetailStores[key] {
-            return existingStore
-        }
-
-        // Create new store - dependencies should propagate automatically
-        let newStore = AlbumDetailStore(album: album, weekInfo: weekInfo)
-
-        albumDetailStores[key] = newStore
-        return newStore
+    nonisolated func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

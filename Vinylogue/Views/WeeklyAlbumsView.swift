@@ -4,6 +4,7 @@ import SwiftUI
 struct WeeklyAlbumsView: View {
     let user: User
     @Bindable var store: WeeklyAlbumsStore
+    let appModel: AppModel
     @State private var currentYearOffset = 1 // Start with 1 year ago
     @Shared(.currentPlayCountFilter) var playCountFilter
 
@@ -12,15 +13,10 @@ struct WeeklyAlbumsView: View {
     @State private var bottomProgress: Double = 0.0
     @State private var scrollPosition = ScrollPosition()
 
-    init(user: User, store: WeeklyAlbumsStore) {
-        self.user = user
-        self.store = store
-    }
-
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ContentStateView(store: store, user: user)
+                ContentStateView(store: store, user: user, appModel: appModel)
             }
         }
         .scrollPosition($scrollPosition)
@@ -60,13 +56,6 @@ struct WeeklyAlbumsView: View {
         .task(id: playCountFilter) {
             await store.updatePlayCountFilter(playCountFilter, for: user, yearOffset: currentYearOffset)
         }
-        .navigationDestination(for: AlbumNavigation.self) { albumNav in
-            AlbumDetailView(
-                album: albumNav.album,
-                weekInfo: albumNav.weekInfo,
-                store: store.getAlbumDetailStore(for: albumNav.album, weekInfo: albumNav.weekInfo)
-            )
-        }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: currentYearOffset)
     }
 
@@ -103,13 +92,14 @@ struct WeeklyAlbumsView: View {
 private struct ContentStateView: View {
     let store: WeeklyAlbumsStore
     let user: User
+    let appModel: AppModel
 
     var body: some View {
         switch store.albumsState {
         case .initialized, .loading:
             EmptyView()
         case .loaded:
-            AlbumListView(store: store, user: user)
+            AlbumListView(store: store, user: user, appModel: appModel)
         case let .failed(error):
             ErrorStateView(error: error)
         }
@@ -121,13 +111,16 @@ private struct ContentStateView: View {
 private struct AlbumListView: View {
     let store: WeeklyAlbumsStore
     let user: User
+    let appModel: AppModel
 
     var body: some View {
         if store.albums.isEmpty {
             EmptyStateView(username: user.username)
         } else if let weekInfo = store.currentWeekInfo {
             ForEach(store.albums) { album in
-                NavigationLink(value: AlbumNavigation(album: album, weekInfo: weekInfo)) {
+                Button {
+                    appModel.navigateToAlbumDetail(album: album, weekInfo: weekInfo)
+                } label: {
                     AlbumRowView(album: album)
                 }
                 .buttonStyle(AlbumRowButtonStyle())
