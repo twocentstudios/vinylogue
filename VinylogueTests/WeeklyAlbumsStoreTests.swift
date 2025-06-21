@@ -7,6 +7,7 @@ import XCTest
 final class WeeklyAlbumsStoreTests: XCTestCase {
     nonisolated var store: WeeklyAlbumsStore!
     nonisolated var mockClient: MockWeeklyAlbumClient!
+    nonisolated let testUser = User(username: "testuser")
 
     override func setUpWithError() throws {
         // Set up will be done in the test methods since we need MainActor
@@ -23,7 +24,7 @@ final class WeeklyAlbumsStoreTests: XCTestCase {
         store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumsStore()
+            WeeklyAlbumsStore(user: testUser)
         }
         guard case .initialized = store.albumsState else {
             XCTFail("Expected albums state to be initialized")
@@ -45,7 +46,7 @@ final class WeeklyAlbumsStoreTests: XCTestCase {
             $0.date = .constant(testDate)
             $0.calendar = testCalendar
         } operation: {
-            WeeklyAlbumsStore()
+            WeeklyAlbumsStore(user: testUser)
         }
 
         XCTAssertEqual(store.getYear(for: 0), currentYear)
@@ -59,7 +60,7 @@ final class WeeklyAlbumsStoreTests: XCTestCase {
         store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumsStore()
+            WeeklyAlbumsStore(user: testUser)
         }
         XCTAssertFalse(store.canNavigate(to: 1))
         XCTAssertFalse(store.canNavigate(to: 0))
@@ -72,7 +73,7 @@ final class WeeklyAlbumsStoreTests: XCTestCase {
         store = withDependencies {
             $0.lastFMClient = mockClient
         } operation: {
-            WeeklyAlbumsStore()
+            WeeklyAlbumsStore(user: testUser)
         }
         // Set some test data
         store.albumsState = .loaded([

@@ -2,6 +2,7 @@ import Dependencies
 import Foundation
 import Nuke
 import Observation
+import Sharing
 import SwiftUI
 
 enum WeeklyAlbumsLoadingState: Equatable {
@@ -27,6 +28,9 @@ final class WeeklyAlbumsStore: Hashable {
     var albumsState: WeeklyAlbumsLoadingState = .initialized
     var currentWeekInfo: WeekInfo?
     var availableYearRange: ClosedRange<Int>?
+    var user: User
+    var currentYearOffset: Int = 1
+    @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
 
     /// Computed property to provide access to albums array for binding purposes
     var albums: [Album] {
@@ -46,36 +50,27 @@ final class WeeklyAlbumsStore: Hashable {
     @ObservationIgnored @Dependency(\.imagePipeline) private var imagePipeline
     @ObservationIgnored @Dependency(\.date) private var date
     @ObservationIgnored @Dependency(\.calendar) private var calendar
-    @ObservationIgnored private var playCountFilter: Int = 1
     @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
 
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
     @ObservationIgnored private var loadedPlayCountFilter: Int?
 
-    init() {}
-
-    /// Update the play count filter and reload if necessary
-    func updatePlayCountFilter(_ newFilter: Int, for user: User, yearOffset: Int) async {
-        guard newFilter != playCountFilter else { return }
-
-        playCountFilter = newFilter
-
-        if loadedUsername == user.username, loadedYearOffset == yearOffset {
-            await loadAlbums(for: user, yearOffset: yearOffset, forceReload: true)
-        }
+    init(user: User, currentYearOffset: Int = 1) {
+        self.user = user
+        self.currentYearOffset = currentYearOffset
     }
 
-    /// Check if albums are already loaded for the given user and year offset
-    func isDataLoaded(for user: User, yearOffset: Int, playCountFilter: Int) -> Bool {
+    /// Check if albums are already loaded for the current user and year offset
+    func isDataLoaded() -> Bool {
         guard case .loaded = albumsState else { return false }
         return loadedUsername == user.username &&
-            loadedYearOffset == yearOffset &&
+            loadedYearOffset == currentYearOffset &&
             loadedPlayCountFilter == playCountFilter
     }
 
-    /// Load albums for a specific user and year offset
-    func loadAlbums(for user: User, yearOffset: Int = 0, forceReload: Bool = false) async {
+    /// Load albums for the current user and year offset
+    func loadAlbums(forceReload: Bool = false) async {
         albumsState = .loading
 
         do {
@@ -83,7 +78,7 @@ final class WeeklyAlbumsStore: Hashable {
                 await loadWeeklyChartList(for: user.username)
             }
 
-            let targetDate = calculateTargetDate(yearOffset: yearOffset)
+            let targetDate = calculateTargetDate(yearOffset: currentYearOffset)
 
             guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else {
                 albumsState = .failed(.noDataAvailable)
@@ -146,11 +141,11 @@ final class WeeklyAlbumsStore: Hashable {
             albumsState = .loaded(filteredAlbums)
 
             loadedUsername = user.username
-            loadedYearOffset = yearOffset
+            loadedYearOffset = currentYearOffset
             loadedPlayCountFilter = playCountFilter
 
             // Trigger precaching for previous year data (non-blocking)
-            let previousYearOffset = yearOffset + 1
+            let previousYearOffset = currentYearOffset + 1
             if canNavigate(to: previousYearOffset) {
                 Task { [weak self] in
                     guard let self else { return }
@@ -262,7 +257,7 @@ final class WeeklyAlbumsStore: Hashable {
     }
 
     /// Load album details for a specific album
-    func loadAlbum(_ album: Album, for user: User) async {
+    func loadAlbum(_ album: Album) async {
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                 artist: album.artist,
@@ -272,17 +267,21 @@ final class WeeklyAlbumsStore: Hashable {
             )
 
             // Find and update the album in our stored collection
-            if let index = albums.firstIndex(where: { $0.id == album.id }) {
-                albums[index].imageURL = detailedAlbum.imageURL
-                albums[index].description = detailedAlbum.description
-                albums[index].totalPlayCount = detailedAlbum.totalPlayCount
-                albums[index].userPlayCount = detailedAlbum.userPlayCount
-                albums[index].isDetailLoaded = true
+            var currentAlbums = albums
+            if let index = currentAlbums.firstIndex(where: { $0.id == album.id }) {
+                currentAlbums[index].imageURL = detailedAlbum.imageURL
+                currentAlbums[index].description = detailedAlbum.description
+                currentAlbums[index].totalPlayCount = detailedAlbum.totalPlayCount
+                currentAlbums[index].userPlayCount = detailedAlbum.userPlayCount
+                currentAlbums[index].isDetailLoaded = true
+                albums = currentAlbums
             }
         } catch {
             // Find and update the album in our stored collection
-            if let index = albums.firstIndex(where: { $0.id == album.id }) {
-                albums[index].imageURL = nil
+            var currentAlbums = albums
+            if let index = currentAlbums.firstIndex(where: { $0.id == album.id }) {
+                currentAlbums[index].imageURL = nil
+                albums = currentAlbums
             }
         }
     }

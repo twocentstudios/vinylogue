@@ -13,9 +13,8 @@ struct AppView: View {
             )
             .navigationDestination(for: AppModel.Path.self) { path in
                 switch path {
-                case let .weeklyAlbums(store, user):
+                case let .weeklyAlbums(store):
                     WeeklyAlbumsView(
-                        user: user,
                         store: store,
                         onAlbumTap: { album, weekInfo in
                             model.navigateToAlbumDetail(album: album, weekInfo: weekInfo)

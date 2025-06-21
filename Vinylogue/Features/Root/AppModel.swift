@@ -1,5 +1,4 @@
 import Dependencies
-import Sharing
 import SwiftUI
 
 @MainActor
@@ -18,7 +17,7 @@ final class AppModel {
     @Dependency(\.calendar) var calendar
 
     enum Path: Hashable {
-        case weeklyAlbums(WeeklyAlbumsStore, user: User)
+        case weeklyAlbums(WeeklyAlbumsStore)
         case albumDetail(AlbumDetailStore)
     }
 
@@ -34,15 +33,15 @@ final class AppModel {
     private func bind() {
         for destination in path {
             switch destination {
-            case let .weeklyAlbums(weeklyAlbumsStore, user):
-                bindWeeklyAlbums(store: weeklyAlbumsStore, user: user)
+            case let .weeklyAlbums(weeklyAlbumsStore):
+                bindWeeklyAlbums(store: weeklyAlbumsStore)
             case .albumDetail:
                 break
             }
         }
     }
 
-    private func bindWeeklyAlbums(store: WeeklyAlbumsStore, user: User) {
+    private func bindWeeklyAlbums(store: WeeklyAlbumsStore) {
         // Set up any needed bindings for WeeklyAlbumsStore
         // For example, navigation to album detail could be handled here
     }
@@ -50,8 +49,8 @@ final class AppModel {
     // MARK: - Navigation Actions
 
     func navigateToWeeklyAlbums(for user: User) {
-        let weeklyAlbumsStore = WeeklyAlbumsStore()
-        path.append(.weeklyAlbums(weeklyAlbumsStore, user: user))
+        let weeklyAlbumsStore = WeeklyAlbumsStore(user: user, currentYearOffset: 1)
+        path.append(.weeklyAlbums(weeklyAlbumsStore))
     }
 
     func navigateToAlbumDetail(album: Album, weekInfo: WeekInfo) {
