@@ -31,3 +31,21 @@ xcodegen              # After adding/removing/renaming files
 swiftformat .         # Format code before building
 xcodebuild -quiet     # Build with quiet output
 ```
+
+## Swift Package Dependencies
+
+- **Nuke**
+  - Advanced image loading and caching framework with powerful performance optimizations
+  - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/Nuke/Documentation/Nuke.docc/)
+
+- **NukeUI** (part of Nuke)
+  - SwiftUI components for declarative image loading with LazyImage and FetchImage
+  - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/Nuke/Documentation/NukeUI.docc/)
+
+- **Sharing** (Point-Free)
+  - Type-safe shared state management library for global app state persistence
+  - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/swift-sharing/Sources/Sharing/Documentation.docc/)
+
+- **Dependencies** (Point-Free)
+  - Dependency injection framework for testable and modular Swift applications
+  - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/swift-dependencies/Sources/Dependencies/Documentation.docc/)
