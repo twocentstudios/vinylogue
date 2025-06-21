@@ -36,14 +36,10 @@ struct WeeklyAlbumsView: View {
                 toolbarTrailing
             }
         }
-        .task {
-            // Only load if data isn't already loaded
-            if !store.isDataLoaded() {
-                await store.loadAlbums()
-            }
-        }
         .task(id: store.currentYearOffset) {
             await store.loadAlbums()
+        }
+        .onChange(of: store.currentYearOffset) { _, _ in
             scrollPosition.scrollTo(edge: .top)
         }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: store.currentYearOffset)

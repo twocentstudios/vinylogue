@@ -72,6 +72,8 @@ final class WeeklyAlbumsStore: Hashable {
 
     /// Load albums for the current user and year offset
     func loadAlbums(forceReload: Bool = false) async {
+        guard !isDataLoaded() else { return }
+
         albumsState = .loading
 
         do {
