@@ -16,10 +16,11 @@ Vinylogue/
 
 ## Critical Design Constraints
 - **NO DARK MODE** - Light mode only, matching legacy Objective-C app design
-- **Legacy Color System** - Must use predefined colors from `TCSVinylogueDesign.h`
+- **Color System** - Must use predefined colors from `Color+Vinylogue.swift`
 - **SwiftUI + @Observable** - Modern architecture with Point-Free dependencies
 
 ## Technical Stack
+- iOS 18 and the latest available APIs
 - SwiftUI with @Observable state management
 - Point-Free Dependencies and Sharing libraries
 - Last.fm API integration with comprehensive caching
@@ -37,15 +38,17 @@ xcodebuild -quiet     # Build with quiet output
 - **Nuke**
   - Advanced image loading and caching framework with powerful performance optimizations
   - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/Nuke/Documentation/Nuke.docc/)
-
 - **NukeUI** (part of Nuke)
   - SwiftUI components for declarative image loading with LazyImage and FetchImage
   - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/Nuke/Documentation/NukeUI.docc/)
-
 - **Sharing** (Point-Free)
   - Type-safe shared state management library for global app state persistence
   - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/swift-sharing/Sources/Sharing/Documentation.docc/)
-
 - **Dependencies** (Point-Free)
   - Dependency injection framework for testable and modular Swift applications
   - [Documentation](DerivedData/Vinylogue/SourcePackages/checkouts/swift-dependencies/Sources/Dependencies/Documentation.docc/)
+  
+## Code Architecture Reference
+
+- Point-Free Co. SyncUps
+    - https://uithub.com/pointfreeco/syncups?accept=text/html&maxTokens=50000&ext=swift
