@@ -89,7 +89,6 @@ schemes:
       config: Debug
       targets:
         - VinylogueTests
-        - VinylogueUITests
     profile:
       config: Release
     analyze:

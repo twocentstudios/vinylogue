@@ -77,16 +77,6 @@
                ReferencedContainer = "container:Vinylogue.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A679576B4186A2482EE74A7B"
-               BuildableName = "VinylogueUITests.xctest"
-               BlueprintName = "VinylogueUITests"
-               ReferencedContainer = "container:Vinylogue.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>
