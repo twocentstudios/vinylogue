@@ -40,7 +40,7 @@ private func setUpForUITest() {
 
     // Set up dependencies for UI testing based on test name
     switch testName {
-    case "testUsersListViewScreenshot", "testMultipleScreenshots":
+    case "testUsersListViewScreenshot", "testMultipleScreenshots", "testGenerateAppStoreScreenshots":
         setupScreenshotTestDependencies()
     default:
         print("Unrecognized UI test: \(testName)")
@@ -57,6 +57,9 @@ private func setupScreenshotTestDependencies() {
         $0.defaultAppStorage = UserDefaults(
             suiteName: "\(NSTemporaryDirectory())\(UUID().uuidString)"
         )!
+
+        // Override date for WeeklyAlbumsView to show specific date (2023-06-20)
+        $0.date = .constant(Date(timeIntervalSince1970: 1687219200)) // 2023-06-20 00:00:00 UTC
     }
 
     // Set up test data in the overridden storage

@@ -26,41 +26,49 @@ final class AppStoreScreenshotTests: XCTestCase {
     }
 
     @MainActor
-    func testUsersListViewScreenshot() throws {
-        // Set up the app with test name for environment detection
-        try setupApp(testName: "testUsersListViewScreenshot")
-
-        // Launch the app
+    func testGenerateAppStoreScreenshots() throws {
+        // This test generates all 3 required App Store screenshots
+        try setupApp(testName: "testGenerateAppStoreScreenshots")
         app.launch()
 
-        // Wait for the app to load and navigate to users list
+        // Screenshot 1: UsersListView with mock data
         let usersListNavigationTitle = app.navigationBars["scrobblers"]
         XCTAssertTrue(usersListNavigationTitle.waitForExistence(timeout: 10.0), "Users list should be visible")
-
-        // Wait a moment for all content to load
         Thread.sleep(forTimeInterval: 2.0)
-
-        // Take screenshot for Users List View
         takeScreenshot(named: "01-UsersListView")
-    }
 
-    @MainActor
-    func testMultipleScreenshots() throws {
-        // Set up the app with test name for environment detection
-        try setupApp(testName: "testMultipleScreenshots")
+        // Navigate to first user's weekly albums
+        let firstUser = app.buttons["ybsc"]
+        XCTAssertTrue(firstUser.waitForExistence(timeout: 5.0), "First user should be visible")
+        firstUser.tap()
 
-        // This test can be extended to capture multiple app screens
-        app.launch()
+        // Screenshot 2: WeeklyAlbumsView with mock date (2023-06-20)
+        // Wait for weekly albums view to load by looking for chart-specific content
+        Thread.sleep(forTimeInterval: 3.0) // Wait for navigation and data loading
+        Thread.sleep(forTimeInterval: 3.0) // Wait for data to load
+        takeScreenshot(named: "02-WeeklyAlbumsView")
 
-        // Capture main screen
-        let usersListNavigationTitle = app.navigationBars["scrobblers"]
-        XCTAssertTrue(usersListNavigationTitle.waitForExistence(timeout: 10.0), "Users list should be visible")
-        Thread.sleep(forTimeInterval: 2.0)
-        takeScreenshot(named: "01-UsersListView-Light")
+        // Navigate to first album in the list
+        // Look for album row by finding text with "plays" (unique to album rows)
+        let playsText = app.staticTexts["plays"]
+        XCTAssertTrue(playsText.waitForExistence(timeout: 5.0), "Album with play count should be visible")
 
-        // Future: Add more screens here
-        // navigateToSettings()
-        // takeScreenshot(named: "02-Settings")
+        // Tap the first album row by finding the button containing "plays"
+        let albumButtons = app.buttons.allElementsBoundByIndex
+        var albumTapped = false
+        for button in albumButtons {
+            if button.staticTexts["plays"].exists {
+                button.tap()
+                albumTapped = true
+                break
+            }
+        }
+        XCTAssertTrue(albumTapped, "Should be able to tap an album row")
+
+        // Screenshot 3: AlbumDetailView
+        // Wait for album detail view to load
+        Thread.sleep(forTimeInterval: 3.0)
+        takeScreenshot(named: "03-AlbumDetailView")
     }
 
     // MARK: - Helper Methods
@@ -73,5 +81,8 @@ final class AppStoreScreenshotTests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+
+        // Log screenshot taken for debugging
+        print("📸 Screenshot taken: \(name)")
     }
 }
