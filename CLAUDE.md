@@ -13,3 +13,4 @@
 - NEVER look in ./DerivedData unless absolutely necessary to determine the cause of a build error. If so, be very very careful about how many tokens you look at.
 - NEVER write UI tests until you have confirmed with me that the UI is 100% correct.
 - ALWAYS use the iPhone 16 Pro simulator on iOS 18.5 with UUID AE8D703E-E213-443C-8CBC-742F8807CCC3 (if it is unavailable, then alert me).
+- ALWAYS update the CLAUDE.MD file in each directory after refactoring, adding, or deleting files.
