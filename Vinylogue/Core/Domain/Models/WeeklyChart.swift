@@ -4,7 +4,7 @@ struct WeeklyChart: Codable, Identifiable, Hashable, Sendable {
     let id = UUID()
     let from: Date
     let to: Date
-    let albums: [Album]
+    let albums: [UserChartAlbum]
 
     var weekNumber: Int {
         Calendar.current.component(.weekOfYear, from: from)
@@ -14,7 +14,7 @@ struct WeeklyChart: Codable, Identifiable, Hashable, Sendable {
         Calendar.current.component(.year, from: from)
     }
 
-    init(from: Date, to: Date, albums: [Album] = []) {
+    init(from: Date, to: Date, albums: [UserChartAlbum] = []) {
         self.from = from
         self.to = to
         self.albums = albums

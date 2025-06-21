@@ -45,7 +45,7 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var backgroundArtworkSection: some View {
         Group {
-            if let imageURL = store.album.imageURL, let url = URL(string: imageURL) {
+            if let imageURL = store.album.detail?.imageURL, let url = URL(string: imageURL) {
                 LazyImage(url: url) { state in
                     if let image = state.image {
                         image
@@ -67,7 +67,7 @@ struct AlbumDetailView: View {
     @ViewBuilder
     private var artworkSection: some View {
         ReusableAlbumArtworkView.flexible(
-            imageURL: store.album.imageURL,
+            imageURL: store.album.detail?.imageURL,
             cornerRadius: 6,
             showShadow: true,
             onImageLoaded: { uiImage in
@@ -100,7 +100,7 @@ struct AlbumDetailView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 playCountBlock(count: store.album.playCount.formatted(), period: store.weekInfo.displayText)
-                playCountBlock(count: store.album.userPlayCount?.formatted() ?? "-", period: "all-time")
+                playCountBlock(count: store.album.detail?.userPlayCount?.formatted() ?? "-", period: "all-time")
             }
         }
         .padding(.vertical, 12)
@@ -152,7 +152,7 @@ struct AlbumDetailView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 20)
-            } else if let description = store.album.description, !description.isEmpty {
+            } else if let description = store.album.detail?.description, !description.isEmpty {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("about this album")
                         .font(.f(.demiBold, .title1))
@@ -164,7 +164,7 @@ struct AlbumDetailView: View {
                         .lineSpacing(4)
                         .multilineTextAlignment(.leading)
                 }
-            } else if store.album.isDetailLoaded {
+            } else if store.album.detail != nil {
                 EmptyView()
             }
         }
@@ -181,12 +181,14 @@ struct AlbumDetailView: View {
 // MARK: - Preview
 
 #Preview("Album Detail") {
-    let album: Album = {
-        var album = Album(name: "The Amulet", artist: "Circa Survive", imageURL: "https://lastfm.freetls.fastly.net/i/u/300x300/771d0911b2ad83def05210412c7cec1c.jpg", playCount: 181, rank: nil, url: "https://www.last.fm/music/Circa+Survive/The+Amulet", mbid: nil)
-        album.description = "This album was released on September 22nd, 2017 through Hopeless Records."
-        album.totalPlayCount = 0
-        album.userPlayCount = 181
-        album.isDetailLoaded = true
+    let album: UserChartAlbum = {
+        var album = UserChartAlbum(username: "ybsd", weekNumber: 3, year: 1949, name: "The Amulet", artist: "Circa Survive", playCount: 181, rank: nil, url: "https://www.last.fm/music/Circa+Survive/The+Amulet", mbid: nil)
+        album.detail = UserChartAlbum.Detail(
+            imageURL: "https://lastfm.freetls.fastly.net/i/u/300x300/771d0911b2ad83def05210412c7cec1c.jpg",
+            description: "This album was released on September 22nd, 2017 through Hopeless Records.",
+            totalPlayCount: 0,
+            userPlayCount: 181
+        )
         return album
     }()
 

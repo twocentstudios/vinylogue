@@ -46,37 +46,80 @@ enum TestDataFactory {
         }
     }
 
-    // MARK: - Album Creation
+    // MARK: - UserChartAlbum Creation
 
-    static func createAlbum(
+    static func createUserChartAlbum(
+        username: String = "testuser",
+        weekNumber: Int = 1,
+        year: Int = 2024,
         name: String = "Test Album",
         artist: String = "Test Artist",
-        imageURL: String? = nil,
         playCount: Int = 10,
         rank: Int? = 1,
         url: String? = nil,
-        mbid: String? = nil
-    ) -> Album {
-        Album(
+        mbid: String? = nil,
+        withDetail: Bool = false
+    ) -> UserChartAlbum {
+        var album = UserChartAlbum(
+            username: username,
+            weekNumber: weekNumber,
+            year: year,
             name: name,
             artist: artist,
-            imageURL: imageURL,
             playCount: playCount,
             rank: rank,
             url: url,
             mbid: mbid
         )
+        
+        if withDetail {
+            album.detail = UserChartAlbum.Detail(
+                imageURL: "https://example.com/test.jpg",
+                description: "Test album description",
+                totalPlayCount: 1000,
+                userPlayCount: 50
+            )
+        }
+        
+        return album
     }
 
-    static func createAlbums(count: Int, artistPrefix: String = "Artist") -> [Album] {
+    static func createUserChartAlbums(count: Int, username: String = "testuser", weekNumber: Int = 1, year: Int = 2024, artistPrefix: String = "Artist") -> [UserChartAlbum] {
         (1 ... count).map { index in
-            createAlbum(
+            createUserChartAlbum(
+                username: username,
+                weekNumber: weekNumber,
+                year: year,
                 name: "Album \(index)",
                 artist: "\(artistPrefix) \(index)",
                 playCount: 10 + index,
                 rank: index
             )
         }
+    }
+    
+    // MARK: - Legacy Album Creation (for specific API tests)
+    
+    static func createAlbumDetail(
+        name: String = "Test Album",
+        artist: String = "Test Artist",
+        url: String? = nil,
+        mbid: String? = nil,
+        imageURL: String? = nil,
+        description: String? = "Test description",
+        totalPlayCount: Int? = 1000,
+        userPlayCount: Int? = 50
+    ) -> AlbumDetail {
+        AlbumDetail(
+            name: name,
+            artist: artist,
+            url: url,
+            mbid: mbid,
+            imageURL: imageURL,
+            description: description,
+            totalPlayCount: totalPlayCount,
+            userPlayCount: userPlayCount
+        )
     }
 
     // MARK: - Chart Period Creation

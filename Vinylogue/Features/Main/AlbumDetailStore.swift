@@ -6,7 +6,7 @@ import SwiftUI
 final class AlbumDetailStore: Hashable {
     @ObservationIgnored @Dependency(\.lastFMClient) var lastFMClient
 
-    var album: Album
+    var album: UserChartAlbum
     var artworkImage: UIImage?
     var representativeColors: ColorExtraction.RepresentativeColors?
     var isLoadingDetails = false
@@ -35,13 +35,13 @@ final class AlbumDetailStore: Hashable {
         return Color.clear
     }
 
-    init(album: Album, weekInfo: WeekInfo) {
+    init(album: UserChartAlbum, weekInfo: WeekInfo) {
         self.album = album
         self.weekInfo = weekInfo
     }
 
     func loadAlbumDetails() async {
-        guard !album.isDetailLoaded else { return }
+        guard album.detail == nil else { return }
 
         isLoadingDetails = true
 
@@ -53,14 +53,20 @@ final class AlbumDetailStore: Hashable {
                 username: weekInfo.username
             )
 
-            album.imageURL = detailedAlbum.imageURL
-            album.description = detailedAlbum.description
-            album.totalPlayCount = detailedAlbum.totalPlayCount
-            album.userPlayCount = detailedAlbum.userPlayCount
-            album.isDetailLoaded = true
+            album.detail = UserChartAlbum.Detail(
+                imageURL: detailedAlbum.imageURL,
+                description: detailedAlbum.description,
+                totalPlayCount: detailedAlbum.totalPlayCount,
+                userPlayCount: detailedAlbum.userPlayCount
+            )
 
         } catch {
-            album.isDetailLoaded = true
+            album.detail = UserChartAlbum.Detail(
+                imageURL: nil,
+                description: nil,
+                totalPlayCount: nil,
+                userPlayCount: nil
+            )
         }
 
         isLoadingDetails = false

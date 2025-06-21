@@ -6,7 +6,7 @@ import Network
 
 protocol LastFMClientProtocol: Sendable {
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T
-    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album
+    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> AlbumDetail
 }
 
 struct LastFMClient: LastFMClientProtocol, Sendable {
@@ -173,35 +173,24 @@ extension LastFMClient {
         }
     }
 
-    /// Fetch weekly album chart for specific period
-    func fetchWeeklyAlbumChart(for username: String, from: Date, to: Date) async throws -> [Album] {
+    /// Fetch weekly album chart for specific period - NOTE: This is deprecated, use WeeklyAlbumsStore instead
+    func fetchWeeklyAlbumChart(for username: String, from: Date, to: Date) async throws -> [LastFMAlbumEntry] {
         let response: UserWeeklyAlbumChartResponse = try await request(.userWeeklyAlbumChart(username: username, from: from, to: to))
-
-        return (response.weeklyalbumchart.album ?? []).map { entry in
-            Album(
-                name: entry.name,
-                artist: entry.artist.name,
-                imageURL: nil, // Will be loaded separately via album.getinfo
-                playCount: entry.playCount,
-                rank: entry.rankNumber,
-                url: entry.url,
-                mbid: entry.mbid
-            )
-        }
+        return response.weeklyalbumchart.album ?? []
     }
 
     /// Fetch detailed album information
-    func fetchAlbumInfo(artist: String? = nil, album: String? = nil, mbid: String? = nil, username: String? = nil) async throws -> Album {
+    func fetchAlbumInfo(artist: String? = nil, album: String? = nil, mbid: String? = nil, username: String? = nil) async throws -> AlbumDetail {
         // Create cache key based on album identifiers
         guard let cacheKey = CacheKeyBuilder.albumInfo(artist: artist, album: album, mbid: mbid, username: username) else {
             // Fallback to original API call without caching for invalid parameters
             let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
-            return createAlbumFromResponse(response.album)
+            return createAlbumDetailFromResponse(response.album)
         }
 
         // Try to load from cache first
         do {
-            if let cachedAlbum: Album = try await cacheManager.retrieve(Album.self, key: cacheKey) {
+            if let cachedAlbum: AlbumDetail = try await cacheManager.retrieve(AlbumDetail.self, key: cacheKey) {
                 return cachedAlbum
             }
         } catch {
@@ -211,31 +200,25 @@ extension LastFMClient {
 
         // Fetch from API and cache the result
         let response: AlbumInfoResponse = try await request(.albumInfo(artist: artist, album: album, mbid: mbid, username: username))
-        let album = createAlbumFromResponse(response.album)
+        let albumDetail = createAlbumDetailFromResponse(response.album)
 
         // Cache the album info
-        try await cacheManager.store(album, key: cacheKey)
+        try await cacheManager.store(albumDetail, key: cacheKey)
 
-        return album
+        return albumDetail
     }
 
-    private func createAlbumFromResponse(_ info: LastFMAlbumInfo) -> Album {
-        var album = Album(
+    private func createAlbumDetailFromResponse(_ info: LastFMAlbumInfo) -> AlbumDetail {
+        AlbumDetail(
             name: info.name,
             artist: info.artist,
-            imageURL: info.imageURL,
-            playCount: 0, // This will be set from weekly chart data
-            rank: nil,
             url: info.url,
-            mbid: info.mbid
+            mbid: info.mbid,
+            imageURL: info.imageURL,
+            description: cleanupDescription(info.description),
+            totalPlayCount: info.totalPlayCount,
+            userPlayCount: info.userPlayCount
         )
-
-        album.description = cleanupDescription(info.description)
-        album.totalPlayCount = info.totalPlayCount
-        album.userPlayCount = info.userPlayCount
-        album.isDetailLoaded = true
-
-        return album
     }
 
     /// Clean up album description by removing Last.fm "Read more" links and Creative Commons text

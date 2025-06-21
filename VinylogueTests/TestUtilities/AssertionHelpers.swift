@@ -57,10 +57,10 @@ extension XCTestCase {
 // MARK: - Album Assertion Helpers
 
 extension XCTestCase {
-    /// Asserts that two Album objects are equal
-    func assertAlbumsEqual(
-        _ actual: Album?,
-        _ expected: Album?,
+    /// Asserts that two UserChartAlbum objects are equal
+    func assertUserChartAlbumsEqual(
+        _ actual: UserChartAlbum?,
+        _ expected: UserChartAlbum?,
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
@@ -74,19 +74,44 @@ extension XCTestCase {
             return
         }
 
+        XCTAssertEqual(actual.username, expected.username, "Username mismatch", file: file, line: line)
+        XCTAssertEqual(actual.weekNumber, expected.weekNumber, "Week number mismatch", file: file, line: line)
+        XCTAssertEqual(actual.year, expected.year, "Year mismatch", file: file, line: line)
         XCTAssertEqual(actual.name, expected.name, "Album name mismatch", file: file, line: line)
         XCTAssertEqual(actual.artist, expected.artist, "Artist name mismatch", file: file, line: line)
-        XCTAssertEqual(actual.imageURL, expected.imageURL, "Image URL mismatch", file: file, line: line)
         XCTAssertEqual(actual.playCount, expected.playCount, "Play count mismatch", file: file, line: line)
         XCTAssertEqual(actual.rank, expected.rank, "Rank mismatch", file: file, line: line)
         XCTAssertEqual(actual.url, expected.url, "URL mismatch", file: file, line: line)
         XCTAssertEqual(actual.mbid, expected.mbid, "MBID mismatch", file: file, line: line)
+        
+        // Compare detail if present
+        if let actualDetail = actual.detail, let expectedDetail = expected.detail {
+            assertAlbumDetailsEqual(actualDetail, expectedDetail, file: file, line: line)
+        } else {
+            XCTAssertEqual(actual.detail != nil, expected.detail != nil, "Detail presence mismatch", file: file, line: line)
+        }
     }
 
-    /// Asserts that an Album has expected properties
-    func assertAlbum(
-        _ album: Album?,
-        hasName name: String,
+    /// Asserts that two AlbumDetail objects are equal
+    func assertAlbumDetailsEqual(
+        _ actual: UserChartAlbum.Detail,
+        _ expected: UserChartAlbum.Detail,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(actual.imageURL, expected.imageURL, "Image URL mismatch", file: file, line: line)
+        XCTAssertEqual(actual.description, expected.description, "Description mismatch", file: file, line: line)
+        XCTAssertEqual(actual.totalPlayCount, expected.totalPlayCount, "Total play count mismatch", file: file, line: line)
+        XCTAssertEqual(actual.userPlayCount, expected.userPlayCount, "User play count mismatch", file: file, line: line)
+    }
+    
+    /// Asserts that a UserChartAlbum has expected properties
+    func assertUserChartAlbum(
+        _ album: UserChartAlbum?,
+        hasUsername username: String,
+        weekNumber: Int,
+        year: Int,
+        name: String,
         artist: String,
         playCount: Int? = nil,
         rank: Int? = nil,
@@ -135,7 +160,7 @@ extension XCTestCase {
 
     /// Asserts that an array of albums contains expected album names
     func assertAlbums(
-        _ albums: [Album],
+        _ albums: [UserChartAlbum],
         containAlbumNames names: [String],
         file: StaticString = #filePath,
         line: UInt = #line
@@ -152,9 +177,9 @@ extension XCTestCase {
         }
     }
 
-    /// Asserts that albums are sorted by rank in ascending order
-    func assertAlbumsSortedByRank(
-        _ albums: [Album],
+    /// Asserts that UserChartAlbums are sorted by rank in ascending order
+    func assertUserChartAlbumsSortedByRank(
+        _ albums: [UserChartAlbum],
         file: StaticString = #filePath,
         line: UInt = #line
     ) {

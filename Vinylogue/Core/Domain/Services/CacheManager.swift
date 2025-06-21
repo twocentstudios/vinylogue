@@ -110,7 +110,7 @@ struct ChartCache: Sendable {
         let key = CacheKeyBuilder.chart(user: user, from: from, to: to)
 
         do {
-            let albums: [Album]? = try await cacheManager.retrieve([Album].self, key: key)
+            let albums: [UserChartAlbum]? = try await cacheManager.retrieve([UserChartAlbum].self, key: key)
             guard let albums else {
                 return nil
             }
@@ -124,7 +124,7 @@ struct ChartCache: Sendable {
         let key = CacheKeyBuilder.chart(user: user, from: from, to: to)
 
         do {
-            let albums = try JSONDecoder().decode([Album].self, from: data)
+            let albums = try JSONDecoder().decode([UserChartAlbum].self, from: data)
             try await cacheManager.store(albums, key: key)
         } catch {
             throw CacheError.writeFailure(error)

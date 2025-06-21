@@ -77,7 +77,14 @@ final class WeeklyAlbumsStoreTests: XCTestCase {
         }
         // Set some test data
         store.albumsState = .loaded([
-            Album(name: "Test Album", artist: "Test Artist", playCount: 10),
+            TestDataFactory.createUserChartAlbum(
+                username: testUser.username,
+                weekNumber: 25,
+                year: 2024,
+                name: "Test Album",
+                artist: "Test Artist",
+                playCount: 10
+            ),
         ])
         store.currentWeekInfo = WeekInfo(
             weekNumber: 25,

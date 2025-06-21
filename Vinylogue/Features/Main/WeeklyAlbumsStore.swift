@@ -8,7 +8,7 @@ import SwiftUI
 enum WeeklyAlbumsLoadingState: Equatable {
     case initialized
     case loading
-    case loaded([Album])
+    case loaded([UserChartAlbum])
     case failed(LastFMError)
 }
 
@@ -34,7 +34,7 @@ final class WeeklyAlbumsStore: Hashable {
     @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
 
     /// Computed property to provide access to albums array for binding purposes
-    var albums: [Album] {
+    var albums: [UserChartAlbum] {
         get {
             if case let .loaded(albums) = albumsState {
                 return albums
@@ -127,10 +127,12 @@ final class WeeklyAlbumsStore: Hashable {
             let filteredAlbums = (finalResponse.weeklyalbumchart.album ?? [])
                 .filter { $0.playCount > playCountFilter }
                 .map { albumEntry in
-                    Album(
+                    UserChartAlbum(
+                        username: user.username,
+                        weekNumber: weekNumber,
+                        year: year,
                         name: albumEntry.name,
                         artist: albumEntry.artist.name,
-                        imageURL: nil,
                         playCount: albumEntry.playCount,
                         rank: albumEntry.rankNumber,
                         url: albumEntry.url,
@@ -159,7 +161,8 @@ final class WeeklyAlbumsStore: Hashable {
                         playCountFilter: playCountFilter,
                         lastFMClient: lastFMClient,
                         cacheManager: cacheManager,
-                        imagePipeline: imagePipeline
+                        imagePipeline: imagePipeline,
+                        calendar: calendar
                     )
                 }
             }
@@ -258,7 +261,7 @@ final class WeeklyAlbumsStore: Hashable {
     }
 
     /// Load album details for a specific album
-    func loadAlbum(_ album: Album) async {
+    func loadAlbum(_ album: UserChartAlbum) async {
         do {
             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                 artist: album.artist,
@@ -270,25 +273,31 @@ final class WeeklyAlbumsStore: Hashable {
             // Find and update the album in our stored collection
             var currentAlbums = albums
             if let index = currentAlbums.firstIndex(where: { $0.id == album.id }) {
-                currentAlbums[index].imageURL = detailedAlbum.imageURL
-                currentAlbums[index].description = detailedAlbum.description
-                currentAlbums[index].totalPlayCount = detailedAlbum.totalPlayCount
-                currentAlbums[index].userPlayCount = detailedAlbum.userPlayCount
-                currentAlbums[index].isDetailLoaded = true
+                currentAlbums[index].detail = UserChartAlbum.Detail(
+                    imageURL: detailedAlbum.imageURL,
+                    description: detailedAlbum.description,
+                    totalPlayCount: detailedAlbum.totalPlayCount,
+                    userPlayCount: detailedAlbum.userPlayCount
+                )
                 albums = currentAlbums
             }
         } catch {
             // Find and update the album in our stored collection
             var currentAlbums = albums
             if let index = currentAlbums.firstIndex(where: { $0.id == album.id }) {
-                currentAlbums[index].imageURL = nil
+                currentAlbums[index].detail = UserChartAlbum.Detail(
+                    imageURL: nil,
+                    description: nil,
+                    totalPlayCount: nil,
+                    userPlayCount: nil
+                )
                 albums = currentAlbums
             }
         }
     }
 
     /// Precache images for a collection of albums (used for performance optimization)
-    private func precacheImages(for albums: [Album]) async {
+    private func precacheImages(for albums: [UserChartAlbum]) async {
         // Filter albums to get only those with valid image URLs
         let imageURLs = albums.compactMap { album -> URL? in
             guard let imageURLString = album.imageURL,
@@ -314,7 +323,7 @@ final class WeeklyAlbumsStore: Hashable {
     }
 
     /// Precache images for a collection of albums (nonisolated version)
-    private nonisolated func precacheImages(for albums: [Album], imagePipeline: ImagePipeline) async {
+    private nonisolated func precacheImages(for albums: [UserChartAlbum], imagePipeline: ImagePipeline) async {
         // Filter albums to get only those with valid image URLs
         let imageURLs = albums.compactMap { album -> URL? in
             guard let imageURLString = album.imageURL,
@@ -346,7 +355,8 @@ final class WeeklyAlbumsStore: Hashable {
         playCountFilter: Int,
         lastFMClient: LastFMClientProtocol,
         cacheManager: CacheManager,
-        imagePipeline: ImagePipeline
+        imagePipeline: ImagePipeline,
+        calendar: Calendar
     ) async {
         do {
             let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
@@ -372,14 +382,20 @@ final class WeeklyAlbumsStore: Hashable {
 
             try await cacheManager.store(response, key: cacheKey)
 
+            // Extract week info for chart context
+            let weekNumber = calendar.component(.weekOfYear, from: chartPeriod.fromDate)
+            let year = calendar.component(.yearForWeekOfYear, from: chartPeriod.fromDate)
+
             // Process albums and precache their details
             let albums = (response.weeklyalbumchart.album ?? [])
                 .filter { $0.playCount > playCountFilter }
                 .map { albumEntry in
-                    Album(
+                    UserChartAlbum(
+                        username: user.username,
+                        weekNumber: weekNumber,
+                        year: year,
                         name: albumEntry.name,
                         artist: albumEntry.artist.name,
-                        imageURL: nil,
                         playCount: albumEntry.playCount,
                         rank: albumEntry.rankNumber,
                         url: albumEntry.url,
@@ -388,7 +404,7 @@ final class WeeklyAlbumsStore: Hashable {
                 }
 
             // Load album details and then precache images
-            let populatedAlbums = await withTaskGroup(of: Album?.self) { group in
+            let populatedAlbums = await withTaskGroup(of: UserChartAlbum?.self) { group in
                 // Limit concurrent requests to avoid overwhelming the API and memory
                 let maxConcurrentRequests = 5
                 var activeTaskCount = 0
@@ -409,7 +425,16 @@ final class WeeklyAlbumsStore: Hashable {
                                 mbid: album.mbid,
                                 username: user.username
                             )
-                            return detailedAlbum
+
+                            // Create a copy with detail populated
+                            var albumWithDetail = album
+                            albumWithDetail.detail = UserChartAlbum.Detail(
+                                imageURL: detailedAlbum.imageURL,
+                                description: detailedAlbum.description,
+                                totalPlayCount: detailedAlbum.totalPlayCount,
+                                userPlayCount: detailedAlbum.userPlayCount
+                            )
+                            return albumWithDetail
                         } catch {
                             // Return nil for failed requests
                             return nil
@@ -419,7 +444,7 @@ final class WeeklyAlbumsStore: Hashable {
                 }
 
                 // Collect all results
-                var results: [Album] = []
+                var results: [UserChartAlbum] = []
                 for await result in group {
                     if let album = result {
                         results.append(album)
@@ -437,7 +462,7 @@ final class WeeklyAlbumsStore: Hashable {
     }
 
     /// Navigate to album detail
-    func navigateToAlbum(_ album: Album) {
+    func navigateToAlbum(_ album: UserChartAlbum) {
         guard let weekInfo = currentWeekInfo else { return }
         let albumDetailStore = withDependencies(from: self) {
             AlbumDetailStore(album: album, weekInfo: weekInfo)

@@ -98,7 +98,7 @@ private struct ContentStateView: View {
 
 private struct AlbumListView: View {
     let store: WeeklyAlbumsStore
-    let onAlbumTap: (Album) -> Void
+    let onAlbumTap: (UserChartAlbum) -> Void
 
     var body: some View {
         if store.albums.isEmpty {
@@ -113,7 +113,7 @@ private struct AlbumListView: View {
                 .buttonStyle(AlbumRowButtonStyle())
                 .transition(.identity)
                 .task(id: album.id) {
-                    if album.imageURL == nil || album.imageURL?.isEmpty == true {
+                    if album.detail?.imageURL == nil || album.detail?.imageURL?.isEmpty == true {
                         await store.loadAlbum(album)
                     }
                 }

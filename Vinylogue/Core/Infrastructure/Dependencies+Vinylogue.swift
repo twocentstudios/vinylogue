@@ -186,15 +186,16 @@ private struct MockLastFMClient: LastFMClientProtocol {
         }
     }
 
-    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> Album {
-        Album(
+    func fetchAlbumInfo(artist: String?, album: String?, mbid: String?, username: String?) async throws -> AlbumDetail {
+        AlbumDetail(
             name: album ?? "Mock Album",
             artist: artist ?? "Mock Artist",
-            imageURL: "https://example.com/mock.jpg",
-            playCount: 0,
-            rank: nil,
             url: nil,
-            mbid: mbid
+            mbid: mbid,
+            imageURL: "https://example.com/mock.jpg",
+            description: "Mock album description",
+            totalPlayCount: 1000,
+            userPlayCount: 50
         )
     }
 }

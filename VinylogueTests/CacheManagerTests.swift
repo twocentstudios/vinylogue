@@ -52,19 +52,27 @@ final class CacheManagerTests: XCTestCase {
         try await cacheManager.remove(key: key)
     }
 
-    func testStoreAndRetrieveAlbum() async throws {
+    func testStoreAndRetrieveUserChartAlbum() async throws {
         // Given
-        let testAlbum = Album(name: "Test Album", artist: "Test Artist", imageURL: "http://example.com/album.jpg", playCount: 50, rank: 1, url: "http://last.fm/music/Test+Artist/Test+Album", mbid: "test-mbid")
+        let testAlbum = TestDataFactory.createUserChartAlbum(
+            name: "Test Album",
+            artist: "Test Artist",
+            playCount: 50,
+            rank: 1,
+            url: "http://last.fm/music/Test+Artist/Test+Album",
+            mbid: "test-mbid",
+            withDetail: true
+        )
         let key = "album_test"
 
         // When
         try await cacheManager.store(testAlbum, key: key)
-        let retrieved: Album? = try await cacheManager.retrieve(Album.self, key: key)
+        let retrieved: UserChartAlbum? = try await cacheManager.retrieve(UserChartAlbum.self, key: key)
 
         // Then
         XCTAssertEqual(retrieved?.name, testAlbum.name)
         XCTAssertEqual(retrieved?.artist, testAlbum.artist)
-        XCTAssertEqual(retrieved?.imageURL, testAlbum.imageURL)
+        XCTAssertEqual(retrieved?.detail?.imageURL, testAlbum.detail?.imageURL)
         XCTAssertEqual(retrieved?.playCount, testAlbum.playCount)
         XCTAssertEqual(retrieved?.rank, testAlbum.rank)
         XCTAssertEqual(retrieved?.url, testAlbum.url)
@@ -147,8 +155,8 @@ final class ChartCacheTests: XCTestCase {
     func testChartCacheSaveAndLoad() async throws {
         // Given
         let testAlbums = [
-            Album(name: "Album 1", artist: "Artist 1", imageURL: nil, playCount: 10, rank: 1, url: nil, mbid: nil),
-            Album(name: "Album 2", artist: "Artist 2", imageURL: nil, playCount: 8, rank: 2, url: nil, mbid: nil),
+            TestDataFactory.createUserChartAlbum(name: "Album 1", artist: "Artist 1", playCount: 10, rank: 1),
+            TestDataFactory.createUserChartAlbum(name: "Album 2", artist: "Artist 2", playCount: 8, rank: 2),
         ]
         let albumsData = try JSONEncoder().encode(testAlbums)
         let user = "testuser"
@@ -162,7 +170,7 @@ final class ChartCacheTests: XCTestCase {
         // Then
         XCTAssertNotNil(loadedData)
 
-        let loadedAlbums = try JSONDecoder().decode([Album].self, from: loadedData!)
+        let loadedAlbums = try JSONDecoder().decode([UserChartAlbum].self, from: loadedData!)
         XCTAssertEqual(loadedAlbums.count, 2)
         XCTAssertEqual(loadedAlbums[0].name, "Album 1")
         XCTAssertEqual(loadedAlbums[1].name, "Album 2")

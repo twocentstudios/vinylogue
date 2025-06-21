@@ -3,11 +3,11 @@ import NukeUI
 import SwiftUI
 
 struct AlbumRowView: View {
-    let album: Album
+    let album: UserChartAlbum
 
     var body: some View {
         HStack(spacing: 12) {
-            ReusableAlbumArtworkView.fixedSize(imageURL: album.imageURL, size: 80)
+            ReusableAlbumArtworkView.fixedSize(imageURL: album.detail?.imageURL, size: 80)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(album.artist.uppercased())
@@ -59,24 +59,30 @@ struct AlbumRowButtonStyle: ButtonStyle {
 // MARK: - Preview
 
 #Preview("Album Row") {
-    let album1 = Album(
+    let album1 = UserChartAlbum(
+        username: "testuser",
+        weekNumber: 1,
+        year: 2024,
         name: "The Sea of Tragic Beasts",
         artist: "Fit For An Autopsy",
-        imageURL: nil,
         playCount: 20,
         rank: 1
     )
-    let album2 = Album(
+    let album2 = UserChartAlbum(
+        username: "testuser",
+        weekNumber: 1,
+        year: 2024,
         name: "Is This Thing Cursed?",
         artist: "Alkaline Trio",
-        imageURL: nil,
         playCount: 25,
         rank: 2
     )
-    let album3 = Album(
+    let album3 = UserChartAlbum(
+        username: "testuser",
+        weekNumber: 1,
+        year: 2024,
         name: "A Very Long Album Title That Should Be Truncated Properly",
         artist: "An Artist With A Long Name",
-        imageURL: nil,
         playCount: 5,
         rank: 3
     )

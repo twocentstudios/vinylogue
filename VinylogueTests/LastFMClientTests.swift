@@ -295,21 +295,22 @@ final class LastFMClientTests: XCTestCase {
         XCTAssertEqual(period.toDate.timeIntervalSince1970, 1641600000)
     }
 
-    func testAlbumModelDetailLoading() {
-        var album = Album(
+    func testUserChartAlbumDetailLoading() {
+        var album = TestDataFactory.createUserChartAlbum(
             name: "Test Album",
             artist: "Test Artist",
-            imageURL: nil,
             playCount: 10,
-            rank: 1,
-            url: nil,
-            mbid: nil
+            rank: 1
         )
 
         XCTAssertFalse(album.isDetailLoaded)
 
-        album.description = "Test description"
-        album.isDetailLoaded = true
+        album.detail = UserChartAlbum.Detail(
+            imageURL: nil,
+            description: "Test description",
+            totalPlayCount: nil,
+            userPlayCount: nil
+        )
 
         XCTAssertTrue(album.isDetailLoaded)
         XCTAssertEqual(album.description, "Test description")
