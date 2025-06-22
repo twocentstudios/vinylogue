@@ -20,6 +20,7 @@ settings:
   INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
   INFOPLIST_KEY_CFBundleDisplayName: "vinylogue"
   INFOPLIST_KEY_UIUserInterfaceStyle: "Light"
+  INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: false
   ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS: true
   ENABLE_USER_SCRIPT_SANDBOXING: true
 
