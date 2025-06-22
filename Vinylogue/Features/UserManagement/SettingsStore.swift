@@ -4,8 +4,10 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class SettingsStore {
+final class SettingsStore: Identifiable {
     @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
+
+    var usernameChangeStore: UsernameChangeStore?
 
     var playCountFilterString: String {
         switch playCountFilter {
@@ -30,5 +32,9 @@ final class SettingsStore {
                 filter *= 2
             }
         }
+    }
+
+    func showUsernameChange() {
+        usernameChangeStore = UsernameChangeStore()
     }
 }

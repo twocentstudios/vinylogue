@@ -11,7 +11,15 @@ struct RootView: View {
                     if store.hasCurrentUser {
                         AppView(model: store.appModel)
                     } else {
-                        OnboardingView()
+                        AppView(model: store.appModel)
+                            .onAppear {
+                                if store.onboardingStore == nil {
+                                    store.showOnboarding()
+                                }
+                            }
+                            .sheet(item: $store.onboardingStore) { onboardingStore in
+                                OnboardingView(store: onboardingStore)
+                            }
                     }
                 } else {
                     MigrationLoadingView()
@@ -20,7 +28,15 @@ struct RootView: View {
                 if store.hasCurrentUser {
                     AppView(model: store.appModel)
                 } else {
-                    OnboardingView()
+                    AppView(model: store.appModel)
+                        .onAppear {
+                            if store.onboardingStore == nil {
+                                store.showOnboarding()
+                            }
+                        }
+                        .sheet(item: $store.onboardingStore) { onboardingStore in
+                            OnboardingView(store: onboardingStore)
+                        }
                 }
             }
         }

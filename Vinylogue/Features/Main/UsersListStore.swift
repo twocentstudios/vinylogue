@@ -9,10 +9,8 @@ final class UsersListStore {
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
     @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
 
-    var showingEditSheet = false
-    var showingSettingsSheet = false
-
-    var editFriendsStore = EditFriendsStore()
+    var editFriendsStore: EditFriendsStore?
+    var settingsStore: SettingsStore?
 
     var currentUser: User? {
         guard let username = currentUsername else { return nil }
@@ -37,19 +35,11 @@ final class UsersListStore {
     init() {}
 
     func showEditSheet() {
-        showingEditSheet = true
+        editFriendsStore = EditFriendsStore()
     }
 
-    func hideEditSheet() {
-        showingEditSheet = false
-    }
-
-    func showSettingsSheet() {
-        showingSettingsSheet = true
-    }
-
-    func hideSettingsSheet() {
-        showingSettingsSheet = false
+    func showSettings() {
+        settingsStore = SettingsStore()
     }
 
     func navigateToUser(_ user: User) {

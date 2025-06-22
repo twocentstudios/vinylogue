@@ -4,7 +4,7 @@ import SwiftUI
 
 struct UsernameChangeView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var store = UsernameChangeStore()
+    @Bindable var store: UsernameChangeStore
 
     @Shared(.currentUser) var currentUsername: String?
 
@@ -84,5 +84,5 @@ struct UsernameChangeView: View {
 }
 
 #Preview {
-    UsernameChangeView()
+    UsernameChangeView(store: UsernameChangeStore())
 }

@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class EditFriendsStore {
+final class EditFriendsStore: Identifiable {
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
     @ObservationIgnored @Dependency(\.lastFMClient) var lastFMClient

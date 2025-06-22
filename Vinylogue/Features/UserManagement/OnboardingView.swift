@@ -4,8 +4,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Shared(.currentUser) var currentUsername: String?
-
-    @State private var store = OnboardingStore()
+    @Bindable var store: OnboardingStore
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
@@ -84,15 +83,15 @@ struct OnboardingView: View {
 // MARK: - Previews
 
 #Preview("Default") {
-    OnboardingView()
+    OnboardingView(store: OnboardingStore())
 }
 
 #Preview("Dark Mode") {
-    OnboardingView()
+    OnboardingView(store: OnboardingStore())
         .preferredColorScheme(.dark)
 }
 
 #Preview("Large Text") {
-    OnboardingView()
+    OnboardingView(store: OnboardingStore())
         .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 }

@@ -69,13 +69,13 @@ struct UsersListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
-                    store.showSettingsSheet()
+                    store.showSettings()
                 }) {
                     Image(systemName: "gearshape")
                         .font(.f(.ultralight, .body))
                         .foregroundColor(.accent)
                 }
-                .sensoryFeedback(.impact, trigger: store.showingSettingsSheet)
+                .sensoryFeedback(.impact, trigger: store.settingsStore != nil)
             }
 
             ToolbarItem(placement: .principal) {
@@ -84,11 +84,11 @@ struct UsersListView: View {
                     .font(.f(.regular, .headline))
             }
         }
-        .sheet(isPresented: $store.showingEditSheet) {
-            EditFriendsView(store: store.editFriendsStore)
+        .sheet(item: $store.editFriendsStore) { editFriendsStore in
+            EditFriendsView(store: editFriendsStore)
         }
-        .sheet(isPresented: $store.showingSettingsSheet) {
-            SettingsView()
+        .sheet(item: $store.settingsStore) { settingsStore in
+            SettingsView(store: settingsStore)
         }
         .background(Color.primaryBackground, ignoresSafeAreaEdges: .all)
     }

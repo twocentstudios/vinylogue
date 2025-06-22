@@ -12,6 +12,7 @@ final class RootStore {
     var showMigrationError = false
 
     var appModel = AppModel()
+    var onboardingStore: OnboardingStore?
 
     var currentUser: User? {
         guard let username = currentUsername else { return nil }
@@ -54,5 +55,9 @@ final class RootStore {
 
     func continueAnyway() {
         isMigrationComplete = true
+    }
+
+    func showOnboarding() {
+        onboardingStore = OnboardingStore()
     }
 }

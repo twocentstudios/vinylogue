@@ -5,13 +5,12 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var store = SettingsStore()
+    @Bindable var store: SettingsStore
 
     @Shared(.currentUser) var currentUsername: String?
 
     @State private var showingMailComposer = false
     @State private var showingUsernamePicker = false
-    @State private var showingUsernameChangeSheet = false
     @State private var showingLicenses = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
 
@@ -33,7 +32,7 @@ struct SettingsView: View {
                     Section {
                         SettingsRowView(
                             title: "change user",
-                            action: { showingUsernameChangeSheet = true }
+                            action: { store.showUsernameChange() }
                         )
                     } header: {
                         SectionHeaderView("me")
@@ -105,8 +104,8 @@ struct SettingsView: View {
         .sheet(isPresented: $showingMailComposer) {
             MailComposerView(result: $mailResult)
         }
-        .sheet(isPresented: $showingUsernameChangeSheet) {
-            UsernameChangeView()
+        .sheet(item: $store.usernameChangeStore) { store in
+            UsernameChangeView(store: store)
         }
         .sheet(isPresented: $showingLicenses) {
             LicensesView()
@@ -247,9 +246,8 @@ struct MailComposerView: UIViewControllerRepresentable {
     }
 }
 
-
 // MARK: - Previews
 
 #Preview {
-    SettingsView()
+    SettingsView(store: SettingsStore())
 }
