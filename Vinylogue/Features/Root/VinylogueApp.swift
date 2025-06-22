@@ -19,7 +19,7 @@ struct VinylogueApp: App {
                 RootView(store: Self.rootStore)
                     .task {
                         if !isScreenshotTesting {
-                            #if DEBUG
+                            #if DEBUG && false
                                 @Dependency(\.cacheManager) var cacheManager
                                 try! await cacheManager.clearCache()
                             #endif
