@@ -25,7 +25,7 @@ Build/
 .DS_Store
   
 # Secrets
-Secrets.swift
+**/Secrets.swift
 
 # Package Manager
 .swiftpm/
@@ -34,5 +34,3 @@ Package.resolved
 # Other
 .idea/
 Design/screenshots/
-
-
