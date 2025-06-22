@@ -4,6 +4,7 @@ import SwiftUI
 
 struct AppView: View {
     @Bindable var model: AppModel
+    @State private var navigationTint: Color? = nil
 
     var body: some View {
         NavigationStack(path: $model.path) {
@@ -16,6 +17,10 @@ struct AppView: View {
                         AlbumDetailView(store: store)
                     }
                 }
+        }
+        .tint(navigationTint)
+        .onPreferenceChange(NavigationTintPreferenceKey.self) { newTint in
+            navigationTint = newTint
         }
     }
 }

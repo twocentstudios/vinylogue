@@ -38,6 +38,7 @@ struct AlbumDetailView: View {
         .task(id: store.representativeColors != nil) {
             store.startColorAnimation()
         }
+        .navigationTint(store.textColor)
     }
 
     // MARK: - View Components
