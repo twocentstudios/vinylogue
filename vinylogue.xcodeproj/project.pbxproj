@@ -22,13 +22,13 @@
 		35D84E6B7172BEA26584B870 /* LegacyMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E5261EE4AF8994E04A801E /* LegacyMigrator.swift */; };
 		3CF7C478C8E6182662A6F2AB /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC04CB10B99EFACDA2F6A549 /* AppView.swift */; };
 		3E45E994F561A62D33C41C83 /* LegacyMigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA8FFE857D686B398490A7C /* LegacyMigratorTests.swift */; };
+		3E8BB342A237C979676612B5 /* AppStoreScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02954E222A677CD316C7E1B2 /* AppStoreScreenshotTests.swift */; };
 		3F85B550D6D7841E4BAC9673 /* LastFMResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A796C88C57BA0909324A5D /* LastFMResponses.swift */; };
 		420693A4E45AE3102F935323 /* WeeklyAlbumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15862A7DD2B4DBE440DBBA9 /* WeeklyAlbumsView.swift */; };
 		42E15B6DF9468BA592336F34 /* EditFriendsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A34C5712B52CAD6777F828A /* EditFriendsStore.swift */; };
 		4B1DEED635DB3366E6031F0C /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EB857434C74EA478296F76 /* Album.swift */; };
 		4CA6009D072325EBE172DFA8 /* LastFMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F45B9C69C27A43A1D9DEA8D1 /* LastFMClient.swift */; };
 		594C0B6BFA0D15EC4BDC4DE9 /* TestDataFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9F67EEB152FF5CC61718F5 /* TestDataFactory.swift */; };
-		5F7A2989EA4FFF585640EF6B /* AppStoreScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */; };
 		6302D6264E5FCC35D9F3A2D4 /* UsernameChangeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B4BF6623CEFF96E06915FF /* UsernameChangeStore.swift */; };
 		63AA7206AA2DB304430DC470 /* FriendsImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C649EA996DC75DA530AB6E1 /* FriendsImporterTests.swift */; };
 		6400FA69F4443D158580EAAD /* EditFriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9776B2030D2F1C384027BD /* EditFriendsView.swift */; };
@@ -80,14 +80,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		36628E91518636715833482B /* PBXContainerItemProxy */ = {
+		5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ED341E05211FAFE0EC43AE1B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 130E284405C187DF086D20A1;
 			remoteInfo = Vinylogue;
 		};
-		5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */ = {
+		CC545D54B9EF6C1365E93225 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ED341E05211FAFE0EC43AE1B /* Project object */;
 			proxyType = 1;
@@ -98,9 +98,11 @@
 
 /* Begin PBXFileReference section */
 		01D427C8F541905D67A705B3 /* VinylogueApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VinylogueApp.swift; sourceTree = "<group>"; };
+		02954E222A677CD316C7E1B2 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		04FB9B68A234CE12F380558F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		0676A0FB6AE65B101CA5184E /* NavigationTintPreferenceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTintPreferenceKey.swift; sourceTree = "<group>"; };
 		10BC1EA7831A4D2C2495651F /* TestLastFMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestLastFMClient.swift; sourceTree = "<group>"; };
+		1199F6887F3B9B2BA2021C66 /* VinylogueAppStoreScreenshotUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueAppStoreScreenshotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1688967E9FA201669E7FFB76 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		1759CB50F2FF651F24812287 /* LastFMUsernameInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastFMUsernameInputView.swift; sourceTree = "<group>"; };
 		1ED5EBF76CF71A58822890A2 /* AlbumDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDetailView.swift; sourceTree = "<group>"; };
@@ -108,10 +110,8 @@
 		2DD6C197A31FBD864F56D3FC /* AssertionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertionHelpers.swift; sourceTree = "<group>"; };
 		2DF93D4DE7377FBA5A9AA037 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		3096AD08B31FFAF4FE01E850 /* EquatableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableError.swift; sourceTree = "<group>"; };
-		30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A34C5712B52CAD6777F828A /* EditFriendsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendsStore.swift; sourceTree = "<group>"; };
 		47A0C6DF3F6C11B61338F039 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
-		4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		53B4BF6623CEFF96E06915FF /* UsernameChangeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameChangeStore.swift; sourceTree = "<group>"; };
 		59BD2B5783F03909806E0521 /* AddFriendStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendStore.swift; sourceTree = "<group>"; };
 		5F714D85FFD52CC1E2EE1592 /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
@@ -197,8 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				74CD2D864124E180A45B91E3 /* Vinylogue.app */,
+				1199F6887F3B9B2BA2021C66 /* VinylogueAppStoreScreenshotUITests.xctest */,
 				667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */,
-				30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -271,14 +271,6 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
-		73006DD227CB46F119D46BF2 /* VinylogueUITests */ = {
-			isa = PBXGroup;
-			children = (
-				4C759C3758DD06C5337EA4C6 /* AppStoreScreenshotTests.swift */,
-			);
-			path = VinylogueUITests;
-			sourceTree = "<group>";
-		};
 		7F48DDC191E8A2BF214A378A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,6 +287,14 @@
 				7F48DDC191E8A2BF214A378A /* Preview Content */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		8BB42F60BE4C5156AE9C6F1B /* VinylogueAppStoreScreenshotUITests */ = {
+			isa = PBXGroup;
+			children = (
+				02954E222A677CD316C7E1B2 /* AppStoreScreenshotTests.swift */,
+			);
+			path = VinylogueAppStoreScreenshotUITests;
 			sourceTree = "<group>";
 		};
 		8C1CD61D133CA87F9131B9EE /* Features */ = {
@@ -336,8 +336,8 @@
 			isa = PBXGroup;
 			children = (
 				E75DC78AECDC4C93130E52A1 /* Vinylogue */,
+				8BB42F60BE4C5156AE9C6F1B /* VinylogueAppStoreScreenshotUITests */,
 				B1826081BBBD3E82AD791792 /* VinylogueTests */,
-				73006DD227CB46F119D46BF2 /* VinylogueUITests */,
 				1C9984247BA068703842241F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -438,22 +438,22 @@
 			productReference = 667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A679576B4186A2482EE74A7B /* VinylogueUITests */ = {
+		71F53D5A55C04F4A2BF4FB1E /* VinylogueAppStoreScreenshotUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2660A776607620AD3E60FC70 /* Build configuration list for PBXNativeTarget "VinylogueUITests" */;
+			buildConfigurationList = 08CB0D002387B676125F9549 /* Build configuration list for PBXNativeTarget "VinylogueAppStoreScreenshotUITests" */;
 			buildPhases = (
-				7F9A7E257953AF80FC62FAFE /* Sources */,
+				93D4BC3F53AEE1C25135663F /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				D9E2385B5091246F66F986E3 /* PBXTargetDependency */,
+				A8ED4FD9231D6582E2E663A3 /* PBXTargetDependency */,
 			);
-			name = VinylogueUITests;
+			name = VinylogueAppStoreScreenshotUITests;
 			packageProductDependencies = (
 			);
-			productName = VinylogueUITests;
-			productReference = 30AD109FCFC7C6AEA7BACF37 /* VinylogueUITests.xctest */;
+			productName = VinylogueAppStoreScreenshotUITests;
+			productReference = 1199F6887F3B9B2BA2021C66 /* VinylogueAppStoreScreenshotUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -469,7 +469,7 @@
 						DevelopmentTeam = YK25EF78NT;
 						ProvisioningStyle = Automatic;
 					};
-					A679576B4186A2482EE74A7B = {
+					71F53D5A55C04F4A2BF4FB1E = {
 						TestTargetID = 130E284405C187DF086D20A1;
 					};
 				};
@@ -494,8 +494,8 @@
 			projectRoot = "";
 			targets = (
 				130E284405C187DF086D20A1 /* Vinylogue */,
+				71F53D5A55C04F4A2BF4FB1E /* VinylogueAppStoreScreenshotUITests */,
 				1745DB35E0B0F59AF57E4FEC /* VinylogueTests */,
-				A679576B4186A2482EE74A7B /* VinylogueUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -514,11 +514,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7F9A7E257953AF80FC62FAFE /* Sources */ = {
+		93D4BC3F53AEE1C25135663F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F7A2989EA4FFF585640EF6B /* AppStoreScreenshotTests.swift in Sources */,
+				3E8BB342A237C979676612B5 /* AppStoreScreenshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,15 +601,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A8ED4FD9231D6582E2E663A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 130E284405C187DF086D20A1 /* Vinylogue */;
+			targetProxy = CC545D54B9EF6C1365E93225 /* PBXContainerItemProxy */;
+		};
 		B291B26FC46D0016599F0DE3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 130E284405C187DF086D20A1 /* Vinylogue */;
 			targetProxy = 5D7AF65D27DA2CDF4B19EA3E /* PBXContainerItemProxy */;
-		};
-		D9E2385B5091246F66F986E3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 130E284405C187DF086D20A1 /* Vinylogue */;
-			targetProxy = 36628E91518636715833482B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -740,7 +740,7 @@
 			};
 			name = Debug;
 		};
-		69D271A1421ABDB07DB45A7D /* Debug */ = {
+		805303586ABB8084647F7FE2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -749,12 +749,12 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueAppStoreScreenshotUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Vinylogue;
 			};
-			name = Debug;
+			name = Release;
 		};
 		8B7520F40D86A7BC12202100 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -843,7 +843,7 @@
 			};
 			name = Release;
 		};
-		F6CB44D92A4E7A1EB3F67E61 /* Release */ = {
+		EDD19AC4E308009A34376EBB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -852,21 +852,21 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.twocentstudios.VinylogueAppStoreScreenshotUITests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Vinylogue;
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2660A776607620AD3E60FC70 /* Build configuration list for PBXNativeTarget "VinylogueUITests" */ = {
+		08CB0D002387B676125F9549 /* Build configuration list for PBXNativeTarget "VinylogueAppStoreScreenshotUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				69D271A1421ABDB07DB45A7D /* Debug */,
-				F6CB44D92A4E7A1EB3F67E61 /* Release */,
+				EDD19AC4E308009A34376EBB /* Debug */,
+				805303586ABB8084647F7FE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

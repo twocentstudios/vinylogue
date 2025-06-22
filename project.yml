@@ -72,11 +72,11 @@ targets:
     dependencies:
       - target: Vinylogue
 
-  VinylogueUITests:
+  VinylogueAppStoreScreenshotUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - path: VinylogueUITests
+      - path: VinylogueAppStoreScreenshotUITests
         excludes:
           - "**/CLAUDE.md"
     dependencies:
@@ -88,7 +88,7 @@ schemes:
       targets:
         Vinylogue: all
         VinylogueTests: [test]
-        VinylogueUITests: [test]
+        VinylogueAppStoreScreenshotUITests: [test]
     run:
       config: Debug
     test:
@@ -101,18 +101,18 @@ schemes:
       config: Debug
     archive:
       config: Release
-  VinylogueUITests:
+  VinylogueAppStoreScreenshotUITests:
     build:
       targets:
         Vinylogue: all
         VinylogueTests: [test]
-        VinylogueUITests: [test]
+        VinylogueAppStoreScreenshotUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
-        - VinylogueUITests
+        - VinylogueAppStoreScreenshotUITests
     profile:
       config: Release
     analyze:

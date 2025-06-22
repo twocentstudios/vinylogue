@@ -29,9 +29,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1745DB35E0B0F59AF57E4FEC"
-               BuildableName = "VinylogueTests.xctest"
-               BlueprintName = "VinylogueTests"
+               BlueprintIdentifier = "71F53D5A55C04F4A2BF4FB1E"
+               BuildableName = "VinylogueAppStoreScreenshotUITests.xctest"
+               BlueprintName = "VinylogueAppStoreScreenshotUITests"
                ReferencedContainer = "container:Vinylogue.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,9 +43,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A679576B4186A2482EE74A7B"
-               BuildableName = "VinylogueUITests.xctest"
-               BlueprintName = "VinylogueUITests"
+               BlueprintIdentifier = "1745DB35E0B0F59AF57E4FEC"
+               BuildableName = "VinylogueTests.xctest"
+               BlueprintName = "VinylogueTests"
                ReferencedContainer = "container:Vinylogue.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

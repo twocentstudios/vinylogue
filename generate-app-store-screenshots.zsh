@@ -23,7 +23,7 @@ declare -A DEVICES=(
 )
 
 # Test configurations
-SCHEME="VinylogueUITests"
+SCHEME="VinylogueAppStoreScreenshotUITests"
 PROJECT_FILE="Vinylogue.xcodeproj"
 
 # Colors for output
@@ -133,7 +133,7 @@ run_tests_for_device() {
         -destination "${destination}" \
         -resultBundlePath "${TEMP_DIR}/${device_key}.xcresult" \
         test \
-        -only-testing:VinylogueUITests/AppStoreScreenshotTests
+        -only-testing:VinylogueAppStoreScreenshotUITests/AppStoreScreenshotTests
     
     log_success "Tests completed for ${device_name}"
 }
