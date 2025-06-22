@@ -71,7 +71,7 @@ enum TestDataFactory {
             url: url,
             mbid: mbid
         )
-        
+
         if withDetail {
             album.detail = UserChartAlbum.Detail(
                 imageURL: "https://example.com/test.jpg",
@@ -80,7 +80,7 @@ enum TestDataFactory {
                 userPlayCount: 50
             )
         }
-        
+
         return album
     }
 
@@ -97,9 +97,9 @@ enum TestDataFactory {
             )
         }
     }
-    
+
     // MARK: - Legacy Album Creation (for specific API tests)
-    
+
     static func createAlbumDetail(
         name: String = "Test Album",
         artist: String = "Test Artist",

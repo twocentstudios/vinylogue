@@ -83,7 +83,7 @@ extension XCTestCase {
         XCTAssertEqual(actual.rank, expected.rank, "Rank mismatch", file: file, line: line)
         XCTAssertEqual(actual.url, expected.url, "URL mismatch", file: file, line: line)
         XCTAssertEqual(actual.mbid, expected.mbid, "MBID mismatch", file: file, line: line)
-        
+
         // Compare detail if present
         if let actualDetail = actual.detail, let expectedDetail = expected.detail {
             assertAlbumDetailsEqual(actualDetail, expectedDetail, file: file, line: line)
@@ -104,7 +104,7 @@ extension XCTestCase {
         XCTAssertEqual(actual.totalPlayCount, expected.totalPlayCount, "Total play count mismatch", file: file, line: line)
         XCTAssertEqual(actual.userPlayCount, expected.userPlayCount, "User play count mismatch", file: file, line: line)
     }
-    
+
     /// Asserts that a UserChartAlbum has expected properties
     func assertUserChartAlbum(
         _ album: UserChartAlbum?,

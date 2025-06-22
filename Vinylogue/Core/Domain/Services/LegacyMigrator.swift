@@ -12,7 +12,6 @@ final class LegacyMigrator {
     @ObservationIgnored private let fileManager: FileManager
     @ObservationIgnored private let cacheDirectory: URL?
 
-
     // @Shared properties for data persistence (excluded from observation)
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
     @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
@@ -205,4 +204,3 @@ private extension LegacyMigrator {
         fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
-
