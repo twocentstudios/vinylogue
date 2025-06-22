@@ -9,7 +9,6 @@ import Sharing
 final class LegacyMigrator {
     @ObservationIgnored private let logger = Logger(subsystem: "com.twocentstudios.vinylogue", category: "LegacyMigrator")
     @ObservationIgnored private let userDefaults: UserDefaults
-    @ObservationIgnored private let fileManager: FileManager
     @ObservationIgnored private let cacheDirectory: URL?
 
     // @Shared properties for data persistence (excluded from observation)
@@ -18,9 +17,8 @@ final class LegacyMigrator {
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
     @ObservationIgnored @Shared(.migrationCompleted) var migrationCompletedShared
 
-    init(userDefaults: UserDefaults = .standard, fileManager: FileManager = .default, cacheDirectory: URL? = nil) {
+    init(userDefaults: UserDefaults = .standard, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults
-        self.fileManager = fileManager
         self.cacheDirectory = cacheDirectory
     }
 
@@ -158,7 +156,7 @@ final class LegacyMigrator {
     /// Saves a record of the migration for debugging purposes
     private func saveMigrationRecord(_ legacyData: LegacyData) async {
         do {
-            let migrationURL = getDocumentsDirectory().appendingPathComponent("migration_record.txt")
+            let migrationURL = URL.libraryDirectory.appendingPathComponent("migration_record_2_0_0.txt")
             let recordText = """
             Migration completed on: \(legacyData.migrationDate)
             User found: \(legacyData.user?.username ?? "none")
@@ -187,20 +185,5 @@ final class LegacyMigrator {
     func resetMigration() {
         $migrationCompletedShared.withLock { $0 = false }
         logger.info("Reset migration state")
-    }
-}
-
-// MARK: - Private Helpers
-
-private extension LegacyMigrator {
-    func getCacheDirectory() -> URL {
-        if let cacheDirectory {
-            return cacheDirectory.appendingPathComponent("VinylogueCache")
-        }
-        return fileManager.temporaryDirectory.appendingPathComponent("VinylogueCache")
-    }
-
-    func getDocumentsDirectory() -> URL {
-        fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
