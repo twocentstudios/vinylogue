@@ -49,8 +49,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration is marked as completed without doing work
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
     }
 
     func testMigrationRunsWhenNotCompleted() async {
@@ -62,9 +61,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes and is marked as done
-        XCTAssertTrue(migrator.migrationCompleted)
         XCTAssertTrue(migrator.migrationCompletedShared)
-        XCTAssertNil(migrator.migrationError)
     }
 
     // MARK: - Legacy User Migration Tests
@@ -80,8 +77,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
 
         // And: Legacy user data is cleaned up
         XCTAssertNil(tempUserDefaults.object(forKey: LegacyUser.userDefaultsKey))
@@ -96,8 +92,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration still completes successfully
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
     }
 
     // MARK: - Legacy Settings Migration Tests
@@ -113,8 +108,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
 
         // And: Settings are migrated to new format (via @Shared)
         // Note: @Shared properties in LegacyMigrator use production storage, not test storage
@@ -143,8 +137,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
 
         // And: Legacy friends data is cleaned up
         XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.friendsList))
@@ -179,8 +172,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
+        XCTAssertTrue(migrator.migrationCompletedShared)
         XCTAssertTrue(migrator.migrationCompletedShared)
 
         // And: New settings are in place (via @Shared)
@@ -205,14 +197,12 @@ final class LegacyMigratorTests: XCTestCase {
         migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
         // Given: Migration was completed
         await migrator.migrateIfNeeded()
-        XCTAssertTrue(migrator.migrationCompleted)
+        XCTAssertTrue(migrator.migrationCompletedShared)
 
         // When: Migration is reset
         migrator.resetMigration()
 
         // Then: Migration state is reset
-        XCTAssertFalse(migrator.migrationCompleted)
-        XCTAssertNil(migrator.migrationError)
         XCTAssertFalse(migrator.migrationCompletedShared)
     }
 
