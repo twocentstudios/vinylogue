@@ -13,9 +13,9 @@ extension SharedReaderKey where Self == AppStorageKey<String?> {
 }
 
 extension SharedReaderKey where Self == AppStorageKey<Int>.Default {
-    /// Key for storing the current play count filter with default value of 1
+    /// Key for storing the current play count filter with default value of 0
     static var currentPlayCountFilter: Self {
-        Self[.appStorage("currentPlayCountFilter"), default: 1]
+        Self[.appStorage("currentPlayCountFilter"), default: 0]
     }
 }
 
