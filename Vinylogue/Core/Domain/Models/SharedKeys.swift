@@ -44,7 +44,7 @@ extension SharedReaderKey where Self == FileStorageKey<[User]>.Default {
 
 // MARK: - In-Memory Keys
 
-extension SharedReaderKey where Self == InMemoryKey<[AppModel.Path]>.Default {
+extension SharedReaderKey where Self == InMemoryKey<[AppStore.Path]>.Default {
     /// Key for storing navigation path in memory with default empty array
     static var navigationPath: Self {
         Self[.inMemory("navigationPath"), default: []]

@@ -31,7 +31,7 @@ final class WeeklyAlbumsStore: Hashable {
     var user: User
     var currentYearOffset: Int = 1
     @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
-    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
+    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppStore.Path]
 
     /// Computed property to provide access to albums array for binding purposes
     var albums: [UserChartAlbum] {

@@ -7,7 +7,7 @@ import SwiftUI
 final class UsersListStore {
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
-    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppModel.Path]
+    @ObservationIgnored @Shared(.navigationPath) var navigationPath: [AppStore.Path]
 
     var editFriendsStore: EditFriendsStore?
     var settingsStore: SettingsStore?

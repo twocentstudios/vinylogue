@@ -3,13 +3,13 @@ import Sharing
 import SwiftUI
 
 struct AppView: View {
-    @Bindable var model: AppModel
+    @Bindable var store: AppStore
     @State private var navigationTint: Color? = nil
 
     var body: some View {
-        NavigationStack(path: $model.path) {
-            UsersListView(store: model.usersListStore)
-                .navigationDestination(for: AppModel.Path.self) { path in
+        NavigationStack(path: $store.path) {
+            UsersListView(store: store.usersListStore)
+                .navigationDestination(for: AppStore.Path.self) { path in
                     switch path {
                     case let .weeklyAlbums(store):
                         WeeklyAlbumsView(store: store)
@@ -26,5 +26,5 @@ struct AppView: View {
 }
 
 #Preview("App View") {
-    AppView(model: AppModel())
+    AppView(store: AppStore())
 }

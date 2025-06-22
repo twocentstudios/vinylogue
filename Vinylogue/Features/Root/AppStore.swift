@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 @Observable
-final class AppModel {
+final class AppStore {
     @ObservationIgnored
     @Shared(.navigationPath) var path: [Path]
 

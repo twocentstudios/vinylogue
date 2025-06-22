@@ -12,15 +12,6 @@ final class LegacyMigrator {
     @ObservationIgnored private let fileManager: FileManager
     @ObservationIgnored private let cacheDirectory: URL?
 
-    /// Indicates if migration has been completed
-    var migrationCompleted: Bool = false
-
-    /// Any migration error that occurred
-    var migrationError: Error?
-    
-    var hasMigrationError: Bool {
-        migrationError != nil
-    }
 
     // @Shared properties for data persistence (excluded from observation)
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
@@ -39,26 +30,19 @@ final class LegacyMigrator {
         // Check if migration was already completed
         if migrationCompletedShared {
             logger.info("Migration already completed, skipping")
-            migrationCompleted = true
             return
         }
 
         logger.info("Starting legacy data migration")
 
-        do {
-            let legacyData = await loadLegacyData()
-            await migrateLegacyData(legacyData)
-            await cleanupLegacyData()
+        let legacyData = await loadLegacyData()
+        await migrateLegacyData(legacyData)
+        await cleanupLegacyData()
 
-            // Mark migration as completed
-            $migrationCompletedShared.withLock { $0 = true }
-            migrationCompleted = true
+        // Mark migration as completed
+        $migrationCompletedShared.withLock { $0 = true }
 
-            logger.info("Migration completed successfully")
-        } catch {
-            logger.error("Migration failed: \(error.localizedDescription)")
-            migrationError = error
-        }
+        logger.info("Migration completed successfully")
     }
 
     /// Loads all legacy data from various sources
@@ -203,8 +187,6 @@ final class LegacyMigrator {
     /// Force a re-migration (for testing purposes)
     func resetMigration() {
         $migrationCompletedShared.withLock { $0 = false }
-        migrationCompleted = false
-        migrationError = nil
         logger.info("Reset migration state")
     }
 }
@@ -224,21 +206,3 @@ private extension LegacyMigrator {
     }
 }
 
-// MARK: - Migration Errors
-
-enum MigrationError: LocalizedError {
-    case dataCorrupted(String)
-    case migrationFailed(String)
-    case cleanupFailed(String)
-
-    var errorDescription: String? {
-        switch self {
-        case let .dataCorrupted(message):
-            "Data corrupted: \(message)"
-        case let .migrationFailed(message):
-            "Migration failed: \(message)"
-        case let .cleanupFailed(message):
-            "Cleanup failed: \(message)"
-        }
-    }
-}

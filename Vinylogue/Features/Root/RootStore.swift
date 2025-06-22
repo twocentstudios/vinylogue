@@ -7,8 +7,8 @@ final class RootStore {
     @ObservationIgnored @Shared(.currentUser) var currentUsername
     @ObservationIgnored @Shared(.migrationCompleted) var migrationCompleted
 
-    var migrator: LegacyMigrator? = nil
-    var appModel: AppModel? = nil
+    var migrationStore: MigrationStore? = nil
+    var appStore: AppStore? = nil
     var onboardingStore: OnboardingStore? = nil
 
     var hasCurrentUser: Bool {
@@ -19,26 +19,18 @@ final class RootStore {
     init() {}
 
     func updateState() {
-        if !migrationCompleted, migrator == nil {
-            migrator = LegacyMigrator()
+        if !migrationCompleted, migrationStore == nil {
+            migrationStore = MigrationStore()
             onboardingStore = nil
-            appModel = nil
-        } else if migrationCompleted, hasCurrentUser, appModel == nil {
-            migrator = nil
+            appStore = nil
+        } else if migrationCompleted, hasCurrentUser, appStore == nil {
+            migrationStore = nil
             onboardingStore = nil
-            appModel = AppModel()
+            appStore = AppStore()
         } else if migrationCompleted, !hasCurrentUser, onboardingStore == nil {
-            migrator = nil
+            migrationStore = nil
             onboardingStore = OnboardingStore()
-            appModel = nil
+            appStore = nil
         }
-    }
-
-    func retryMigration() async {
-        await migrator?.migrateIfNeeded()
-    }
-
-    func continueAnyway() {
-        $migrationCompleted.withLock { $0 = true }
     }
 }
