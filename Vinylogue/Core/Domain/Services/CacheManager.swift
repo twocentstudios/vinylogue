@@ -29,8 +29,7 @@ struct CacheManager: Sendable {
     private let decoder = JSONDecoder()
 
     init() {
-        cacheDirectory = FileManager.default.temporaryDirectory
-            .appendingPathComponent("VinylogueCache")
+        cacheDirectory = URL.cachesDirectory.appendingPathComponent("DataCache")
 
         // Create cache directory if it doesn't exist
         do {
