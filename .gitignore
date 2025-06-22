@@ -31,16 +31,8 @@ Secrets.swift
 .swiftpm/
 Package.resolved
 
-# CocoaPods (legacy)
-/Pods
-*.podspec
+# Other
+.idea/
+Design/screenshots/
 
-# Design assets (legacy)
-/Design/screenshots
-/vinylogue/TCSVinylogueSecret.h
 
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/**/*.png
-fastlane/test_output
