@@ -1,11 +1,8 @@
-- ALWAYS reference ./Planning/PRD.md when planning new tasks.
-- ALWAYS reference ./Planning/screenshots/*.png when creating Views and working on UI.
-- ALWAYS reference ./vinylogue-legacy/TCSVinylogueDesign.h when implementing colors and fonts.
-- ALWAYS consider visual appearance should match the legacy application; dark mode is NOT supported. 
-- ALWAYS reference the legacy code in ./vinylogue-legacy when determining UX and styling for a feature.
 - ALWAYS run xcodegen after adding/removing/renaming files IGNORING THE OUTPUTfr.
 - ALWAYS run swiftformat on all changed files before building IGNORING THE OUTPUT. If the command fails, run it again and read the error.
 - DO NOT run swiftformat on any files in ./DerivedData
+- ALWAYS build with the xcodebuild binary from the currently selected Xcode's app package.
+- Always build with xcodebuild with the iOS simulator.
 - ALWAYS build with xcodebuild with `-quiet` flag when a feature is complete. If the command returns errors you may run xcodebuild again without the `-quiet` flag.
 - ALWAYS run unit tests with the `-quiet` flag when a feature is complete and ensure there are no failures.
 - NEVER run UI tests unless I specifically request it.
