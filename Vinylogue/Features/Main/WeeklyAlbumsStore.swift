@@ -344,7 +344,8 @@ final class WeeklyAlbumsStore: Hashable {
         let prefetcher = ImagePrefetcher(pipeline: imagePipeline, destination: .diskCache)
 
         // Start prefetching all album images
-        prefetcher.startPrefetching(with: imageURLs)
+        let requests = imageURLs.map { ImageRequest(url: $0, processors: [], priority: .veryLow, options: .disableMemoryCacheWrites, userInfo: nil) }
+        prefetcher.startPrefetching(with: requests)
 
         // Note: We don't wait for completion or handle errors since this is a background optimization
         // The ImagePrefetcher will automatically manage the download lifecycle
