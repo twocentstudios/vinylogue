@@ -1,4 +1,5 @@
 import CoreImage
+import Dependencies
 import Nuke
 import NukeUI
 import Sharing
@@ -12,6 +13,7 @@ struct ReusableAlbumArtworkView: View {
     let onImageLoaded: ((UIImage?) -> Void)?
     @State private var isImageLoaded = false
     @Shared(.pixelationEnabled) private var pixelationEnabled
+    @Dependency(\.imagePipeline) private var imagePipeline
 
     init(
         imageURL: String?,
@@ -48,6 +50,7 @@ struct ReusableAlbumArtworkView: View {
                         placeholderView
                     }
                 }
+                .pipeline(imagePipeline)
             } else {
                 placeholderView
             }
