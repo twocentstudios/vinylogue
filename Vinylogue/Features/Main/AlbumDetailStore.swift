@@ -1,10 +1,12 @@
 import Dependencies
+import Nuke
 import SwiftUI
 
 @MainActor
 @Observable
 final class AlbumDetailStore: Hashable {
-    @ObservationIgnored @Dependency(\.lastFMClient) var lastFMClient
+    @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
+    @ObservationIgnored @Dependency(\.imagePipeline) var imagePipeline
 
     var album: UserChartAlbum
     var artworkImage: UIImage?

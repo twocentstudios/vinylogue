@@ -105,7 +105,7 @@ private struct AlbumListView: View {
                 Button {
                     onAlbumTap(album)
                 } label: {
-                    AlbumRowView(album: album)
+                    AlbumRowView(album: album, imagePipeline: store.imagePipeline)
                 }
                 .buttonStyle(AlbumRowButtonStyle())
                 .transition(.identity)

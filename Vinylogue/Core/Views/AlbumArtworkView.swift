@@ -1,5 +1,4 @@
 import CoreImage
-import Dependencies
 import Nuke
 import NukeUI
 import Sharing
@@ -11,18 +10,20 @@ struct ReusableAlbumArtworkView: View {
     let cornerRadius: CGFloat
     let showShadow: Bool
     let onImageLoaded: ((UIImage?) -> Void)?
+    let imagePipeline: ImagePipeline
     @State private var isImageLoaded = false
     @Shared(.pixelationEnabled) private var pixelationEnabled
-    @Dependency(\.imagePipeline) private var imagePipeline
 
     init(
         imageURL: String?,
+        imagePipeline: ImagePipeline,
         size: CGFloat? = nil,
         cornerRadius: CGFloat = 4,
         showShadow: Bool = false,
         onImageLoaded: ((UIImage?) -> Void)? = nil
     ) {
         self.imageURL = imageURL
+        self.imagePipeline = imagePipeline
         self.size = size
         self.cornerRadius = cornerRadius
         self.showShadow = showShadow
@@ -100,11 +101,13 @@ extension ReusableAlbumArtworkView {
     /// Creates an album artwork view with fixed size (for use in lists/rows)
     static func fixedSize(
         imageURL: String?,
+        imagePipeline: ImagePipeline,
         size: CGFloat = 80,
         cornerRadius: CGFloat = 4
     ) -> ReusableAlbumArtworkView {
         ReusableAlbumArtworkView(
             imageURL: imageURL,
+            imagePipeline: imagePipeline,
             size: size,
             cornerRadius: cornerRadius,
             showShadow: false,
@@ -115,12 +118,14 @@ extension ReusableAlbumArtworkView {
     /// Creates an album artwork view with aspect ratio (for detail views)
     static func flexible(
         imageURL: String?,
+        imagePipeline: ImagePipeline,
         cornerRadius: CGFloat = 6,
         showShadow: Bool = true,
         onImageLoaded: ((UIImage?) -> Void)? = nil
     ) -> ReusableAlbumArtworkView {
         ReusableAlbumArtworkView(
             imageURL: imageURL,
+            imagePipeline: imagePipeline,
             size: nil,
             cornerRadius: cornerRadius,
             showShadow: showShadow,

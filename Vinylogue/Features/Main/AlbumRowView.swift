@@ -4,10 +4,11 @@ import SwiftUI
 
 struct AlbumRowView: View {
     let album: UserChartAlbum
+    let imagePipeline: ImagePipeline
 
     var body: some View {
         HStack(spacing: 12) {
-            ReusableAlbumArtworkView.fixedSize(imageURL: album.detail?.imageURL, size: 80)
+            ReusableAlbumArtworkView.fixedSize(imageURL: album.detail?.imageURL, imagePipeline: imagePipeline, size: 80)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(album.artist.uppercased())
@@ -88,15 +89,15 @@ struct AlbumRowButtonStyle: ButtonStyle {
     )
 
     return VStack(spacing: 0) {
-        AlbumRowView(album: album1)
+        AlbumRowView(album: album1, imagePipeline: ImagePipeline.shared)
 
         Divider()
 
-        AlbumRowView(album: album2)
+        AlbumRowView(album: album2, imagePipeline: ImagePipeline.shared)
 
         Divider()
 
-        AlbumRowView(album: album3)
+        AlbumRowView(album: album3, imagePipeline: ImagePipeline.shared)
     }
     .background(Color.primaryBackground)
 }

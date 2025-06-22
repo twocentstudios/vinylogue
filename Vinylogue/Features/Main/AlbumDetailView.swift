@@ -69,6 +69,7 @@ struct AlbumDetailView: View {
     private var artworkSection: some View {
         ReusableAlbumArtworkView.flexible(
             imageURL: store.album.detail?.imageURL,
+            imagePipeline: store.imagePipeline,
             cornerRadius: 6,
             showShadow: true,
             onImageLoaded: { uiImage in

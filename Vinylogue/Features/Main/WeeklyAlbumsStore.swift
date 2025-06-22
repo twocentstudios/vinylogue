@@ -48,7 +48,7 @@ final class WeeklyAlbumsStore: Hashable {
 
     @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
     @ObservationIgnored @Dependency(\.cacheManager) private var cacheManager
-    @ObservationIgnored @Dependency(\.imagePipeline) private var imagePipeline
+    @ObservationIgnored @Dependency(\.imagePipeline) var imagePipeline
     @ObservationIgnored @Dependency(\.date) private var date
     @ObservationIgnored @Dependency(\.calendar) private var calendar
     @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
