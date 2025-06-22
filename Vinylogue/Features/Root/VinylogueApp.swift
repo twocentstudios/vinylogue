@@ -64,6 +64,9 @@ private func setupScreenshotTestDependencies() {
 
     // Set up test data in the overridden storage
     setupTestData()
+
+    // Set pixelation state based on environment variable
+    setupPixelationState()
 }
 
 private func setupTestData() {
@@ -82,4 +85,12 @@ private func setupTestData() {
 
     @Shared(.curatedFriends) var curatedFriends: [User]
     $curatedFriends.withLock { $0 = testFriends }
+}
+
+private func setupPixelationState() {
+    // Read pixelation setting from environment variable
+    let pixelationEnabled = ProcessInfo.processInfo.environment["PIXELATION_ENABLED"] == "true"
+
+    @Shared(.pixelationEnabled) var pixelationEnabledState: Bool
+    $pixelationEnabledState.withLock { $0 = pixelationEnabled }
 }

@@ -10,7 +10,7 @@ final class AppStoreScreenshotTests: XCTestCase {
     }
 
     @MainActor
-    private func setupApp(testName: String? = nil) throws {
+    private func setupApp(testName: String? = nil, pixelationEnabled: Bool = false) throws {
         // Disable hardware keyboard to prevent issues with screenshots
         app = XCUIApplication()
         app.launchArguments = ["--screenshot-testing"]
@@ -19,6 +19,9 @@ final class AppStoreScreenshotTests: XCTestCase {
         if let testName {
             app.launchEnvironment["UI_TEST_NAME"] = testName
         }
+
+        // Set pixelation status for this test run
+        app.launchEnvironment["PIXELATION_ENABLED"] = pixelationEnabled ? "true" : "false"
     }
 
     override func tearDownWithError() throws {
@@ -27,19 +30,31 @@ final class AppStoreScreenshotTests: XCTestCase {
 
     @MainActor
     func testGenerateAppStoreScreenshots() throws {
-        // This test generates all 3 required App Store screenshots
-        try setupApp(testName: "testGenerateAppStoreScreenshots")
+        // This test generates all 3 required App Store screenshots with pixelation disabled
+        try setupApp(testName: "testGenerateAppStoreScreenshots", pixelationEnabled: false)
+        try runScreenshotSequence(screenshotPrefix: "")
+    }
+
+    @MainActor
+    func testGenerateAppStoreScreenshotsWithPixelation() throws {
+        // This test generates all 3 required App Store screenshots with pixelation enabled
+        try setupApp(testName: "testGenerateAppStoreScreenshots", pixelationEnabled: true)
+        try runScreenshotSequence(screenshotPrefix: "Pixelated-")
+    }
+
+    @MainActor
+    private func runScreenshotSequence(screenshotPrefix: String) throws {
         app.launch()
 
         // Screenshot 1: UsersListView with mock data
         let usersListNavigationTitle = app.navigationBars["scrobblers"]
         XCTAssertTrue(usersListNavigationTitle.waitForExistence(timeout: 10.0), "Users list should be visible")
-        
+
         // Wait for user data to be fully loaded (friends should be visible)
         let firstFriend = app.buttons["BobbyStompy"]
         XCTAssertTrue(firstFriend.waitForExistence(timeout: 8.0), "First friend should be visible")
-        
-        takeScreenshot(named: "01-UsersListView")
+
+        takeScreenshot(named: "\(screenshotPrefix)01-UsersListView")
 
         // Navigate to first user's weekly albums
         let firstUser = app.buttons["ybsc"]
@@ -53,7 +68,7 @@ final class AppStoreScreenshotTests: XCTestCase {
             object: playsText
         )
         wait(for: [albumDataExpectation], timeout: 10.0)
-        
+
         // Wait for album images to load (wait until no images are in loading state)
         let loadingImages = app.images.matching(identifier: "imageLoading")
         let imagesLoadedExpectation = XCTNSPredicateExpectation(
@@ -61,7 +76,7 @@ final class AppStoreScreenshotTests: XCTestCase {
             object: loadingImages
         )
         wait(for: [imagesLoadedExpectation], timeout: 15.0)
-        takeScreenshot(named: "02-WeeklyAlbumsView")
+        takeScreenshot(named: "\(screenshotPrefix)02-WeeklyAlbumsView")
 
         // Navigate to first album in the list
         XCTAssertTrue(playsText.waitForExistence(timeout: 10.0), "Album with play count should be visible")
@@ -88,7 +103,7 @@ final class AppStoreScreenshotTests: XCTestCase {
         wait(for: [contentLoadedExpectation], timeout: 8.0)
         let anyText = app.staticTexts.firstMatch
         _ = anyText.waitForExistence(timeout: 3.0)
-        takeScreenshot(named: "03-AlbumDetailView")
+        takeScreenshot(named: "\(screenshotPrefix)03-AlbumDetailView")
     }
 
     // MARK: - Helper Methods

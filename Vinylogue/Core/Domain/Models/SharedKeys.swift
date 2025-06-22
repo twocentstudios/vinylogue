@@ -26,6 +26,13 @@ extension SharedReaderKey where Self == AppStorageKey<Bool>.Default {
     }
 }
 
+extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
+    /// Key for storing pixelation enabled status for screenshot testing with default value of false
+    static var pixelationEnabled: Self {
+        Self[.inMemory("pixelationEnabled"), default: false]
+    }
+}
+
 // MARK: - File Storage Keys
 
 extension SharedReaderKey where Self == FileStorageKey<[User]>.Default {

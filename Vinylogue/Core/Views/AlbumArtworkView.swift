@@ -1,6 +1,7 @@
 import CoreImage
 import Nuke
 import NukeUI
+import Sharing
 import SwiftUI
 
 struct ReusableAlbumArtworkView: View {
@@ -10,6 +11,7 @@ struct ReusableAlbumArtworkView: View {
     let showShadow: Bool
     let onImageLoaded: ((UIImage?) -> Void)?
     @State private var isImageLoaded = false
+    @Shared(.pixelationEnabled) private var pixelationEnabled
 
     init(
         imageURL: String?,
@@ -28,7 +30,7 @@ struct ReusableAlbumArtworkView: View {
     var body: some View {
         Group {
             if let imageURL, let url = URL(string: imageURL) {
-                let processors: [ImageProcessing] = isScreenshotTesting ? [PixelateProcessor()] : []
+                let processors: [ImageProcessing] = pixelationEnabled ? [PixelateProcessor()] : []
                 let request = ImageRequest(url: url, processors: processors)
 
                 LazyImage(request: request) { state in
