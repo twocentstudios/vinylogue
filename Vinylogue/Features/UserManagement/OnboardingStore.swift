@@ -42,24 +42,23 @@ final class OnboardingStore: Identifiable {
         showError = false
 
         do {
-            let _: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
+            let userResponse: UserInfoResponse = try await lastFMClient.request(.userInfo(username: username))
 
-            // Update global current user
-            await MainActor.run {
-                @Shared(.currentUser) var sharedCurrentUsername: String?
-                $sharedCurrentUsername.withLock { $0 = username }
-            }
+            // Use the capitalization from the server
+            let validatedUserName = userResponse.user.name
 
             // Import friends for the user
-            await friendsImporter.importFriends(for: username)
+            await friendsImporter.importFriends(for: validatedUserName)
 
             // Update global curated friends if import was successful
             if case let .loaded(importedFriends) = friendsImporter.friendsState, !importedFriends.isEmpty {
-                await MainActor.run {
-                    @Shared(.curatedFriends) var sharedCuratedFriends: [User]
-                    $sharedCuratedFriends.withLock { $0 = importedFriends }
-                }
+                @Shared(.curatedFriends) var sharedCuratedFriends: [User]
+                $sharedCuratedFriends.withLock { $0 = importedFriends }
             }
+
+            // Update global current user (triggering view update)
+            @Shared(.currentUser) var sharedCurrentUsername: String?
+            $sharedCurrentUsername.withLock { $0 = validatedUserName }
 
             isValidating = false
 
