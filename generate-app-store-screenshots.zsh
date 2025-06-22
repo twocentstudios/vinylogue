@@ -18,6 +18,7 @@ DEVICE_OS="18.5"
 # Device configurations
 declare -A DEVICES=(
     ["iPhone-16-Pro"]="iPhone 16 Pro"
+    ["iPhone-16-Plus"]="iPhone 16 Plus"
     ["iPhone-16"]="iPhone 16"
     ["iPhone-16e"]="iPhone 16e"
 )
