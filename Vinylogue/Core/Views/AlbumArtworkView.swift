@@ -9,6 +9,7 @@ struct ReusableAlbumArtworkView: View {
     let cornerRadius: CGFloat
     let showShadow: Bool
     let onImageLoaded: ((UIImage?) -> Void)?
+    @State private var isImageLoaded = false
 
     init(
         imageURL: String?,
@@ -36,6 +37,7 @@ struct ReusableAlbumArtworkView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .task {
+                                isImageLoaded = true
                                 onImageLoaded?(state.imageContainer?.image)
                             }
                     } else if state.error != nil {
@@ -56,6 +58,7 @@ struct ReusableAlbumArtworkView: View {
             x: 0,
             y: showShadow ? 1 : 0
         )
+        .accessibilityIdentifier(isImageLoaded ? "imageLoaded" : "imageLoading")
     }
 
     private var placeholderView: some View {

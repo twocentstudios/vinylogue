@@ -53,6 +53,14 @@ final class AppStoreScreenshotTests: XCTestCase {
             object: playsText
         )
         wait(for: [albumDataExpectation], timeout: 10.0)
+        
+        // Wait for album images to load (wait until no images are in loading state)
+        let loadingImages = app.images.matching(identifier: "imageLoading")
+        let imagesLoadedExpectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "count == 0"),
+            object: loadingImages
+        )
+        wait(for: [imagesLoadedExpectation], timeout: 15.0)
         takeScreenshot(named: "02-WeeklyAlbumsView")
 
         // Navigate to first album in the list
