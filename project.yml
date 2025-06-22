@@ -39,6 +39,8 @@ targets:
     platform: iOS
     sources:
       - path: Vinylogue
+        excludes:
+          - "**/CLAUDE.md"
     resources:
       - Vinylogue/Resources/Assets.xcassets
       - Vinylogue/Resources/Preview Content
@@ -64,7 +66,9 @@ targets:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - VinylogueTests
+      - path: VinylogueTests
+        excludes:
+          - "**/CLAUDE.md"
     dependencies:
       - target: Vinylogue
 
@@ -72,7 +76,9 @@ targets:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - VinylogueUITests
+      - path: VinylogueUITests
+        excludes:
+          - "**/CLAUDE.md"
     dependencies:
       - target: Vinylogue
 
