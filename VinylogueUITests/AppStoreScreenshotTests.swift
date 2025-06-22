@@ -60,7 +60,7 @@ final class AppStoreScreenshotTests: XCTestCase {
         let albumButtons = app.buttons.allElementsBoundByIndex
         var firstAlbumButton: XCUIElement?
         for button in albumButtons {
-            if button.staticTexts["plays"].exists {
+            if button.staticTexts["THRICE"].exists {
                 firstAlbumButton = button
                 break
             }

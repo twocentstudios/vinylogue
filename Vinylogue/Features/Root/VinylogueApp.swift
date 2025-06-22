@@ -58,8 +58,8 @@ private func setupScreenshotTestDependencies() {
             suiteName: "\(NSTemporaryDirectory())\(UUID().uuidString)"
         )!
 
-        // Override date for WeeklyAlbumsView to show specific date (2023-06-20)
-        $0.date = .constant(Date(timeIntervalSince1970: 1687219200)) // 2023-06-20 00:00:00 UTC
+        // Override date for WeeklyAlbumsView to show specific date
+        $0.date = .constant(Date(timeIntervalSince1970: 1749344207)) // Week 23 of 2024
     }
 
     // Set up test data in the overridden storage
