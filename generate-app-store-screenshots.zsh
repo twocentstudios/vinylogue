@@ -13,6 +13,7 @@ PROJECT_ROOT="$(pwd)"
 SCREENSHOTS_DIR="${PROJECT_ROOT}/DerivedData/UITestingScreenshots"
 TEMP_DIR="/tmp/vinylogue-screenshots"
 XCRESULT_DIR="${PROJECT_ROOT}/DerivedData/Vinylogue/Logs/Test"
+DEVICE_OS="18.5"
 
 # Device configurations
 declare -A DEVICES=(
@@ -120,7 +121,7 @@ run_tests_for_device() {
     log_info "Running tests for ${device_name}..."
     
     # Use device name directly instead of UUID for simplicity
-    local destination="platform=iOS Simulator,name=${device_name},OS=18.5"
+    local destination="platform=iOS Simulator,name=${device_name},OS=${DEVICE_OS}"
     
     log_info "Using destination: ${destination}"
     log_info "Executing UI tests..."
