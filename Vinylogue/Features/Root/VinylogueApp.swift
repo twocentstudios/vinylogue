@@ -9,6 +9,12 @@ struct VinylogueApp: App {
 
     init() {
         setUpForUITest()
+
+//        prepareDependencies {
+//            let date = Date.now.addingTimeInterval(-60*60*24*7*2)
+//            print(date.timeIntervalSince1970)
+//            $0.date = .constant(date)
+//        }
     }
 
     var body: some Scene {
