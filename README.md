@@ -1,32 +1,25 @@
 # Vinylogue for Last.fm
 
-Vinylogue is a SwiftUI-based Last.fm client for iOS that shows you and your friends' weekly music charts from previous years.
+Vinylogue is a Last.fm client for iOS that shows you and your friends' weekly music charts from previous years.
 
-**🎉 This is a complete SwiftUI rewrite of the original Objective-C app**
-
-* [Original App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8) (legacy version)
-* [Landing page](http://twocentstudios.com/apps/vinylogue/) with screenshots from the original app
-* [Original blog post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) about the legacy implementation
-
-![Screenshots coming soon](Planning/screenshots/)
+* [App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8)
+* [Landing page](http://twocentstudios.com/apps/vinylogue/)
+* [Blog post (v1.0)](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) about the legacy implementation
 
 ## Features
 
-- **iOS 18.0+ SwiftUI** - Modern, native iOS interface matching the original design
-- **Automatic Data Migration** - Seamlessly migrate from legacy Objective-C version
-- **User Onboarding** - Clean setup flow with Last.fm username validation
-- **Friend Management** - Import friends from Last.fm and curate your personal list
-- **Weekly Charts** - Browse your and your friends' music history by year
-- **Album Details** - Rich album information with dynamic color theming
-- **Legacy Design Preservation** - Pixel-perfect recreation of the original app's aesthetic
+- **iOS 18.0+ SwiftUI**
+- **Weekly Charts** - Browse you and your friends' listening for this week in history by year
+- **Album Details** - View album listening history and info from last.fm
+- **Friend Management** - Import friends from Last.fm
 
 ## Getting Started
 
 ### Prerequisites
-- Xcode 16.0+ (iOS 18.0+ SDK)
+- Xcode 16.0+ (iOS 18.0+)
 - XcodeGen (install with `brew install xcodegen`)
 - SwiftFormat (install with `brew install swiftformat`)
-- Last.fm API key ([get one here](https://www.last.fm/api))
+- Last.fm developer API key
 
 ### Setup Instructions
 
@@ -48,105 +41,47 @@ Vinylogue is a SwiftUI-based Last.fm client for iOS that shows you and your frie
    xcodegen
    ```
 
-4. **Format and build**
+4. **build**
    ```bash
-   swiftformat .
    open Vinylogue.xcodeproj
    ```
 
 ## Architecture
 
-This rewrite demonstrates modern iOS development patterns and serves as a practical learning resource.
-
 ### Core Technologies
+
 - **SwiftUI** with @Observable state management
 - **Point-Free Dependencies** for dependency injection
 - **Point-Free Sharing** for global state management
 - **Swift Concurrency** (async/await) throughout
-- **Nuke** for advanced image loading and caching
-
-### Key Patterns
-- **Store-View Architecture** - @Observable stores paired with SwiftUI views
-- **Type-Safe Navigation** - Enum-based navigation with shared state
-- **Legacy Migration** - Safe NSCoding → Codable conversion
-- **Dynamic Color Theming** - UI adapts to album artwork colors
-- **NO DARK MODE** - Preserves original light-mode-only design
-
-### Project Structure
-- **Core/** - Foundation layer (models, services, infrastructure, reusable views)
-- **Features/** - Business logic layer (Root, UserManagement, Main features)
-- **XcodeGen-based** - Project file generated from `project.yml`
-
-## Development Workflow
-
-```bash
-# After adding/removing/renaming files
-xcodegen
-
-# Format code before committing
-swiftformat .
-
-# Build with quiet output
-xcodebuild -quiet
-
-# Run tests
-xcodebuild test -quiet
-```
-
-## Testing
-
-Comprehensive unit test coverage including:
-
-- **Legacy Migration** - Data migration scenarios with temporary environments
-- **Last.fm API Integration** - API client with mock responses and error conditions
-- **Friends Management** - Import and curation functionality
-- **Color Extraction** - Image processing with edge cases
-
-Run tests with:
-```bash
-xcodebuild test -project Vinylogue.xcodeproj -scheme Vinylogue -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
-```
+- **Nuke** for remote images
 
 ## Migration & Legacy Support
 
-The app automatically migrates data from the legacy Objective-C version:
+Version 2.0 automatically migrates data from the legacy Objective-C versions v1.0 - v1.3.1:
 
 **What gets migrated:**
-- Last.fm username and settings
-- Cached friends data
-- User preferences
 
-**Migration Process:**
-1. Detection of legacy data on startup
-2. Safe conversion via `LegacyMigrator` 
-3. Cleanup of old files and preferences
-4. Comprehensive logging for debugging
-
-New users see a clean onboarding flow with Last.fm username validation.
+- Last.fm username
+- Selected friends
+- Play count filter
 
 ## License
 
-License for source is Modified BSD. If there's enough interest, I can modularize particular parts of the source into their own MIT Licensed components.
+License for source is Modified BSD.
 
 All rights are reserved for image assets.
 
 ## Contributing
 
-This SwiftUI rewrite is nearing completion and will be released as open source. Contributions and feedback are welcome!
-
-**Development Guidelines:**
-- Follow existing SwiftUI and @Observable patterns
-- Add unit tests for new functionality
-- Use XcodeGen for project structure changes
-- Format code with SwiftFormat before committing
-- Reference Planning/PRD.md and Planning/screenshots/ for design requirements
+Contributions and feedback are welcome. Open an Issue on the repo with your ideas first.
 
 ## About
 
-**Original App**: Vinylogue was created by [Christopher Trott](http://twitter.com/twocentstudios) at [twocentstudios](http://twocentstudios.com).
+vinylogue was created by [Christopher Trott](http://twitter.com/twocentstudios) at [twocentstudios](http://twocentstudios.com).
 
-**SwiftUI Rewrite**: This modern implementation preserves the beloved original design while demonstrating current iOS development best practices.
+## History
 
----
+I created vinylogue in 2013 as an Objective-C, UIKit, and ReactiveCocoa app for iOS 6. It was released on the App Store and open sourced on GitHub. Over the years, I've updated the app to run well on newer versions of iOS without making any functional changes.
 
-*This rewrite serves as both a functional Last.fm client and a comprehensive example of modern iOS architecture patterns. The original ReactiveCocoa-based implementation remains available in git history for comparison.*
+In 2025, with the help of Claude Code, I rewrote the app from the ground up in modern Swift and SwiftUI with a few quality of life improvements, but overall the same design and navigation. The app is simple, but just complex enough be a useful playground for trying out new app architectures and development tools. Plus, I still use it to check out my listening history.
