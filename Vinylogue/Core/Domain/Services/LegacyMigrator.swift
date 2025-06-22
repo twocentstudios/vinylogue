@@ -17,6 +17,10 @@ final class LegacyMigrator {
 
     /// Any migration error that occurred
     var migrationError: Error?
+    
+    var hasMigrationError: Bool {
+        migrationError != nil
+    }
 
     // @Shared properties for data persistence (excluded from observation)
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?

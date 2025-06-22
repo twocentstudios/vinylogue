@@ -4,26 +4,12 @@ import SwiftUI
 @MainActor
 @Observable
 final class RootStore {
-    @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
+    @ObservationIgnored @Shared(.currentUser) var currentUsername
     @ObservationIgnored @Shared(.migrationCompleted) var migrationCompleted
 
-    var migrator = LegacyMigrator()
-    var isMigrationComplete: Bool?
-    var showMigrationError = false
-
-    var appModel = AppModel()
-    var onboardingStore: OnboardingStore?
-
-    var currentUser: User? {
-        guard let username = currentUsername else { return nil }
-        return User(
-            username: username,
-            realName: nil,
-            imageURL: nil,
-            url: nil,
-            playCount: nil
-        )
-    }
+    var migrator: LegacyMigrator? = nil
+    var appModel: AppModel? = nil
+    var onboardingStore: OnboardingStore? = nil
 
     var hasCurrentUser: Bool {
         guard let username = currentUsername else { return false }
@@ -32,32 +18,27 @@ final class RootStore {
 
     init() {}
 
-    func performMigration() async {
-        let needsMigration = !migrationCompleted
-
-        if needsMigration {
-            isMigrationComplete = false
-            await migrator.migrateIfNeeded()
-
-            if migrator.migrationError != nil {
-                showMigrationError = true
-            } else {
-                isMigrationComplete = true
-            }
-        } else {
-            isMigrationComplete = true
+    func updateState() {
+        if !migrationCompleted, migrator == nil {
+            migrator = LegacyMigrator()
+            onboardingStore = nil
+            appModel = nil
+        } else if migrationCompleted, hasCurrentUser, appModel == nil {
+            migrator = nil
+            onboardingStore = nil
+            appModel = AppModel()
+        } else if migrationCompleted, !hasCurrentUser, onboardingStore == nil {
+            migrator = nil
+            onboardingStore = OnboardingStore()
+            appModel = nil
         }
     }
 
     func retryMigration() async {
-        await performMigration()
+        await migrator?.migrateIfNeeded()
     }
 
     func continueAnyway() {
-        isMigrationComplete = true
-    }
-
-    func showOnboarding() {
-        onboardingStore = OnboardingStore()
+        $migrationCompleted.withLock { $0 = true }
     }
 }

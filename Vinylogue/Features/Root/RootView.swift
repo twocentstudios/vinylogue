@@ -5,58 +5,43 @@ struct RootView: View {
     @Bindable var store: RootStore
 
     var body: some View {
-        Group {
-            if let migrationComplete = store.isMigrationComplete {
-                if migrationComplete {
-                    if store.hasCurrentUser {
-                        AppView(model: store.appModel)
-                    } else {
-                        AppView(model: store.appModel)
-                            .onAppear {
-                                if store.onboardingStore == nil {
-                                    store.showOnboarding()
-                                }
-                            }
-                            .sheet(item: $store.onboardingStore) { onboardingStore in
-                                OnboardingView(store: onboardingStore)
-                            }
+        ZStack {
+            if let legacyMigrator = store.migrator {
+                MigrationLoadingView()
+                    .task {
+                        await legacyMigrator.migrateIfNeeded()
                     }
-                } else {
-                    MigrationLoadingView()
-                }
+            } else if let onboardingStore = store.onboardingStore {
+                OnboardingView(store: onboardingStore)
+            } else if let appModel = store.appModel {
+                AppView(model: appModel)
             } else {
-                if store.hasCurrentUser {
-                    AppView(model: store.appModel)
-                } else {
-                    AppView(model: store.appModel)
-                        .onAppear {
-                            if store.onboardingStore == nil {
-                                store.showOnboarding()
-                            }
-                        }
-                        .sheet(item: $store.onboardingStore) { onboardingStore in
-                            OnboardingView(store: onboardingStore)
-                        }
-                }
+                Color.primaryBackground.ignoresSafeArea()
             }
         }
         .task {
-            await store.performMigration()
+            store.updateState()
         }
-        .alert("Migration Error", isPresented: $store.showMigrationError) {
-            Button("Continue Anyway") {
-                store.continueAnyway()
-            }
-            Button("Retry") {
-                Task {
-                    await store.retryMigration()
-                }
-            }
-        } message: {
-            if let error = store.migrator.migrationError {
-                Text("Failed to migrate legacy data: \(error.localizedDescription)")
-            }
+        .onChange(of: store.hasCurrentUser) { _, _ in
+            store.updateState()
         }
+        .onChange(of: store.migrationCompleted) { _, _ in
+            store.updateState()
+        }
+//        .alert("Migration Error", isPresented: store.migrator?.hasMigrationError) {
+//            Button("Continue Anyway") {
+//                store.continueAnyway()
+//            }
+//            Button("Retry") {
+//                Task {
+//                    await store.retryMigration()
+//                }
+//            }
+//        } message: {
+//            if let error = store.migrator?.migrationError {
+//                Text("Failed to migrate legacy data: \(error.localizedDescription)")
+//            }
+//        }
     }
 }
 
@@ -76,7 +61,7 @@ private struct MigrationLoadingView: View {
 
 #Preview("Root - With User") {
     let store = RootStore()
-    return RootView(store: store)
+    RootView(store: store)
         .onAppear {
             store.$currentUsername.withLock { $0 = "testuser" }
         }
