@@ -11,6 +11,7 @@
 - `ImagePipeline+Vinylogue.swift` - Nuke image pipeline with temporary disk caching
 - `Secrets.swift` - API key management (currently hardcoded)
 - `TestingUtilities.swift` - Testing environment detection and test data utilities
+- `NavigationTintPreferenceKey.swift` - Custom PreferenceKey for controlling NavigationStack tint color from child views
 
 ## Critical Notes
 - **NO DARK MODE**: Entire color system designed for light mode only, matching legacy app
@@ -367,6 +368,75 @@ let testUsername = TestingUtilities.getTestString(for: "TEST_USERNAME")
 
 ---
 
+---
+
+## Navigation Tint Control
+
+**File:** `NavigationTintPreferenceKey.swift`
+
+Provides a custom PreferenceKey system for controlling NavigationStack tint color from child views.
+
+### Core Functionality
+
+```swift
+// Custom PreferenceKey for navigation tint
+struct NavigationTintPreferenceKey: PreferenceKey {
+    static let defaultValue: Color? = nil
+    
+    static func reduce(value: inout Color?, nextValue: () -> Color?) {
+        // Take the most recent non-nil value
+        if let next = nextValue() {
+            value = next
+        }
+    }
+}
+```
+
+### View Extension
+
+```swift
+// Convenient modifier for setting navigation tint
+extension View {
+    func navigationTint(_ color: Color?) -> some View {
+        preference(key: NavigationTintPreferenceKey.self, value: color)
+    }
+}
+```
+
+### Usage Patterns
+
+#### In Parent NavigationStack (AppView)
+```swift
+NavigationStack(path: $model.path) {
+    // Content
+}
+.tint(navigationTint)
+.onPreferenceChange(NavigationTintPreferenceKey.self) { newTint in
+    navigationTint = newTint
+}
+```
+
+#### In Child Views (AlbumDetailView)
+```swift
+ScrollView {
+    // Content
+}
+.navigationTint(store.textColor) // Sets tint based on dynamic content
+```
+
+### Design Principles
+- **Bottom-up Control**: Child views can control navigation appearance based on their content
+- **Dynamic Updates**: Tint color updates reactively as content changes
+- **Readable Buttons**: Ensures navigation buttons are always readable against dynamic backgrounds
+- **SwiftUI Native**: Uses built-in PreferenceKey system for efficient communication
+
+### Use Cases
+- **Album Detail Views**: Back button color matches extracted text color from album artwork
+- **Dynamic Theming**: Navigation controls adapt to content-specific color schemes
+- **Accessibility**: Maintains proper contrast ratios for navigation elements
+
+---
+
 ## Integration with Other Systems
 
 ### Caching Integration
@@ -383,6 +453,12 @@ if let colors = ColorExtraction.extractRepresentativeColors(from: albumImage) {
     let gradient = ColorExtraction.createBackgroundGradient(from: colors.primary)
     // Apply gradient to background
 }
+```
+
+### Navigation Tint Integration
+```swift
+// In child views with dynamic colors
+.navigationTint(extractedTextColor) // Automatically updates parent NavigationStack
 ```
 
 ### Testing Integration
