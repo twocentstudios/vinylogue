@@ -41,34 +41,31 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Migration Completion Tests
 
     func testMigrationSkippedWhenAlreadyCompleted() async {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Migration was already completed
-        migrator.$migrationCompletedShared.withLock { $0 = true }
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Migration was already completed
+        migrator.$migrationCompleted.withLock { $0 = true }
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
 
         // Then: Migration is marked as completed without doing work
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
     }
 
     func testMigrationRunsWhenNotCompleted() async {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Migration has not been completed
-        XCTAssertFalse(migrator.migrationCompletedShared)
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Migration has not been completed
+        XCTAssertFalse(migrator.migrationCompleted)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes and is marked as done
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
     }
 
     // MARK: - Legacy User Migration Tests
 
     func testLegacyUserMigration() async throws {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Legacy user data exists
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Legacy user data exists
         let legacyUser = LegacyUser(username: "testuser123", realName: "Test User", imageURL: "http://example.com/image.jpg")
         let userData = try NSKeyedArchiver.archivedData(withRootObject: legacyUser, requiringSecureCoding: false)
         tempUserDefaults.set(userData, forKey: LegacyUser.userDefaultsKey)
@@ -77,29 +74,27 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
 
         // And: Legacy user data is cleaned up
         XCTAssertNil(tempUserDefaults.object(forKey: LegacyUser.userDefaultsKey))
     }
 
     func testNoLegacyUserMigration() async {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: No legacy user data exists
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: No legacy user data exists
         // (no setup needed)
 
         // When: Migration is run
         await migrator.migrateIfNeeded()
 
         // Then: Migration still completes successfully
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
     }
 
     // MARK: - Legacy Settings Migration Tests
 
     func testLegacySettingsMigration() async {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Legacy settings exist
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Legacy settings exist
         let testPlayCountFilter = 5
         tempUserDefaults.set(testPlayCountFilter, forKey: LegacySettings.Keys.playCountFilter)
         tempUserDefaults.set(Date(), forKey: LegacySettings.Keys.lastOpenedDate)
@@ -108,7 +103,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
 
         // And: Settings are migrated to new format (via @Shared)
         // Note: @Shared properties in LegacyMigrator use production storage, not test storage
@@ -122,8 +117,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Legacy Friends Migration Tests
 
     func testLegacyFriendsMigration() async throws {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Legacy friends data exists in UserDefaults
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Legacy friends data exists in UserDefaults
         let legacyFriends = [
             LegacyFriend(username: "friend1", realName: "Friend One", playCount: 1000, imageURL: nil, imageThumbURL: nil, url: nil),
             LegacyFriend(username: "friend2", realName: "Friend Two", playCount: 2000, imageURL: "http://example.com/image.jpg", imageThumbURL: "http://example.com/thumb.jpg", url: "http://example.com/user"),
@@ -137,7 +131,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
 
         // And: Legacy friends data is cleaned up
         XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.friendsList))
@@ -146,8 +140,7 @@ final class LegacyMigratorTests: XCTestCase {
     // MARK: - Full Migration Test
 
     func testFullMigrationWithAllLegacyData() async throws {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: All types of legacy data exist
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: All types of legacy data exist
         let testPlayCountFilter = 3
 
         // Set up legacy user
@@ -172,8 +165,7 @@ final class LegacyMigratorTests: XCTestCase {
         await migrator.migrateIfNeeded()
 
         // Then: Migration completes successfully
-        XCTAssertTrue(migrator.migrationCompletedShared)
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
 
         // And: New settings are in place (via @Shared)
         // Note: @Shared properties in LegacyMigrator use production storage, not test storage
@@ -186,24 +178,23 @@ final class LegacyMigratorTests: XCTestCase {
         XCTAssertNil(tempUserDefaults.object(forKey: LegacySettings.Keys.friendsList))
 
         // And: Migration record is saved
-        let migrationRecordURL = tempFileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("migration_record.txt")
+        let migrationRecordURL = tempFileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("migration_record_2_0_0.txt")
         XCTAssertTrue(tempFileManager.fileExists(atPath: migrationRecordURL.path))
     }
 
     // MARK: - Reset Tests
 
     func testMigrationReset() async {
-        migrator = LegacyMigrator(userDefaults: tempUserDefaults, fileManager: tempFileManager, cacheDirectory: tempDirectory)
-        // Given: Migration was completed
+        migrator = LegacyMigrator(userDefaults: tempUserDefaults, cacheDirectory: tempDirectory) // Given: Migration was completed
         await migrator.migrateIfNeeded()
-        XCTAssertTrue(migrator.migrationCompletedShared)
+        XCTAssertTrue(migrator.migrationCompleted)
 
         // When: Migration is reset
         migrator.resetMigration()
 
         // Then: Migration state is reset
-        XCTAssertFalse(migrator.migrationCompletedShared)
+        XCTAssertFalse(migrator.migrationCompleted)
     }
 
     // MARK: - Model Tests

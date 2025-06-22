@@ -15,7 +15,7 @@ final class LegacyMigrator {
     @ObservationIgnored @Shared(.currentUser) var currentUsername: String?
     @ObservationIgnored @Shared(.currentPlayCountFilter) var playCountFilter
     @ObservationIgnored @Shared(.curatedFriends) var curatedFriends
-    @ObservationIgnored @Shared(.migrationCompleted) var migrationCompletedShared
+    @ObservationIgnored @Shared(.migrationCompleted) var migrationCompleted
 
     init(userDefaults: UserDefaults = .standard, cacheDirectory: URL? = nil) {
         self.userDefaults = userDefaults
@@ -25,7 +25,7 @@ final class LegacyMigrator {
     /// Performs migration if needed. Safe to call multiple times.
     func migrateIfNeeded() async {
         // Check if migration was already completed
-        if migrationCompletedShared {
+        if migrationCompleted {
             logger.info("Migration already completed, skipping")
             return
         }
@@ -37,7 +37,7 @@ final class LegacyMigrator {
         await cleanupLegacyData()
 
         // Mark migration as completed
-        $migrationCompletedShared.withLock { $0 = true }
+        $migrationCompleted.withLock { $0 = true }
 
         logger.info("Migration completed successfully")
     }
@@ -183,7 +183,7 @@ final class LegacyMigrator {
 
     /// Force a re-migration (for testing purposes)
     func resetMigration() {
-        $migrationCompletedShared.withLock { $0 = false }
+        $migrationCompleted.withLock { $0 = false }
         logger.info("Reset migration state")
     }
 }
