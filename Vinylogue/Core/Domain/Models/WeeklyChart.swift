@@ -1,7 +1,6 @@
 import Foundation
 
-struct WeeklyChart: Codable, Identifiable, Hashable, Sendable {
-    let id = UUID()
+struct WeeklyChart: Codable, Hashable, Sendable {
     let from: Date
     let to: Date
     let albums: [UserChartAlbum]
