@@ -102,7 +102,7 @@ struct EditFriendsView: View {
                 }
 
                 ToolbarItemGroup(placement: .bottomBar) {
-                    Button("select \(store.selectAllButtonText)") {
+                    Button(store.selectAllButtonText) {
                         store.toggleSelectAll()
                     }
                     .contentTransition(.numericText())
