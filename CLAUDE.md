@@ -1,0 +1,12 @@
+- ALWAYS run xcodegen after adding/removing/renaming files IGNORING THE OUTPUT.
+- ALWAYS run swiftformat on all changed files before building IGNORING THE OUTPUT. If the command fails, run it again and read the error.
+- DO NOT run swiftformat on any files in ./DerivedData
+- ALWAYS build with the xcodebuild binary from the currently selected Xcode's app package.
+- Always build with xcodebuild with the iOS simulator.
+- ALWAYS build with xcodebuild with `-quiet` flag when a feature is complete. If the command returns errors you may run xcodebuild again without the `-quiet` flag.
+- ALWAYS run unit tests with the `-quiet` flag when a feature is complete and ensure there are no failures.
+- NEVER run UI tests unless I specifically request it.
+- NEVER look in ./DerivedData UNLESS you are looking at package documentation or trying to determine the cause of a build error.
+- NEVER write UI tests until you have confirmed with me that the UI is 100% correct.
+- ALWAYS use the iPhone 16 Pro simulator on iOS 18.5 with UUID AE8D703E-E213-443C-8CBC-742F8807CCC3 (if it is unavailable, then alert me).
+- ALWAYS update the CLAUDE.MD file in each directory after refactoring, adding, or deleting files.

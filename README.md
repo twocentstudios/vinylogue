@@ -1,42 +1,87 @@
-# vinylogue for Last.fm
+# Vinylogue for Last.fm
 
-Vinylogue is a simple Last.fm client for iOS that shows you and your friends' charts from previous years.
+Vinylogue is a Last.fm client for iOS that shows you and your friends' weekly music charts from previous years.
 
-* [App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8) (it's free).
-* [Landing page](http://twocentstudios.com/apps/vinylogue/) with screenshots.
-* [Blog post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) walking through the source.
+* [App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8)
+* [Landing page](http://twocentstudios.com/apps/vinylogue/)
+* [Blog post (v1.0)](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) about the legacy implementation
 
-![Screenshot 1](http://twocentstudios.com/apps/vinylogue/img/ss-charts.png)
-![Screenshot 2](http://twocentstudios.com/apps/vinylogue/img/ss-friends.png)
-![Screenshot 3](http://twocentstudios.com/apps/vinylogue/img/ss-album.png)
+## Features
 
-## Getting started
+- **iOS 18.0+ SwiftUI**
+- **Weekly Charts** - Browse you and your friends' listening for this week in history by year
+- **Album Details** - View album listening history and info from last.fm
+- **Friend Management** - Import friends from Last.fm
 
-1. Clone the repo. `$ git clone git://github.com/twocentstudios/vinylogue.git`
-2. Install Cocoapods. `$ bundle install`
-3. Install the pods. `$ bundle exec pod install`
-4. Open `vinylogue.xcworkspace`.
-5. Create a new header file called `TCSVinylogueSecret.h`
-6. Copy and paste this code into `TCSVinylogueSecret.h`.
-	
-		#define kTCSLastFMAPIKeyString @"YOUR_API_KEY"  
-7. Add your API keys to the above code.
-8. Build!
+## Getting Started
 
-## Learn
+### Prerequisites
+- Xcode 16.0+ (iOS 18.0+)
+- XcodeGen (install with `brew install xcodegen`)
+- SwiftFormat (install with `brew install swiftformat`)
+- Last.fm developer API key
 
-This project was both an app I wanted to exist, and a learning experience for me regarding [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa). I hope other iOS devs can learn from it. I haven't done much open source in the past, and have learned by studying the source great projects such as [Cheddar](https://github.com/nothingmagical/cheddar-ios) and [news:yc](https://github.com/Xuzz/newsyc) (amongst many others), so it felt like it was time to give back.
+### Setup Instructions
 
-I wrote a pretty extensive [blog post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) covering several parts of the design and development of this app. If you're looking for a guided tour through the source, check that out first.
+1. **Clone the repository**
+   ```bash
+   git clone git://github.com/twocentstudios/vinylogue.git
+   cd vinylogue
+   ```
+
+2. **Add your Last.fm API key**
+   ```bash
+   # Copy the example secrets file
+   cp Secrets.example.swift Vinylogue/Core/Infrastructure/Secrets.swift
+   # Then edit the file to add your API key
+   ```
+
+3. **Generate the Xcode project**
+   ```bash
+   xcodegen
+   ```
+
+4. **build**
+   ```bash
+   open Vinylogue.xcodeproj
+   ```
+
+## Architecture
+
+### Core Technologies
+
+- **SwiftUI** with @Observable state management
+- **Point-Free Dependencies** for dependency injection
+- **Point-Free Sharing** for global state management
+- **Swift Concurrency** (async/await) throughout
+- **Nuke** for remote images
+
+## Migration & Legacy Support
+
+Version 2.0 automatically migrates data from the legacy Objective-C versions v1.0 - v1.3.1:
+
+**What gets migrated:**
+
+- Last.fm username
+- Selected friends
+- Play count filter
 
 ## License
 
-License for source is Modified BSD. If there's enough interest, I can modularize particular parts of the source into their own MIT Licensed components.
+License for source is Modified BSD.
 
 All rights are reserved for image assets.
 
-This is very much an experiment for me that I'm hoping doesn't backfire. If you'd like to improve the app, please fork and submit pull requests and we'll keep one version on the App Store for everyone to enjoy. Don't charge for other versions (I'm pretty sure it violates Last.fm's TOS anyway).
+## Contributing
+
+Contributions and feedback are welcome. Open an Issue on the repo with your ideas first.
 
 ## About
 
-Vinylogue was created by [Christopher Trott](http://twitter.com/twocentstudios). My development shop is called [twocentstudios](http://twocentstudios.com).
+vinylogue was created by [Christopher Trott](http://twitter.com/twocentstudios) at [twocentstudios](http://twocentstudios.com).
+
+## History
+
+I created vinylogue in 2013 as an Objective-C, UIKit, and ReactiveCocoa app for iOS 6. It was released on the App Store and open sourced on GitHub. Over the years, I've updated the app to run well on newer versions of iOS without making any functional changes.
+
+In 2025, with the help of Claude Code, I rewrote the app from the ground up in modern Swift and SwiftUI with a few quality of life improvements, but overall the same design and navigation. The app is simple, but just complex enough be a useful playground for trying out new app architectures and development tools. Plus, I still use it to check out my listening history.
