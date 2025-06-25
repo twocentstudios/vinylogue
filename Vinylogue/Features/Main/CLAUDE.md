@@ -18,9 +18,13 @@ Consistent **Store + View** pattern:
 - **Dynamic Color Theming** - UI adapts to album artwork dominant colors
 - **Performance Optimizations** - Background prefetching, concurrent requests with rate limiting
 - **Smart Caching** - Prevents duplicate requests with state tracking
+- **Enhanced Cancellation** - Actor-based precaching coordinator with memory pressure monitoring
+- **Lifecycle Integration** - Automatic cancellation on view disappearance and app backgrounding
 
 ## Critical Notes
 - WeeklyAlbumsStore handles sophisticated chart period calculations
 - AlbumDetailStore provides dynamic color theming from artwork
-- Background prefetching for smooth navigation between years
+- Background prefetching for smooth navigation between years with structured cancellation
 - All stores integrate with shared navigation path for deep linking
+- Memory pressure monitoring automatically cancels background operations
+- Comprehensive lifecycle management prevents resource leaks

@@ -16,6 +16,7 @@
 		15C06A1CE024B7527BA1CD67 /* LastFMUsernameInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759CB50F2FF651F24812287 /* LastFMUsernameInputView.swift */; };
 		177F53F5A691A25DDA14C061 /* MigrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D187093CE2C86FC6A6CEFDD /* MigrationStore.swift */; };
 		1BA1A354CB62F5FFA13EF093 /* LicensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D51D44E277D01CA14DE703 /* LicensesView.swift */; };
+		1FFBBDFD1D4E7923BFFFCF73 /* PrecacheCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568498CADD93AD216124114 /* PrecacheCoordinator.swift */; };
 		20EC78208DA30A693BFC32F6 /* WeeklyChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7CEEDF2746D9D6895D9590 /* WeeklyChart.swift */; };
 		24F60B52442E77C1A2ECAA34 /* ErrorStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E470961128A7906986FDD8F9 /* ErrorStateView.swift */; };
 		2BCB183DA0167F917B159BE6 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1688967E9FA201669E7FFB76 /* Secrets.swift */; };
@@ -38,6 +39,7 @@
 		6A41DCCD852AF691372413D8 /* LastFMClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78352EDE866529AB59B2A5AD /* LastFMClientTests.swift */; };
 		6EE0A3842EA016EF7739078D /* AssertionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD6C197A31FBD864F56D3FC /* AssertionHelpers.swift */; };
 		77AA118621588D7694B414EE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE09480E77E197F50B3DD22 /* Assets.xcassets */; };
+		77B3FB76C2D0AB5680ACCDAA /* MemoryPressureMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EEAB86C980222C0FC5A564 /* MemoryPressureMonitor.swift */; };
 		7B4C2F71A63C98B44B2CC064 /* LegacyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96F4CAACFF149A8C2C80777 /* LegacyModels.swift */; };
 		809C79EF683A2870519369B1 /* WeeklyAlbumsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D882FE17D3916321C86BFCE0 /* WeeklyAlbumsStoreTests.swift */; };
 		846250D96E11B23D6FBFDF04 /* Dependencies+Vinylogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E8DE9BC27EE6A42D990160 /* Dependencies+Vinylogue.swift */; };
@@ -110,6 +112,7 @@
 		2DD6C197A31FBD864F56D3FC /* AssertionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertionHelpers.swift; sourceTree = "<group>"; };
 		2DF93D4DE7377FBA5A9AA037 /* ImagePipeline+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImagePipeline+Vinylogue.swift"; sourceTree = "<group>"; };
 		3096AD08B31FFAF4FE01E850 /* EquatableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableError.swift; sourceTree = "<group>"; };
+		3568498CADD93AD216124114 /* PrecacheCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrecacheCoordinator.swift; sourceTree = "<group>"; };
 		3A34C5712B52CAD6777F828A /* EditFriendsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFriendsStore.swift; sourceTree = "<group>"; };
 		47A0C6DF3F6C11B61338F039 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		53B4BF6623CEFF96E06915FF /* UsernameChangeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameChangeStore.swift; sourceTree = "<group>"; };
@@ -119,6 +122,7 @@
 		646C26F39607F325FBA497CA /* OnboardingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStore.swift; sourceTree = "<group>"; };
 		65D51D44E277D01CA14DE703 /* LicensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensesView.swift; sourceTree = "<group>"; };
 		667A465E6F93C53ED5622FFF /* VinylogueTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = VinylogueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EEAB86C980222C0FC5A564 /* MemoryPressureMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryPressureMonitor.swift; sourceTree = "<group>"; };
 		690B1044DA1AF3F0A7A009A3 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		6C22336EFC6C4D7131EA86B7 /* AnimatedLoadingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedLoadingIndicator.swift; sourceTree = "<group>"; };
 		6D187093CE2C86FC6A6CEFDD /* MigrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationStore.swift; sourceTree = "<group>"; };
@@ -214,7 +218,9 @@
 				A9A8BAC0563FDFCBB88AFE0B /* Environment+Keys.swift */,
 				3096AD08B31FFAF4FE01E850 /* EquatableError.swift */,
 				2DF93D4DE7377FBA5A9AA037 /* ImagePipeline+Vinylogue.swift */,
+				66EEAB86C980222C0FC5A564 /* MemoryPressureMonitor.swift */,
 				0676A0FB6AE65B101CA5184E /* NavigationTintPreferenceKey.swift */,
+				3568498CADD93AD216124114 /* PrecacheCoordinator.swift */,
 				1688967E9FA201669E7FFB76 /* Secrets.swift */,
 				9C9079DE36DE7EACDEF011A9 /* TestingUtilities.swift */,
 			);
@@ -557,11 +563,13 @@
 				7B4C2F71A63C98B44B2CC064 /* LegacyModels.swift in Sources */,
 				1BA1A354CB62F5FFA13EF093 /* LicensesView.swift in Sources */,
 				B01C0CBD65470EF851DB6619 /* LoadingButton.swift in Sources */,
+				77B3FB76C2D0AB5680ACCDAA /* MemoryPressureMonitor.swift in Sources */,
 				177F53F5A691A25DDA14C061 /* MigrationStore.swift in Sources */,
 				870066FE3DE382A8DF4F347D /* MigrationView.swift in Sources */,
 				9FC7C17B0B590AF6772EEF18 /* NavigationTintPreferenceKey.swift in Sources */,
 				B21E3C5EDA45F7DCBCD667D7 /* OnboardingStore.swift in Sources */,
 				9129AB18E89E1F63768DE16B /* OnboardingView.swift in Sources */,
+				1FFBBDFD1D4E7923BFFFCF73 /* PrecacheCoordinator.swift in Sources */,
 				CD95FA1FD93028B9B45690A3 /* RootStore.swift in Sources */,
 				EB173E6D0D16316562DFC7EA /* RootView.swift in Sources */,
 				2BCB183DA0167F917B159BE6 /* Secrets.swift in Sources */,

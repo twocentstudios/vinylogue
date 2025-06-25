@@ -9,9 +9,11 @@
 - `Environment+Keys.swift` - SwiftUI Environment keys (legacy compatibility)
 - `EquatableError.swift` - Error wrapper for SwiftUI state management
 - `ImagePipeline+Vinylogue.swift` - Nuke image pipeline with temporary disk caching
+- `MemoryPressureMonitor.swift` - Actor-based memory pressure monitoring with AsyncStream
+- `NavigationTintPreferenceKey.swift` - Custom PreferenceKey for NavigationStack tint control
+- `PrecacheCoordinator.swift` - Actor-based precaching coordination with cancellation support
 - `Secrets.swift` - API key management (currently hardcoded)
 - `TestingUtilities.swift` - Testing environment detection and test data utilities
-- `NavigationTintPreferenceKey.swift` - Custom PreferenceKey for NavigationStack tint control
 
 ## Critical Notes
 - **NO DARK MODE** - Entire color system designed for light mode only
@@ -19,3 +21,5 @@
 - **Cache Keys** - Hierarchical approach prioritizing MBID over artist/album names
 - **Week Calculations** - Essential for weekly chart features and year comparisons
 - **Testing Support** - Environment detection, mock data, realistic test scenarios
+- **Concurrency Management** - Actor-based precaching with memory pressure monitoring and structured cancellation
+- **Swift Dependencies** - All infrastructure services participate in dependency injection system

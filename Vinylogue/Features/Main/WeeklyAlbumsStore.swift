@@ -49,6 +49,7 @@ final class WeeklyAlbumsStore: Hashable {
     @ObservationIgnored @Dependency(\.lastFMClient) private var lastFMClient
     @ObservationIgnored @Dependency(\.cacheManager) private var cacheManager
     @ObservationIgnored @Dependency(\.imagePipeline) var imagePipeline
+    @ObservationIgnored @Dependency(\.precacheCoordinator) private var precacheCoordinator
     @ObservationIgnored @Dependency(\.date) private var date
     @ObservationIgnored @Dependency(\.calendar) private var calendar
     @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
@@ -56,6 +57,7 @@ final class WeeklyAlbumsStore: Hashable {
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
     @ObservationIgnored private var loadedPlayCountFilter: Int?
+    @ObservationIgnored private var isViewActive = true
 
     init(user: User, currentYearOffset: Int = 1) {
         self.user = user
@@ -152,19 +154,27 @@ final class WeeklyAlbumsStore: Hashable {
             // Trigger precaching for previous year data (non-blocking)
             let previousYearOffset = currentYearOffset + 1
             if canNavigate(to: previousYearOffset) {
-                Task { [weak self] in
-                    guard let self else { return }
-                    let targetDate = calculateTargetDate(yearOffset: previousYearOffset)
-                    guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else { return }
+                let precacheKey = "year-\(previousYearOffset)-\(user.username)"
 
-                    await precacheDataForYear(
+                await precacheCoordinator.startPrecaching(key: precacheKey) { [weak self] in
+                    guard let self, await isViewActive else {
+                        throw CancellationError()
+                    }
+
+                    let targetDate = await calculateTargetDate(yearOffset: previousYearOffset)
+                    guard let chartPeriod = await findMatchingChartPeriod(for: targetDate) else {
+                        return
+                    }
+
+                    try await precacheDataForYearWithCancellation(
                         user: user,
                         chartPeriod: chartPeriod,
                         playCountFilter: playCountFilter,
                         lastFMClient: lastFMClient,
                         cacheManager: cacheManager,
                         imagePipeline: imagePipeline,
-                        calendar: calendar
+                        calendar: calendar,
+                        precacheKey: precacheKey
                     )
                 }
             }
@@ -351,16 +361,68 @@ final class WeeklyAlbumsStore: Hashable {
         // The ImagePrefetcher will automatically manage the download lifecycle
     }
 
-    /// Precache data for a specific year offset (used for performance optimization)
-    private nonisolated func precacheDataForYear(
+    /// Precache images with cancellation support (nonisolated version for coordinator)
+    private nonisolated func precacheImagesWithCancellation(
+        for albums: [UserChartAlbum],
+        imagePipeline: ImagePipeline,
+        precacheKey: String
+    ) async throws {
+        try Task.checkCancellation()
+
+        let imageURLs = albums.compactMap { album -> URL? in
+            guard let imageURLString = album.imageURL,
+                  !imageURLString.isEmpty,
+                  let url = URL(string: imageURLString)
+            else { return nil }
+            return url
+        }
+
+        guard !imageURLs.isEmpty else { return }
+
+        // Create cancellable image prefetcher
+        let prefetcher = ImagePrefetcher(pipeline: imagePipeline, destination: .diskCache)
+
+        // Create low-priority requests
+        let requests = imageURLs.map { url in
+            ImageRequest(
+                url: url,
+                processors: [],
+                priority: .veryLow,
+                options: [.disableMemoryCacheWrites],
+                userInfo: ["precacheKey": precacheKey]
+            )
+        }
+
+        // Register prefetcher for potential cancellation
+        @Dependency(\.precacheCoordinator) var coordinator
+        await coordinator.registerImagePrefetcher(prefetcher, key: precacheKey)
+
+        // Start prefetching with cancellation handling
+        try await withTaskCancellationHandler {
+            prefetcher.startPrefetching(with: requests)
+            
+            // Since we can't check prefetching status directly, we'll just yield control
+            // The prefetcher will handle the actual downloading in the background
+            try await Task.sleep(for: .milliseconds(10))
+        } onCancel: {
+            prefetcher.stopPrefetching()
+        }
+    }
+
+    /// Precache data for a specific year offset with cancellation support
+    private nonisolated func precacheDataForYearWithCancellation(
         user: User,
         chartPeriod: ChartPeriod,
         playCountFilter: Int,
         lastFMClient: LastFMClientProtocol,
         cacheManager: CacheManager,
         imagePipeline: ImagePipeline,
-        calendar: Calendar
-    ) async {
+        calendar: Calendar,
+        precacheKey: String
+    ) async throws {
+        // Check cancellation at entry
+        try Task.checkCancellation()
+
         do {
             let cacheKey = CacheKeyBuilder.weeklyChart(username: user.username, from: chartPeriod.fromDate, to: chartPeriod.toDate)
 
@@ -370,6 +432,7 @@ final class WeeklyAlbumsStore: Hashable {
                     return // Already cached
                 }
             } catch {
+                try Task.checkCancellation()
                 print("Cache check failed for precaching \(cacheKey): \(error)")
                 // Continue to fetch and cache
             }
@@ -383,6 +446,7 @@ final class WeeklyAlbumsStore: Hashable {
                 )
             )
 
+            try Task.checkCancellation()
             try await cacheManager.store(response, key: cacheKey)
 
             // Extract week info for chart context
@@ -406,21 +470,31 @@ final class WeeklyAlbumsStore: Hashable {
                     )
                 }
 
-            // Load album details and then precache images
-            let populatedAlbums = await withTaskGroup(of: UserChartAlbum?.self) { group in
-                // Limit concurrent requests to avoid overwhelming the API and memory
-                let maxConcurrentRequests = 5
+            // Load album details and then precache images with cancellation support
+            let populatedAlbums = try await withThrowingTaskGroup(of: UserChartAlbum?.self) { group in
+                var results: [UserChartAlbum] = []
                 var activeTaskCount = 0
+                let maxConcurrentRequests = 5
 
                 // Precache album details
                 for album in albums {
+                    // Respect cancellation
+                    try Task.checkCancellation()
+
                     // Wait if we've reached the concurrency limit
                     if activeTaskCount >= maxConcurrentRequests {
-                        _ = await group.next()
+                        if let result = try await group.next() {
+                            if let album = result {
+                                results.append(album)
+                            }
+                        }
                         activeTaskCount -= 1
                     }
 
                     group.addTask {
+                        // Cooperative cancellation in each task
+                        try Task.checkCancellation()
+
                         do {
                             let detailedAlbum = try await lastFMClient.fetchAlbumInfo(
                                 artist: album.artist,
@@ -428,6 +502,8 @@ final class WeeklyAlbumsStore: Hashable {
                                 mbid: album.mbid,
                                 username: user.username
                             )
+
+                            try Task.checkCancellation()
 
                             // Create a copy with detail populated
                             var albumWithDetail = album
@@ -438,26 +514,35 @@ final class WeeklyAlbumsStore: Hashable {
                                 userPlayCount: detailedAlbum.userPlayCount
                             )
                             return albumWithDetail
+                        } catch is CancellationError {
+                            throw CancellationError()
                         } catch {
-                            // Return nil for failed requests
+                            // Return nil for other errors
                             return nil
                         }
                     }
                     activeTaskCount += 1
                 }
 
-                // Collect all results
-                var results: [UserChartAlbum] = []
-                for await result in group {
-                    if let album = result {
-                        results.append(album)
+                // Collect remaining results
+                while activeTaskCount > 0 {
+                    if let result = try await group.next() {
+                        if let album = result {
+                            results.append(album)
+                        }
                     }
+                    activeTaskCount -= 1
                 }
+
                 return results
             }
 
             // Now precache images using albums with populated imageURL
-            await precacheImages(for: populatedAlbums, imagePipeline: imagePipeline)
+            try await precacheImagesWithCancellation(
+                for: populatedAlbums,
+                imagePipeline: imagePipeline,
+                precacheKey: precacheKey
+            )
 
         } catch {
             // Ignore errors in precaching - it's a performance optimization
@@ -480,6 +565,19 @@ final class WeeklyAlbumsStore: Hashable {
         loadedUsername = nil
         loadedYearOffset = nil
         loadedPlayCountFilter = nil
+    }
+
+    /// Lifecycle management for view appearance
+    func viewDidAppear() {
+        isViewActive = true
+    }
+
+    /// Lifecycle management for view disappearance
+    func viewWillDisappear() {
+        isViewActive = false
+        Task {
+            await precacheCoordinator.cancelAllPrecaching(reason: .viewDisappeared)
+        }
     }
 
     // MARK: - Hashable

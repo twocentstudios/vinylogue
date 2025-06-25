@@ -44,6 +44,18 @@ struct WeeklyAlbumsView: View {
             scrollPosition.scrollTo(edge: .top)
         }
         .sensoryFeedback(.impact(weight: .light, intensity: 1.0), trigger: store.currentYearOffset)
+        .onAppear {
+            store.viewDidAppear()
+        }
+        .onDisappear {
+            store.viewWillDisappear()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            store.viewWillDisappear()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            store.viewDidAppear()
+        }
     }
 
     @ViewBuilder private var toolbarTitle: some View {

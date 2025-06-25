@@ -240,3 +240,11 @@ extension DependencyValues {
         set { self[ImagePipelineKey.self] = newValue }
     }
 }
+
+// MARK: - Memory Pressure Monitor Dependency
+
+// Defined in MemoryPressureMonitor.swift
+
+// MARK: - Precache Coordinator Dependency
+
+// Defined in PrecacheCoordinator.swift
