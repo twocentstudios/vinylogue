@@ -3,11 +3,19 @@ import Foundation
 
 /// Monitors system memory pressure and provides updates via async stream
 actor MemoryPressureMonitor {
-    enum PressureLevel: Int, Comparable, Sendable {
+    enum PressureLevel: Int, Comparable, Sendable, CustomStringConvertible {
         case normal = 0, moderate = 1, critical = 2
 
         static func < (lhs: PressureLevel, rhs: PressureLevel) -> Bool {
             lhs.rawValue < rhs.rawValue
+        }
+        
+        var description: String {
+            switch self {
+            case .normal: return "normal"
+            case .moderate: return "moderate"
+            case .critical: return "critical"
+            }
         }
     }
 
