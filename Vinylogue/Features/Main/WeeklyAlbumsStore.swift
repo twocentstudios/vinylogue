@@ -398,12 +398,13 @@ final class WeeklyAlbumsStore: Hashable {
         await coordinator.registerImagePrefetcher(prefetcher, key: precacheKey)
 
         // Start prefetching with cancellation handling
-        try await withTaskCancellationHandler {
-            prefetcher.startPrefetching(with: requests)
-            
-            // Since we can't check prefetching status directly, we'll just yield control
-            // The prefetcher will handle the actual downloading in the background
-            try await Task.sleep(for: .milliseconds(10))
+        await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                prefetcher.didComplete = {
+                    continuation.resume()
+                }
+                prefetcher.startPrefetching(with: requests)
+            }
         } onCancel: {
             prefetcher.stopPrefetching()
         }
