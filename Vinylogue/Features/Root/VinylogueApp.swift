@@ -20,8 +20,8 @@ struct VinylogueApp: App {
                     .task {
                         if !isScreenshotTesting {
                             #if DEBUG && false
-                                @Dependency(\.cacheManager) var cacheManager
-                                try! await cacheManager.clearCache()
+                                print("🧹 DEBUG: Clearing all caches on app launch")
+                                await clearAllCaches()
                             #endif
                         }
                     }
@@ -29,6 +29,35 @@ struct VinylogueApp: App {
         }
     }
 }
+
+// MARK: - Debug Cache Clearing
+
+#if DEBUG
+    @MainActor
+    private func clearAllCaches() async {
+        do {
+            @Dependency(\.cacheManager) var cacheManager
+            @Dependency(\.imagePipeline) var imagePipeline
+
+            // Clear CacheManager caches
+            try await cacheManager.clearCache()
+            print("🧹 Cleared CacheManager caches")
+
+            // Clear Nuke image caches
+            imagePipeline.cache.removeAll()
+            imagePipeline.configuration.dataCache?.removeAll()
+            print("🧹 Cleared Nuke image caches")
+
+            // Clear URLSession cache
+            URLCache.shared.removeAllCachedResponses()
+            print("🧹 Cleared URLSession cache")
+
+            print("✅ All caches cleared successfully")
+        } catch {
+            print("❌ Failed to clear caches: \(error)")
+        }
+    }
+#endif
 
 // MARK: - UI Test Setup
 
