@@ -4,7 +4,8 @@ Vinylogue is a Last.fm client for iOS that shows you and your friends' weekly mu
 
 * [App Store](https://itunes.apple.com/us/app/vinylogue-for-last.fm/id617471119?ls=1&mt=8)
 * [Landing page](http://twocentstudios.com/apps/vinylogue/)
-* [Blog post (v1.0)](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) about the legacy implementation
+* [v1 post](http://twocentstudios.com/blog/2013/04/03/the-making-of-vinylogue/) about the legacy implementation
+* [v2 post](http://twocentstudios.com/blog/2025/06/22/vinylogue-swift-rewrite/) about the Swift rewrite with Claude Code
 
 Home|Charts|Album
 -|-|-
