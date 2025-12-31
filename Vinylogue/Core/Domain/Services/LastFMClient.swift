@@ -1,6 +1,5 @@
 import Dependencies
 import Foundation
-import Network
 
 // MARK: - Protocol
 
@@ -13,20 +12,7 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     private let baseURL = URL(string: "https://ws.audioscrobbler.com/2.0/")!
     private let apiKey = Secrets.apiKey
     private let session = URLSession.shared
-    private let networkMonitor = NWPathMonitor()
     @Dependency(\.cacheManager) private var cacheManager
-
-    init() {
-        setupNetworkMonitoring()
-    }
-
-    private func setupNetworkMonitoring() {
-        networkMonitor.start(queue: DispatchQueue.global())
-    }
-
-    private var isNetworkAvailable: Bool {
-        networkMonitor.currentPath.status == .satisfied
-    }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
         try validatePrerequisites()
@@ -53,8 +39,10 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
 
         } catch let error as LastFMError {
             throw error
+        } catch let error as CancellationError {
+            throw error
         } catch {
-            throw LastFMError.networkUnavailable
+            throw mapTransportError(error)
         }
     }
 
@@ -72,10 +60,6 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
     }
 
     private func validatePrerequisites() throws {
-        guard isNetworkAvailable else {
-            throw LastFMError.networkUnavailable
-        }
-
         guard !apiKey.isEmpty, apiKey != "YOUR_LASTFM_API_KEY_HERE" else {
             throw LastFMError.invalidAPIKey
         }
@@ -132,8 +116,10 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
 
         } catch let error as LastFMError {
             throw error
+        } catch let error as CancellationError {
+            throw error
         } catch {
-            throw LastFMError.networkUnavailable
+            throw mapTransportError(error)
         }
     }
 
@@ -154,6 +140,26 @@ struct LastFMClient: LastFMClientProtocol, Sendable {
             fatalError("Failed to construct URL for endpoint: \(endpoint)")
         }
         return url
+    }
+
+    private func mapTransportError(_ error: Error) -> LastFMError {
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet,
+                 .networkConnectionLost,
+                 .timedOut,
+                 .cannotFindHost,
+                 .cannotConnectToHost,
+                 .dnsLookupFailed,
+                 .internationalRoamingOff,
+                 .dataNotAllowed:
+                return .networkUnavailable
+            default:
+                return .invalidResponse
+            }
+        }
+
+        return .invalidResponse
     }
 }
 
