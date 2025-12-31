@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -143,6 +143,7 @@
 		A02D46E4C16BAB4131B0B969 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A15862A7DD2B4DBE440DBBA9 /* WeeklyAlbumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyAlbumsView.swift; sourceTree = "<group>"; };
 		A5E8DE9BC27EE6A42D990160 /* Dependencies+Vinylogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dependencies+Vinylogue.swift"; sourceTree = "<group>"; };
+		A70694F20F7BF24A45AF7DDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A935600D4241C39F4972F9B7 /* CacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		A9A8BAC0563FDFCBB88AFE0B /* Environment+Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Keys.swift"; sourceTree = "<group>"; };
 		AA9F67EEB152FF5CC61718F5 /* TestDataFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDataFactory.swift; sourceTree = "<group>"; };
@@ -345,6 +346,7 @@
 		E75DC78AECDC4C93130E52A1 /* Vinylogue */ = {
 			isa = PBXGroup;
 			children = (
+				A70694F20F7BF24A45AF7DDE /* Info.plist */,
 				1B10E2EEC870935603AF5E5B /* Core */,
 				8C1CD61D133CA87F9131B9EE /* Features */,
 				84ABE0E52A43BCC610B68AE0 /* Resources */,
@@ -489,7 +491,7 @@
 				3866EAA516F770881ABF4A03 /* XCRemoteSwiftPackageReference "Nuke" */,
 				A9EB0DA07C985D5B67455282 /* XCRemoteSwiftPackageReference "swift-sharing" */,
 			);
-			preferredProjectObjectVersion = 54;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -623,6 +625,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Vinylogue/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = Vinylogue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -837,6 +840,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Vinylogue/Resources/Preview Content\"";
 				DEVELOPMENT_TEAM = YK25EF78NT;
+				INFOPLIST_FILE = Vinylogue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
