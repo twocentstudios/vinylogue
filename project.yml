@@ -39,6 +39,10 @@ targets:
   Vinylogue:
     type: application
     platform: iOS
+    info:
+      path: Vinylogue/Info.plist
+      properties:
+        UIDesignRequiresCompatibility: true
     sources:
       - path: Vinylogue
         excludes:
