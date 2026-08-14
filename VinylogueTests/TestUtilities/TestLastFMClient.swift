@@ -12,6 +12,8 @@ final class TestLastFMClient: LastFMClientProtocol, @unchecked Sendable {
     // Specific mock data for different test scenarios
     private var _mockCharts: [ChartPeriod] = []
     private var _mockAlbums: [LastFMAlbumEntry] = []
+    private var _weeklyChartListRequestCount = 0
+    private var _weeklyAlbumChartRequestCount = 0
 
     // Thread-safe accessors for generic responses
     var mockResponses: [String: Any] {
@@ -80,6 +82,14 @@ final class TestLastFMClient: LastFMClientProtocol, @unchecked Sendable {
         }
     }
 
+    var weeklyChartListRequestCount: Int {
+        lock.withLock { _weeklyChartListRequestCount }
+    }
+
+    var weeklyAlbumChartRequestCount: Int {
+        lock.withLock { _weeklyAlbumChartRequestCount }
+    }
+
     // Convenience methods for setting up common responses
     func setMockResponse(_ response: some Codable, forEndpoint endpoint: LastFMEndpoint) {
         let key = endpointKey(endpoint)
@@ -103,9 +113,22 @@ final class TestLastFMClient: LastFMClientProtocol, @unchecked Sendable {
         _shouldReturnError = false
         _mockCharts.removeAll()
         _mockAlbums.removeAll()
+        _weeklyChartListRequestCount = 0
+        _weeklyAlbumChartRequestCount = 0
     }
 
     func request<T: Codable>(_ endpoint: LastFMEndpoint) async throws -> T {
+        lock.withLock {
+            switch endpoint {
+            case .userWeeklyChartList:
+                _weeklyChartListRequestCount += 1
+            case .userWeeklyAlbumChart:
+                _weeklyAlbumChartRequestCount += 1
+            default:
+                break
+            }
+        }
+
         // Check for error conditions first
         if shouldReturnError {
             throw LastFMError.networkUnavailable

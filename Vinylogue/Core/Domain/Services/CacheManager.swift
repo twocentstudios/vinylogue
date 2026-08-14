@@ -28,8 +28,8 @@ struct CacheManager: Sendable {
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
-    init() {
-        cacheDirectory = URL.cachesDirectory.appendingPathComponent("DataCache")
+    init(cacheDirectory: URL = URL.cachesDirectory.appendingPathComponent("DataCache")) {
+        self.cacheDirectory = cacheDirectory
 
         // Create cache directory if it doesn't exist
         do {
