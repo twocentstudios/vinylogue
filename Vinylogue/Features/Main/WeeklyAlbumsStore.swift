@@ -22,6 +22,11 @@ struct WeekInfo: Hashable {
     }
 }
 
+private enum WeeklyChartListSource {
+    case cache
+    case network
+}
+
 @Observable
 @MainActor
 final class WeeklyAlbumsStore: Hashable {
@@ -52,6 +57,7 @@ final class WeeklyAlbumsStore: Hashable {
     @ObservationIgnored @Dependency(\.date) private var date
     @ObservationIgnored @Dependency(\.calendar) private var calendar
     @ObservationIgnored private var weeklyCharts: [ChartPeriod] = []
+    @ObservationIgnored private var weeklyChartListSource: WeeklyChartListSource?
 
     @ObservationIgnored private var loadedUsername: String?
     @ObservationIgnored private var loadedYearOffset: Int?
@@ -78,12 +84,18 @@ final class WeeklyAlbumsStore: Hashable {
 
         do {
             if weeklyCharts.isEmpty {
-                await loadWeeklyChartList(for: user.username)
+                try await loadWeeklyChartList(for: user.username)
             }
 
             let targetDate = calculateTargetDate(yearOffset: currentYearOffset)
+            var chartPeriod = findMatchingChartPeriod(for: targetDate)
 
-            guard let chartPeriod = findMatchingChartPeriod(for: targetDate) else {
+            if chartPeriod == nil, weeklyChartListSource == .cache {
+                try await loadWeeklyChartList(for: user.username, forceRefresh: true)
+                chartPeriod = findMatchingChartPeriod(for: targetDate)
+            }
+
+            guard let chartPeriod else {
                 albumsState = .failed(.noDataAvailable)
                 currentWeekInfo = nil
                 loadedUsername = nil
@@ -109,17 +121,15 @@ final class WeeklyAlbumsStore: Hashable {
             }
 
             if response == nil {
-                response = try await lastFMClient.request(
+                let fetchedResponse: UserWeeklyAlbumChartResponse = try await lastFMClient.request(
                     .userWeeklyAlbumChart(
                         username: user.username,
                         from: chartPeriod.fromDate,
                         to: chartPeriod.toDate
                     )
                 )
-
-                if let validResponse = response {
-                    try await cacheManager.store(validResponse, key: cacheKey)
-                }
+                try await cacheManager.store(fetchedResponse, key: cacheKey)
+                response = fetchedResponse
             }
 
             guard let finalResponse = response else {
@@ -176,6 +186,7 @@ final class WeeklyAlbumsStore: Hashable {
             loadedYearOffset = nil
             loadedPlayCountFilter = nil
         } catch {
+            print("Weekly album loading failed for \(user.username): \(error)")
             albumsState = .failed(.invalidResponse)
             currentWeekInfo = nil
             loadedUsername = nil
@@ -185,47 +196,38 @@ final class WeeklyAlbumsStore: Hashable {
     }
 
     /// Load the available weekly chart periods for a user
-    private func loadWeeklyChartList(for username: String) async {
-        do {
-            let cacheKey = CacheKeyBuilder.weeklyChartList(username: username)
+    private func loadWeeklyChartList(for username: String, forceRefresh: Bool = false) async throws {
+        let cacheKey = CacheKeyBuilder.weeklyChartList(username: username)
 
-            var response: UserWeeklyChartListResponse?
+        if !forceRefresh {
             do {
-                response = try await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey)
+                if let response = try await cacheManager.retrieve(UserWeeklyChartListResponse.self, key: cacheKey) {
+                    applyWeeklyChartList(response, source: .cache)
+                    return
+                }
             } catch {
                 print("Cache retrieval failed for weekly chart list \(cacheKey): \(error)")
-                response = nil
             }
+        }
 
-            if response == nil {
-                response = try await lastFMClient.request(
-                    .userWeeklyChartList(username: username)
-                )
+        let response: UserWeeklyChartListResponse = try await lastFMClient.request(
+            .userWeeklyChartList(username: username)
+        )
+        try await cacheManager.store(response, key: cacheKey)
+        applyWeeklyChartList(response, source: .network)
+    }
 
-                if let validResponse = response {
-                    try await cacheManager.store(validResponse, key: cacheKey)
-                }
-            }
+    private func applyWeeklyChartList(_ response: UserWeeklyChartListResponse, source: WeeklyChartListSource) {
+        weeklyCharts = response.weeklychartlist.chart ?? []
+        weeklyChartListSource = source
+        availableYearRange = nil
 
-            guard let finalResponse = response else {
-                weeklyCharts = []
-                availableYearRange = nil
-                return
-            }
-
-            weeklyCharts = finalResponse.weeklychartlist.chart ?? []
-
-            if let firstChart = weeklyCharts.first,
-               let lastChart = weeklyCharts.last
-            {
-                let earliestYear = calendar.component(.year, from: firstChart.fromDate)
-                let latestYear = calendar.component(.year, from: lastChart.toDate)
-                availableYearRange = earliestYear ... latestYear
-            }
-
-        } catch {
-            weeklyCharts = []
-            availableYearRange = nil
+        if let firstChart = weeklyCharts.first,
+           let lastChart = weeklyCharts.last
+        {
+            let earliestYear = calendar.component(.year, from: firstChart.fromDate)
+            let latestYear = calendar.component(.year, from: lastChart.toDate)
+            availableYearRange = earliestYear ... latestYear
         }
     }
 
